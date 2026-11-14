@@ -109,9 +109,14 @@ export function AnalogComparisonMatrix({
                   <span className="text-sm font-semibold text-content">
                     #{idx + 1} · {t(m.region_key)}
                   </span>
-                  <Badge variant={m.is_benchmark ? "default" : "valid"}>
-                    {m.is_benchmark ? t("map.benchmarkBadge") : t("map.discoveryBadge")}
-                  </Badge>
+                  <div className="flex flex-wrap items-center gap-1">
+                    {m.is_pareto_optimal && (
+                      <Badge variant="accent">{t("mission.paretoBadge")}</Badge>
+                    )}
+                    <Badge variant={m.is_benchmark ? "default" : "valid"}>
+                      {m.is_benchmark ? t("map.benchmarkBadge") : t("map.discoveryBadge")}
+                    </Badge>
+                  </div>
                 </div>
                 <p className="mt-1 text-xs text-content-muted">
                   {t(m.biome_key)} · ({formatNumber(m.coordinates.lat, lang, 2)},{" "}
@@ -195,9 +200,14 @@ export function AnalogComparisonMatrix({
                       </p>
                     </td>
                     <td className="px-4 py-3">
-                      <Badge variant={m.is_benchmark ? "default" : "valid"}>
-                        {m.is_benchmark ? t("map.benchmarkBadge") : t("map.discoveryBadge")}
-                      </Badge>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <Badge variant={m.is_benchmark ? "default" : "valid"}>
+                          {m.is_benchmark ? t("map.benchmarkBadge") : t("map.discoveryBadge")}
+                        </Badge>
+                        {m.is_pareto_optimal && (
+                          <Badge variant="accent">{t("mission.paretoBadge")}</Badge>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 font-semibold tabular-nums text-accent">
                       {formatPercent(m.s_ind, lang)}

@@ -174,6 +174,12 @@ export function MissionDiagnostics({
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-1.5">
+              {match.is_pareto_optimal && (
+                <div className="inline-flex items-center gap-0.5">
+                  <Badge variant="accent">{t("mission.paretoBadge")}</Badge>
+                  <InfoTooltip label={t("mission.paretoBadge")} text={t("mission.paretoHelp")} />
+                </div>
+              )}
               {match.provenance.is_live_probed && (
                 <Badge variant="accent">{t("provenance.liveProbed")}</Badge>
               )}
@@ -536,6 +542,80 @@ export function MissionDiagnostics({
                   </p>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* NASA / ESA Regolith Simulant Affinity & ISRU / Astrobiological Purity */}
+        {catalog?.regolith_simulant && (
+          <div className="rounded border border-border-subtle bg-surface p-4 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Layers className="h-4 w-4 text-accent" aria-hidden="true" />
+                <h3 className="text-sm font-semibold text-content">{t("simulants.title")}</h3>
+                <InfoTooltip label={t("simulants.title")} text={t("simulants.tooltip")} />
+              </div>
+              <Badge variant="valid">
+                {t("simulants.recommendedLabel")}: {catalog.regolith_simulant.recommended_code} (
+                {formatPercent(catalog.regolith_simulant.affinity_score, lang)})
+              </Badge>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1">
+                <span className="text-xs text-content-muted">{t("simulants.bestMatchTitle")}</span>
+                <p className="text-sm font-bold text-content">
+                  {t(catalog.regolith_simulant.recommended_name_key)}
+                </p>
+                <p className="text-xs text-content-muted">
+                  {t(
+                    catalog.regolith_simulant.candidates[0]?.mineralogy_key ??
+                      "simulants.mgs1.mineralogy"
+                  )}
+                </p>
+              </div>
+
+              <div className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-content-muted">{t("simulants.isruIndexLabel")}</span>
+                  <span className="font-semibold tabular-nums text-accent">
+                    {formatPercent(catalog.regolith_simulant.isru_o2_index, lang)}
+                  </span>
+                </div>
+                <ProgressBar
+                  value={catalog.regolith_simulant.isru_o2_index}
+                  tone="accent"
+                  label={t("simulants.isruIndexLabel")}
+                />
+                <div className="flex items-center justify-between text-xs pt-1">
+                  <span className="text-content-muted">{t("simulants.astroPurityLabel")}</span>
+                  <span className="font-semibold tabular-nums text-status-valid">
+                    {formatPercent(catalog.regolith_simulant.astrobiology_purity_index, lang)}
+                  </span>
+                </div>
+                <ProgressBar
+                  value={catalog.regolith_simulant.astrobiology_purity_index}
+                  tone="valid"
+                  label={t("simulants.astroPurityLabel")}
+                />
+              </div>
+
+              <div className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1 text-xs text-content-muted">
+                <span className="font-semibold text-content">{t("simulants.granulometryTitle")}</span>
+                <p>
+                  {t("simulants.sandClaySilt", {
+                    sand: formatNumber(catalog.regolith_simulant.sand_pct, lang, 1),
+                    silt: formatNumber(catalog.regolith_simulant.silt_pct, lang, 1),
+                    clay: formatNumber(catalog.regolith_simulant.clay_pct, lang, 1),
+                  })}
+                </p>
+                <p>
+                  {t("simulants.densityAndSoc", {
+                    bdod: formatNumber(catalog.regolith_simulant.bulk_density_g_cm3, lang, 2),
+                    soc: formatNumber(catalog.regolith_simulant.organic_carbon_pct, lang, 2),
+                  })}
+                </p>
+              </div>
             </div>
           </div>
         )}

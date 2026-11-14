@@ -1,5 +1,6 @@
 export type PlanetaryBody = "moon" | "mars";
 export type DecompositionModelType = "ridge" | "random_forest";
+export type DistanceMetricType = "euclidean" | "mahalanobis";
 export type ConfidenceLevel = "high" | "medium" | "estimated";
 export type VariableOrigin = "measured" | "derived" | "model" | "constant" | "default";
 export type TestProfileType =
@@ -54,6 +55,15 @@ export interface DataConfidence {
   notice_key: string;
 }
 
+export interface PlanetaryFeatureInfo {
+  feature_name: string;
+  feature_type: string;
+  diameter_km: number | null;
+  distance_km: number;
+  elevation_m: number;
+  gazetteer_source: string;
+}
+
 export interface PlanetarySite {
   site_id: string;
   body: PlanetaryBody;
@@ -64,12 +74,15 @@ export interface PlanetarySite {
   variables: PhysicalVariables;
   provenance: DataProvenance;
   confidence?: DataConfidence | null;
+  planetary_feature?: PlanetaryFeatureInfo | null;
 }
 
 export interface DependentDecomposition {
   dv_name: string;
   r2_score: number;
+  cv_r2_score?: number;
   rmse_normalized: number;
+  prediction_interval_90?: number;
   is_available: boolean;
   weights: Record<string, number>;
 }
@@ -117,6 +130,7 @@ export interface AnalogMatchItem {
   country_code: string;
   biome_key: string;
   is_benchmark: boolean;
+  is_pareto_optimal?: boolean;
   known_analog_name?: string | null;
   s_ind: number;
   s_dep: number;
@@ -137,6 +151,7 @@ export interface AnalogMatchItem {
 export interface AnalogSearchResponse {
   site_id: string;
   body: PlanetaryBody;
+  distance_metric?: DistanceMetricType;
   total_evaluated: number;
   returned_count: number;
   causal_weights_used: Record<string, number>;
@@ -195,6 +210,28 @@ export interface HabitabilityProfile {
   biosignature_relevance_key: string;
 }
 
+export interface RegolithSimulantCandidate {
+  code: string;
+  name_key: string;
+  target_body: PlanetaryBody;
+  affinity_score: number;
+  mineralogy_key: string;
+}
+
+export interface RegolithSimulantProfile {
+  recommended_code: string;
+  recommended_name_key: string;
+  affinity_score: number;
+  isru_o2_index: number;
+  astrobiology_purity_index: number;
+  sand_pct: number;
+  clay_pct: number;
+  silt_pct: number;
+  bulk_density_g_cm3: number;
+  organic_carbon_pct: number;
+  candidates: RegolithSimulantCandidate[];
+}
+
 export interface MultiAgencyCatalogResponse {
   earth_cell_h3: string;
   lat: number;
@@ -204,6 +241,7 @@ export interface MultiAgencyCatalogResponse {
   geology?: GeologySummary | null;
   subsurface?: SubsurfaceAnalogInfo | null;
   habitability?: HabitabilityProfile | null;
+  regolith_simulant?: RegolithSimulantProfile | null;
 }
 
 export interface AnalogRefineResponse {

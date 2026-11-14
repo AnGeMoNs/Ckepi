@@ -76,7 +76,11 @@
     "mapSwitcherLabel": "Map view",
     "mapViewPlanet": "Planet",
     "mapViewEarth": "Earth",
-    "copyFailed": "Could not copy the link to the clipboard."
+    "copyFailed": "Could not copy the link to the clipboard.",
+    "distanceMetric": "Multivariate Distance Metric",
+    "distanceMetricHint": "Weighted Euclidean evaluates each variable independently; Mahalanobis accounts for physical collinearity across correlated variables.",
+    "metricEuclidean": "Weighted Euclidean (Diagonal)",
+    "metricMahalanobis": "Regularized Mahalanobis (Covariance)"
   },
   "bodies": {
     "moon": "Moon",
@@ -181,6 +185,7 @@
   "confidence": {
     "title": "Data Confidence & Coverage Transparency",
     "unknownSite": "Nearest tracked site",
+    "iauFeatureBadge": "IAU: {{name}} ({{elev}} m)",
     "pdsCount": "{{count}} NASA PDS LRO products",
     "distanceKm": "{{km}} km from {{site}}",
     "realVarsLabel": "Observed / Orbital Physics",
@@ -410,7 +415,9 @@
     "earthCol": "Earth",
     "similarityCol": "Similarity",
     "statusBroken": "Breakage",
-    "statusAligned": "Aligned"
+    "statusAligned": "Aligned",
+    "paretoBadge": "Pareto Optimal",
+    "paretoHelp": "Belongs to the 3D Pareto Frontier (S_ind, S_dep, 1 − R_break): no other terrestrial candidate outperforms it simultaneously across all three dimensions."
   },
   "tests": {
     "valid": {
@@ -560,5 +567,36 @@
     "knownShort": "Known",
     "newShort": "New",
     "unknown": "unknown"
+  },
+  "simulants": {
+    "title": "NASA/ESA Regolith Simulant Affinity & ISRU Suitability",
+    "tooltip": "Cross-references ISRIC SoilGrids v2.0 granulometry (sand, silt, clay, bulk density, and organic carbon) and Macrostrat lithology against standard laboratory regolith simulants.",
+    "recommendedLabel": "Recommended simulant",
+    "bestMatchTitle": "Mineralogical Reference Standard",
+    "isruIndexLabel": "ISRU Suitability (O₂ Extraction / Sintering)",
+    "astroPurityLabel": "Astrobiological Purity (Low Organic Carbon)",
+    "granulometryTitle": "SoilGrids v2.0 Granulometry (0–5 cm)",
+    "sandClaySilt": "Sand: {{sand}}% · Silt: {{silt}}% · Clay: {{clay}}%",
+    "densityAndSoc": "Bulk density: {{bdod}} g/cm³ · Organic carbon (SOC): {{soc}}%",
+    "lms1": {
+      "name": "LMS-1 / JSC-1A (Lunar Mare Simulant)",
+      "mineralogy": "Ti-rich basalt, volcanic glass, plagioclase & pyroxene"
+    },
+    "lhs1": {
+      "name": "LHS-1 (Lunar Highlands Simulant)",
+      "mineralogy": "Plagioclase-rich anorthosite (>70%) & trace mare basalt"
+    },
+    "mgs1": {
+      "name": "MGS-1 (Mars Global Simulant — Rocknest Standard)",
+      "mineralogy": "Pyroxene/olivine basalt with ferrihydrite & smectite clay"
+    },
+    "mms2": {
+      "name": "MMS-2 (Mojave Mars Simulant — Sulfates / Fe₂O₃)",
+      "mineralogy": "Oxidized basalt enriched in ferric hematites & calcium sulfate"
+    },
+    "jez1": {
+      "name": "JEZ-1 (Jezero Delta Simulant — Perseverance)",
+      "mineralogy": "Mg-carbonates, Fe/Mg-smectite phyllosilicates & deltaic olivine"
+    }
   }
 }

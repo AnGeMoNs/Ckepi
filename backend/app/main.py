@@ -33,6 +33,7 @@ from app.etl.earth_api import probe_earth_location
 from app.etl.http_utils import create_async_http_client, create_http_client
 from app.etl.geology_and_habitability import (
     evaluate_habitability_profile,
+    evaluate_regolith_simulant_affinity,
     evaluate_subsurface_analog,
     fetch_macrostrat_geology,
 )
@@ -463,6 +464,7 @@ def search_analogs(payload: AnalogSearchRequest) -> AnalogSearchResponse:
         custom_dv_weights=payload.custom_dv_weights,
         custom_min_similarity=payload.custom_min_similarity,
         penalize_estimated=payload.penalize_estimated,
+        distance_metric=payload.distance_metric,
     )
 
 
@@ -511,6 +513,7 @@ def probe_planetary_location(payload: PlanetaryProbeRequest) -> PlanetaryProbeRe
         custom_dv_weights=payload.custom_dv_weights,
         custom_min_similarity=payload.custom_min_similarity,
         penalize_estimated=payload.penalize_estimated,
+        distance_metric=payload.distance_metric,
     )
     top_comp = (
         _build_comparison_response(
@@ -616,7 +619,8 @@ def get_earth_cell_datasets(h3_index: str) -> MultiAgencyCatalogResponse:
     try:
         row = conn.execute(
             """
-            SELECT lat, lon, mean_surface_temp_k, aridity_index, uv_irradiance_index, subsurface_ice_frac
+            SELECT lat, lon, mean_surface_temp_k, aridity_index, uv_irradiance_index,
+                   subsurface_ice_frac, surface_albedo, thermal_inertia
             FROM earth_h3_grid WHERE earth_cell_h3 = ?
             """,
             [h3_index],
@@ -635,6 +639,8 @@ def get_earth_cell_datasets(h3_index: str) -> MultiAgencyCatalogResponse:
     aridity_index = float(row[3])
     uv_index = float(row[4])
     subsurface_ice_frac = float(row[5])
+    surface_albedo = float(row[6])
+    thermal_inertia = float(row[7])
 
     catalog = discover_space_agency_datasets(lat=lat, lon=lon)
     with create_http_client(timeout=5.0) as client:
@@ -647,6 +653,14 @@ def get_earth_cell_datasets(h3_index: str) -> MultiAgencyCatalogResponse:
         subsurface_ice_frac=subsurface_ice_frac,
         geology=geology,
     )
+    regolith_simulant = evaluate_regolith_simulant_affinity(
+        lat=lat,
+        lon=lon,
+        aridity_index=aridity_index,
+        surface_albedo=surface_albedo,
+        thermal_inertia=thermal_inertia,
+        geology=geology,
+    )
     return MultiAgencyCatalogResponse(
         earth_cell_h3=h3_index,
         lat=catalog["lat"],
@@ -656,6 +670,7 @@ def get_earth_cell_datasets(h3_index: str) -> MultiAgencyCatalogResponse:
         geology=geology,
         subsurface=subsurface,
         habitability=habitability,
+        regolith_simulant=regolith_simulant,
     )
 
 

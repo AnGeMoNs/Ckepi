@@ -76,7 +76,11 @@
     "mapSwitcherLabel": "Visualização do mapa",
     "mapViewPlanet": "Planeta",
     "mapViewEarth": "Terra",
-    "copyFailed": "Não foi possível copiar o link para a área de transferência."
+    "copyFailed": "Não foi possível copiar o link para a área de transferência.",
+    "distanceMetric": "Métrica de Distância Multivariada",
+    "distanceMetricHint": "A Euclidiana ponderada avalia cada variável independentemente; a Mahalanobis corrige a colinearidade física entre variáveis correlacionadas.",
+    "metricEuclidean": "Euclidiana Ponderada (Diagonal)",
+    "metricMahalanobis": "Mahalanobis Regularizada (Covariância)"
   },
   "bodies": {
     "moon": "Lua",
@@ -181,6 +185,7 @@
   "confidence": {
     "title": "Confiança dos Dados e Cobertura Instrumental",
     "unknownSite": "Local rastreado mais próximo",
+    "iauFeatureBadge": "UAI: {{name}} ({{elev}} m)",
     "pdsCount": "{{count}} produtos NASA PDS LRO",
     "distanceKm": "A {{km}} km de {{site}}",
     "realVarsLabel": "Observado / Física Orbital",
@@ -410,7 +415,9 @@
     "earthCol": "Terra",
     "similarityCol": "Similaridade",
     "statusBroken": "Ruptura",
-    "statusAligned": "Alinhado"
+    "statusAligned": "Alinhado",
+    "paretoBadge": "Ótimo de Pareto",
+    "paretoHelp": "Pertence à Fronteira de Pareto tridimensional (S_ind, S_dep, 1 − R_break): nenhum outro local terrestre o supera simultaneamente nas três dimensões."
   },
   "tests": {
     "valid": {
@@ -560,5 +567,36 @@
     "knownShort": "Conhecido",
     "newShort": "Novo",
     "unknown": "desconhecido"
+  },
+  "simulants": {
+    "title": "Afinidade com Simulantes de Regolito NASA/ESA e Adequação ISRU",
+    "tooltip": "Cruza granulometria ISRIC SoilGrids v2.0 (areia, silte, argila, densidade aparente e carbono orgânico) e litologia Macrostrat com simulantes padrão de laboratório.",
+    "recommendedLabel": "Simulante recomendado",
+    "bestMatchTitle": "Padrão de Referência Mineralógica",
+    "isruIndexLabel": "Aptidão ISRU (Extração de O₂ / Sinterização)",
+    "astroPurityLabel": "Pureza Astrobiológica (Baixo Carbono Orgânico)",
+    "granulometryTitle": "Granulometria SoilGrids v2.0 (0–5 cm)",
+    "sandClaySilt": "Areia: {{sand}}% · Silte: {{silt}}% · Argila: {{clay}}%",
+    "densityAndSoc": "Densidade: {{bdod}} g/cm³ · Carbono orgânico (SOC): {{soc}}%",
+    "lms1": {
+      "name": "LMS-1 / JSC-1A (Simulante de Mare Lunar)",
+      "mineralogy": "Basalto rico em Ti, vidro vulcânico, plagioclásio e piroxênio"
+    },
+    "lhs1": {
+      "name": "LHS-1 (Simulante de Terras Altas Lunares)",
+      "mineralogy": "Anortosito rico em plagioclásio (>70%) e traços de basalto"
+    },
+    "mgs1": {
+      "name": "MGS-1 (Simulante Global de Marte — Padrão Rocknest)",
+      "mineralogy": "Basalto piroxênico/olivínico com ferrihidrita e esmectita"
+    },
+    "mms2": {
+      "name": "MMS-2 (Simulante Mojave de Marte — Sulfatos / Fe₂O₃)",
+      "mineralogy": "Basalto oxidado enriquecido em hematita e sulfato de cálcio"
+    },
+    "jez1": {
+      "name": "JEZ-1 (Simulante do Delta de Jezero — Perseverance)",
+      "mineralogy": "Carbonatos de Mg, filossilicatos de esmectita e olivina deltaica"
+    }
   }
 }

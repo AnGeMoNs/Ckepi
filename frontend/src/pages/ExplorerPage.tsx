@@ -59,6 +59,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     customProbedSite: params.customProbedSite,
     setCustomProbedSite: params.setCustomProbedSite,
     modelType: params.modelType,
+    distanceMetric: params.distanceMetric,
     testProfile: params.testProfile,
     minSInd: params.minSInd,
     minSDep: params.minSDep,
@@ -164,6 +165,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
       activeSite={activeSite}
       testProfile={params.testProfile}
       modelType={params.modelType}
+      distanceMetric={params.distanceMetric}
       minSInd={params.minSInd}
       minSDep={params.minSDep}
       excludeBenchmarks={params.excludeBenchmarks}
@@ -184,6 +186,10 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         params.setTestProfile(profile);
       }}
       onChangeModelType={params.setModelType}
+      onChangeDistanceMetric={(metric) => {
+        setHasConfigured(true);
+        params.setDistanceMetric(metric);
+      }}
       onChangeMinSInd={params.setMinSInd}
       onChangeMinSDep={params.setMinSDep}
       onChangeExcludeBenchmarks={params.setExcludeBenchmarks}

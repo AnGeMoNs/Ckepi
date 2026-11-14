@@ -20,6 +20,7 @@ from app.models.schemas import (
     AnalogSearchResponse,
     Coordinates,
     DataProvenance,
+    DistanceMetricType,
     PhysicalVariables,
     PlanetarySite,
 )
@@ -65,6 +66,46 @@ def load_earth_grid(duckdb_path: Path, exclude_benchmarks: bool = False) -> pd.D
         conn.close()
 
 
+def _build_precision_matrix(
+    df_earth: pd.DataFrame,
+    columns: tuple[str, ...],
+    shrinkage: float = 0.28,
+) -> np.ndarray | None:
+    """Compute Ledoit-Wolf style shrinkage precision matrix (inverse correlation) for Mahalanobis distance."""
+    n = len( columns)
+    if len(df_earth) < max(8, n):
+        return None
+    try:
+        mat = np.column_stack(
+            [df_earth[col].to_numpy(dtype=float) / max(FEATURE_SCALES[col], 1e-6) for col in columns]
+        )
+        corr = np.corrcoef(mat, rowvar=False)
+        if corr.shape != (n, n) or not np.all(np.isfinite(corr)):
+            return None
+        reg_corr = (1.0 - shrinkage) * corr + shrinkage * np.eye(n, dtype=float)
+        inv_corr = np.linalg.inv(reg_corr)
+        mean_diag = float(np.mean(np.diag(inv_corr)))
+        return inv_corr / max(mean_diag, 1e-6)
+    except Exception:
+        return None
+
+
+def _mark_pareto_frontier(items: list[AnalogMatchItem]) -> None:
+    """Mark non-dominated candidates across (s_ind, s_dep, 1 - r_break_overall)."""
+    if not items:
+        return
+    objs = np.array(
+        [[m.s_ind, m.s_dep, round(1.0 - m.r_break_overall, 4)] for m in items],
+        dtype=float,
+    )
+    n = len(items)
+    for i in range(n):
+        ge_all = np.all(objs >= objs[i] - 1e-6, axis=1)
+        gt_any = np.any(objs > objs[i] + 0.002, axis=1)
+        ge_all[i] = False
+        items[i].is_pareto_optimal = not bool(np.any(ge_all & gt_any))
+
+
 def match_terrestrial_analogs(
     site: PlanetarySite,
     causal_weights: dict[str, float],
@@ -76,6 +117,7 @@ def match_terrestrial_analogs(
     custom_dv_weights: dict[str, float] | None = None,
     custom_min_similarity: dict[str, float] | None = None,
     penalize_estimated: bool = False,
+    distance_metric: DistanceMetricType = "euclidean",
 ) -> AnalogSearchResponse:
     """Score every Earth H3 cell against a planetary ROI using decoupled S_ind, S_dep, R_break."""
     ignore_ind = custom_weights is not None and _normalize_custom_weights(custom_weights, INDEPENDENT_VARIABLES) is None
@@ -95,6 +137,19 @@ def match_terrestrial_analogs(
     p_iv = site.variables.independent
     p_dv = site.variables.dependent
 
+    prec_iv = (
+        _build_precision_matrix(df_earth, INDEPENDENT_VARIABLES)
+        if distance_metric == "mahalanobis"
+        else None
+    )
+    prec_dv = (
+        _build_precision_matrix(df_earth, DEPENDENT_VARIABLES)
+        if distance_metric == "mahalanobis"
+        else None
+    )
+    sqrt_w_iv = np.array([ np.sqrt(norm_w[col]) for col in INDEPENDENT_VARIABLES], dtype=float)
+    sqrt_w_dv = np.array([np.sqrt(norm_dv_w[col]) for col in DEPENDENT_VARIABLES], dtype=float)
+
     matches: list[AnalogMatchItem] = []
 
     for row in df_earth.itertuples(index=False):
@@ -104,31 +159,47 @@ def match_terrestrial_analogs(
         sq_dist_ind = 0.0
         iv_sim_breakdown: dict[str, float] = {}
         earth_iv: dict[str, float] = {}
-        for col in INDEPENDENT_VARIABLES:
+        iv_diffs = np.zeros(len(INDEPENDENT_VARIABLES), dtype=float)
+        for idx_col, col in enumerate(INDEPENDENT_VARIABLES):
             e_val = float(row_dict[col])
             p_val = float(p_iv[col])
             earth_iv[col] = round(e_val, 4)
             scale = FEATURE_SCALES[col]
             norm_diff = (p_val - e_val) / scale
+            iv_diffs[idx_col] = norm_diff
             sq_dist_ind += norm_w[col] * (norm_diff ** 2)
             iv_sim_breakdown[col] = round(_compute_variable_similarity(p_val, e_val, scale), 4)
 
-        s_ind = 1.0 if ignore_ind else float(np.exp(-np.sqrt(sq_dist_ind)))
+        if prec_iv is not None:
+            u_iv = sqrt_w_iv * iv_diffs
+            mahal_ind = float(u_iv @ prec_iv @ u_iv)
+            if mahal_ind > 0.0:
+                sq_dist_ind = mahal_ind
+
+        s_ind = 1.0 if ignore_ind else float(np.exp(-np.sqrt(max(0.0, sq_dist_ind))))
 
         # 2. Dependent Response Similarity S_dep
         sq_dist_dep = 0.0
         dv_sim_breakdown: dict[str, float] = {}
         earth_dv: dict[str, float] = {}
-        for col in DEPENDENT_VARIABLES:
+        dv_diffs = np.zeros(len(DEPENDENT_VARIABLES), dtype=float)
+        for idx_col, col in enumerate(DEPENDENT_VARIABLES):
             e_val = float(row_dict[col])
             p_val = float(p_dv[col])
             earth_dv[col] = round(e_val, 4)
             scale = FEATURE_SCALES[col]
             norm_diff = (p_val - e_val) / scale
+            dv_diffs[idx_col] = norm_diff
             sq_dist_dep += norm_dv_w[col] * (norm_diff ** 2)
             dv_sim_breakdown[col] = round(_compute_variable_similarity(p_val, e_val, scale), 4)
 
-        s_dep = 1.0 if ignore_dv else float(np.exp(-np.sqrt(sq_dist_dep)))
+        if prec_dv is not None:
+            u_dv = sqrt_w_dv * dv_diffs
+            mahal_dep = float(u_dv @ prec_dv @ u_dv)
+            if mahal_dep > 0.0:
+                sq_dist_dep = mahal_dep
+
+        s_dep = 1.0 if ignore_dv else float(np.exp(-np.sqrt(max(0.0, sq_dist_dep))))
 
         if (not ignore_ind and s_ind < min_s_ind) or (not ignore_dv and s_dep < min_s_dep):
             continue
@@ -174,7 +245,10 @@ def match_terrestrial_analogs(
             combined_score = 0.60 * s_ind + 0.40 * s_dep
         conf_score = site.confidence.score if site.confidence else 0.70
         confidence_adjusted_score = combined_score * (0.75 + 0.25 * conf_score)
-        score_uncertainty = (1.0 - conf_score) * 0.22
+        # Cell-specific empirical uncertainty combining instrumental confidence + cross-variable jackknife dispersion
+        sim_vals = np.array(list(iv_sim_breakdown.values()) + list(dv_sim_breakdown.values()), dtype=float)
+        jackknife_spread = float(np.std(sim_vals)) / np.sqrt(len(sim_vals))
+        score_uncertainty = float(np.clip((1.0 - conf_score) * 0.14 + jackknife_spread * 0.45, 0.015, 0.25))
         ci_low = round(max(0.0, combined_score - score_uncertainty), 4)
         ci_high = round(min(1.0, combined_score + score_uncertainty), 4)
         h3_res = int(row_dict["h3_resolution"])
@@ -221,6 +295,7 @@ def match_terrestrial_analogs(
             )
         )
 
+    _mark_pareto_frontier(matches)
     matches.sort(
         key=lambda item: item.confidence_adjusted_score if penalize_estimated else item.combined_score,
         reverse=True,
@@ -230,6 +305,7 @@ def match_terrestrial_analogs(
     return AnalogSearchResponse(
         site_id=site.site_id,
         body=site.body,
+        distance_metric=distance_metric,
         total_evaluated=int(len(df_earth)),
         returned_count=len(limited),
         causal_weights_used={k: round(v, 4) for k, v in norm_w.items()},

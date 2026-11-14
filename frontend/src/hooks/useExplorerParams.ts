@@ -6,6 +6,7 @@ import {
 } from "../components/mission/ManualVariableControls";
 import type {
   DecompositionModelType,
+  DistanceMetricType,
   PlanetaryBody,
   PlanetarySite,
   TestProfileType,
@@ -22,6 +23,7 @@ const VALID_PROFILES: ReadonlySet<string> = new Set([
 ]);
 
 const VALID_MODELS: ReadonlySet<string> = new Set(["ridge", "random_forest"]);
+const VALID_METRICS: ReadonlySet<string> = new Set(["euclidean", "mahalanobis"]);
 
 function roundThreshold(value: number): number {
   return Math.round(value * 20) / 20;
@@ -56,12 +58,18 @@ export function useExplorerParams() {
     ? (rawModel as DecompositionModelType)
     : "ridge";
 
+  const rawMetric = initialParams?.get("metric") ?? "euclidean";
+  const initialMetric: DistanceMetricType = VALID_METRICS.has(rawMetric)
+    ? (rawMetric as DistanceMetricType)
+    : "euclidean";
+
   const [selectedBody, setSelectedBody] = useState<PlanetaryBody>("mars");
   const [selectedSiteId, setSelectedSiteId] = useState<string>(
     initialParams?.get("site") || "mars_jezero_crater"
   );
   const [customProbedSite, setCustomProbedSite] = useState<PlanetarySite | null>(null);
   const [modelType, setModelType] = useState<DecompositionModelType>(initialModel);
+  const [distanceMetric, setDistanceMetric] = useState<DistanceMetricType>(initialMetric);
   const [testProfile, setTestProfile] = useState<TestProfileType>(initialProfile);
   const [minSInd, setMinSInd] = useState<number>(() =>
     parseNumericParam(initialParams, "minInd", 0.2, 0, 0.85)
@@ -95,6 +103,9 @@ export function useExplorerParams() {
     if (modelType !== "ridge") url.searchParams.set("model", modelType);
     else url.searchParams.delete("model");
 
+    if (distanceMetric !== "euclidean") url.searchParams.set("metric", distanceMetric);
+    else url.searchParams.delete("metric");
+
     const roundedMinInd = roundThreshold(minSInd);
     if (roundedMinInd !== 0.2) url.searchParams.set("minInd", roundedMinInd.toFixed(2));
     else url.searchParams.delete("minInd");
@@ -114,6 +125,7 @@ export function useExplorerParams() {
     selectedSiteId,
     testProfile,
     modelType,
+    distanceMetric,
     minSInd,
     minSDep,
     excludeBenchmarks,
@@ -161,6 +173,8 @@ export function useExplorerParams() {
     setCustomProbedSite,
     modelType,
     setModelType,
+    distanceMetric,
+    setDistanceMetric,
     testProfile,
     setTestProfile,
     minSInd,

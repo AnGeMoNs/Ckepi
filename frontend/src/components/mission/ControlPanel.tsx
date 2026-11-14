@@ -5,6 +5,7 @@ import { formatPercent } from "../../i18n";
 import type {
   AnalogSearchResponse,
   DecompositionModelType,
+  DistanceMetricType,
   PlanetaryBody,
   PlanetarySite,
   TestProfileType,
@@ -24,6 +25,7 @@ interface ControlPanelProps {
   activeSite?: PlanetarySite;
   testProfile: TestProfileType;
   modelType: DecompositionModelType;
+  distanceMetric: DistanceMetricType;
   minSInd: number;
   minSDep: number;
   excludeBenchmarks: boolean;
@@ -36,6 +38,7 @@ interface ControlPanelProps {
   onSelectSite: (siteId: string, body?: PlanetaryBody) => void;
   onChangeTestProfile: (profile: TestProfileType) => void;
   onChangeModelType: (model: DecompositionModelType) => void;
+  onChangeDistanceMetric: (metric: DistanceMetricType) => void;
   onChangeMinSInd: (value: number) => void;
   onChangeMinSDep: (value: number) => void;
   onChangeExcludeBenchmarks: (checked: boolean) => void;
@@ -57,6 +60,7 @@ export function ControlPanel({
   activeSite,
   testProfile,
   modelType,
+  distanceMetric,
   minSInd,
   minSDep,
   excludeBenchmarks,
@@ -69,6 +73,7 @@ export function ControlPanel({
   onSelectSite,
   onChangeTestProfile,
   onChangeModelType,
+  onChangeDistanceMetric,
   onChangeMinSInd,
   onChangeMinSDep,
   onChangeExcludeBenchmarks,
@@ -90,7 +95,9 @@ export function ControlPanel({
       ? [
           {
             value: customProbedSite.site_id,
-            label: `${t(customProbedSite.name_key)} (${customProbedSite.coordinates.lat}, ${customProbedSite.coordinates.lon})`,
+            label: customProbedSite.planetary_feature
+              ? `${customProbedSite.planetary_feature.feature_name} (${customProbedSite.coordinates.lat}°, ${customProbedSite.coordinates.lon}°)`
+              : `${t(customProbedSite.name_key)} (${customProbedSite.coordinates.lat}, ${customProbedSite.coordinates.lon})`,
           },
         ]
       : []),
@@ -213,6 +220,28 @@ export function ControlPanel({
             {testProfile !== "causal_auto" && (
               <p className="text-xs text-status-warn">{t("controls.modelOverriddenNote")}</p>
             )}
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-xs font-medium text-content-muted">
+                {t("controls.distanceMetric")}
+              </span>
+              <InfoTooltip
+                label={t("controls.distanceMetric")}
+                text={t("controls.distanceMetricHint")}
+              />
+            </div>
+            <Select
+              id="distance-metric-select"
+              label=""
+              value={distanceMetric}
+              onChange={(e) => onChangeDistanceMetric(e.target.value as DistanceMetricType)}
+              options={[
+                { value: "euclidean", label: t("controls.metricEuclidean") },
+                { value: "mahalanobis", label: t("controls.metricMahalanobis") },
+              ]}
+            />
           </div>
 
           <Slider

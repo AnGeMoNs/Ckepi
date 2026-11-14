@@ -8,6 +8,7 @@ from app.config import DEPENDENT_VARIABLES, INDEPENDENT_VARIABLES
 
 PlanetaryBody = Literal["moon", "mars"]
 DecompositionModelType = Literal["ridge", "random_forest"]
+DistanceMetricType = Literal["euclidean", "mahalanobis"]
 ViabilityTier = Literal["high", "moderate", "partial"]
 ConfidenceLevel = Literal["high", "medium", "estimated"]
 VariableOrigin = Literal["measured", "derived", "model", "constant", "default"]
@@ -73,6 +74,17 @@ class PhysicalVariables(BaseModel):
     breakage: dict[str, float]
 
 
+class PlanetaryFeatureInfo(BaseModel):
+    """Official IAU / USGS planetary geological feature and MOLA/LOLA elevation metadata."""
+
+    feature_name: str
+    feature_type: str
+    diameter_km: float | None = None
+    distance_km: float = 0.0
+    elevation_m: float = 0.0
+    gazetteer_source: str
+
+
 class PlanetarySite(BaseModel):
     """Candidate lunar or Martian landing site / ROI."""
 
@@ -85,6 +97,7 @@ class PlanetarySite(BaseModel):
     variables: PhysicalVariables
     provenance: DataProvenance
     confidence: DataConfidence | None = None
+    planetary_feature: PlanetaryFeatureInfo | None = None
 
 
 class DecompositionRequest(BaseModel):
@@ -99,7 +112,9 @@ class DependentDecomposition(BaseModel):
 
     dv_name: str
     r2_score: float = Field(..., ge=0.0, le=1.0)
+    cv_r2_score: float = Field(default=0.0, ge=0.0, le=1.0)
     rmse_normalized: float = Field(..., ge=0.0)
+    prediction_interval_90: float = Field(default=0.0, ge=0.0)
     is_available: bool = True
     weights: dict[str, float]
 
@@ -154,6 +169,7 @@ class AnalogSearchRequest(BaseModel):
 
     site_id: str
     model_type: DecompositionModelType = "ridge"
+    distance_metric: DistanceMetricType = "euclidean"
     test_profile: TestProfileType = "causal_auto"
     min_s_ind: float = Field(default=0.0, ge=0.0, le=1.0)
     min_s_dep: float = Field(default=0.0, ge=0.0, le=1.0)
@@ -187,6 +203,7 @@ class PlanetaryProbeRequest(BaseModel):
     lat: float = Field(..., ge=-90.0, le=90.0)
     lon: float = Field(..., ge=-180.0, le=180.0)
     model_type: DecompositionModelType = "ridge"
+    distance_metric: DistanceMetricType = "euclidean"
     test_profile: TestProfileType = "causal_auto"
     min_s_ind: float = Field(default=0.0, ge=0.0, le=1.0)
     min_s_dep: float = Field(default=0.0, ge=0.0, le=1.0)
@@ -241,6 +258,7 @@ class AnalogMatchItem(BaseModel):
     country_code: str
     biome_key: str
     is_benchmark: bool
+    is_pareto_optimal: bool = False
     known_analog_name: str | None = None
     s_ind: float = Field(..., ge=0.0, le=1.0)
     s_dep: float = Field(..., ge=0.0, le=1.0)
@@ -263,6 +281,7 @@ class AnalogSearchResponse(BaseModel):
 
     site_id: str
     body: PlanetaryBody
+    distance_metric: DistanceMetricType = "euclidean"
     total_evaluated: int
     returned_count: int
     causal_weights_used: dict[str, float]
@@ -335,6 +354,32 @@ class HabitabilityProfile(BaseModel):
     biosignature_relevance_key: str
 
 
+class RegolithSimulantCandidate(BaseModel):
+    """Affinity score against a standard NASA/ESA laboratory regolith simulant."""
+
+    code: str
+    name_key: str
+    target_body: PlanetaryBody
+    affinity_score: float = Field(..., ge=0.0, le=1.0)
+    mineralogy_key: str
+
+
+class RegolithSimulantProfile(BaseModel):
+    """SoilGrids + Macrostrat mineralogical & granulometric comparison against standard regolith simulants."""
+
+    recommended_code: str
+    recommended_name_key: str
+    affinity_score: float = Field(..., ge=0.0, le=1.0)
+    isru_o2_index: float = Field(..., ge=0.0, le=1.0)
+    astrobiology_purity_index: float = Field(..., ge=0.0, le=1.0)
+    sand_pct: float
+    clay_pct: float
+    silt_pct: float
+    bulk_density_g_cm3: float
+    organic_carbon_pct: float
+    candidates: list[RegolithSimulantCandidate]
+
+
 class MultiAgencyCatalogResponse(BaseModel):
     """Multi-agency satellite dataset discovery response for an Earth H3 cell."""
 
@@ -346,6 +391,7 @@ class MultiAgencyCatalogResponse(BaseModel):
     geology: GeologySummary | None = None
     subsurface: SubsurfaceAnalogInfo | None = None
     habitability: HabitabilityProfile | None = None
+    regolith_simulant: RegolithSimulantProfile | None = None
 
 
 class AnalogRefineRequest(BaseModel):

@@ -14,6 +14,7 @@ import type {
   AnalogSearchResponse,
   DecompositionModelType,
   DecompositionResponse,
+  DistanceMetricType,
   PlanetaryBody,
   PlanetarySite,
   SiteComparisonResponse,
@@ -28,6 +29,7 @@ interface UseAnalogAnalysisParams {
   customProbedSite: PlanetarySite | null;
   setCustomProbedSite: (site: PlanetarySite | null) => void;
   modelType: DecompositionModelType;
+  distanceMetric: DistanceMetricType;
   testProfile: TestProfileType;
   minSInd: number;
   minSDep: number;
@@ -45,6 +47,7 @@ export function useAnalogAnalysis({
   customProbedSite,
   setCustomProbedSite,
   modelType,
+  distanceMetric,
   testProfile,
   minSInd,
   minSDep,
@@ -124,6 +127,7 @@ export function useAnalogAnalysis({
           searchAnalogs({
             siteId: selectedSiteId,
             modelType,
+            distanceMetric,
             testProfile,
             minSInd,
             minSDep,
@@ -164,6 +168,7 @@ export function useAnalogAnalysis({
     [
       selectedSiteId,
       modelType,
+      distanceMetric,
       testProfile,
       minSInd,
       minSDep,
@@ -193,6 +198,7 @@ export function useAnalogAnalysis({
   }, [
     selectedSiteId,
     modelType,
+    distanceMetric,
     testProfile,
     minSInd,
     minSDep,
@@ -315,6 +321,7 @@ export function useAnalogAnalysis({
           lat,
           lon,
           modelType,
+          distanceMetric,
           testProfile,
           minSInd,
           minSDep,
@@ -340,6 +347,7 @@ export function useAnalogAnalysis({
     },
     [
       modelType,
+      distanceMetric,
       testProfile,
       minSInd,
       minSDep,

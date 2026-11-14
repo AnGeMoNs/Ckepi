@@ -51,6 +51,14 @@ export function DataConfidenceBanner({ site }: DataConfidenceBannerProps) {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            {site.planetary_feature && (
+              <Badge variant="accent">
+                {t("confidence.iauFeatureBadge", {
+                  name: site.planetary_feature.feature_name,
+                  elev: formatNumber(site.planetary_feature.elevation_m, lang, 0),
+                })}
+              </Badge>
+            )}
             <Badge variant={badgeVariant}>
               {t(`confidence.levels.${conf.level}`)} · {formatPercent(conf.score, lang)}
             </Badge>

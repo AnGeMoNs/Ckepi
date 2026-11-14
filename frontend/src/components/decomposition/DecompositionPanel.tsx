@@ -102,6 +102,11 @@ export function DecompositionPanel({ decomposition }: DecompositionPanelProps) {
                           <strong className="text-content">
                             {formatPercent(dv.r2_score, lang)}
                           </strong>
+                          {typeof dv.cv_r2_score === "number" && dv.cv_r2_score > 0 && (
+                            <span className="ml-1.5 text-xs text-content-muted">
+                              (CV: {formatPercent(dv.cv_r2_score, lang)})
+                            </span>
+                          )}
                         </span>
                       ) : (
                         <span className="text-xs italic text-content-muted">

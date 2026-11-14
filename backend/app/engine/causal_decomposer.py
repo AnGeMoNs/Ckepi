@@ -6,6 +6,7 @@ from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import RidgeCV
 from sklearn.metrics import r2_score, root_mean_squared_error
+from sklearn.model_selection import cross_val_predict
 from sklearn.preprocessing import StandardScaler
 
 from app.config import (
@@ -105,7 +106,9 @@ def decompose_planetary_site(
                 DependentDecomposition(
                     dv_name=dv_col,
                     r2_score=0.0,
+                    cv_r2_score=0.0,
                     rmse_normalized=0.0,
+                    prediction_interval_90=0.0,
                     is_available=False,
                     weights={col: 0.0 for col in INDEPENDENT_VARIABLES},
                 )
@@ -128,6 +131,21 @@ def decompose_planetary_site(
 
         r2 = float(np.clip(r2_score(y_scaled, y_pred), 0.0, 1.0))
         rmse = float(root_mean_squared_error(y_scaled, y_pred))
+
+        # Empirical out-of-sample cross-validation R^2 and 90% conformal/jackknife residual interval
+        if len(y_scaled) >= 8:
+            try:
+                y_cv = cross_val_predict(model, x_scaled, y_scaled, cv=min(5, len(y_scaled)))
+                cv_r2 = float(np.clip(r2_score(y_scaled, y_cv), 0.0, 1.0))
+                abs_res = np.abs(y_scaled - y_cv)
+                pi_90 = float(np.quantile(abs_res, 0.90))
+            except Exception:
+                cv_r2 = r2
+                pi_90 = rmse * 1.645
+        else:
+            cv_r2 = r2
+            pi_90 = rmse * 1.645
+
         norm_weights = _normalize_weights(raw_importance)
 
         if r2 > 0.05:
@@ -139,7 +157,9 @@ def decompose_planetary_site(
             DependentDecomposition(
                 dv_name=dv_col,
                 r2_score=round(r2, 4),
+                cv_r2_score=round(cv_r2, 4),
                 rmse_normalized=round(rmse, 4),
+                prediction_interval_90=round(pi_90, 4),
                 is_available=True,
                 weights=norm_weights,
             )

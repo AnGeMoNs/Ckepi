@@ -4,6 +4,7 @@ import type {
   ApiErrorDetail,
   DecompositionModelType,
   DecompositionResponse,
+  DistanceMetricType,
   MultiAgencyCatalogResponse,
   PlanetaryBody,
   PlanetaryProbeResponse,
@@ -78,6 +79,7 @@ export function runDecomposition(
 export interface SearchAnalogsParams {
   siteId: string;
   modelType: DecompositionModelType;
+  distanceMetric?: DistanceMetricType;
   testProfile: TestProfileType;
   minSInd: number;
   minSDep: number;
@@ -97,6 +99,7 @@ export function searchAnalogs(params: SearchAnalogsParams): Promise<AnalogSearch
     body: JSON.stringify({
       site_id: params.siteId,
       model_type: params.modelType,
+      distance_metric: params.distanceMetric ?? "euclidean",
       test_profile: params.testProfile,
       min_s_ind: params.minSInd,
       min_s_dep: params.minSDep,
@@ -149,6 +152,7 @@ export interface ProbePlanetaryParams {
   lat: number;
   lon: number;
   modelType: DecompositionModelType;
+  distanceMetric?: DistanceMetricType;
   testProfile: TestProfileType;
   minSInd: number;
   minSDep: number;
@@ -169,6 +173,7 @@ export function probePlanetaryLocation(
       lat: params.lat,
       lon: params.lon,
       model_type: params.modelType,
+      distance_metric: params.distanceMetric ?? "euclidean",
       test_profile: params.testProfile,
       min_s_ind: params.minSInd,
       min_s_dep: params.minSDep,

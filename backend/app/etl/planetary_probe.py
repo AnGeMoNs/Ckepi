@@ -10,6 +10,12 @@ import pandas as pd
 from PIL import Image
 
 from app.config import DEPENDENT_VARIABLES, INDEPENDENT_VARIABLES
+from app.engine.planetary_physics import (
+    compute_hertz_knudsen_sublimation_rate,
+    compute_mars_hypsometric_state,
+    resolve_iau_planetary_feature,
+    sample_orbital_regolith_properties,
+)
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 from app.etl.mars_api import (
@@ -119,16 +125,17 @@ def probe_planetary_coordinate(
     extra_pds_count = 0
 
     dem_topo = _sample_dem_topography(body, lat, lon)
+    orbital_props = sample_orbital_regolith_properties(body, lat, lon)
+    iau_feature = resolve_iau_planetary_feature(body, lat, lon, client=client)
 
     if body == "moon":
-        # Derive lunar highland vs. mare basaltic regime & polar ice zone from selenographic latitude
         is_polar = abs(lat) >= 75.0
         is_mare_basin = abs(lat) < 45.0 and -60.0 <= lon <= 65.0
-        base_albedo = 0.09 if is_mare_basin else 0.16
-        base_ti = 82.0 if is_mare_basin else 62.0
+        base_albedo = orbital_props["surface_albedo"]
+        base_ti = orbital_props["thermal_inertia"]
         base_slope = dem_topo[0] if dem_topo else (17.5 if is_polar else (9.5 if is_mare_basin else 14.0))
         base_roughness = dem_topo[1] if dem_topo else (0.66 if is_polar else (0.45 if is_mare_basin else 0.58))
-        base_ice = 0.32 if is_polar else 0.0
+        base_ice = orbital_props["subsurface_ice_frac"]
 
         df, prov = fetch_moon_lro_timeseries(
             site_id=site_id,
@@ -141,10 +148,25 @@ def probe_planetary_coordinate(
             base_ice=base_ice,
             client=client,
         )
+        if base_ice > 0.01:
+            df["ice_sublimation_rate"] = [
+                compute_hertz_knudsen_sublimation_rate(
+                    subsurface_ice_frac=float(ice_val),
+                    mean_temp_k=float(t_mean),
+                    diurnal_amp_k=float(t_amp),
+                    atm_pressure_mbar=1e-12,
+                    relative_humidity_pct=0.0,
+                )
+                for ice_val, t_mean, t_amp in zip(
+                    df["subsurface_ice_frac"],
+                    df["mean_surface_temp_k"],
+                    df["diurnal_temp_amplitude_k"],
+                )
+            ]
         lunar_cov = query_pds_lunar_instrument_coverage(lat, lon, client=client)
         extra_pds_count = sum(lunar_cov.values())
         breakage = {"gravity_g": 0.165, "atm_pressure_mbar": 1e-12, "radiation_msv_yr": 380.0}
-        data_sources = ["NASA PDS ODE LRO DLRE"]
+        data_sources = ["NASA PDS ODE LRO DLRE", iau_feature.gazetteer_source]
         if dem_topo is not None:
             data_sources.append("NASA LRO LOLA DEM")
         if lunar_cov.get("LOLA", 0) > 0:
@@ -153,17 +175,15 @@ def probe_planetary_coordinate(
             data_sources.append(f"NASA LRO Mini-RF ({lunar_cov['MRFLRO']})")
     else:
         is_polar_ice = abs(lat) >= 44.0
-        base_albedo = 0.27 if is_polar_ice else 0.22
-        base_ti = 215.0 if is_polar_ice else 310.0
+        base_albedo = orbital_props["surface_albedo"]
+        base_ti = orbital_props["thermal_inertia"]
         base_slope = dem_topo[0] if dem_topo else (4.2 if is_polar_ice else 7.8)
         base_roughness = dem_topo[1] if dem_topo else (0.28 if is_polar_ice else 0.46)
-        base_ice = 0.52 if is_polar_ice else 0.02
+        base_ice = orbital_props["subsurface_ice_frac"]
 
-        mars_fetcher = (
-            fetch_mars_meda_timeseries
-            if nearest_id == "mars_jezero_crater"
-            else fetch_mars_rems_timeseries
-        )
+        use_meda = nearest_id == "mars_jezero_crater"
+        mars_fetcher = fetch_mars_meda_timeseries if use_meda else fetch_mars_rems_timeseries
+        ref_elev_m = -2560.0 if use_meda else -4501.0
         df, prov = mars_fetcher(
             site_id=site_id,
             lat_deg=lat,
@@ -175,21 +195,53 @@ def probe_planetary_coordinate(
             max_sols=180,
             client=client,
         )
-        if is_polar_ice:
-            df["ice_sublimation_rate"] = np.clip(
-                df["subsurface_ice_frac"] * (df["solar_flux_wm2"] / 450.0) * 0.65,
-                0.0,
-                0.85,
-            ).round(4)
+        # Apply hypsometric barometric scaling P(z) = P_ref * exp(-(z - z_ref) / H(T)) from MOLA elevation
+        ref_p_mbar = float(df["atm_pressure_mbar"].mean())
+        mean_t_k = float(df["mean_surface_temp_k"].mean())
+        hypso = compute_mars_hypsometric_state(
+            lat=lat,
+            lon=lon,
+            rover_ref_pressure_mbar=ref_p_mbar,
+            rover_ref_elevation_m=ref_elev_m,
+            mean_temp_k=mean_t_k,
+        )
+        df["atm_pressure_mbar"] = (df["atm_pressure_mbar"] * hypso["pressure_scale_factor"]).round(3)
+        df["diurnal_temp_amplitude_k"] = (
+            df["diurnal_temp_amplitude_k"] * hypso["diurnal_amp_multiplier"]
+        ).round(2)
+        df["nocturnal_cooling_k_hr"] = (
+            df["nocturnal_cooling_k_hr"] * hypso["diurnal_amp_multiplier"]
+        ).round(3)
+
+        if base_ice > 0.01:
+            df["ice_sublimation_rate"] = [
+                compute_hertz_knudsen_sublimation_rate(
+                    subsurface_ice_frac=float(ice_val),
+                    mean_temp_k=float(t_mean),
+                    diurnal_amp_k=float(t_amp),
+                    atm_pressure_mbar=float(p_mbar),
+                    relative_humidity_pct=0.5,
+                )
+                for ice_val, t_mean, t_amp, p_mbar in zip(
+                    df["subsurface_ice_frac"],
+                    df["mean_surface_temp_k"],
+                    df["diurnal_temp_amplitude_k"],
+                    df["atm_pressure_mbar"],
+                )
+            ]
 
         mars_cov = query_pds_mars_instrument_coverage(lat, lon, client=client)
         extra_pds_count = sum(mars_cov.values())
         breakage = {
             "gravity_g": 0.378,
             "atm_pressure_mbar": round(float(df["atm_pressure_mbar"].mean()), 2),
-            "radiation_msv_yr": 230.0,
+            "radiation_msv_yr": hypso["radiation_msv_yr"],
         }
-        data_sources = [prov.get("source_api", "NASA Mars REMS API")]
+        data_sources = [
+            prov.get("source_api", "NASA Mars REMS API"),
+            iau_feature.gazetteer_source,
+            "MGS TES / Odyssey GRS",
+        ]
         if dem_topo is not None:
             data_sources.append("NASA MGS MOLA DEM")
         if mars_cov.get("CRISM", 0) > 0:
@@ -319,6 +371,7 @@ def probe_planetary_coordinate(
             is_live_probed=True,
         ),
         confidence=confidence,
+        planetary_feature=iau_feature,
     )
     return site, df
 

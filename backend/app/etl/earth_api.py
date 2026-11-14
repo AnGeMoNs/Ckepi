@@ -7,6 +7,10 @@ import h3
 import httpx
 import numpy as np
 
+from app.engine.planetary_physics import (
+    compute_hertz_knudsen_sublimation_rate,
+    compute_terrestrial_radiation_msv_yr,
+)
 from app.etl.http_utils import create_http_client
 
 
@@ -439,6 +443,24 @@ def probe_earth_location(
             aeolian_dust = round(float(np.clip(aeolian_dust * sand_erodibility, 0.01, 0.96)), 4)
             source_apis.append("ISRIC SoilGrids v2.0")
 
+        atm_p_mbar = float(power["atm_pressure_mbar"])  # type: ignore[arg-type]
+        rel_hum_pct = float(power["relative_humidity_pct"])  # type: ignore[arg-type]
+        aridity_val = float(power["aridity_index"])  # type: ignore[arg-type]
+
+        ice_sublimation = compute_hertz_knudsen_sublimation_rate(
+            subsurface_ice_frac=subsurface_ice,
+            mean_temp_k=mean_surface_temp_k,
+            diurnal_amp_k=diurnal_amp_k,
+            atm_pressure_mbar=atm_p_mbar,
+            relative_humidity_pct=rel_hum_pct,
+        )
+        radiation_msv = compute_terrestrial_radiation_msv_yr(
+            atm_pressure_mbar=atm_p_mbar,
+            lat=c_lat,
+            aridity_index=aridity_val,
+            subsurface_ice_frac=subsurface_ice,
+        )
+
         return {
             "earth_cell_h3": cell_id,
             "h3_resolution": h3_resolution,
@@ -455,8 +477,8 @@ def probe_earth_location(
             "surface_albedo": float(power["surface_albedo"]),  # type: ignore[arg-type]
             "solar_flux_wm2": float(power["solar_flux_wm2"]),  # type: ignore[arg-type]
             "subsurface_ice_frac": subsurface_ice,
-            "aridity_index": float(power["aridity_index"]),  # type: ignore[arg-type]
-            "relative_humidity_pct": float(power["relative_humidity_pct"]),  # type: ignore[arg-type]
+            "aridity_index": aridity_val,
+            "relative_humidity_pct": rel_hum_pct,
             "uv_irradiance_index": float(power["uv_irradiance_index"]),  # type: ignore[arg-type]
             "vegetation_lai_proxy": thermal["vegetation_lai_proxy"],
             "diurnal_temp_amplitude_k": diurnal_amp_k,
@@ -464,10 +486,10 @@ def probe_earth_location(
             "mean_surface_temp_k": mean_surface_temp_k,
             "surface_wind_ms": float(power["surface_wind_ms"]),  # type: ignore[arg-type]
             "aeolian_dust_flux": aeolian_dust,
-            "ice_sublimation_rate": thermal["ice_sublimation_rate"],
+            "ice_sublimation_rate": ice_sublimation,
             "gravity_g": 1.0,
-            "atm_pressure_mbar": float(power["atm_pressure_mbar"]),  # type: ignore[arg-type]
-            "radiation_msv_yr": 2.4,
+            "atm_pressure_mbar": atm_p_mbar,
+            "radiation_msv_yr": radiation_msv,
             "source_apis_json": source_apis,
             "observation_window": "climatology_multiyear (20+ yr ANN)" if power.get("is_climatology") else f"{DEFAULT_START_ERA5} / {DEFAULT_END_ERA5}",
             "fetched_at": datetime.now(timezone.utc).isoformat(),
