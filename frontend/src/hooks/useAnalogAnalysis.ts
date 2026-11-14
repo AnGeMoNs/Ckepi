@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   compareCellWithSite,
@@ -220,27 +220,55 @@ export function useAnalogAnalysis({
     customMinSimilarity,
   ]);
 
+  // The comparison must use the same mission profile and weights as the ranking (angemon a29a57a).
+  const manualWeights = useMemo(
+    () =>
+      testProfile === "manual_custom"
+        ? { customIvWeights, customDvWeights }
+        : { customIvWeights: undefined, customDvWeights: undefined },
+    [testProfile, customIvWeights, customDvWeights]
+  );
+  const compareKey = useCallback(
+    (h3Index: string, siteId: string) =>
+      `${siteId}|${h3Index}|${modelType}|${testProfile}|${penalizeEstimated ? 1 : 0}|${JSON.stringify(manualWeights)}`,
+    [modelType, testProfile, penalizeEstimated, manualWeights]
+  );
+  // Set when a probe/refine response already carries the comparison, to skip a duplicate request.
+  const preloadedComparisonKeyRef = useRef<string | null>(null);
+
   useEffect(() => {
     if (!selectedH3 || !selectedSiteId) return;
-    let cancelled = false;
-    compareCellWithSite(selectedH3, selectedSiteId, modelType)
+    if (preloadedComparisonKeyRef.current === compareKey(selectedH3, selectedSiteId)) {
+      preloadedComparisonKeyRef.current = null;
+      return;
+    }
+    const controller = new AbortController();
+    compareCellWithSite(selectedH3, selectedSiteId, modelType, {
+      signal: controller.signal,
+      testProfile,
+      penalizeEstimated,
+      ...manualWeights,
+    })
       .then((res) => {
-        if (!cancelled) setComparison(res);
+        if (!controller.signal.aborted) setComparison(res);
       })
       .catch((err) => {
-        if (!cancelled) captureError(err);
+        if (!controller.signal.aborted) captureError(err);
       });
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedH3, selectedSiteId, modelType, captureError]);
+    return () => controller.abort();
+  }, [selectedH3, selectedSiteId, modelType, testProfile, penalizeEstimated, manualWeights, compareKey, captureError]);
 
   const handleProbeCoordinate = useCallback(
     async (lat: number, lon: number) => {
       setProbingCoords({ lat, lon });
       clearError();
       try {
-        const res = await probeEarthCoordinate(lat, lon, selectedSiteId, modelType);
+        const res = await probeEarthCoordinate(lat, lon, selectedSiteId, modelType, {
+          testProfile,
+          penalizeEstimated,
+          ...manualWeights,
+        });
+        preloadedComparisonKeyRef.current = compareKey(res.match.earth_cell_h3, selectedSiteId);
         setComparison(res);
         setSelectedH3(res.match.earth_cell_h3);
         setSearchResult((prev) => {
@@ -261,7 +289,7 @@ export function useAnalogAnalysis({
         setProbingCoords(null);
       }
     },
-    [selectedSiteId, modelType, clearError, captureError]
+    [selectedSiteId, modelType, testProfile, penalizeEstimated, manualWeights, compareKey, clearError, captureError]
   );
 
   const handleRefineCell = useCallback(
@@ -274,7 +302,9 @@ export function useAnalogAnalysis({
           selectedSiteId,
           modelType,
           penalizeEstimated,
-          testProfile
+          testProfile,
+          manualWeights.customIvWeights,
+          manualWeights.customDvWeights
         );
         if (res.matches.length > 0) {
           const childIdList = res.matches.map((m) => m.earth_cell_h3);
@@ -293,10 +323,11 @@ export function useAnalogAnalysis({
             };
           });
           setDrilldownState({ parentH3: h3Index, childIds: childIdList });
-          setSelectedH3(res.matches[0].earth_cell_h3);
           if (res.top_comparison) {
+            preloadedComparisonKeyRef.current = compareKey(res.matches[0].earth_cell_h3, selectedSiteId);
             setComparison(res.top_comparison);
           }
+          setSelectedH3(res.matches[0].earth_cell_h3);
         }
       } catch (err) {
         captureError(err);
@@ -304,7 +335,7 @@ export function useAnalogAnalysis({
         setIsRefining(false);
       }
     },
-    [selectedSiteId, modelType, penalizeEstimated, testProfile, clearError, captureError]
+    [selectedSiteId, modelType, penalizeEstimated, testProfile, manualWeights, compareKey, clearError, captureError]
   );
 
   const handleRefreshApis = useCallback(async () => {

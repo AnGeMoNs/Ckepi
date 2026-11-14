@@ -123,7 +123,7 @@ def load_cached_planetary_sites(data_dir: Path | None = None) -> list[PlanetaryS
     target_dir = data_dir or settings.data_dir
     sites_json_path = target_dir / "planetary_sites.json"
     if not sites_json_path.exists():
-        ensure_datasets_built(target_dir=target_dir)
+        ensure_datasets_built(data_dir=target_dir)
     raw = json.loads(sites_json_path.read_text(encoding="utf-8"))
     sites: list[PlanetarySite] = []
     for item in raw:
@@ -197,7 +197,7 @@ def upsert_earth_cell(duckdb_path: Path, cell_record: dict[str, object]) -> None
             [str(row["earth_cell_h3"])],
         )
         conn.register("new_cell_df", df_row)
-        conn.execute("INSERT INTO earth_h3_grid SELECT * FROM new_cell_df")
+        conn.execute("INSERT INTO earth_h3_grid BY NAME SELECT * FROM new_cell_df")
         conn.unregister("new_cell_df")
     finally:
         conn.close()
