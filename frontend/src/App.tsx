@@ -5,6 +5,9 @@ import { HexReveal } from "./components/home/HexReveal";
 import { AppBackdrop } from "./components/ui/AppBackdrop";
 import { HomePage } from "./pages/HomePage";
 import { IntroStoryPage } from "./pages/IntroStoryPage";
+import { LocalExplorePage } from "./pages/LocalExplorePage";
+import { fetchPlanetarySites } from "./api/client";
+import type { PlanetarySite } from "./types/analog";
 import type { ReadingMode, ThemeMode } from "./types/analog";
 
 // The software loads only after the intro, so the home stays light.
@@ -15,13 +18,14 @@ const ExplorerPage = lazy(() =>
   import("./pages/ExplorerPage").then((m) => ({ default: m.ExplorerPage }))
 );
 
-type View = "home" | "story" | "app";
+type View = "home" | "story" | "explore" | "app";
 
 /** Home → presentation (?view=intro) → software. Shared links (?site=, ?tab=, ?profile=) open the software directly. */
 function viewFromLocation(): View {
   if (typeof window === "undefined") return "home";
   const params = new URLSearchParams(window.location.search);
   if (params.get("view") === "intro") return "story";
+  if (params.get("view") === "explore") return "explore";
   return ["view", "site", "tab", "profile"].some((key) => params.has(key)) ? "app" : "home";
 }
 
@@ -48,6 +52,14 @@ export default function App() {
   const [view, setView] = useState<View>(viewFromLocation);
   // True only when arriving from the presentation, to play the hex-wave reveal.
   const [revealing, setRevealing] = useState(false);
+  // Planetary catalog for the local mode (the science mode loads its own through hooks).
+  const [sites, setSites] = useState<PlanetarySite[]>([]);
+  useEffect(() => {
+    if (view !== "explore" || sites.length > 0) return;
+    const controller = new AbortController();
+    fetchPlanetarySites().then(setSites).catch(() => undefined);
+    return () => controller.abort();
+  }, [view, sites.length]);
 
   useEffect(() => {
     const onPopState = () => setView(viewFromLocation());
@@ -56,7 +68,7 @@ export default function App() {
   }, []);
 
   const goTo = (next: View) => {
-    window.history.pushState({}, "", next === "story" ? "?view=intro" : "?view=app");
+    window.history.pushState({}, "", next === "story" ? "?view=intro" : next === "explore" ? "?view=explore" : "?view=app");
     if (next === "app") setRevealing(true);
     setView(next);
     window.scrollTo({ top: 0 });
@@ -81,7 +93,10 @@ export default function App() {
   }, [i18n.language]);
 
   if (view === "home") {
-    return <HomePage onEnter={() => goTo("app")} />;
+    return <HomePage onEnter={() => goTo("explore")} />;
+  }
+  if (view === "explore") {
+    return <LocalExplorePage sites={sites} onOpenScience={() => goTo("app")} />;
   }
   if (view === "story") {
     return <IntroStoryPage onEnter={() => goTo("app")} />;

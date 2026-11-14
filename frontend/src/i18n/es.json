@@ -801,6 +801,88 @@
       "physics": "Física imposible",
       "engineering": "Ingeniería espacial",
       "curiosities": "Curiosidades planetarias"
+    },
+    "day": "De día",
+    "night": "De noche",
+    "zone": {
+      "pampa": "Pampa de Antofagasta",
+      "yungay": "Yungay"
+    },
+    "scale": {
+      "very": "Muy parecido",
+      "some": "Algo parecido",
+      "not": "Poco parecido"
+    },
+    "mars": {
+      "what": {
+        "title": "Esto es Marte",
+        "text": "Un robot llamado Perseverance recorre el cráter Jezero buscando señales de vida antigua."
+      },
+      "similar": {
+        "title": "¿Su suelo se parece al nuestro?",
+        "text": "Medimos qué tan inclinado es el suelo en Jezero y en Antofagasta, con datos de NASA. Toca cada lugar.",
+        "pampa": "La pampa de Antofagasta tiene un suelo muy parecido al de Jezero.",
+        "yungay": "Yungay, el lugar más famoso, se parece menos de lo que se pensaba.",
+        "source": "Diferencia de inclinación: {{value}}° (datos de NASA y ESA)"
+      },
+      "different": {
+        "title": "¿Qué es distinto?",
+        "text": "Hay cosas que la Tierra no puede imitar.",
+        "extra": "Además, en Marte el aire es muy delgado y hay mucha más radiación."
+      },
+      "why": {
+        "title": "¿Para qué sirve saberlo?",
+        "text": "Antes de mandar un robot a Marte, se prueba en la Tierra. Saber dónde se parece ayuda a elegir el mejor lugar para probarlo.",
+        "items": [
+          "Probar ruedas y cámaras de robots aquí",
+          "Gastar menos y arriesgar menos",
+          "Aprender ciencia con nuestro propio desierto"
+        ]
+      }
+    },
+    "moon": {
+      "what": {
+        "title": "Esto es la Luna",
+        "text": "Varios países planean construir bases en el polo sur de la Luna."
+      },
+      "similar": {
+        "title": "¿Qué se parece?",
+        "text": "En los dos lugares hay mucho sol y casi nada de agua. Pero mira la temperatura: toca día y noche.",
+        "note": "Temperaturas aproximadas calculadas con datos de NASA y del clima de Antofagasta."
+      },
+      "different": {
+        "title": "¿Qué es distinto?",
+        "text": "En la Luna no hay aire para respirar y todo pesa mucho menos.",
+        "extra": "Además, la Luna no tiene un escudo contra la radiación del espacio."
+      },
+      "why": {
+        "title": "¿Para qué sirve saberlo?",
+        "text": "Una base en la Luna necesitará energía del sol y equipos que aguanten el polvo y la sequedad. Eso se puede probar primero aquí.",
+        "items": [
+          "Probar paneles solares",
+          "Probar equipos contra el polvo",
+          "Entrenar antes del viaje"
+        ]
+      }
+    },
+    "earth": {
+      "what": {
+        "title": "Esto es Antofagasta",
+        "text": "Es uno de los desiertos más secos del mundo. Por eso se parece a otros mundos."
+      },
+      "zones": {
+        "title": "Medimos cuatro zonas",
+        "text": "Comparamos el suelo de cuatro zonas de la región con el de Marte. Esta es la lista, de más a menos parecida."
+      },
+      "why": {
+        "title": "¿Para qué sirve?",
+        "text": "Aprender a medir el terreno con datos de NASA abre oficios que la región necesita.",
+        "items": [
+          "Leer mapas del terreno",
+          "Trabajar con datos y robots",
+          "Mostrar nuestro desierto al mundo"
+        ]
+      }
     }
   },
   "plan": {
@@ -1378,6 +1460,19 @@
           "Energía solar del desierto"
         ]
       }
+    }
+  },
+  "local": {
+    "language": "Idioma",
+    "scienceMode": "Modo ciencia",
+    "title": "¿Dónde en la Tierra nos preparamos para la Luna y Marte?",
+    "lead": "Antes de viajar al espacio, se practica en lugares de la Tierra que se le parecen. El desierto de Antofagasta es uno de ellos.",
+    "hint": "Toca un mundo",
+    "atacama": "Antofagasta",
+    "open": {
+      "moon": "Explorar la Luna",
+      "earth": "Explorar Antofagasta",
+      "mars": "Explorar Marte"
     }
   }
 }

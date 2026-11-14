@@ -13,7 +13,9 @@ export type PictogramName =
   | "thermalSwing"
   | "slope"
   | "terrain"
-  | "hexCell";
+  | "hexCell"
+  | "rover"
+  | "sun";
 
 const PATHS: Record<PictogramName, ReactNode> = {
   // A backpack weight pressing down: how heavy things feel.
@@ -69,6 +71,24 @@ const PATHS: Record<PictogramName, ReactNode> = {
       <path d="M4 22 Q10 14 16 18 T28 12" />
       <path d="M4 27 Q11 20 17 23 T28 18" opacity="0.6" />
       <path d="M8 16 Q13 9 18 12 T26 7" opacity="0.4" />
+    </>
+  ),
+  // A small rover: body, mast camera and three wheels.
+  rover: (
+    <>
+      <path d="M7 18 H25 V22 H7 Z" />
+      <path d="M12 18 V12 H16 M16 9 H20 V13 H16 Z" />
+      <circle cx="9" cy="25" r="2.5" />
+      <circle cx="16" cy="25" r="2.5" />
+      <circle cx="23" cy="25" r="2.5" />
+    </>
+  ),
+  // Strong sun over a dry horizon.
+  sun: (
+    <>
+      <circle cx="16" cy="13" r="5" />
+      <path d="M16 3 V5 M16 21 V23 M6 13 H8 M24 13 H26 M9 6 L10.5 7.5 M23 6 L21.5 7.5" />
+      <path d="M3 28 Q10 24 16 27 T29 26" />
     </>
   ),
   // One open H3 cell, as in the logo.

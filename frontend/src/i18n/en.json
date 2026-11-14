@@ -801,6 +801,88 @@
       "physics": "Impossible physics",
       "engineering": "Space engineering",
       "curiosities": "Planetary curiosities"
+    },
+    "day": "Day",
+    "night": "Night",
+    "zone": {
+      "pampa": "Antofagasta plain",
+      "yungay": "Yungay"
+    },
+    "scale": {
+      "very": "Very similar",
+      "some": "Somewhat similar",
+      "not": "Not very similar"
+    },
+    "mars": {
+      "what": {
+        "title": "This is Mars",
+        "text": "A robot called Perseverance explores Jezero crater looking for signs of ancient life."
+      },
+      "similar": {
+        "title": "Does its ground look like ours?",
+        "text": "We measured how steep the ground is in Jezero and in Antofagasta, with NASA data. Tap each place.",
+        "pampa": "The Antofagasta plain has ground very similar to Jezero's.",
+        "yungay": "Yungay, the most famous site, is less similar than people thought.",
+        "source": "Slope difference: {{value}}° (NASA and ESA data)"
+      },
+      "different": {
+        "title": "What is different?",
+        "text": "Some things Earth cannot imitate.",
+        "extra": "Also, on Mars the air is very thin and there is much more radiation."
+      },
+      "why": {
+        "title": "Why does it matter?",
+        "text": "Before sending a robot to Mars, it is tested on Earth. Knowing where the ground is similar helps choose the best place to test it.",
+        "items": [
+          "Test robot wheels and cameras here",
+          "Spend less and risk less",
+          "Learn science with our own desert"
+        ]
+      }
+    },
+    "moon": {
+      "what": {
+        "title": "This is the Moon",
+        "text": "Several countries plan to build bases at the Moon's south pole."
+      },
+      "similar": {
+        "title": "What is similar?",
+        "text": "Both places have lots of sun and almost no water. But look at the temperature: tap day and night.",
+        "note": "Approximate temperatures computed from NASA data and Antofagasta's climate."
+      },
+      "different": {
+        "title": "What is different?",
+        "text": "On the Moon there is no air to breathe and everything weighs much less.",
+        "extra": "Also, the Moon has no shield against space radiation."
+      },
+      "why": {
+        "title": "Why does it matter?",
+        "text": "A Moon base will need solar energy and equipment that resists dust and dryness. That can be tested here first.",
+        "items": [
+          "Test solar panels",
+          "Test equipment against dust",
+          "Train before the trip"
+        ]
+      }
+    },
+    "earth": {
+      "what": {
+        "title": "This is Antofagasta",
+        "text": "It is one of the driest deserts in the world. That is why it resembles other worlds."
+      },
+      "zones": {
+        "title": "We measured four areas",
+        "text": "We compared the ground of four areas in the region with Mars. Here is the list, from most to least similar."
+      },
+      "why": {
+        "title": "Why does it matter?",
+        "text": "Learning to measure terrain with NASA data opens jobs the region needs.",
+        "items": [
+          "Read terrain maps",
+          "Work with data and robots",
+          "Show our desert to the world"
+        ]
+      }
     }
   },
   "plan": {
@@ -1378,6 +1460,19 @@
           "Desert solar energy"
         ]
       }
+    }
+  },
+  "local": {
+    "language": "Language",
+    "scienceMode": "Science mode",
+    "title": "Where on Earth do we prepare for the Moon and Mars?",
+    "lead": "Before traveling to space, people practice in places on Earth that look like it. The Antofagasta desert is one of them.",
+    "hint": "Tap a world",
+    "atacama": "Antofagasta",
+    "open": {
+      "moon": "Explore the Moon",
+      "earth": "Explore Antofagasta",
+      "mars": "Explore Mars"
     }
   }
 }
