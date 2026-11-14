@@ -6,6 +6,8 @@ import httpx
 import numpy as np
 import pandas as pd
 
+from app.etl.http_utils import create_http_client
+
 
 NASA_MSL_REMS_URL = "https://mars.nasa.gov/rss/api/?feed=weather&category=msl&feedtype=json"
 NASA_M2020_MEDA_URL = "https://mars.nasa.gov/rss/api/?feed=weather&category=mars2020&feedtype=json"
@@ -191,7 +193,7 @@ def fetch_mars_rems_timeseries(
 ) -> tuple[pd.DataFrame, dict[str, str]]:
     """Fetch real Curiosity REMS sols from mars.nasa.gov and build physical observation DataFrame."""
     own_client = client is None
-    http = client or httpx.Client(timeout=20.0)
+    http = client or create_http_client(timeout=20.0)
     try:
         resp = http.get(NASA_MSL_REMS_URL)
         resp.raise_for_status()
@@ -225,7 +227,7 @@ def fetch_mars_meda_timeseries(
 ) -> tuple[pd.DataFrame, dict[str, str]]:
     """Fetch real Perseverance MEDA sols, supplementing with REMS seasonal sols if < 30 sols."""
     own_client = client is None
-    http = client or httpx.Client(timeout=20.0)
+    http = client or create_http_client(timeout=20.0)
     try:
         resp = http.get(NASA_M2020_MEDA_URL)
         resp.raise_for_status()
@@ -284,7 +286,7 @@ def query_pds_mars_instrument_coverage(
 ) -> dict[str, int]:
     """Query NASA PDS ODE for MRO CRISM & SHARAD product counts near (lat, lon)."""
     own_client = client is None
-    http = client or httpx.Client(timeout=8.0)
+    http = client or create_http_client(timeout=8.0)
     counts: dict[str, int] = {}
     lon_360 = lon % 360.0
     min_lat = max(-90.0, lat - 2.0)
@@ -325,7 +327,7 @@ def query_pds_mars_instrument_coverage(
 def fetch_mars_meda_summary(client: httpx.Client | None = None) -> list[dict[str, object]]:
     """Fetch recent Perseverance MEDA sol metadata from mars.nasa.gov."""
     own_client = client is None
-    http = client or httpx.Client(timeout=15.0)
+    http = client or create_http_client(timeout=15.0)
     try:
         resp = http.get(NASA_M2020_MEDA_URL)
         resp.raise_for_status()

@@ -2,12 +2,12 @@
 
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
 import httpx
 import numpy as np
 import pandas as pd
 
 from app.config import DEPENDENT_VARIABLES, INDEPENDENT_VARIABLES
+from app.etl.http_utils import create_http_client
 from app.etl.mars_api import fetch_mars_meda_summary, fetch_mars_rems_timeseries
 from app.etl.moon_api import fetch_moon_lro_timeseries
 from app.models.schemas import Coordinates, DataProvenance, PhysicalVariables, PlanetarySite
@@ -19,7 +19,7 @@ def read_pds_product_with_pdr(pds_path: Path) -> pd.DataFrame:
 
     data = pdr.read(str(pds_path))
     for key in data.keys():
-        obj: Any = data[key]
+        obj: object = data[key]
         if isinstance(obj, pd.DataFrame):
             return obj
     raise ValueError(f"No tabular DataFrame found in PDS product: {pds_path}")
@@ -30,7 +30,7 @@ def build_real_planetary_sites_and_timeseries(
 ) -> tuple[list[PlanetarySite], pd.DataFrame]:
     """Fetch real telemetry from NASA Mars REMS/MEDA and NASA PDS ODE LRO for all 5 ROIs."""
     own_client = client is None
-    http = client or httpx.Client(timeout=25.0)
+    http = client or create_http_client(timeout=25.0)
     try:
         # 1. Mars Gale Crater (Curiosity REMS live API: 4,700+ real sols)
         df_gale, gale_prov = fetch_mars_rems_timeseries(

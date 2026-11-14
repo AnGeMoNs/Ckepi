@@ -6,6 +6,8 @@ import httpx
 import numpy as np
 import pandas as pd
 
+from app.etl.http_utils import create_http_client
+
 
 PDS_ODE_URL = "https://oderest.rsl.wustl.edu/live2/"
 SOLAR_CONSTANT_1AU = 1361.0
@@ -21,7 +23,7 @@ def query_pds_lro_products(
 ) -> list[dict[str, object]]:
     """Query NASA PDS Orbital Data Explorer for real LRO Diviner products covering (lat, lon)."""
     own_client = client is None
-    http = client or httpx.Client(timeout=20.0)
+    http = client or create_http_client(timeout=20.0)
     try:
         lon_360 = lon % 360.0
         min_lat = max(-90.0, lat - 1.5)
@@ -146,7 +148,7 @@ def fetch_moon_lro_timeseries(
         else f"NASA PDS ODE LRO DLRE {pt} ({len(products)} products)"
     )
     provenance = {
-        "source_api": f"NASA PDS ODE (LRO DLRE {pt})",
+        "source_api": f"NASA PDS ODE (LRO DLRE {pt}) + Stefan-Boltzmann Radiative Model",
         "observation_window": window,
         "fetched_at": datetime.now(timezone.utc).isoformat(),
         "pds_products_found": str(len(products)),
@@ -161,7 +163,7 @@ def query_pds_lunar_instrument_coverage(
 ) -> dict[str, int]:
     """Query NASA PDS ODE for LRO LOLA & Mini-RF product counts near (lat, lon)."""
     own_client = client is None
-    http = client or httpx.Client(timeout=8.0)
+    http = client or create_http_client(timeout=8.0)
     counts: dict[str, int] = {}
     lon_360 = lon % 360.0
     min_lat = max(-90.0, lat - 2.0)

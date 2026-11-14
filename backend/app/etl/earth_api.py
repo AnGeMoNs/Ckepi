@@ -7,6 +7,8 @@ import h3
 import httpx
 import numpy as np
 
+from app.etl.http_utils import create_http_client
+
 
 def _get_with_retry(
     client: httpx.Client,
@@ -233,7 +235,7 @@ def fetch_nasa_power_climatology(
 def fetch_soilgrids_metrics(lat: float, lon: float) -> dict[str, float] | None:
     """Query ISRIC SoilGrids v2.0 (0-5cm) for clay, sand, bulk density & organic carbon (best-effort)."""
     try:
-        with httpx.Client(timeout=4.0) as soil_client:
+        with create_http_client(timeout=4.0) as soil_client:
             resp = soil_client.get(
                 ISRIC_SOILGRIDS_URL,
                 params=[
@@ -392,7 +394,7 @@ def probe_earth_location(
 ) -> dict[str, object]:
     """Fetch real NASA POWER + Copernicus DEM + ERA5 metrics for any Earth coordinate."""
     own_client = client is None
-    http = client or httpx.Client(timeout=25.0)
+    http = client or create_http_client(timeout=25.0)
     try:
         cell_id = h3.latlng_to_cell(lat, lon, h3_resolution)
         c_lat, c_lon = h3.cell_to_latlng(cell_id)

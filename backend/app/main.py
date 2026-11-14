@@ -30,6 +30,7 @@ from app.engine.analog_matcher import load_earth_grid, match_terrestrial_analogs
 from app.engine.causal_decomposer import compute_breakage_index, decompose_planetary_site
 from app.engine.mission_advisor import resolve_profile_weights
 from app.etl.earth_api import probe_earth_location
+from app.etl.http_utils import create_async_http_client, create_http_client
 from app.etl.geology_and_habitability import (
     evaluate_habitability_profile,
     evaluate_subsurface_analog,
@@ -66,14 +67,16 @@ class AppState:
 
     sites_by_id: dict[str, PlanetarySite] = {}
     duckdb_path: Path | None = None
-    decomposition_cache: dict[tuple[str, str], DecompositionResponse] = {}
+    decomposition_cache: OrderedDict[tuple[str, str], DecompositionResponse] = OrderedDict()
     tile_cache: OrderedDict[tuple[str, int, int, int], tuple[bytes, str]] = OrderedDict()
     probe_timestamps: dict[str, list[float]] = {}
     write_lock: threading.Lock = threading.Lock()
+    async_http: httpx.AsyncClient | None = None
 
 
 state = AppState()
 MAX_TILE_CACHE_ENTRIES = 512
+MAX_DECOMP_CACHE_ENTRIES = 128
 
 
 def _enforce_probe_rate_limit(request: Request) -> None:
@@ -81,6 +84,15 @@ def _enforce_probe_rate_limit(request: Request) -> None:
     client_ip = request.client.host if request.client else "unknown"
     now = time.monotonic()
     window_start = now - 60.0
+    # Prune stale IP buckets periodically to prevent unbounded memory growth
+    if len(state.probe_timestamps) > 256:
+        stale_ips = [
+            ip
+            for ip, times in state.probe_timestamps.items()
+            if not times or times[-1] < window_start
+        ]
+        for ip in stale_ips:
+            state.probe_timestamps.pop(ip, None)
     history = [ts for ts in state.probe_timestamps.get(client_ip, []) if ts >= window_start]
     if len(history) >= settings.probe_rate_limit_per_min:
         raise HTTPException(
@@ -108,6 +120,7 @@ def _get_decomposition_cached(
     key = (site.site_id, model_type)
     cached = state.decomposition_cache.get(key)
     if cached is not None:
+        state.decomposition_cache.move_to_end(key)
         return cached
     df_ts = _load_planetary_timeseries(db_path, site.site_id)
     if df_ts.empty:
@@ -118,6 +131,8 @@ def _get_decomposition_cached(
     decomp = decompose_planetary_site(site, df_ts, model_type=model_type)
     if not site.site_id.startswith("probe_"):
         state.decomposition_cache[key] = decomp
+        if len(state.decomposition_cache) > MAX_DECOMP_CACHE_ENTRIES:
+            state.decomposition_cache.popitem(last=False)
     return decomp
 
 
@@ -132,10 +147,16 @@ def _store_probed_site(site: PlanetarySite) -> None:
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    """Build real-API Parquet/DuckDB datasets on startup if not cached yet."""
+    """Build real-API Parquet/DuckDB datasets on startup and manage shared HTTP client."""
     state.duckdb_path = ensure_datasets_built()
     state.sites_by_id = {site.site_id: site for site in load_cached_planetary_sites()}
-    yield
+    state.async_http = create_async_http_client(timeout=20.0)
+    try:
+        yield
+    finally:
+        if state.async_http is not None:
+            await state.async_http.aclose()
+            state.async_http = None
 
 
 app = FastAPI(
@@ -288,8 +309,11 @@ async def proxy_nasa_trek_tile(body: str, z: int, y: int, x: int) -> Response:
             f"/1.0.0/default/default028mm/{z}/{y}/{x}.jpg"
         )
 
-    async with httpx.AsyncClient(timeout=15.0) as client:
-        resp = await client.get(url)
+    if state.async_http is not None:
+        resp = await state.async_http.get(url, timeout=15.0)
+    else:
+        async with create_async_http_client(timeout=15.0) as client:
+            resp = await client.get(url)
     if resp.status_code != 200:
         raise HTTPException(
             status_code=resp.status_code,
@@ -346,13 +370,22 @@ async def get_planetary_global_texture(body: str, layer: str) -> Response:
     tile_size = 256
     canvas = Image.new("RGB", (cols * tile_size, rows * tile_size))
 
-    async with httpx.AsyncClient(timeout=20.0) as client:
+    if state.async_http is not None:
         async def fetch_tile(x: int, y: int) -> tuple[int, int, bytes | None]:
-            resp = await client.get(f"{base_url}/{y}/{x}.{tile_ext}")
+            assert state.async_http is not None
+            resp = await state.async_http.get(f"{base_url}/{y}/{x}.{tile_ext}", timeout=20.0)
             return x, y, (resp.content if resp.status_code == 200 else None)
 
         tasks = [fetch_tile(x, y) for y in range(rows) for x in range(cols)]
         tiles = await asyncio.gather(*tasks)
+    else:
+        async with create_async_http_client(timeout=20.0) as client:
+            async def fetch_tile_local(x: int, y: int) -> tuple[int, int, bytes | None]:
+                resp = await client.get(f"{base_url}/{y}/{x}.{tile_ext}")
+                return x, y, (resp.content if resp.status_code == 200 else None)
+
+            tasks = [fetch_tile_local(x, y) for y in range(rows) for x in range(cols)]
+            tiles = await asyncio.gather(*tasks)
 
     for x, y, data in tiles:
         if data:
@@ -604,7 +637,7 @@ def get_earth_cell_datasets(h3_index: str) -> MultiAgencyCatalogResponse:
     subsurface_ice_frac = float(row[5])
 
     catalog = discover_space_agency_datasets(lat=lat, lon=lon)
-    with httpx.Client(timeout=5.0) as client:
+    with create_http_client(timeout=5.0) as client:
         geology = fetch_macrostrat_geology(lat=lat, lon=lon, client=client)
     subsurface = evaluate_subsurface_analog(lat=lat, lon=lon, geology=geology)
     habitability = evaluate_habitability_profile(
@@ -616,10 +649,10 @@ def get_earth_cell_datasets(h3_index: str) -> MultiAgencyCatalogResponse:
     )
     return MultiAgencyCatalogResponse(
         earth_cell_h3=h3_index,
-        lat=float(catalog["lat"]),  # type: ignore[arg-type]
-        lon=float(catalog["lon"]),  # type: ignore[arg-type]
-        queried_at=str(catalog["queried_at"]),
-        products=catalog["products"],  # type: ignore[arg-type]
+        lat=catalog["lat"],
+        lon=catalog["lon"],
+        queried_at=catalog["queried_at"],
+        products=catalog["products"],
         geology=geology,
         subsurface=subsurface,
         habitability=habitability,

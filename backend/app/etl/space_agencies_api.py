@@ -1,7 +1,19 @@
 """Multi-agency open dataset discovery for NASA Earthdata CMR, ESA Copernicus, CSA RADARSAT & JAXA."""
 
 from datetime import datetime, timezone
+from typing import TypedDict
 import httpx
+
+from app.etl.http_utils import create_http_client
+
+
+class SpaceAgencyCatalogResult(TypedDict):
+    """Typed multi-agency catalog discovery result."""
+
+    lat: float
+    lon: float
+    queried_at: str
+    products: list[dict[str, str]]
 
 
 NASA_CMR_GRANULES_URL = "https://cmr.earthdata.nasa.gov/search/granules.json"
@@ -139,9 +151,9 @@ def query_csa_and_jaxa_references(
     return items
 
 
-def discover_space_agency_datasets(lat: float, lon: float) -> dict[str, object]:
+def discover_space_agency_datasets(lat: float, lon: float) -> SpaceAgencyCatalogResult:
     """Aggregate real NASA CMR, ESA Copernicus, CSA RADARSAT & JAXA datasets for (lat, lon)."""
-    with httpx.Client(timeout=15.0) as client:
+    with create_http_client(timeout=15.0) as client:
         nasa_items = query_nasa_cmr_granules(lat, lon, client)
         esa_items = query_esa_copernicus_products(lat, lon, client)
         csa_jaxa_items = query_csa_and_jaxa_references(lat, lon, client)
