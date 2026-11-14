@@ -2,7 +2,7 @@
 name: rubrica-cientifica-30m
 description: >-
   Audita con rigor de físico/geólogo planetario la rúbrica científica de Ckepi: (1) verifica al menos
-  una comparación planetaria->terrestre real (ej. Cráter Jezero -> Atacama / Salar de Pajonales vs.
+  una comparación planetaria->terrestre real (ej. Cráter Jezero -> celda 83b224fffffffff de Antofagasta vs.
   control Yungay) remuestreada a escala métrica común >= 30 m (con sensibilidad a 60 m y 90 m) y
   unidades explícitas en metros (m) y grados (°); (2) verifica distancias estadísticas definidas sobre
   distribuciones completas (Wasserstein-1 W_1 y Kolmogorov-Smirnov D_KS) con incertidumbre por
@@ -30,7 +30,7 @@ Verifica en [`terrain_statistics.py`](../../../backend/app/engine/terrain_statis
 
 1. **Remuestreo a grilla métrica común $\ge 30\text{ m}$:**
    - Resolución base explícita: `common_resolution_m = 30.0` metros por píxel ($\text{m/px}$) sobre un recorte de $120 \times 120$ píxeles ($3{,}6 \times 3{,}6\text{ km}$).
-   - Proyección métrica equivalente: **UTM Zona 19S (`EPSG:32719`)** en Tierra (Antofagasta) y **proyección cilíndrica equidistante planetocéntrica con corrección $\cos\phi$** sobre el elipsoide marciano (`IAU 2015`, $R_{\text{Mars}} = 3396{,}19\text{ km}$) o lunar ($R_{\text{Moon}} = 1737{,}4\text{ km}$).
+   - Proyección métrica equivalente: **UTM Zona 19S (`EPSG:32719`)** en Tierra (Antofagasta). En Marte, el CTX DEM de Jezero viene en **Equirectangular con paralelo estándar 18,4663° N** (esfera Mars 2000, R = 3.396.190 m): escala verdadera en Jezero, sin corrección cos φ adicional.
    - **Análisis de sensibilidad multiescala ($\ge 30\text{ m}$):** La tabla `multiscale_sensitivity` debe reportar resultados recalculados tras agregación por bloques a **`30 m`**, **`60 m`** y **`90 m`**.
 2. **Unidades físicas explícitas del Sistema Internacional / Métrico:**
    - Resolución espacial y tamaño de ventana: **metros ($\text{m}$)**.
@@ -63,8 +63,8 @@ El desafío de NASA exige explicar **qué aspectos son análogos, cuáles NO lo 
 ### A. Caso Positivo Geomorfológico vs. Caso Negativo Geomorfológico en Atacama ($30\text{ m}$)
 | Sitio Terrestre Evaluado | H3 (`res=3`) | Pendiente $W_1$ vs. Jezero ($30\text{ m}$) | Veredicto Geomorfológico y Porqué Físico |
 |---|---|---|---|
-| **Salar de Pajonales / Llano de la Paciencia** *(Descubrimiento en Antofagasta)* | `83b221fffffffff` | **$0.77^\circ$** ($\text{IC } 95\%: 0.37^\circ\text{--}1.03^\circ$, $D_{\text{KS}} = 0.097$) | **✅ SÍ SE PARECE EN TOPOGRAFÍA A 30 m:** Sus escarpes vulcanoclásticos e incisiones aluviales reproducen la distribución de pendientes ($P_{50} \approx 6.9^\circ$) y relieve local ($P_{50} \approx 38\text{ m}$) del margen deltaico del Cráter Jezero. **Útil para:** ensayos de tracción de rovers, cinemática de suspensión *rocker-bogie* y navegación óptica/LiDAR (TRN). |
-| **Cuenca de Yungay** *(Control Clásico en Antofagasta)* | `83b220fffffffff` | **$4.13^\circ$** ($D_{\text{KS}} = 0.659$) | **❌ NO SE PARECE EN TOPOGRAFÍA A 30 m (Contraejemplo):** Yungay es una planicie aluvial madura mucho más plana ($P_{50} \approx 2.6^\circ$). Aunque es el estándar mundial de **hiperaridez y suelos tipo Viking/percloratos para astrobiología** (Navarro-González et al., 2003), **falla como análogo mecánico de pendientes** frente a los escarpes del delta de Jezero. |
+| **Celda `83b224fffffffff`** («Pampa Central», Antofagasta) | `83b224fffffffff` | **$0.54^\circ$** (IC 95 %: 0,40°–0,65°, $D_{\text{KS}} = 0.15$) | **✅ SÍ SE PARECE EN PENDIENTE A 30 m** (estable a 60 y 90 m). Ver `docs/RESULTADOS_TERRENO_REALES.md`. |
+| **Celda `83b221fffffffff`** («Salar de Pajonales», 4.200–5.270 m) · y control **Yungay** | `83b221fffffffff` | **$6.92^\circ$** ($D_{\text{KS}} = 0.74$) · Yungay $3.32^\circ$ | **❌ NO SE PARECE:** mucho más abrupta; Yungay se aleja por su cola de laderas fuertes (p90 15,1° vs. 4,0°). Las cifras 0,77° / 4,13° eran sintéticas y están retiradas. |
 
 ### B. Ruptura Física Irreducible ($\mathbf{B}$): Qué NUNCA se parece en la Tierra y Por Qué
 Verifica que los 4 parámetros de ruptura física estén explícitamente cuantificados con sus valores reales y su consecuencia de ingeniería:
@@ -91,7 +91,7 @@ Antes de validar cualquier entregable, ejecuta esta verificación sobre los dato
    - **Regla inquebrantable:** No modificar `backend/app/data/ckepi.duckdb` durante auditorías de solo lectura (`git status` debe mostrar `ckepi.duckdb` limpio).
 3. **Verificar el estado de los recortes GeoTIFF a 30 m en [`terrain_statistics.py`](../../../backend/app/engine/terrain_statistics.py):**
    - Comprobar si existen recortes GeoTIFF reales en `backend/app/data/geotiff/` o si [`terrain_statistics.py`](../../../backend/app/engine/terrain_statistics.py) está ejecutando `_synthesize_calibrated_metric_dem()` (superficie estocástica calibrada a partir de la pendiente y rugosidad medidas de cada sitio).
-   - **Mientras se utilice `_synthesize_calibrated_metric_dem()`:** Toda documentación (`README.md`, `docs/DATA_PROVENANCE.md`, `REFERENCES.md`, `docs/DEMO_7_SLIDES_EN.md`, `docs/SUBMISSION_PACK_EN.md`) **DEBE declarar explícitamente** que la comparación de distribuciones a $30\text{ m}$ opera como una *demostración metodológica sobre DEM sintético calibrado con las pendientes y rugosidades medidas de cada sitio*, evitando cualquier reclamo de ingesta directa de píxeles GeoTIFF crudos hasta que los archivos `.tif` estén en disco.
+   - **Si una combinación sale rotulada `SYNTHETIC`** (sin ventana DEM real): toda documentación debe declararlo y no presentarla como medición. Las comparaciones de `docs/RESULTADOS_TERRENO_REALES.md` usan DEM reales.
 4. **Ejecutar pruebas automatizadas del motor científico:**
    ```bash
    cd backend && .venv/bin/python -m pytest tests/test_causal_decomposer.py tests/test_api.py -q
@@ -103,5 +103,5 @@ Antes de validar cualquier entregable, ejecuta esta verificación sobre los dato
 Devuelve una tabla con las **4 Compuertas Científicas**:
 1. Escala común $\ge 30\text{ m}$ ($30/60/90\text{ m}$) y unidades ($\text{m}$, $^\circ$).
 2. Distancias de distribución completas ($W_1$, $D_{\text{KS}}$) + incertidumbre *2D Block Bootstrap* ($\text{IC } 95\%$).
-3. Casos positivos vs. casos negativos (Salar de Pajonales vs. Yungay) + Brecha Física Irreducible $\mathbf{B}$ ($0.38\text{ g}$, $0.6\text{ kPa }\text{CO}_2$, $230\text{ mSv/año}$, $\Delta T$).
+3. Casos positivos vs. casos negativos (`83b224` vs. `83b221` y control Yungay) + Brecha Física Irreducible $\mathbf{B}$ ($0.38\text{ g}$, $0.6\text{ kPa }\text{CO}_2$, $230\text{ mSv/año}$, $\Delta T$).
 4. Estado real de los datos en disco y honestidad documental (`PASS` / `FAIL`).

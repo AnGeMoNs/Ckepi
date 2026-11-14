@@ -37,9 +37,9 @@
 | **Unidades explícitas en metros ($\text{m}$) y grados ($^\circ$)** | | |
 | **Distancias de distribución completas:** Wasserstein-1 ($W_1$) y Kolmogorov–Smirnov ($D_{\text{KS}}$) | | |
 | **Incertidumbre Bootstrap:** *2D Spatial Block Bootstrap* ($10\times 10\text{ px}$, IC 95 %) | | |
-| **Caso Positivo vs. Caso Negativo Geomorfológico y Porqué:** Salar de Pajonales ($W_1=0.77^\circ$) vs. Control Yungay ($W_1=4.13^\circ$) | | |
+| **Caso Positivo vs. Caso Negativo y Porqué:** `83b224fffffffff` ($W_1=0.54^\circ$) vs. `83b221fffffffff` ($W_1=6.92^\circ$) y control Yungay ($W_1=3.32^\circ$) — ver `docs/RESULTADOS_TERRENO_REALES.md` | | |
 | **Ruptura Física Irreducible ($\mathbf{B}$) y Porqué:** Gravedad ($0.38\text{ g}$ / $0.166\text{ g}$), Atmósfera $\text{CO}_2$ ($0.6\text{ kPa}$ / $0\text{ kPa}$), Radiación ($\sim 230$ / $380\text{ mSv/año}$), Temperatura ($\Delta T$) | | |
-| **Auditoría de Datos Disponibles en Disco:** Honestidad entre celdas medidas (`ckepi.duckdb`) y DEM sintético calibrado (`terrain_statistics.py`) | | |
+| **Auditoría de Datos Disponibles en Disco:** ventanas DEM reales en `derived/` vs. sustitutos rotulados `SYNTHETIC` | | |
 
 ## 4. Rúbrica Local Antofagasta, Demo Básica Mobile-First y Caja La Araucana (`rubrica-local-araucana`)
 | Eje / Requisito Local | Tipo | Puntaje (1–5) o `PASS/FAIL` | Evidencia / Nota |

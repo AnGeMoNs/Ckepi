@@ -1000,7 +1000,7 @@
   },
   "distribution": {
     "title": "Common-Scale (30 m) Statistical Terrain Distribution Comparison",
-    "subtitle": "Formal Wasserstein-1 (W₁) and Kolmogorov–Smirnov (D_KS) distances across {{samples}} pixels resampled to {{spacing}} m/px (UTM 19S / planetocentric cos φ correction).",
+    "subtitle": "Wasserstein-1 (W₁) and Kolmogorov–Smirnov (D_KS) distances over {{samples}} pixels at {{spacing}} m/px (Earth in UTM 19S; Mars in the CTX DEM equirectangular projection, true scale at Jezero).",
     "commonScaleBadge": "Common scale {{spacing}} m/px",
     "bootstrapBadge": "2D Block Bootstrap: {{iterations}} iter ({{blockSize}}×{{blockSize}} px)",
     "targetDemLabel": "Target DEM",
@@ -1067,17 +1067,17 @@
       "radiation": "Surface radiation measured by Curiosity/RAD: ~230 mSv/yr (~0.64 mSv/day, Hassler et al. 2014)."
     },
     "quiz": {
-      "question": "STEAM Micro-Challenge: To field-test rover suspension and LiDAR hazard avoidance for Jezero Crater (mean slope ~6.4°), which sector would you pick?",
-      "sourceNote": "Real DEM data: NASADEM 30 m vs. MRO CTX DEM 30 m",
+      "question": "STEAM micro-challenge: you must test a rover's suspension for the floor of Jezero Crater (median slope 1.7° in a 6 km CTX DEM window). Which Antofagasta sector would you pick?",
+      "sourceNote": "Real data: Jezero CTX DEM (NASA MRO, USGS) vs. Copernicus GLO-30, at 30 m",
       "options": {
-        "pajonales": "A) Salar de Pajonales, Antofagasta (Slope ~5.6° · Hyper-arid)",
-        "yungay": "B) Yungay Plain, Antofagasta (Slope ~2.3° · Hyper-arid)",
-        "amazon": "C) Central Amazon Basin (Humid soil & dense canopy)"
+        "pajonales": "B) Salar de Pajonales cell (H3 83b221…, 4,200–5,270 m)",
+        "yungay": "C) Yungay, the classic analog",
+        "pampa": "A) Pampa Central cell (H3 83b224…, ~1,400 m)"
       },
       "feedback": {
-        "pajonales": "Correct! Salar de Pajonales / Llano de la Paciencia (H3 83b221fffffffff) has a 30 m slope distribution differing from Jezero by only W₁ = 0.77° (95% CI: 0.37°–1.03°), outperforming the flat Yungay plain for mechanical traction trials.",
-        "yungay": "Great astrobiological control, but too flat for Jezero rover climbing! Yungay (W₁ = 4.13° slope distance vs. Jezero) excels at UV/hyper-aridity calibration, whereas Salar de Pajonales or Cordillera de la Sal better match Jezero's delta slopes.",
-        "amazon": "Unsuitable for planetary field trials: high soil moisture and dense vegetation (LAI > 4) completely alter regolith cohesion and LiDAR optics."
+        "pajonales": "Not this time: it is high-Andes terrain with much steeper slopes (median 7.9° vs. 1.7°; W₁ = 6.9°). A good example of what does NOT match Jezero.",
+        "yungay": "Yungay is famous for its hyper-aridity, but its slopes are further from Jezero (W₁ = 3.3°) because it has steep hillsides. The classic analog is not always the best for every test.",
+        "pampa": "Good pick! Its slope distribution differs from Jezero's by W₁ = 0.54° (95% CI: 0.40°–0.65°), and the result holds at 60 and 90 m. It is a candidate for field study, not a certified site: Mars gravity, pressure and radiation cannot be reproduced on Earth."
       }
     }
   },
@@ -1086,13 +1086,13 @@
     "badgeLocal": "Antofagasta Hub 2026",
     "badgeOds": "Verified UN SDG Targets",
     "antofagastaLabTitle": "Antofagasta Region Natural Laboratory (1-Click Selection)",
-    "antofagastaLabSubtitle": "Click any regional node to load its 30 m statistical comparison (NASADEM vs. NASA PDS) and mission diagnostics:",
+    "antofagastaLabSubtitle": "Click a regional node to load its 30 m terrain comparison (Jezero CTX DEM vs. Copernicus GLO-30) and its mission diagnostics:",
     "utmScaleBadge": "UTM Zone 19S (EPSG:32719) · 30 m",
     "nodes": {
-      "pajonalesRole": "Closest 30 m slope distribution to Jezero Crater (W₁ = 0.77°). Ideal for rover wheel traction.",
-      "cordilleraRole": "Evaporite scarps and rugged ridges (~6.9°). Ideal for LiDAR hazard avoidance.",
-      "pampaRole": "High-irradiance hyper-arid plain for thermo-optical and dust sensor trials.",
-      "yungayRole": "Classic literature benchmark (2.25°). Control site for extreme hyper-aridity and UV."
+      "pajonalesRole": "Negative case: high-Andes cell (4,200–5,270 m) with much steeper slopes than Jezero (W₁ = 6.9° at 30 m).",
+      "cordilleraRole": "Nearly flat (median slope 0.2°): smoother than the Jezero floor (W₁ = 1.7°, KS = 0.82).",
+      "pampaRole": "Closest slope match to the Jezero floor (W₁ = 0.54° at 30 m; holds at 60 and 90 m). Candidate for field study.",
+      "yungayRole": "Classic control from the literature. Its slopes are further from Jezero (W₁ ≈ 3.3–3.7°); its value is hyper-aridity."
     },
     "pillarsTitle": "Alignment with Caja La Araucana's 4 Official Objectives & UN SDGs",
     "pillarsSubtitle": "Direct traceability to the Integrated Sustainability Report and regional development:",
@@ -1107,6 +1107,6 @@
       "p4Body": "Scalable H3 architecture connecting Antofagasta with Atacama, Coquimbo, Biobío, and Magallanes alongside regional universities (UCN, UA)."
     },
     "sustainabilityTitle": "Institutional Sustainability Model:",
-    "sustainabilityBody": "100% Open Source core (MIT License) for public STEAM education + B2B/B2G quantitative site-characterization services."
+    "sustainabilityBody": "100% open-source core (Apache-2.0) for public education + services for institutions to characterize test sites."
   }
 }

@@ -34,21 +34,45 @@ Este documento detalla con total transparencia qué variables provienen de **med
 
 ## 3. Comparación Estadística de Distribuciones Topográficas a Escala Común (30 m)
 
-Para comparar distribuciones topográficas entre objetivos planetarios (p. ej., **Cráter Jezero**) y sectores de la **Región de Antofagasta** (`Salar de Pajonales 83b221fffffffff`, `Cordillera de la Sal 83b225fffffffff`, `Pampa Central 83b224fffffffff`) junto al control clásico de **Yungay (`83b220fffffffff`)**, el módulo `backend/app/engine/terrain_statistics.py` implementa el protocolo estadístico multiescala del equipo:
+Compara la distribución de pendientes y relieve local del **Cráter Jezero** (Marte) con cuatro celdas H3 de la **Región de Antofagasta** y con el control clásico **Yungay**, usando DEM reales a una escala métrica común. Lo implementa `backend/app/engine/terrain_statistics.py`, alimentado por ventanas precalculadas con `backend/scripts/precompute_real_terrain.py`.
 
-> **Estado de implementación actual (Transparencia Científica — Plan Maestro §1.1):**
-> - **Modo actual en código (`_synthesize_calibrated_metric_dem`):** Genera una **superficie DEM métrica sintética calibrada** a paso uniforme de `30.0 m` ($120\times 120\text{ px} = 3{,}6\times 3{,}6\text{ km}$) parametrizada de forma determinística por la pendiente media (`slope_deg`) y rugosidad (`topographic_roughness`) reales medidas en cada celda H3 (`Copernicus DEM 90m` / `ASTER 30m` en Tierra y constantes publicadas `LOLA`/`MOLA`/`CTX` en Luna/Marte). **Mientras opere sobre el generador sintético calibrado, sus histogramas y distancias $W_1$/$D_{\text{KS}}$ deben presentarse como demostración metodológica calibrada y no como medición directa sobre los GeoTIFF crudos.**
-> - **Modo objetivo de ingesta raster directa (Fase 2 del Plan Maestro):** Lectura directa de recortes GeoTIFF reproyectados a metros (**NASADEM_HGT v001** `s23w069`/`s25w070` o **Copernicus GLO-30** en UTM Zona 19S `EPSG:32719`, contra **USGS Mars 2020 CTX DEM 20 m** remuestreado a `30 m/px`).
+> **Estado actual (14-nov-2026, commit `1535fb7`): medición sobre DEM reales.**
+> - Las ventanas reales están en `backend/app/data/derived/terrain_windows_30m.npz`; su procedencia (URL, archivo, SHA-256, CRS, centro y elevaciones) está en `terrain_windows_30m.json`.
+> - Si se pide una combinación sin ventana real (otro sitio planetario u otra celda H3), el motor genera un **sustituto sintético** calibrado y lo rotula `SYNTHETIC … not a measurement` en `planetary_dem_source` / `earth_dem_source`. Ese caso **no** debe presentarse como medición.
+> - **NASADEM_HGT v001 no se usa** en esta versión: requiere cuenta Earthdata. Para la Tierra se usa Copernicus GLO-30.
 
-1. **Escala Métrica Común (`30 m/px`, ventana $3{,}6\times 3{,}6\text{ km} = 120\times 120\text{ px}$):**
-   - **Tierra (Referencia y Calibración):** Pendiente y rugosidad base medidas vía **Open-Meteo Copernicus DEM** (`90 m`) / **ASTER 30 m**; mosaicos de referencia **NASA/JPL NASADEM_HGT v001** (DOI: `10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001`) y **ESA Copernicus DEM GLO-30** en **UTM Zona 19S (`EPSG:32719`)**.
-   - **Marte / Luna (Referencia y Calibración):** Parámetros topográficos de referencia y mosaico objetivo **USGS Mars 2020 Terrain Relative Navigation CTX DEM Mosaic** (`20 m/px` remuestreado a `30 m/px` con corrección $\cos\phi$) y **NASA LRO LOLA / SLDEM2015**.
+1. **Fuentes y escala métrica común (`30 m/px`, ventana `6 × 6 km` = `200 × 200 px`):**
+
+   | Ventana | Centro (lat, lon) | Origen del centro | DEM | Elevación (m) |
+   |---|---|---|---|---|
+   | `mars_jezero_crater` | 18,38, 77,58 | `planetary_sites.json` | USGS Mars 2020 TRN **CTX DEM** Mosaic (NASA MRO CTX), 20 m, remuestreo por promedio a 30 m | −2.674 a −2.599 |
+   | `control_yungay` | −24,08, −69,91 | `known_analogs.py` | **Copernicus DEM GLO-30** (ESA, DSM 1″), reproyección bilineal a UTM 19S | 957 a 1.280 |
+   | `83b220fffffffff` | −24,138, −69,582 | centro de la celda H3 | Copernicus GLO-30 | 1.423 a 1.833 |
+   | `83b221fffffffff` | −24,683, −68,604 | centro de la celda H3 | Copernicus GLO-30 | 4.195 a 5.270 |
+   | `83b225fffffffff` | −23,606, −68,524 | centro de la celda H3 | Copernicus GLO-30 | 2.301 a 2.342 |
+   | `83b224fffffffff` | −23,052, −69,497 | centro de la celda H3 | Copernicus GLO-30 | 1.408 a 1.538 |
+
+   - **Marte:** el CTX DEM está en proyección Equirectangular con paralelo estándar en 18,4663° N (esfera Mars 2000, R = 3.396.190 m), es decir, con escala verdadera en la latitud de Jezero: no requiere corrección adicional de cos φ.
+   - **Tierra:** reproyección a **UTM Zona 19S (`EPSG:32719`)**. GLO-30 es un modelo de superficie (DSM): en el desierto la diferencia con un modelo de terreno es pequeña, pero se declara.
+   - **Nombres de las celdas:** el centro de una celda H3 resolución 3 (~12.000 km²) no coincide necesariamente con el lugar que da nombre a la región en el catálogo (p. ej. «Cordillera de la Sal»). Las ventanas se identifican por su índice H3 y sus coordenadas.
+
 2. **Variables Topográficas Derivadas sin Efecto de Borde:**
    - **Pendiente (`slope_deg`, °):** Diferencias finitas centrales a `30 m` con recorte de borde de 1 píxel:
      $$\text{slope} = \arctan\left(\sqrt{(\partial z/\partial x)^2 + (\partial z/\partial y)^2}\right)\cdot \frac{180}{\pi}$$
-   - **Relieve Local (`local_relief_m`, m):** $Z_{\max} - Z_{\min}$ en ventana móvil de $300\times 300\text{ m}$ ($10\times 10\text{ px}$).
+   - **Relieve Local (`local_relief_m`, m):** $Z_{\max} - Z_{\min}$ en bloques **no solapados** de $300\times 300\text{ m}$ ($10\times 10\text{ px}$).
 3. **Distancias entre Distribuciones e Intervalos de Confianza Espaciales (IC 95 %):**
    - **Wasserstein-1 ($W_1$, `scipy.stats.wasserstein_distance`)** en unidades físicas (° para pendiente, m para relieve local).
    - **Kolmogorov–Smirnov de 2 muestras ($D_{\text{KS}}$, `scipy.stats.ks_2samp`)** en $[0, 1]$.
-   - **Bootstrap por bloques 2D (`10×10 px`, 120 iteraciones):** Preserva la autocorrelación espacial de píxeles vecinos de un DEM al estimar los intervalos de confianza al 95 %.
+   - **Bootstrap por bloques 2D (pendiente: `10×10 px`; relieve: `3×3` bloques; 120 iteraciones a 30 m y 80 a 60/90 m, semilla fija):** Preserva la autocorrelación espacial de píxeles vecinos de un DEM al estimar los intervalos de confianza al 95 %.
    - **Análisis de sensibilidad multiescala (`30 m`, `60 m`, `90 m`):** Evalúa la estabilidad de $W_1$, $D_{\text{KS}}$, $P_{50}$ y $P_{90}$ bajo agregación espacial por bloques.
+4. **Resultados a 30 m (Jezero vs. cada ventana; reproducibles con `pytest tests/test_terrain_real_dem.py` y el endpoint de comparación):**
+
+   | Ventana terrestre | Pendiente mediana Tierra / Jezero | $W_1$ pendiente (IC 95 %) | $D_{\text{KS}}$ | $W_1$ relieve | Lectura |
+   |---|---|---|---|---|---|
+   | `83b224fffffffff` | 1,37° / 1,70° | **0,54°** (0,40–0,65) | 0,15 | 1,8 m | La más parecida en pendiente; más cercana a Jezero que el control Yungay |
+   | `83b225fffffffff` | 0,19° / 1,70° | 1,71° (1,65–1,86) | 0,82 | 8,2 m | Demasiado plana (superficie de salar) |
+   | `83b220fffffffff` | 3,46° / 1,70° | 3,70° (3,22–4,20) | 0,52 | 22,4 m | Similar al control |
+   | `83b221fffffffff` | 7,89° / 1,70° | 6,92° (6,17–7,31) | 0,74 | 42,8 m | Muy distinta: relieve andino a 4.200–5.270 m |
+   | Control Yungay | — | 3,32° | — | — | Referencia clásica |
+
+   **Límites que se declaran siempre:** (a) una ventana de 6 km por sitio no representa toda la región ni todo el cráter; (b) solo se comparan pendiente y relieve: gravedad (0,38 g), presión (~6 mbar, 95 % CO₂), radiación y temperatura no se reproducen en la Tierra; (c) el parecido en pendiente **preselecciona** un lugar para estudiarlo, no lo certifica para ensayos ni dice que sea «seguro»; (d) DSM (Tierra) frente a DEM fotogramétrico (Marte) con resoluciones nativas distintas (≈30 m frente a 20 m).

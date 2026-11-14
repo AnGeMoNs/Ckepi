@@ -15,8 +15,9 @@
 - **Macrostrat** — Geological unit and lithology API (`https://macrostrat.org/api`).
 
 ## 3. Peer-Reviewed Scientific & Institutional References
-- **NASAJPL (2020).** *NASADEM Merged DEM Global 1 arc second V001* (`NASADEM_HGT.001`), tiles `s23w069`, `s25w070` (referencia metodológica para escala métrica de 30 m en UTM Zona 19S `EPSG:32719`; en el motor actual se calibra sobre pendientes medidas por Copernicus DEM / ASTER 30m mientras se completa la ingesta GeoTIFF directa). NASA EOSDIS Land Processes DAAC. DOI: `10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001`.
-- **Calef, F. J., III, et al. (2021).** *Mars 2020 Terrain Relative Navigation CTX DEM Mosaic* (Jezero Crater, 20 m/px; referencia de escala común a 30 m/px con corrección $\cos\phi$). USGS Astrogeology Science Center / NASA PDS Annex (`https://planetarymaps.usgs.gov/mosaic/mars2020_trn/CTX/ScienceInvestigationMaps_JPL/M20_JezeroCrater_CTXDEM_20m.tif`).
+- **NASA JPL (2020).** *NASADEM Merged DEM Global 1 arc second V001* (`NASADEM_HGT.001`). NASA EOSDIS LP DAAC. DOI: `10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001`. **No se usa en la versión actual** (requiere cuenta Earthdata); queda como alternativa NASA a Copernicus GLO-30 para la Tierra.
+- **USGS Astrogeology Science Center / NASA (2020).** *Mars 2020 Terrain Relative Navigation CTX DEM Mosaic — Jezero Crater* (`M20_JezeroCrater_CTXDEM_20m.tif`, 20 m/px, derivado de NASA MRO CTX; Equirectangular con paralelo estándar 18,4663° N). Dominio público. `https://planetarymaps.usgs.gov/mosaic/mars2020_trn/CTX/ScienceInvestigationMaps_JPL/M20_JezeroCrater_CTXDEM_20m.tif`. **Usado** en la comparación de terreno (remuestreo por promedio a 30 m). *Autoría del producto: por verificar en la ficha de USGS antes del envío.*
+- **ESA / Copernicus (2021+).** *Copernicus DEM GLO-30* (DSM, 1 arcsec), instancia pública en AWS Open Data (`https://copernicus-dem-30m.s3.amazonaws.com/`), teselas `S24 W069`, `S24 W070`, `S25 W069`, `S25 W070`. **Usado** en la comparación de terreno (reproyección a UTM 19S, 30 m). Atribución exigida: «© DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved». *Licencia propia de Copernicus DEM (no CC BY 4.0); verificar texto exacto antes del envío.*
 - **Hassler, D. M., Zeitlin, C., Wimmer-Schweingruber, R. F., et al. (2014).** *Mars' Surface Radiation Environment Measured with the Mars Science Laboratory's Curiosity Rover.* **Science**, 343(6169), 1244797 (`~0.64 mSv/day` / `~230 mSv/yr` GCR + SEP surface dose). DOI: `10.1126/science.1244797`.
 - **Williams, D. R. (2024).** *NASA NSSDCA Planetary Fact Sheets (Earth, Moon, Mars).* NASA Goddard Space Flight Center (`https://nssdc.gsfc.nasa.gov/planetary/factsheet/`).
 - **Navarro-González, R., Rainey, F. A., Molina, P., et al. (2003).** *Mars-Like Soils in the Atacama Desert, Chile, and the Dry Limit of Microbial Life.* **Science**, 302(5647), 1018–1021. DOI: `10.1126/science.1089143`.
@@ -24,6 +25,7 @@
 
 ## 4. Open-Source Software & Libraries
 - **Backend:** FastAPI (MIT), Pydantic v2 (MIT), DuckDB (MIT), H3-py (Apache-2.0), scikit-learn (BSD-3), SciPy (`scipy.stats.wasserstein_distance`, `scipy.stats.ks_2samp`, BSD-3), NumPy (BSD-3), Pandas (BSD-3), httpx (BSD-3).
+- **Preprocesamiento de terreno (fuera de la API):** rasterio (BSD-3) sobre GDAL (MIT/X), `backend/scripts/precompute_real_terrain.py`.
 - **Frontend:** React 18 (MIT), TypeScript (Apache-2.0), Vite (MIT), Tailwind CSS (MIT), MapLibre GL JS (BSD-3), i18next / react-i18next (MIT), Lucide Icons (ISC).
 
 > Detailed variable provenance and physical assumptions are documented in [docs/DATA_PROVENANCE.md](docs/DATA_PROVENANCE.md).

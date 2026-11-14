@@ -42,12 +42,12 @@ El beneficio que buscamos demostrar es concreto: **que una persona pueda explica
 
 **Está en desarrollo o pendiente de validar:** el recorrido accesible completo “Tres mundos”, voz, impresión, funcionamiento offline, comparación con DEM reales, revisión móvil, despliegue público y materiales finales de entrega. Hay aportes en ramas de compañeros; no asumir que ya están integrados en `dani`.
 
-**Advertencia para quien prepara gráficos:** el nuevo módulo estadístico genera actualmente terreno sintético. Sus histogramas, distancias e intervalos no deben presentarse como mediciones de Atacama o Jezero. Confirmar con el auditor si esta situación cambia.
+**Para quien prepara gráficos (actualizado 14-nov, commit `1535fb7`):** la comparación de terreno ya usa **DEM reales** para Jezero, Yungay y cuatro celdas de Antofagasta. Use solo las cifras de `docs/RESULTADOS_TERRENO_REALES.md`. Cualquier otra combinación sale rotulada `SYNTHETIC` y no debe mostrarse como medición. Las cifras antiguas «Pajonales 0,77°» y «Yungay 4,13°» eran sintéticas y están retiradas.
 
 ## 5. Los datos: cómo nombrarlos sin exagerar
 
 - **Datos planetarios de referencia:** las fichas de NASA sustentan explicaciones generales sobre gravedad, presión y otros parámetros. No son mediciones nuevas realizadas por Ckepi. La masa de una mochila no cambia al viajar; cambia su peso.
-- **Comparación de terreno prevista:** NASADEM_HGT v001 para Tierra y el Mars 2020 Science Investigation CTX DEM Mosaic de Jezero, distribuido por USGS, para Marte. Son productos previstos para ese análisis; su uso efectivo debe confirmarse antes del pitch.
+- **Comparación de terreno (en uso):** el Mars 2020 TRN **CTX DEM** de Jezero (NASA MRO, distribuido por USGS, 20 m) para Marte y **Copernicus DEM GLO-30** (ESA) para la Tierra. NASADEM_HGT v001 **no** se usa en esta versión (requiere cuenta Earthdata).
 - **Método acordado:** recortes comparables, unidades métricas, escala común de 30 m, pendiente y relieve, distancias entre distribuciones, incertidumbre y sensibilidad a la escala. Es el protocolo del equipo, no una regla literal de NASA.
 - **Límites:** un terreno terrestre no reproduce por sí solo gravedad, presión, composición atmosférica, radiación o todo el régimen térmico de otro mundo.
 
@@ -87,7 +87,7 @@ El recorrido permite empezar por una pregunta cotidiana y avanzar hacia la evide
 
 ### Ciencia y límites · 1:40–2:10
 
-Estamos trabajando en una comparación de terreno de Atacama y Jezero mediante modelos de elevación. Solo la presentaremos como resultado científico cuando esté validada. Y hay un límite que mostramos desde el principio: ningún desierto terrestre reproduce toda la gravedad, la atmósfera y la radiación de Marte.
+Comparamos el terreno del cráter Jezero, con el modelo de elevación de NASA, y sectores de Antofagasta a una misma escala de 30 metros. Una zona poco estudiada de la región, la celda que llamamos Pampa Central, se parece a Jezero en sus pendientes más que Yungay, el análogo clásico: la diferencia es de medio grado. No decimos que sea Marte ni que esté lista para probar un rover: decimos que merece estudiarse en terreno. Y hay un límite que mostramos desde el principio: ningún desierto terrestre reproduce la gravedad, la atmósfera y la radiación de Marte.
 
 ### Sostenibilidad · 2:10–2:40
 
@@ -97,7 +97,7 @@ La propuesta es mantener el aprendizaje gratuito y abierto. Para sostenerlo, que
 
 Desde Antofagasta queremos acercar la ciencia planetaria a más personas. Buscamos espacios para probar la experiencia y mejorarla con sus usuarios. Con Ckepi, una semejanza despierta la curiosidad; la evidencia nos enseña hasta dónde llega.
 
-**Si la comparación real queda validada:** sustituir “estamos trabajando” por una frase que nombre el sector, el dataset, la métrica y el resultado exacto autorizado por el auditor. No rellenar esa frase con cifras provisionales o sintéticas.
+**Resultado ya validado con DEM reales:** la frase de arriba nombra el sector (celda H3 `83b224fffffffff`), el dataset (CTX DEM de Jezero y Copernicus GLO-30), la métrica (Wasserstein-1 de pendiente a 30 m) y el resultado (0,54°, IC 95 % 0,40–0,65°). Si el auditor pide otra redacción, mantener esas cuatro piezas y no agregar cifras que no estén en `docs/RESULTADOS_TERRENO_REALES.md`.
 
 ## 8. Modelo de sostenibilidad para el pitch local
 
@@ -115,7 +115,7 @@ Quien aprende accede gratis. La hipótesis es que instituciones financien taller
 
 **¿Cómo calculan el parecido?** El motor actual usa variables y ponderaciones. El análisis de terreno acordado comparará distribuciones a escala común; su validación está pendiente. No hay un porcentaje universal de “ser Marte”.
 
-**¿Qué dato NASA utilizan?** Nombrar el producto realmente utilizado en la función mostrada y explicar qué aporta. Para el análisis de terreno previsto: NASADEM_HGT v001 y el DEM CTX de Jezero distribuido por USGS. Confirmar con el responsable de datos antes de decir “usamos”.
+**¿Qué dato NASA utilizan?** En la comparación de terreno, el **CTX DEM de Jezero** (cámara CTX del orbitador MRO de NASA, mosaico de USGS para la navegación de Perseverance): de ahí salen las pendientes de Marte. Para la Tierra usamos Copernicus GLO-30 de la ESA. En el resto de la app: NASA POWER, PDS (LRO, REMS, MEDA) y Trek.
 
 **¿La herramienta demuestra dónde una misión estará segura?** No. Ayuda a explorar semejanzas y límites. La seguridad de una operación requiere análisis y validación especializados.
 

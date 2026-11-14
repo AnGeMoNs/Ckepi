@@ -70,7 +70,7 @@ Siguiendo los principios **FAIR** ([docs/DMP.md](docs/DMP.md)) y la trazabilidad
 | **Sitios Curados en Marte (`mars_jezero_crater`, `mars_gale_crater`, `mars_arcadia_planitia`)** | **Medido + Derivado + Constantes Publicadas:** Clima por **NASA Curiosity REMS / Perseverance MEDA**; flujo solar por geometría orbital ($L_s$); relieve/hielo por referencias publicadas LOLA/MOLA/SHARAD. | Etiquetado variable por variable en `confidence.variable_provenance`. |
 | **Sitios Curados en Luna (`moon_shackleton_pole`, `moon_tranquillitatis_lava`)** | **Medido + Modelo Físico:** Ventanas observacionales reales de **NASA PDS ODE (LRO Diviner / LOLA)** + equilibrio radiativo de Stefan-Boltzmann. | Etiquetado variable por variable en `confidence.variable_provenance`. |
 | **Fichas «Tres Mundos para Todos» (Gravedad, Presión, Día Solar, Temperatura, Radiación)** | **Constantes Oficiales Verificadas:** **NASA NSSDCA Planetary Fact Sheets** + dosis de radiación superficial en Marte medida por **Curiosity/RAD** ($\sim 0{,}64\text{ mSv/día} \approx 230\text{ mSv/año}$; Hassler et al., 2014, *Science*). | Incluye el rango completo de temperatura media de Marte ($-59\text{ °C}$ en ficha individual y $-65\text{ °C}$ en tabla comparativa NASA). |
-| **Comparación de Distribuciones Topográficas 30 m (`terrain_statistics.py`: $W_1$, $D_{\text{KS}}$, Bootstrap 2D)** | **Demostración Metodológica con DEM Sintético Calibrado** (`_synthesize_calibrated_metric_dem`), parametrizado por la pendiente y rugosidad reales de cada celda H3. | ⚠️ **Transparencia:** Ejecuta el pipeline real de `scipy.stats` ($W_1$, $D_{\text{KS}}$, bootstrap por bloques 2D $10\times 10\text{ px}$ y sensibilidad 30/60/90 m) sobre superficies sintéticas calibradas mientras se completa la ingesta directa de los GeoTIFF crudos (**NASADEM v001** y **USGS Mars 2020 CTX DEM 20 m**; ver [docs/PLAN_MAESTRO.md](docs/PLAN_MAESTRO.md)). |
+| **Comparación de Distribuciones Topográficas 30 m (`terrain_statistics.py`: $W_1$, $D_{\text{KS}}$, Bootstrap 2D)** | **Medido sobre DEM reales** (CTX DEM de Jezero, NASA MRO/USGS; Copernicus GLO-30, ESA) para Jezero, el control Yungay y 4 celdas de Antofagasta; otras combinaciones salen rotuladas `SYNTHETIC`. Resultados: [`docs/RESULTADOS_TERRENO_REALES.md`](docs/RESULTADOS_TERRENO_REALES.md). |
 
 ---
 
@@ -211,8 +211,8 @@ Integrado en [`frontend/src/components/mission/LaAraucanaImpactPanel.tsx`](front
 | **NASA Trek WMTS** | Moon Trek (LRO WAC / LOLA) & Mars Trek (Viking MDIM21 / MGS MOLA) | Globos 3D interactivos de Luna y Marte y muestreo altimétrico $3\times 3$. |
 | **NASA POWER API** | Climatology (`20+ yr ANN`) & Daily Point API | Flujo solar incidente, albedo superficial (`ALLSKY_SRF_ALB`), humedad relativa, índice UV, viento y días de helada. |
 | **NASA Earthdata CMR & GIBS** | MODIS `MOD11A1`, SMAP `SPL3SMP`, Worldview WMTS | Catálogo de gránulos satelitales por celda H3 y capas visuales de temperatura/aerosoles. |
-| **NASA/JPL & USGS** | `NASADEM_HGT v001` (`10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001`) & `Mars 2020 CTX DEM Mosaic` (20 m) | Mosaicos de referencia para la comparación de distribuciones topográficas a escala común de 30 m. |
-| **ESA Copernicus** | Copernicus DEM (`90m` / `GLO-30`) & Sentinel-1/2 OData Catalog | Elevación, pendiente, rugosidad y catálogo de escenas SAR/ópticas. |
+| **NASA MRO / USGS** | `Mars 2020 TRN CTX DEM Mosaic` de Jezero (20 m) | **Núcleo** de la comparación de terreno a 30 m (NASADEM no se usa en esta versión: requiere Earthdata). |
+| **ESA Copernicus** | Copernicus DEM `GLO-30` (AWS Open Data) + `90 m` (Open-Meteo) & Sentinel-1/2 OData | Terreno real de Antofagasta a 30 m (UTM 19S), elevación de la malla H3 y catálogo de escenas. |
 | **CSA & JAXA** | CSA Open Data (RADARSAT) & JAXA G-Portal (ALOS AW3D30 / GCOM) | Descubrimiento multi-agencia de productos de observación terrestre por celda H3. |
 | **Open-Meteo & ISRIC & Macrostrat** | ERA5-Land Archive, ISRIC SoilGrids v2.0 (`0–5 cm`), Macrostrat API | Amplitud térmica diurna, enfriamiento nocturno, textura/densidad del suelo y litología geológica. |
 
@@ -235,8 +235,8 @@ Para evitar conflictos de edición o pérdida de trabajo, tres agentes especiali
 ### 7.2 Hitos y Fases del Plan Maestro (`docs/PLAN_MAESTRO.md`)
 
 1. **Fase 1 · Sincronización y Línea Base:** Verificación de `pytest -q`, `npm run build` y paridad i18n; commits separados por carpeta en la rama `dani` (**nunca hacer merge directo a `main`**).
-2. **Fase 2 · P0 Científico (Escala Común 30 m):**
-   - **Opción A (Preferida):** Lectura directa de recortes GeoTIFF (`USGS CTX DEM 20 m` de Jezero + `NASADEM_HGT v001` / `Copernicus GLO-30` de Antofagasta) reproyectados a metros y remuestreados a `30 m/px`.
+2. **Fase 2 · P0 Científico (Escala Común 30 m) — ✅ completada con la Opción A (commit `1535fb7`):**
+   - **Opción A (aplicada):** recortes GeoTIFF reales (`USGS CTX DEM 20 m` de Jezero + `Copernicus GLO-30` de Antofagasta) reproyectados a metros y remuestreados a `30 m/px` con `backend/scripts/precompute_real_terrain.py`.
    - **Opción B (Salvaguarda de Honestidad Científica):** Si algún GeoTIFF externo no está disponible localmente al corte de alcance, la UI y la documentación rotulan explícitamente el análisis como **«demostración metodológica con terreno sintético calibrado»** sin presentar sus números como medición raster directa.
 3. **Fase 3 · Producto e Inclusión STEAM:** Histogramas superpuestos, tabla multiescala `30/60/90 m`, recorrido «Tres Mundos para Todos» con lectura por voz y controles accesibles.
 4. **Fase 4 · Verdad Documental y Ciencia Abierta:** Sincronización exacta entre lo que ejecuta el código y lo que declaran `README.md`, `DATA_PROVENANCE.md`, `REFERENCES.md`, `AI_DISCLOSURE.md`, `CITATION.cff` y `docs/DMP.md`.

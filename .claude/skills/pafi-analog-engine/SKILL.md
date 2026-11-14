@@ -29,4 +29,4 @@ description: >-
 3. **Comparación de Distribuciones a Escala Común $\ge 30\text{ m}$:**
    - Evaluar Pendiente ($^\circ$) y Relieve Local ($\text{m}$) a $30\text{ m/px}$ (con sensibilidad a $60\text{ m}$ y $90\text{ m}$) mediante **Wasserstein-1 ($W_1$)** y **Kolmogorov–Smirnov ($D_{\text{KS}}$)** con **2D Spatial Block Bootstrap** ($10 \times 10\text{ px}$, IC 95 %).
 4. **Contraejemplos Positivos y Negativos Obligatorios:**
-   - Demostrar tanto **qué sí se parece** (*Salar de Pajonales* `83b221fffffffff`, $W_1 = 0.77^\circ$ vs. Jezero) como **qué NO se parece** (*Control Yungay* `83b220fffffffff`, $W_1 = 4.13^\circ$ por ser una planicie aluvial plana) y por qué la Tierra nunca reproduce $\mathbf{B}$.
+   - Demostrar tanto **qué sí se parece** (celda `83b224fffffffff`, $W_1 = 0.54^\circ$ vs. Jezero con DEM reales) como **qué NO se parece** (celda `83b221fffffffff`, $W_1 = 6.92^\circ$; control Yungay $3.32^\circ$) y por qué la Tierra no reproduce gravedad, presión ni radiación. Fuente: `docs/RESULTADOS_TERRENO_REALES.md`.

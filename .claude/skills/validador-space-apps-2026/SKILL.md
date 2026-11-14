@@ -54,7 +54,7 @@ Aplica [`.claude/skills/auditoria-global-ingles-legal-nasa/SKILL.md`](../auditor
 | **G5** | **100 % Inglés** en entregables globales | Página de proyecto, 7 slides de prototipo, subtítulos de video y `frontend/src/i18n/en.json` íntegramente en inglés. |
 | **G6** | **Links públicos sin login** | Repositorio, demo y slides accesibles en ventana privada sin pedir cuenta, contraseña ni permiso. |
 | **G7** | Envío en plazo oficial | Antes del domingo 23:59 hora local de Chile (meta interna $\le 20:00$). |
-| **G8** | **Al menos 1 dataset NASA con precisión** | Productos NASA citados con misión, instrumento, ID exacto, resolución y DOI (`NASADEM_HGT v001`, `LRO LOLA/Diviner`, `MGS MOLA`, `MRO CTX DEM`, `Mars 2020 MEDA`, `MSL RAD`, `NASA POWER`). |
+| **G8** | **Al menos 1 dataset NASA con precisión** | Productos NASA citados con misión, instrumento, ID exacto, resolución y DOI: `MRO CTX DEM` de Jezero (núcleo del terreno), `LRO LOLA/Diviner`, `MGS MOLA`, `Mars 2020 MEDA`, `MSL RAD`, `NASA POWER`. NASADEM **no** se usa en esta versión. |
 | **G9** | **Citas legales Open Science completas** | Datos (`Public Domain` / `CC BY 4.0`), código (`MIT`), imágenes/teselas (`NASA` / `OSM` / `CARTO`), tipografías (`SIL OFL-1.1`), íconos (`Lucide MIT/ISC`) e identidad visual en [`REFERENCES.md`](../../../REFERENCES.md) y [`docs/BRAND_IDENTITY.md`](../../../docs/BRAND_IDENTITY.md). |
 | **G10** | Sin menores de 18 años identificables | Cero rostros, voces o nombres de menores en capturas, slides o video. |
 | **G11** | **Reglas de IA, marcas de agua y cero logos NASA** | Declaración completa en [`AI_DISCLOSURE.md`](../../../AI_DISCLOSURE.md); si hay imágenes/videos de IA deben llevar marca de agua visible `"AI-Generated"`; cero logos de NASA (*Meatball*/*Worm*) en todo el proyecto. |
@@ -69,10 +69,10 @@ Aplica [`.claude/skills/rubrica-cientifica-30m/SKILL.md`](../rubrica-cientifica-
 - **Distancias estadísticas definidas sobre distribuciones completas:** **Wasserstein-1 ($W_1$)** y **Kolmogorov–Smirnov ($D_{\text{KS}}$)** en Pendiente ($^\circ$) y Relieve Local ($\text{m}$).
 - **Incertidumbre espacialmente válida:** Intervalos de confianza al 95 % mediante **2D Spatial Block Bootstrap** ($10 \times 10\text{ px}$, $B=200$).
 - **Qué SÍ se parece vs. ejemplos de qué NO se parece y POR QUÉ:**
-  - *Positivo:* **Salar de Pajonales (`83b221fffffffff`)** sí reproduce las pendientes a $30\text{ m}$ del margen de Jezero ($W_1 = 0.77^\circ$) para ensayos mecánicos de tracción de rovers.
-  - *Negativo geomorfológico:* El control clásico de **Yungay (`83b220fffffffff`)** NO reproduce la distribución de pendientes de Jezero ($W_1 = 4.13^\circ$) por ser una planicie aluvial madura mucho más plana.
+  - *Positivo:* la celda **`83b224fffffffff`** («Pampa Central») se parece a Jezero en pendiente a 30 m con DEM reales ($W_1 = 0.54^\circ$, IC 95 % 0,40–0,65°, estable a 60 y 90 m). Fuente única: `docs/RESULTADOS_TERRENO_REALES.md`.
+  - *Negativo:* la celda **`83b221fffffffff`** («Salar de Pajonales», 4.200–5.270 m) es mucho más abrupta ($W_1 = 6.92^\circ$); el control **Yungay** se aleja más que `83b224` ($W_1 = 3.32^\circ$) por su cola de laderas fuertes. Las cifras 0,77° y 4,13° venían del DEM sintético y están retiradas.
   - *Negativo físico irreducible ($\mathbf{B}$):* Ningún sitio terrestre reproduce la gravedad marciana (**$0.38\text{ g}$**) o lunar (**$0.166\text{ g}$**), la atmósfera marciana de **$\text{CO}_2$ a $\sim 0.6\text{ kPa}$ ($6.1\text{ mbar}$)** o el vacío lunar ($0\text{ kPa}$), la radiación ionizante superficial (**$\sim 230\text{ mSv/año}$ en Marte**, **$\sim 380\text{ mSv/año}$ en la Luna** vs. $2.4\text{ mSv/año}$ en la Tierra), ni la oscilación térmica $\Delta T$ ($80\text{--}100\text{ K}$ en Marte, $290\text{ K}$ en la Luna).
-- **Honestidad de datos disponibles en disco:** Declaración transparente del estado del DEM sintético calibrado en `terrain_statistics.py` frente a las celdas medidas en `ckepi.duckdb`.
+- **Honestidad de datos disponibles en disco:** la comparación usa ventanas reales (`backend/app/data/derived/terrain_windows_30m.*`); cualquier otra combinación sale rotulada `SYNTHETIC` y no debe presentarse como medición.
 
 ### Paso 5 · Lente Local Antofagasta, Demo Básica Mobile-First y Caja La Araucana
 Aplica [`.claude/skills/rubrica-local-araucana/SKILL.md`](../rubrica-local-araucana/SKILL.md):

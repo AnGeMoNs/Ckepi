@@ -345,8 +345,7 @@
             <tr>
               <td><strong>Earth</strong></td>
               <td>
-                • <strong>NASA/JPL NASADEM_HGT v001</strong> (<span class="mono">10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001</span>)<br/>
-                • <strong>ESA Copernicus DEM GLO-30</strong> (<span class="mono">30 m</span>, CC BY 4.0)<br/>
+                • <strong>ESA Copernicus DEM GLO-30</strong> (<span class="mono">30 m</span> DSM, Copernicus DEM licence) — real Earth terrain<br/>
                 • <strong>NASA LaRC POWER API v2.5</strong> (CERES/MERRA-2 Solar & UV Flux)<br/>
                 • <strong>Open-Meteo ERA5-Land Archive</strong> & <strong>UW–Madison Macrostrat API v2</strong>
               </td>
@@ -384,36 +383,45 @@
           <tbody>
             <tr>
               <td><span class="tag tag-amber">Planetary Target</span></td>
-              <td><strong>Jezero Crater Margin, Mars</strong> (<span class="mono">18.38° N, 77.58° E</span>)</td>
-              <td class="mono">6.72° (IQR 5.51°)</td>
-              <td class="mono">0.00° (Ref)</td>
-              <td class="mono">0.000 (Ref)</td>
-              <td class="mono">0.00 m (P₅₀ 37.9 m)</td>
-              <td>Deltaic scarp & crater floor transition zone at 30 m metric scale.</td>
+              <td><strong>Jezero Crater, Mars</strong> (<span class="mono">18.38° N, 77.58° E</span>; NASA MRO CTX DEM)</td>
+              <td class="mono">1.70° (p90 4.01°)</td>
+              <td class="mono">—</td>
+              <td class="mono">—</td>
+              <td class="mono">—</td>
+              <td>6 km crater-floor window, 30 m.</td>
             </tr>
             <tr>
-              <td><span class="tag tag-emerald">✅ Positive Match</span></td>
-              <td><strong>Salar de Pajonales, Antofagasta</strong> (<span class="mono">83b221fffffffff</span>)</td>
-              <td class="mono">6.90° (IQR 4.53°)</td>
-              <td class="mono"><strong>0.77°</strong> [0.37°–1.03°]<br/>(60m: 0.76°, 90m: 0.75°)</td>
-              <td class="mono"><strong>0.097</strong> [0.068–0.130]</td>
-              <td class="mono"><strong>8.60 m</strong> [6.62–10.03 m]</td>
-              <td><strong>MATCHES AT 30 m:</strong> Volcaniclastic scarps and incised alluvial fans closely reproduce Jezero's slope distribution for <strong>rover traction & suspension trials</strong>.</td>
+              <td><span class="tag tag-emerald">✅ What matches</span></td>
+              <td><strong>H3 cell 83b224, Antofagasta</strong> (<span class="mono">23.05° S, 69.50° W</span>)</td>
+              <td class="mono">1.37° (p90 2.85°)</td>
+              <td class="mono"><strong>0.54°</strong> [0.40°–0.65°]<br/>(60 m: 0.40°, 90 m: 0.27°)</td>
+              <td class="mono"><strong>0.15</strong></td>
+              <td class="mono"><strong>1.8 m</strong></td>
+              <td><strong>Closest slope distribution</strong>, stable across scales: a candidate for rover-mobility field study, not a certified site.</td>
             </tr>
             <tr>
-              <td><span class="tag tag-rose">❌ Negative Match</span></td>
-              <td><strong>Yungay Classic Control, Antofagasta</strong> (<span class="mono">83b220fffffffff</span>)</td>
-              <td class="mono">2.62° (IQR 1.88°)</td>
-              <td class="mono"><strong>4.13°</strong> [3.85°–4.41°]</td>
-              <td class="mono"><strong>0.659</strong> [0.612–0.704]</td>
-              <td class="mono"><strong>21.84 m</strong> [19.40–24.15 m]</td>
-              <td><strong>FAILS AT 30 m (5.3× worse W₁):</strong> Mature flat alluvial plain. Valid for <strong>hyperarid astrobiology</strong> (Navarro-González et al., 2003), but <strong>unsuitable for steep crater-margin mechanics</strong>.</td>
+              <td><span class="tag tag-amber">⚠️ Classic control</span></td>
+              <td><strong>Yungay, Antofagasta</strong> (<span class="mono">24.08° S, 69.91° W</span>)</td>
+              <td class="mono">2.56° (p90 15.11°)</td>
+              <td class="mono">3.32°</td>
+              <td class="mono">0.31</td>
+              <td class="mono">20.8 m</td>
+              <td>Further than cell 83b224 because of a heavy tail of steep hillsides. Still the reference for <strong>hyper-arid astrobiology</strong> (Navarro-González et al., 2003).</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-rose">❌ What does not match</span></td>
+              <td><strong>H3 cell 83b221, Antofagasta</strong> (<span class="mono">24.68° S, 68.60° W; 4,200–5,270 m</span>)</td>
+              <td class="mono">7.89° (p90 15.51°)</td>
+              <td class="mono"><strong>6.92°</strong> [6.17°–7.31°]</td>
+              <td class="mono">0.74</td>
+              <td class="mono">42.8 m</td>
+              <td><strong>Far too steep</strong> (high Andes).</td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="slide-footer">
-        <span>Methodological Transparency: 30 m metric DEM calibrated from measured cell slope/roughness (Phase 2: direct GeoTIFF ingestion)</span>
+        <span>Real DEMs: NASA MRO CTX (USGS) vs. ESA Copernicus GLO-30 · 6 km windows at 30 m · reproducible script + SHA-256</span>
         <span>Slide 5 / 7</span>
       </div>
     </section>
@@ -438,7 +446,7 @@
             <ul>
               <li><strong>1. Frontier Science for All (<span class="mono">SDG 4.3</span>):</strong> Free, voice-guided (<span class="mono">Web Speech API</span>), trilingual (<span class="mono">EN/ES/PT</span>) platform accessible to any school, technical high school, or family without digital barriers.</li>
               <li><strong>2. STEAM & Employability (<span class="mono">SDG 4.4 · SDG 8</span>):</strong> Builds Antofagasta capabilities in <span class="mono">H3/DuckDB</span> geospatial science, autonomous mining/rover terrain analysis, and community astro-geotourism.</li>
-              <li><strong>3. Local Application (<span class="mono">SDG 9.5 · SDG 10 · SDG 13</span>):</strong> Positions <em>Salar de Pajonales</em>, <em>Cordillera de la Sal</em>, and <em>Volcán Llullaillaco</em> as validated scientific testbeds while reducing field campaign logistics emissions.</li>
+              <li><strong>3. Local Application (<span class="mono">SDG 9.5 · SDG 10 · SDG 13</span>):</strong> Flags under-studied Antofagasta locations (e.g. H3 cell 83b224, the closest slope match to Jezero) as candidates for field study — pre-selection, not validation.</li>
               <li><strong>4. Interregional Network — <em>Lattices</em> (<span class="mono">SDG 17.3 · 17.16 · 17.17</span>):</strong> Multi-stakeholder alliance linking Caja La Araucana, UCN, and UA with Chilean regions and global open-science catalogs.</li>
             </ul>
           </div>
@@ -459,7 +467,7 @@
           <div class="card">
             <h3><span class="tag tag-sky">Data & Code Licenses</span> NASA SPD-41a / FAIR</h3>
             <ul>
-              <li><strong>NASA Open Data (U.S. Public Domain, <span class="mono">17 U.S.C. § 105</span>):</strong> <span class="mono">NASADEM_HGT v001</span> (<span class="mono">10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001</span>), <span class="mono">LRO LOLA & Diviner GDR</span>, <span class="mono">MGS MOLA MEGDR</span>, <span class="mono">MRO/USGS Mars 2020 CTX DEM</span>, <span class="mono">Mars 2020 MEDA</span>, <span class="mono">MSL REMS/RAD</span> (Hassler et al., 2014), <span class="mono">NASA POWER v2.5</span>, <span class="mono">NASA Solar System Treks WMTS</span>, <span class="mono">NSSDCA Fact Sheet</span>.</li>
+              <li><strong>NASA Open Data (U.S. Public Domain, <span class="mono">17 U.S.C. § 105</span>):</strong> <span class="mono">MRO CTX / USGS Mars 2020 TRN CTX DEM (Jezero, core terrain input)</span>, <span class="mono">LRO LOLA & Diviner GDR</span>, <span class="mono">MGS MOLA MEGDR</span>, <span class="mono">MRO/USGS Mars 2020 CTX DEM</span>, <span class="mono">Mars 2020 MEDA</span>, <span class="mono">MSL REMS/RAD</span> (Hassler et al., 2014), <span class="mono">NASA POWER v2.5</span>, <span class="mono">NASA Solar System Treks WMTS</span>, <span class="mono">NSSDCA Fact Sheet</span>.</li>
               <li><strong>Partner Open Data (<span class="mono">CC BY 4.0</span>):</strong> <span class="mono">ESA Copernicus DEM GLO-30</span> (2023), <span class="mono">Open-Meteo ERA5-Land</span>, <span class="mono">Macrostrat API v2</span>.</li>
               <li><strong>Source Code License:</strong> Released under the <strong>MIT License</strong> (<span class="mono">FastAPI, DuckDB, Uber H3, SciPy, scikit-learn, React 18, Tailwind CSS, MapLibre GL JS</span>).</li>
             </ul>

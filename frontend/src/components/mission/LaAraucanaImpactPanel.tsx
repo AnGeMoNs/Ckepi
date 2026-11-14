@@ -63,7 +63,7 @@ export function LaAraucanaImpactPanel({
   const lang = i18n.language;
 
   const [literacyLevel, setLiteracyLevel] = useState<1 | 2 | 3>(1);
-  const [quizChoice, setQuizChoice] = useState<"pajonales" | "yungay" | "amazon" | null>(null);
+  const [quizChoice, setQuizChoice] = useState<"pampa" | "pajonales" | "yungay" | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   useEffect(() => {
@@ -82,11 +82,12 @@ export function LaAraucanaImpactPanel({
       return;
     }
 
-    const earthSite = comparison ? t(comparison.match.region_key) : t("regions.antofagasta_salar_pajonales");
+    const earthSite = comparison ? t(comparison.match.region_key) : t("regions.antofagasta_pampa_central");
     const targetSite = comparison ? t(comparison.site.name_key) : t("sites.mars_jezero_crater.name");
     const w1Slope = comparison?.statistical_distribution
       ? formatNumber(comparison.statistical_distribution.slope_distribution.wasserstein_distance, lang, 2)
-      : formatNumber(0.77, lang, 2);
+      : // Measured W1 for Jezero vs. cell 83b224 (real DEMs, docs/DATA_PROVENANCE.md §3.4)
+        formatNumber(0.54, lang, 2);
 
     const speechText = t("threeWorlds.speechScript", {
       earthSite,
@@ -263,17 +264,18 @@ export function LaAraucanaImpactPanel({
             </div>
 
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-              {(["pajonales", "yungay", "amazon"] as const).map((opt) => (
+              {(["pampa", "pajonales", "yungay"] as const).map((opt) => (
                 <button
                   key={opt}
                   type="button"
                   onClick={() => {
                     setQuizChoice(opt);
-                    if (opt === "pajonales") {
-                      onSelectAntofagastaCell("83b221fffffffff", "mars_jezero_crater");
-                    } else if (opt === "yungay") {
-                      onSelectAntofagastaCell("83b220fffffffff", "mars_jezero_crater");
-                    }
+                    const cellByOption = {
+                      pampa: "83b224fffffffff",
+                      pajonales: "83b221fffffffff",
+                      yungay: "83b220fffffffff",
+                    } as const;
+                    onSelectAntofagastaCell(cellByOption[opt], "mars_jezero_crater");
                   }}
                   className={`min-h-11 rounded border px-3 py-2 text-left text-xs font-medium transition ${
                     quizChoice === opt

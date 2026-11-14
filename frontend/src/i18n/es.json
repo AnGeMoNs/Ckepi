@@ -1000,7 +1000,7 @@
   },
   "distribution": {
     "title": "Comparación Estadística de Distribuciones Topográficas (Escala Común 30 m)",
-    "subtitle": "Distancias formales Wasserstein-1 (W₁) y Kolmogorov–Smirnov (D_KS) sobre {{samples}} píxeles remuestreados a {{spacing}} m/px (UTM 19S / corrección planetocéntrica cos φ).",
+    "subtitle": "Distancias Wasserstein-1 (W₁) y Kolmogorov–Smirnov (D_KS) sobre {{samples}} píxeles a {{spacing}} m/px (Tierra en UTM 19S; Marte en la proyección equirectangular del CTX DEM, con escala verdadera en Jezero).",
     "commonScaleBadge": "Escala común {{spacing}} m/px",
     "bootstrapBadge": "Bootstrap 2D: {{iterations}} iter ({{blockSize}}×{{blockSize}} px)",
     "targetDemLabel": "DEM Objetivo",
@@ -1067,17 +1067,17 @@
       "radiation": "Radiación medida por Curiosity/RAD: ~230 mSv/año (~0,64 mSv/día, Hassler et al. 2014)."
     },
     "quiz": {
-      "question": "Micro-Reto STEAM: Si debes probar la suspensión y cámaras LiDAR de un rover para el Cráter Jezero (pendiente media ~6,4°), ¿qué sector elegirías?",
-      "sourceNote": "Datos reales: NASADEM 30 m vs. MRO CTX DEM 30 m",
+      "question": "Micro-reto STEAM: debes probar la suspensión de un rover para el fondo del Cráter Jezero (pendiente mediana 1,7° en una ventana de 6 km del CTX DEM). ¿Qué sector de Antofagasta elegirías?",
+      "sourceNote": "Datos reales: CTX DEM de Jezero (NASA MRO, USGS) vs. Copernicus GLO-30, a 30 m",
       "options": {
-        "pajonales": "A) Salar de Pajonales, Antofagasta (Pendiente ~5,6° · Hiperárido)",
-        "yungay": "B) Llanura de Yungay, Antofagasta (Pendiente ~2,3° · Hiperárido)",
-        "amazon": "C) Cuenca Amazónica (Suelo húmedo y vegetación densa)"
+        "pajonales": "B) Celda Salar de Pajonales (H3 83b221…, 4.200–5.270 m)",
+        "yungay": "C) Yungay, el análogo clásico",
+        "pampa": "A) Celda Pampa Central (H3 83b224…, ~1.400 m)"
       },
       "feedback": {
-        "pajonales": "¡Correcto! Salar de Pajonales / Llano de la Paciencia (H3 83b221fffffffff) tiene una distribución de pendientes a 30 m que difiere de Jezero en solo W₁ = 0,77° (IC 95 %: 0,37°–1,03°), superando a la llanura plana de Yungay para ensayos mecánicos de tracción.",
-        "yungay": "¡Buen control astrobiológico, pero demasiado plano para tracción en Jezero! Yungay (W₁ = 4,13° en pendiente vs. Jezero) es ideal para calibrar espectrómetros UV/hiperaridez, pero Salar de Pajonales o Cordillera de la Sal reproducen mejor las pendientes del delta de Jezero.",
-        "amazon": "Incorrecto para un ensayo planetario: la humedad y cobertura vegetal (LAI > 4) alteran por completo la cohesión del suelo y los sensores ópticos LiDAR."
+        "pajonales": "No esta vez: es terreno de alta cordillera con pendientes mucho más fuertes (mediana 7,9° frente a 1,7°; W₁ = 6,9°). Es un buen ejemplo de lo que NO se parece a Jezero.",
+        "yungay": "Yungay es famoso por su hiperaridez, pero en pendiente se aleja más de Jezero (W₁ = 3,3°) porque tiene laderas fuertes. El análogo clásico no siempre es el mejor para cada ensayo.",
+        "pampa": "¡Bien elegido! Su distribución de pendientes difiere de la de Jezero en W₁ = 0,54° (IC 95 %: 0,40°–0,65°) y el resultado se mantiene a 60 y 90 m. Es un candidato para estudiar en terreno, no un sitio certificado: la gravedad, la presión y la radiación de Marte no se reproducen en la Tierra."
       }
     }
   },
@@ -1086,13 +1086,13 @@
     "badgeLocal": "Sede Antofagasta 2026",
     "badgeOds": "Metas ODS Verificadas",
     "antofagastaLabTitle": "Laboratorio Natural Región de Antofagasta (Selección en 1 Clic)",
-    "antofagastaLabSubtitle": "Haz clic en cualquier nodo regional para cargar su comparación estadística a 30 m (NASADEM vs. NASA PDS) y su diagnóstico de misión:",
+    "antofagastaLabSubtitle": "Haz clic en un nodo regional para cargar su comparación de terreno a 30 m (CTX DEM de Jezero vs. Copernicus GLO-30) y su diagnóstico de misión:",
     "utmScaleBadge": "UTM Zona 19S (EPSG:32719) · 30 m",
     "nodes": {
-      "pajonalesRole": "Mejor ajuste de pendiente con Cráter Jezero (W₁ = 0,77° a 30 m). Ideal para tracción de rovers.",
-      "cordilleraRole": "Escarpes evaporíticos y crestas rugosas (~6,9°). Ideal para evasión de obstáculos LiDAR.",
-      "pampaRole": "Planicie hiperárida de alta irradiancia solar y baja humedad para ensayos termo-ópticos.",
-      "yungayRole": "Sitio control clásico de literatura (2,25°). Benchmark de hiperaridez extrema y UV."
+      "pajonalesRole": "Caso negativo: celda de alta cordillera (4.200–5.270 m) con pendientes mucho más fuertes que Jezero (W₁ = 6,9° a 30 m).",
+      "cordilleraRole": "Casi plana (pendiente mediana 0,2°): más lisa que el fondo de Jezero (W₁ = 1,7°, KS = 0,82).",
+      "pampaRole": "Mejor ajuste de pendiente con el fondo de Jezero (W₁ = 0,54° a 30 m; se mantiene a 60 y 90 m). Candidato para estudiar en terreno.",
+      "yungayRole": "Control clásico de la literatura. En pendiente se aleja más de Jezero (W₁ ≈ 3,3–3,7°); su valor es la hiperaridez."
     },
     "pillarsTitle": "Alineación con los 4 Objetivos Estratégicos de Caja La Araucana y Metas ODS",
     "pillarsSubtitle": "Trazabilidad directa con la Memoria Integrada de Sostenibilidad y el desarrollo territorial:",
@@ -1107,6 +1107,6 @@
       "p4Body": "Arquitectura H3 escalable que conecta el nodo Antofagasta con Atacama, Coquimbo, Biobío y Magallanes junto a universidades regionales (UCN, UA)."
     },
     "sustainabilityTitle": "Modelo de Sostenibilidad Institucional:",
-    "sustainabilityBody": "Núcleo 100 % Open Source (Licencia MIT) para educación pública + servicios B2B/B2G de caracterización cuantitativa de sitios de prueba."
+    "sustainabilityBody": "Núcleo 100 % open source (Apache-2.0) para educación pública + servicios a instituciones para caracterizar sitios de prueba."
   }
 }

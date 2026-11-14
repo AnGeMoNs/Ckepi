@@ -1000,7 +1000,7 @@
   },
   "distribution": {
     "title": "Comparação Estatística de Distribuições Topográficas (Escala Comum 30 m)",
-    "subtitle": "Distâncias formais Wasserstein-1 (W₁) e Kolmogorov–Smirnov (D_KS) em {{samples}} pixels reamostrados a {{spacing}} m/px (UTM 19S / correção planetocêntrica cos φ).",
+    "subtitle": "Distâncias Wasserstein-1 (W₁) e Kolmogorov–Smirnov (D_KS) sobre {{samples}} pixels a {{spacing}} m/px (Terra em UTM 19S; Marte na projeção equirretangular do CTX DEM, com escala verdadeira em Jezero).",
     "commonScaleBadge": "Escala comum {{spacing}} m/px",
     "bootstrapBadge": "Bootstrap 2D: {{iterations}} iter ({{blockSize}}×{{blockSize}} px)",
     "targetDemLabel": "DEM Alvo",
@@ -1067,17 +1067,17 @@
       "radiation": "Radiação medida pelo Curiosity/RAD: ~230 mSv/ano (~0,64 mSv/dia, Hassler et al. 2014)."
     },
     "quiz": {
-      "question": "Micro-Desafio STEAM: Se você precisa testar a suspensão e o LiDAR de um rover para a Cratera Jezero (declividade média ~6,4°), qual setor escolheria?",
-      "sourceNote": "Dados reais: NASADEM 30 m vs. MRO CTX DEM 30 m",
+      "question": "Micro-desafio STEAM: você precisa testar a suspensão de um rover para o fundo da Cratera Jezero (declividade mediana 1,7° numa janela de 6 km do CTX DEM). Qual setor de Antofagasta escolheria?",
+      "sourceNote": "Dados reais: CTX DEM de Jezero (NASA MRO, USGS) vs. Copernicus GLO-30, a 30 m",
       "options": {
-        "pajonales": "A) Salar de Pajonales, Antofagasta (Declividade ~5,6° · Hiperárido)",
-        "yungay": "B) Planície de Yungay, Antofagasta (Declividade ~2,3° · Hiperárido)",
-        "amazon": "C) Bacia Amazônica (Solo úmido e vegetação densa)"
+        "pajonales": "B) Célula Salar de Pajonales (H3 83b221…, 4.200–5.270 m)",
+        "yungay": "C) Yungay, o análogo clássico",
+        "pampa": "A) Célula Pampa Central (H3 83b224…, ~1.400 m)"
       },
       "feedback": {
-        "pajonales": "Correto! Salar de Pajonales / Llano de la Paciencia (H3 83b221fffffffff) tem uma distribuição de declividades a 30 m que difere de Jezero em apenas W₁ = 0,77° (IC 95 %: 0,37°–1,03°), superando a planície de Yungay para ensaios mecânicos de tração.",
-        "yungay": "Bom controle astrobiológico, mas plano demais para tração em Jezero! Yungay (W₁ = 4,13° em declividade vs. Jezero) é ideal para calibrar espectrômetros UV/hiperaridez, mas Salar de Pajonales reproduz melhor as encostas do delta de Jezero.",
-        "amazon": "Incorreto para ensaio planetário: a umidade e cobertura vegetal (LAI > 4) alteram completamente a coesão do solo e os sensores ópticos LiDAR."
+        "pajonales": "Não desta vez: é terreno de alta cordilheira com declividades muito maiores (mediana 7,9° vs. 1,7°; W₁ = 6,9°). Um bom exemplo do que NÃO se parece com Jezero.",
+        "yungay": "Yungay é famoso pela hiperaridez, mas em declividade fica mais longe de Jezero (W₁ = 3,3°) porque tem encostas fortes. O análogo clássico nem sempre é o melhor para cada ensaio.",
+        "pampa": "Boa escolha! Sua distribuição de declividades difere da de Jezero em W₁ = 0,54° (IC 95 %: 0,40°–0,65°) e o resultado se mantém a 60 e 90 m. É um candidato para estudo em campo, não um local certificado: a gravidade, a pressão e a radiação de Marte não se reproduzem na Terra."
       }
     }
   },
@@ -1086,13 +1086,13 @@
     "badgeLocal": "Sede Antofagasta 2026",
     "badgeOds": "Metas ODS Verificadas",
     "antofagastaLabTitle": "Laboratório Natural Região de Antofagasta (Seleção em 1 Clique)",
-    "antofagastaLabSubtitle": "Clique em qualquer nó regional para carregar sua comparação estatística a 30 m (NASADEM vs. NASA PDS) e seu diagnóstico de missão:",
+    "antofagastaLabSubtitle": "Clique num nó regional para carregar sua comparação de terreno a 30 m (CTX DEM de Jezero vs. Copernicus GLO-30) e seu diagnóstico de missão:",
     "utmScaleBadge": "UTM Zona 19S (EPSG:32719) · 30 m",
     "nodes": {
-      "pajonalesRole": "Melhor ajuste de declividade com a Cratera Jezero (W₁ = 0,77° a 30 m). Ideal para tração de rovers.",
-      "cordilleraRole": "Escarpas evaporíticas e cristas rugosas (~6,9°). Ideal para desvio de obstáculos LiDAR.",
-      "pampaRole": "Planície hiperárida de alta irradiância solar e baixa umidade para testes termo-ópticos.",
-      "yungayRole": "Local de controle clássico da literatura (2,25°). Benchmark de hiperaridez extrema e UV."
+      "pajonalesRole": "Caso negativo: célula de alta cordilheira (4.200–5.270 m) com declividades muito maiores que Jezero (W₁ = 6,9° a 30 m).",
+      "cordilleraRole": "Quase plana (declividade mediana 0,2°): mais lisa que o fundo de Jezero (W₁ = 1,7°, KS = 0,82).",
+      "pampaRole": "Melhor ajuste de declividade com o fundo de Jezero (W₁ = 0,54° a 30 m; mantém-se a 60 e 90 m). Candidato para estudo em campo.",
+      "yungayRole": "Controle clássico da literatura. Em declividade fica mais longe de Jezero (W₁ ≈ 3,3–3,7°); seu valor é a hiperaridez."
     },
     "pillarsTitle": "Alinhamento com os 4 Objetivos Estratégicos da Caja La Araucana e Metas ODS",
     "pillarsSubtitle": "Rastreabilidade direta com o Relatório Integrado de Sustentabilidade e desenvolvimento territorial:",
@@ -1107,6 +1107,6 @@
       "p4Body": "Arquitetura H3 escalável que conecta o nó Antofagasta com Atacama, Coquimbo, Biobío e Magalhães junto às universidades regionais (UCN, UA)."
     },
     "sustainabilityTitle": "Modelo de Sustentabilidade Institucional:",
-    "sustainabilityBody": "Núcleo 100 % Open Source (Licença MIT) para educação pública + serviços B2B/B2G de caracterização quantitativa de campos de teste."
+    "sustainabilityBody": "Núcleo 100 % open source (Apache-2.0) para educação pública + serviços para instituições caracterizarem locais de teste."
   }
 }
