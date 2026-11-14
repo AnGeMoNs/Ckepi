@@ -11,6 +11,7 @@ import {
   computeWeightComparison,
   evaluateWaterStability,
 } from "../src/utils/planetaryPhysics.ts";
+import { FUN_FACTS, sortFunFactsForBody } from "../src/components/learning/funFacts.ts";
 
 test("computeWeightComparison preserves mass and scales weight in Newtons", () => {
   const res = computeWeightComparison(80);
@@ -96,4 +97,14 @@ test("evaluateWaterStability flags Mars ~0.61 kPa as triple-point unstable above
 
   const cold = evaluateWaterStability(-20);
   assert.equal(cold.find((x) => x.location === "mars")?.regime, "solid");
+});
+
+test("sortFunFactsForBody prioritizes selected body then Atacama without losing facts", () => {
+  const moonFirst = sortFunFactsForBody("moon");
+  assert.equal(moonFirst.length, FUN_FACTS.length);
+  assert.equal(moonFirst[0].tag, "moon");
+
+  const marsFirst = sortFunFactsForBody("mars");
+  assert.equal(marsFirst.length, FUN_FACTS.length);
+  assert.equal(marsFirst[0].tag, "mars");
 });

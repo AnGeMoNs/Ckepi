@@ -755,5 +755,127 @@
     "sdg17Desc": "Arquitetura aberta e replicável entre comunidades educativas e pesquisa regional.",
     "aiDisclosureTitle": "Declaração de uso de IA (AI_DISCLOSURE.md)",
     "aiDisclosureDesc": "A concepção científica (decomposição X → Y / B em malha H3) é humana. Assistentes de IA apoiaram implementação, refatoração e paridade trilíngue es/pt/en, revisadas pela equipe."
+  },
+  "funFacts": {
+    "title": "Curiosidades planetárias interativas",
+    "subtitle": "Toque em cada cartão para revelar o dado científico e sua fonte NASA/peer-reviewed.",
+    "progress": "{{count}} de {{total}} descobertas",
+    "filterLabel": "Filtrar curiosidades por corpo ou região",
+    "filterAll": "Todas",
+    "tapToReveal": "Tocar para descobrir",
+    "hide": "Ocultar",
+    "sourceLabel": "Fonte",
+    "allDiscovered": "Você descobriu todas as curiosidades planetárias!",
+    "tags": {
+      "mars": "Marte",
+      "moon": "Lua",
+      "atacama": "Atacama"
+    },
+    "items": {
+      "sound": {
+        "q": "Por que sua voz soaria diferente e muito mais baixa em Marte?",
+        "a": "Na atmosfera tênue de CO₂ (~0,6 kPa), o som viaja a ~240 m/s (vs ~343 m/s na Terra) e frequências agudas atenuam muito rápido."
+      },
+      "sol": {
+        "q": "Quanto tempo dura realmente um dia em Marte?",
+        "a": "Um sol marciano dura 24 h 39 min 35 s: quase igual a um dia terrestre, facilitando o planejamento de turnos de rovers."
+      },
+      "comms": {
+        "q": "É possível dirigir um rover em Marte com joystick em tempo real?",
+        "a": "Não: conforme a distância orbital, um sinal de rádio leva entre ~3 e ~22 minutos por trecho, exigindo navegação autônoma local."
+      },
+      "radiation": {
+        "q": "Quanta radiação um astronauta recebe rumo a Marte?",
+        "a": "Sem campo magnético global nem atmosfera densa, a dose na superfície supera amplamente os ~2,4 mSv/ano médios terrestres."
+      },
+      "olympus": {
+        "q": "Quão grande é o Monte Olimpo frente aos vulcões do Atacama?",
+        "a": "Atinge ~21,9 km de altura (~3× o Everest) e ~600 km de diâmetro, embora sua inclinação média seja suave (~5°)."
+      },
+      "temperature": {
+        "q": "Quantos graus a temperatura pode variar em um único dia marciano?",
+        "a": "Em crateras como Jezero ou Gale, a amplitude térmica diária passa de 60–80 K devido à baixa inércia térmica e atmosfera rarefeita."
+      },
+      "blueSunset": {
+        "q": "De que cor são os pores do sol em Marte?",
+        "a": "Azuladas perto do Sol: a poeira fina espalha a luz vermelha em ângulos largos e deixa passar o azul."
+      },
+      "phobos": {
+        "q": "Onde nasce e onde se põe a lua Fobos no céu marciano?",
+        "a": "Fobos orbita mais rápido que a rotação de Marte (~7 h 39 min), nascendo no oeste e se pondo no leste."
+      },
+      "dustStorm": {
+        "q": "Tempestades de poeira podem cobrir todo o planeta Marte?",
+        "a": "Sim: tempestades globais bloqueiam a luz solar por semanas, embora a pressão dinâmica seja baixa pela pouca densidade do ar."
+      },
+      "moonTemp": {
+        "q": "Quais temperaturas extremas um rover enfrenta na Lua?",
+        "a": "Sem atmosfera, a superfície vai de ~390 K (+117 °C) sob o Sol a ~100 K (-173 °C) na noite lunar."
+      },
+      "moonFootprints": {
+        "q": "Por que as pegadas da Apollo seguem intactas há mais de 50 anos?",
+        "a": "A Lua não tem vento nem chuva; apenas impactos graduais de micrometeoritos alteram o regolito em milhões de anos."
+      },
+      "moonDay": {
+        "q": "Quanto dura um dia solar completo na Lua?",
+        "a": "Cerca de 29,5 dias terrestres (~14 dias de luz seguidos de ~14 dias de escuridão), exigindo armazenamento robusto de energia."
+      },
+      "atacamaRovers": {
+        "q": "Por que a NASA testou protótipos de rovers no deserto do Atacama?",
+        "a": "Pela hiperaridez extrema, solos salinos, alta radiação UV e quase ausência de vegetação em áreas como Yungay."
+      },
+      "perchlorate": {
+        "q": "Que composto químico os solos do Atacama e de Marte compartilham?",
+        "a": "Ambos contêm percloratos e sais naturais, úteis para estudar a química do regolito e habitabilidade extrema."
+      }
+    }
+  },
+  "learnHub": {
+    "pickCategory": "Escolha uma aventura científica para explorar:",
+    "score": "Desafios: {{correct}}/{{total}}",
+    "badgeTitle": "Explorador(a) Planetário(a) concluído!",
+    "badgeDesc": "Você acertou todos os minidesafios aplicando física real e limites entre a Terra e outros mundos.",
+    "categories": {
+      "body": {
+        "title": "Seu corpo",
+        "subtitle": "Peso, massa e saltos",
+        "teaser": "Você pesaria menos em Marte, mas continuaria com a mesma massa?"
+      },
+      "physics": {
+        "title": "Física impossível",
+        "subtitle": "Lançamentos, ondas e água",
+        "teaser": "Por que a água líquida ao ar livre ferve ou congela em Marte?"
+      },
+      "engineering": {
+        "title": "Engenharia espacial",
+        "subtitle": "Rovers, inclinações e poeira",
+        "teaser": "Um rover no Atacama sente a mesma tração que na cratera Jezero?"
+      },
+      "curiosities": {
+        "title": "Curiosidades",
+        "subtitle": "Som, clima e radiação",
+        "teaser": "Descubra 14 fatos reais verificados por missões da NASA e análogos do Atacama."
+      }
+    },
+    "astronautCard": {
+      "title": "Seu perfil físico em {{body}}",
+      "mass": "Sua massa",
+      "massSame": "Não muda em nenhum planeta",
+      "weight": "Seu peso (força)",
+      "scale": "Balança terrestre: {{kgf}} kgf",
+      "jump": "Salto vertical ideal",
+      "jumpEarth": "Na Terra: {{cm}} cm",
+      "airTime": "Tempo no ar",
+      "airTimeEarth": "Na Terra: {{s}} s"
+    }
+  },
+  "quickQuiz": {
+    "cta": "Minidesafio rápido",
+    "question": "Se enviarmos um rover de 100 kg para {{body}}, o que muda em relação a Antofagasta?",
+    "optA": "Sua massa diminui e a inclinação deixa de importar",
+    "optB": "Sua massa continua 100 kg, mas seu peso em N diminui",
+    "optC": "Aumenta seu atrito máximo com o solo",
+    "tryAgain": "Quase — lembre a diferença entre massa (kg) e peso (N).",
+    "explanation": "Em {{body}} a gravidade é ~{{pct}}% da terrestre: a massa segue 100 kg ({{mass}} kg), mas o peso cai de {{earthN}} N para {{bodyN}} N."
   }
 }

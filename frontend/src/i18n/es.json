@@ -755,5 +755,127 @@
     "sdg17Desc": "Arquitectura abierta y replicable entre comunidades educativas e investigación regional.",
     "aiDisclosureTitle": "Declaración de uso de IA (AI_DISCLOSURE.md)",
     "aiDisclosureDesc": "La concepción científica (descomposición X → Y / B sobre malla H3) es humana. Se utilizó asistencia de IA para acelerar implementación, refactorización y paridad trilingüe es/pt/en, verificada por el equipo. No se generaron logotipos NASA ni mediciones ficticias."
+  },
+  "funFacts": {
+    "title": "Curiosidades planetarias interactivas",
+    "subtitle": "Toca cada tarjeta para descubrir el dato científico y su fuente NASA/peer-reviewed.",
+    "progress": "{{count}} de {{total}} descubiertas",
+    "filterLabel": "Filtrar curiosidades por cuerpo o región",
+    "filterAll": "Todas",
+    "tapToReveal": "Tocar para descubrir",
+    "hide": "Ocultar",
+    "sourceLabel": "Fuente",
+    "allDiscovered": "¡Completaste todas las curiosidades planetarias!",
+    "tags": {
+      "mars": "Marte",
+      "moon": "Luna",
+      "atacama": "Atacama"
+    },
+    "items": {
+      "sound": {
+        "q": "¿Por qué en Marte tu voz sonaría distinta y mucho más baja?",
+        "a": "En la atmósfera tenue de CO₂ (~0,6 kPa), el sonido viaja a ~240 m/s (vs ~343 m/s en la Tierra) y las frecuencias agudas se atenúan muy rápido."
+      },
+      "sol": {
+        "q": "¿Cuánto dura realmente un día en Marte?",
+        "a": "Un sol marciano dura 24 h 39 min 35 s: casi igual que un día terrestre, lo que facilita planificar turnos de operación de rovers."
+      },
+      "comms": {
+        "q": "¿Se puede manejar un rover en Marte con joystick en tiempo real?",
+        "a": "No: según la distancia orbital, una señal de radio tarda entre ~3 y ~22 minutos por trayecto, por eso los rovers navegan con autonomía local."
+      },
+      "radiation": {
+        "q": "¿Cuánta radiación recibe un astronauta rumbo a Marte?",
+        "a": "Sin campo magnético global ni atmósfera densa, la dosis en superficie supera ampliamente los ~2,4 mSv/año promedio terrestres."
+      },
+      "olympus": {
+        "q": "¿Qué tan grande es el Monte Olimpo frente a los volcanes de Atacama?",
+        "a": "Alcanza ~21,9 km de altura (~3× el Everest) y ~600 km de diámetro, aunque su pendiente media es sorprendentemente suave (~5°)."
+      },
+      "temperature": {
+        "q": "¿Cuántos grados puede cambiar la temperatura en un solo día marciano?",
+        "a": "En cráteres como Jezero o Gale la amplitud térmica diaria supera los 60–80 K por la baja inercia térmica y escasa atmósfera."
+      },
+      "blueSunset": {
+        "q": "¿De qué color son los atardeceres en Marte?",
+        "a": "Azulados cerca del Sol: el polvo fino dispersa la luz roja en ángulo amplio y deja pasar el azul hacia el observador."
+      },
+      "phobos": {
+        "q": "¿Hacia dónde sale y se pone la luna Fobos en el cielo marciano?",
+        "a": "Fobos orbita más rápido de lo que rota Marte (~7 h 39 min), por eso sale por el oeste y se pone por el este."
+      },
+      "dustStorm": {
+        "q": "¿Pueden las tormentas de polvo cubrir todo el planeta Marte?",
+        "a": "Sí: las tormentas globales bloquean la luz solar durante semanas, aunque su presión dinámica es muy baja por la tenue densidad del aire."
+      },
+      "moonTemp": {
+        "q": "¿Qué temperaturas extremas enfrenta un rover en la Luna?",
+        "a": "Sin atmósfera, la superficie pasa de ~390 K (+117 °C) bajo el Sol a ~100 K (-173 °C) en la noche lunar o menos en cráteres polares."
+      },
+      "moonFootprints": {
+        "q": "¿Por qué las huellas del Apolo siguen intactas tras más de 50 años?",
+        "a": "La Luna carece de viento y lluvia; solo el impacto gradual de micrometeoritos erosiona el regolito a lo largo de millones de años."
+      },
+      "moonDay": {
+        "q": "¿Cuánto dura un día solar completo en la Luna?",
+        "a": "Unas 29,5 jornadas terrestres (~14 días de luz seguidos de ~14 días de oscuridad), lo que exige baterías o fuentes térmicas robustas."
+      },
+      "atacamaRovers": {
+        "q": "¿Por qué NASA ha probado prototipos de rovers en el desierto de Atacama?",
+        "a": "Por su hiperaridez, suelos salinos, alta radiación UV y ausencia casi total de vegetación en sectores como Yungay."
+      },
+      "perchlorate": {
+        "q": "¿Qué compuesto químico comparten los suelos de Atacama y Marte?",
+        "a": "Ambos presentan concentraciones naturales de percloratos y sales, útiles para estudiar química del regolito y habitabilidad extrema."
+      }
+    }
+  },
+  "learnHub": {
+    "pickCategory": "Elige una aventura científica para explorar:",
+    "score": "Retos: {{correct}}/{{total}}",
+    "badgeTitle": "¡Explorador/a Planetario/a completado!",
+    "badgeDesc": "Respondiste correctamente todos los mini-retos aplicando física real y límites entre la Tierra y otros mundos.",
+    "categories": {
+      "body": {
+        "title": "Tu cuerpo",
+        "subtitle": "Peso, masa y saltos",
+        "teaser": "¿Pesarías menos en Marte, pero seguirías teniendo la misma masa?"
+      },
+      "physics": {
+        "title": "Física imposible",
+        "subtitle": "Lanzamientos, olas y agua",
+        "teaser": "¿Por qué el agua líquida al aire libre hierve o se congela en Marte?"
+      },
+      "engineering": {
+        "title": "Ingeniería espacial",
+        "subtitle": "Rovers, pendientes y polvo",
+        "teaser": "¿Un rover en Atacama siente la misma tracción que en el cráter Jezero?"
+      },
+      "curiosities": {
+        "title": "Curiosidades",
+        "subtitle": "Sonido, clima y radiación",
+        "teaser": "Descubre 14 datos reales verificados con misiones NASA y análogos de Atacama."
+      }
+    },
+    "astronautCard": {
+      "title": "Tu perfil físico en {{body}}",
+      "mass": "Tu masa",
+      "massSame": "No cambia en ningún planeta",
+      "weight": "Tu peso (fuerza)",
+      "scale": "Báscula terrestre: {{kgf}} kgf",
+      "jump": "Salto vertical ideal",
+      "jumpEarth": "En la Tierra: {{cm}} cm",
+      "airTime": "Tiempo en el aire",
+      "airTimeEarth": "En la Tierra: {{s}} s"
+    }
+  },
+  "quickQuiz": {
+    "cta": "Mini-reto rápido",
+    "question": "Si enviamos un rover de 100 kg a {{body}}, ¿qué cambia respecto a Antofagasta?",
+    "optA": "Su masa baja y la pendiente deja de importar",
+    "optB": "Su masa sigue siendo 100 kg, pero su peso en N baja",
+    "optC": "Aumenta su fricción máxima con el suelo",
+    "tryAgain": "Casi — recuerda la diferencia entre masa (kg) y peso (N).",
+    "explanation": "En {{body}} la gravedad es ~{{pct}}% de la terrestre: su masa sigue en {{mass}} kg, pero su peso baja de {{earthN}} N a {{bodyN}} N."
   }
 }

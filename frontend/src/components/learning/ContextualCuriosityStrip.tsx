@@ -84,9 +84,23 @@ export const ContextualCuriosityStrip = memo(function ContextualCuriosityStrip({
 
   const currentFact = facts[factIdx % facts.length];
 
+  // Quick mini-challenge (mass vs weight) grounded in the selected body
+  const [quizOpen, setQuizOpen] = useState(false);
+  const [quizAnswer, setQuizAnswer] = useState<string | null>(null);
+  const roverMassKg = 100;
+  const roverWeights = computeWeightComparison(roverMassKg);
+  const bodyWeight = roverWeights[body];
+  const gravityPct = Math.round((bodyWeight.gravityMs2 / roverWeights.earth.gravityMs2) * 100);
+  const quizOptions = [
+    { id: "a", label: t("quickQuiz.optA") },
+    { id: "b", label: t("quickQuiz.optB") },
+    { id: "c", label: t("quickQuiz.optC") },
+  ];
+
   return (
     <Card className="border-accent/30 bg-accent/5">
-      <CardContent className="flex flex-wrap items-center justify-between gap-3 py-3">
+      <CardContent className="space-y-3 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 flex-1 items-start gap-2.5" aria-live="polite">
           <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
           <div className="space-y-0.5 text-xs sm:text-sm">
@@ -104,11 +118,75 @@ export const ContextualCuriosityStrip = memo(function ContextualCuriosityStrip({
               <span>{t("curiosity.nextFact")}</span>
             </Button>
           )}
+          <Button
+            variant="secondary"
+            aria-expanded={quizOpen}
+            aria-controls="quick-quiz"
+            onClick={() => setQuizOpen((prev) => !prev)}
+          >
+            <span aria-hidden="true">🎯</span>
+            <span>{t("quickQuiz.cta")}</span>
+          </Button>
           <Button variant="primary" onClick={onOpenLearn}>
             <span>{t("curiosity.cta")}</span>
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
+      </div>
+
+      {quizOpen && (
+        <fieldset
+          id="quick-quiz"
+          className="space-y-2 rounded-xl border border-border-subtle bg-surface p-3"
+        >
+          <legend className="px-1 text-sm font-semibold text-content">
+            {t("quickQuiz.question", { body: t(`bodies.${body}`) })}
+          </legend>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            {quizOptions.map((opt) => {
+              const selected = quizAnswer === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => setQuizAnswer(opt.id)}
+                  className={`min-h-11 rounded-lg border px-3 py-2 text-left text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                    selected
+                      ? "border-accent bg-accent/10 font-semibold text-content"
+                      : "border-border-subtle bg-surface-elevated text-content-muted hover:bg-surface-muted hover:text-content"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+          <div aria-live="polite">
+            {quizAnswer && (
+              <p
+                className={`rounded-lg border p-2.5 text-xs ${
+                  quizAnswer === "b"
+                    ? "border-status-valid/40 bg-status-valid/10 text-content"
+                    : "border-status-warn/40 bg-status-warn/10 text-content"
+                }`}
+              >
+                <strong>
+                  {quizAnswer === "b" ? t("learn.correctLabel") : t("quickQuiz.tryAgain")}
+                </strong>{" "}
+                {quizAnswer === "b" &&
+                  t("quickQuiz.explanation", {
+                    body: t(`bodies.${body}`),
+                    pct: gravityPct,
+                    mass: roverMassKg,
+                    earthN: formatNumber(roverWeights.earth.weightN, lang, 0),
+                    bodyN: formatNumber(bodyWeight.weightN, lang, 0),
+                  })}
+              </p>
+            )}
+          </div>
+        </fieldset>
+      )}
       </CardContent>
     </Card>
   );

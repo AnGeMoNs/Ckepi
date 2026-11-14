@@ -10,7 +10,6 @@ import {
   FlaskConical,
   HelpCircle,
   Scale,
-  Sparkles,
   Waves,
   Wind,
   XCircle,
@@ -38,6 +37,7 @@ import {
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
+import { FunFactCards } from "./FunFactCards";
 
 type ExperimentId =
   | "weight"
@@ -60,6 +60,15 @@ interface PlanetaryPhysicsLabProps {
 
 const BODIES: PhysicsBody[] = ["earth", "mars", "moon"];
 
+type CategoryId = "body" | "physics" | "engineering" | "curiosities";
+
+const CATEGORIES: { id: CategoryId; emoji: string }[] = [
+  { id: "body", emoji: "🧑‍🚀" },
+  { id: "physics", emoji: "🌊" },
+  { id: "engineering", emoji: "🤖" },
+  { id: "curiosities", emoji: "🪐" },
+];
+
 export function PlanetaryPhysicsLab({
   body,
   activeSite,
@@ -71,7 +80,8 @@ export function PlanetaryPhysicsLab({
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
 
-  const [experiment, setExperiment] = useState<ExperimentId>("rover");
+  const [experiment, setExperiment] = useState<ExperimentId>("weight");
+  const [category, setCategory] = useState<CategoryId>("body");
   const [massKg, setMassKg] = useState<number>(80);
   const [earthJumpCm, setEarthJumpCm] = useState<number>(45);
   const [throwSpeedMs, setThrowSpeedMs] = useState<number>(15);
@@ -111,17 +121,25 @@ export function PlanetaryPhysicsLab({
   const windRes = useMemo(() => computeDynamicWindPressure(windSpeedMs), [windSpeedMs]);
   const waterRes = useMemo(() => evaluateWaterStability(waterTempC), [waterTempC]);
 
-  const experiments: { id: ExperimentId; label: string; categoryKey: string }[] = [
-    { id: "weight", label: t("learn.experiments.weight.tab"), categoryKey: "learn.categories.body" },
-    { id: "jump", label: t("learn.experiments.jump.tab"), categoryKey: "learn.categories.body" },
-    { id: "projectile", label: t("learn.experiments.projectile.tab"), categoryKey: "learn.categories.physics" },
-    { id: "waves", label: t("learn.experiments.waves.tab"), categoryKey: "learn.categories.physics" },
-    { id: "water", label: t("learn.experiments.water.tab"), categoryKey: "learn.categories.physics" },
-    { id: "rocks", label: t("learn.experiments.rocks.tab"), categoryKey: "learn.categories.engineering" },
-    { id: "rover", label: t("learn.experiments.rover.tab"), categoryKey: "learn.categories.engineering" },
-    { id: "wind", label: t("learn.experiments.wind.tab"), categoryKey: "learn.categories.engineering" },
+  const experiments: { id: ExperimentId; label: string; category: CategoryId }[] = [
+    { id: "weight", label: t("learn.experiments.weight.tab"), category: "body" },
+    { id: "jump", label: t("learn.experiments.jump.tab"), category: "body" },
+    { id: "projectile", label: t("learn.experiments.projectile.tab"), category: "physics" },
+    { id: "waves", label: t("learn.experiments.waves.tab"), category: "physics" },
+    { id: "water", label: t("learn.experiments.water.tab"), category: "physics" },
+    { id: "rocks", label: t("learn.experiments.rocks.tab"), category: "engineering" },
+    { id: "rover", label: t("learn.experiments.rover.tab"), category: "engineering" },
+    { id: "wind", label: t("learn.experiments.wind.tab"), category: "engineering" },
   ];
-  const activeExpMeta = experiments.find((e) => e.id === experiment) ?? experiments[0];
+  const categoryExperiments = experiments.filter((e) => e.category === category);
+  const showExperiments = category !== "curiosities";
+  const targetBody: PlanetaryBody = body;
+
+  const selectCategory = (next: CategoryId) => {
+    setCategory(next);
+    const first = experiments.find((e) => e.category === next);
+    if (first) setExperiment(first.id);
+  };
 
   // Dynamic mini-challenge grounded in real compared slope data when available
   const dynamicSlopeVal = earthSlopeDeg ?? siteSlopeDeg ?? 15;
@@ -183,6 +201,7 @@ export function PlanetaryPhysicsLab({
       explanation: t("learn.challenges.distributions.explanation"),
     },
   ];
+  const correctCount = challenges.filter((ch) => quizAnswers[ch.id] === ch.correct).length;
 
   // Build SVG parabola paths for projectile experiment
   const maxRange = Math.max(projRes.moon.rangeM, projRes.mars.rangeM, projRes.earth.rangeM, 1);
@@ -237,46 +256,169 @@ export function PlanetaryPhysicsLab({
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Experiment Tabs + Thematic Category + Level-3 Toggle */}
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <Badge variant="default">{t(activeExpMeta.categoryKey)}</Badge>
-            <button
-              type="button"
-              aria-expanded={showScienceDetails}
-              onClick={() => setShowScienceDetails((prev) => !prev)}
-              className="min-h-11 rounded-lg border border-border-subtle bg-surface px-3 py-1.5 text-xs font-medium text-content-muted transition-colors hover:bg-surface-muted hover:text-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          {/* Level 1: pick a fun category (simple entry point for any visitor) */}
+          <div className="space-y-2">
+            <p className="text-sm font-semibold text-content">{t("learnHub.pickCategory")}</p>
+            <div
+              role="group"
+              aria-label={t("learnHub.pickCategory")}
+              className="grid grid-cols-2 gap-2 lg:grid-cols-4"
             >
-              {showScienceDetails
-                ? t("learn.hideScienceDetails")
-                : t("learn.showScienceDetails")}
-            </button>
+              {CATEGORIES.map((cat) => {
+                const active = category === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => selectCategory(cat.id)}
+                    className={`flex min-h-[6.5rem] flex-col items-start gap-1 rounded-xl border p-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                      active
+                        ? "border-accent bg-accent/10"
+                        : "border-border-subtle bg-surface hover:border-accent/40 hover:bg-surface-muted"
+                    }`}
+                  >
+                    <span className="text-2xl leading-none" aria-hidden="true">
+                      {cat.emoji}
+                    </span>
+                    <span className="text-sm font-semibold text-content">
+                      {t(`learnHub.categories.${cat.id}.title`)}
+                    </span>
+                    <span className="text-xs text-content-muted">
+                      {t(`learnHub.categories.${cat.id}.subtitle`)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-xs italic text-content-muted" aria-live="polite">
+              💭 {t(`learnHub.categories.${category}.teaser`)}
+            </p>
           </div>
 
-          <div
-            role="tablist"
-            aria-label={t("learn.experimentSelectorLabel")}
-            className="flex flex-wrap gap-2"
-          >
-            {experiments.map((exp) => {
-              const active = experiment === exp.id;
-              return (
-                <button
-                  key={exp.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => setExperiment(exp.id)}
-                  className={`min-h-11 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-sm ${
-                    active
-                      ? "border-accent bg-accent text-accent-foreground"
-                      : "border-border-subtle bg-surface text-content-muted hover:bg-surface-muted hover:text-content"
-                  }`}
+          {/* Fun astronaut summary for "Your body" category */}
+          {category === "body" && (
+            <div className="rounded-xl border border-accent/30 bg-gradient-to-br from-accent/10 to-transparent p-4">
+              <p className="flex items-center gap-2 text-sm font-semibold text-content">
+                <span aria-hidden="true">🧑‍🚀</span>
+                {t("learnHub.astronautCard.title", { body: t(`bodies.${targetBody}`) })}
+              </p>
+              <ul className="mt-2 grid grid-cols-1 gap-2 text-xs sm:grid-cols-2 lg:grid-cols-4">
+                <li className="rounded-lg bg-surface/70 p-2.5">
+                  <span className="block text-content-muted">{t("learnHub.astronautCard.mass")}</span>
+                  <strong className="text-base text-content">{formatNumber(massKg, lang, 0)} kg</strong>
+                  <span className="block text-[11px] text-status-valid">
+                    {t("learnHub.astronautCard.massSame")}
+                  </span>
+                </li>
+                <li className="rounded-lg bg-surface/70 p-2.5">
+                  <span className="block text-content-muted">{t("learnHub.astronautCard.weight")}</span>
+                  <strong className="text-base text-content">
+                    {formatNumber(weightRes[targetBody].weightN, lang, 0)} N
+                  </strong>
+                  <span className="block text-[11px] text-content-muted">
+                    {t("learnHub.astronautCard.scale", {
+                      kgf: formatNumber(weightRes[targetBody].earthScaleKgf, lang, 0),
+                    })}
+                  </span>
+                </li>
+                <li className="rounded-lg bg-surface/70 p-2.5">
+                  <span className="block text-content-muted">{t("learnHub.astronautCard.jump")}</span>
+                  <strong className="text-base text-content">
+                    {formatNumber(jumpRes[targetBody].jumpHeightM * 100, lang, 0)} cm
+                  </strong>
+                  <span className="block text-[11px] text-content-muted">
+                    {t("learnHub.astronautCard.jumpEarth", {
+                      cm: formatNumber(earthJumpCm, lang, 0),
+                    })}
+                  </span>
+                </li>
+                <li className="rounded-lg bg-surface/70 p-2.5">
+                  <span className="block text-content-muted">{t("learnHub.astronautCard.airTime")}</span>
+                  <strong className="text-base text-content">
+                    {formatNumber(jumpRes[targetBody].hangTimeS, lang, 2)} s
+                  </strong>
+                  <span className="block text-[11px] text-content-muted">
+                    {t("learnHub.astronautCard.airTimeEarth", {
+                      s: formatNumber(jumpRes.earth.hangTimeS, lang, 2),
+                    })}
+                  </span>
+                </li>
+              </ul>
+            </div>
+          )}
+
+          {showExperiments && (
+            <>
+              {/* Level 2: experiments within the category + Level 3 toggle */}
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div
+                  role="tablist"
+                  aria-label={t("learn.experimentSelectorLabel")}
+                  className="flex flex-wrap gap-2"
+                  onKeyDown={(e) => {
+                    const idx = categoryExperiments.findIndex((x) => x.id === experiment);
+                    if (idx === -1 || categoryExperiments.length < 2) return;
+                    let next = -1;
+                    if (e.key === "ArrowRight") next = (idx + 1) % categoryExperiments.length;
+                    else if (e.key === "ArrowLeft")
+                      next = (idx - 1 + categoryExperiments.length) % categoryExperiments.length;
+                    else if (e.key === "Home") next = 0;
+                    else if (e.key === "End") next = categoryExperiments.length - 1;
+                    if (next >= 0) {
+                      e.preventDefault();
+                      const nextId = categoryExperiments[next].id;
+                      setExperiment(nextId);
+                      document.getElementById(`exp-tab-${nextId}`)?.focus();
+                    }
+                  }}
                 >
-                  {exp.label}
+                  {categoryExperiments.map((exp) => {
+                    const active = experiment === exp.id;
+                    return (
+                      <button
+                        key={exp.id}
+                        id={`exp-tab-${exp.id}`}
+                        type="button"
+                        role="tab"
+                        aria-selected={active}
+                        aria-controls="experiment-panel"
+                        tabIndex={active ? 0 : -1}
+                        onClick={() => setExperiment(exp.id)}
+                        className={`min-h-11 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-sm ${
+                          active
+                            ? "border-accent bg-accent text-accent-foreground"
+                            : "border-border-subtle bg-surface text-content-muted hover:bg-surface-muted hover:text-content"
+                        }`}
+                      >
+                        {exp.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <button
+                  type="button"
+                  aria-expanded={showScienceDetails}
+                  onClick={() => setShowScienceDetails((prev) => !prev)}
+                  className="min-h-11 rounded-lg border border-border-subtle bg-surface px-3 py-1.5 text-xs font-medium text-content-muted transition-colors hover:bg-surface-muted hover:text-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                >
+                  🔬{" "}
+                  {showScienceDetails
+                    ? t("learn.hideScienceDetails")
+                    : t("learn.showScienceDetails")}
                 </button>
-              );
-            })}
-          </div>
+              </div>
+            </>
+          )}
+
+          {category === "curiosities" && <FunFactCards body={body} />}
+
+          <div
+            id="experiment-panel"
+            role={showExperiments ? "tabpanel" : undefined}
+            aria-labelledby={showExperiments ? `exp-tab-${experiment}` : undefined}
+            className={showExperiments ? "" : "hidden"}
+          >
 
           {/* Experiment A: Weight & Gravity */}
           {experiment === "weight" && (
@@ -1021,42 +1163,6 @@ export function PlanetaryPhysicsLab({
               )}
             </div>
           )}
-        </CardContent>
-      </Card>
-
-      {/* Contextual Curiosities */}
-      <Card>
-        <CardHeader className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-accent" aria-hidden="true" />
-            <CardTitle>{t("learn.curiositiesTitle")}</CardTitle>
-          </div>
-          <Badge variant="default">{t("learn.categories.curiosities")}</Badge>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 gap-3 md:grid-cols-3">
-          <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
-            <p className="font-semibold text-content">{t("learn.curiosities.pressureTitle")}</p>
-            <p className="mt-1 text-content-muted">{t("learn.curiosities.pressureDesc")}</p>
-          </div>
-          <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
-            <p className="font-semibold text-content">{t("learn.curiosities.dustTitle")}</p>
-            <p className="mt-1 text-content-muted">{t("learn.curiosities.dustDesc")}</p>
-          </div>
-          <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
-            <p className="font-semibold text-content">{t("learn.curiosities.atacamaTitle")}</p>
-            <p className="mt-1 text-content-muted">{t("learn.curiosities.atacamaDesc")}</p>
-          </div>
-          <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
-            <p className="font-semibold text-content">{t("learn.curiosities.soundTitle")}</p>
-            <p className="mt-1 text-content-muted">{t("learn.curiosities.soundDesc")}</p>
-          </div>
-          <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
-            <p className="font-semibold text-content">{t("learn.curiosities.solTitle")}</p>
-            <p className="mt-1 text-content-muted">{t("learn.curiosities.solDesc")}</p>
-          </div>
-          <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
-            <p className="font-semibold text-content">{t("learn.curiosities.commsTitle")}</p>
-            <p className="mt-1 text-content-muted">{t("learn.curiosities.commsDesc")}</p>
           </div>
         </CardContent>
       </Card>
@@ -1064,9 +1170,14 @@ export function PlanetaryPhysicsLab({
       {/* Contextual Mini-Challenges */}
       <Card>
         <CardHeader className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Award className="h-5 w-5 text-accent" aria-hidden="true" />
             <CardTitle>{t("learn.challengesTitle")}</CardTitle>
+            <span aria-live="polite">
+              <Badge variant={correctCount === challenges.length ? "valid" : "accent"}>
+                {t("learnHub.score", { correct: correctCount, total: challenges.length })}
+              </Badge>
+            </span>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button variant="secondary" onClick={onGoToCompare}>
@@ -1140,6 +1251,21 @@ export function PlanetaryPhysicsLab({
               </div>
             );
           })}
+
+          {correctCount === challenges.length && (
+            <div
+              role="status"
+              className="flex items-center gap-3 rounded-xl border border-status-valid/40 bg-status-valid/10 p-4 text-sm text-content md:col-span-2"
+            >
+              <span className="text-3xl leading-none" aria-hidden="true">
+                🏅
+              </span>
+              <div>
+                <p className="font-semibold">{t("learnHub.badgeTitle")}</p>
+                <p className="text-xs text-content-muted">{t("learnHub.badgeDesc")}</p>
+              </div>
+            </div>
+          )}
 
           {!comparison && (
             <div className="flex items-center gap-2 rounded-xl border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted md:col-span-2">

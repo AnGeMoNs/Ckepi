@@ -755,5 +755,127 @@
     "sdg17Desc": "Open, replicable architecture across educational communities and regional research.",
     "aiDisclosureTitle": "AI Disclosure (AI_DISCLOSURE.md)",
     "aiDisclosureDesc": "The core scientific concept (X → Y / B decomposition on H3 grid) is human-designed. AI assistants accelerated implementation, refactoring, and es/pt/en translation parity, verified by the team. No NASA logos or synthetic measurements were fabricated."
+  },
+  "funFacts": {
+    "title": "Interactive planetary curiosities",
+    "subtitle": "Tap each card to reveal the science fact and its NASA/peer-reviewed source.",
+    "progress": "{{count}} of {{total}} discovered",
+    "filterLabel": "Filter curiosities by body or region",
+    "filterAll": "All",
+    "tapToReveal": "Tap to reveal",
+    "hide": "Hide",
+    "sourceLabel": "Source",
+    "allDiscovered": "You discovered all planetary curiosities!",
+    "tags": {
+      "mars": "Mars",
+      "moon": "Moon",
+      "atacama": "Atacama"
+    },
+    "items": {
+      "sound": {
+        "q": "Why would your voice sound different and much quieter on Mars?",
+        "a": "In Mars thin CO₂ atmosphere (~0.6 kPa), sound travels at ~240 m/s (vs ~343 m/s on Earth) and high frequencies attenuate quickly."
+      },
+      "sol": {
+        "q": "How long is a day on Mars?",
+        "a": "One Martian sol lasts 24 h 39 min 35 s—almost identical to an Earth day, which helps teams schedule rover operations."
+      },
+      "comms": {
+        "q": "Can you drive a Mars rover with a live joystick from Earth?",
+        "a": "No: depending on orbital distance, radio signals take ~3 to ~22 minutes one-way, so rovers rely on onboard autonomous navigation."
+      },
+      "radiation": {
+        "q": "How much radiation does an astronaut face on Mars?",
+        "a": "Without a global magnetic field or thick atmosphere, surface radiation far exceeds Earths ~2.4 mSv/yr average."
+      },
+      "olympus": {
+        "q": "How tall is Olympus Mons compared to Atacama volcanoes?",
+        "a": "It rises ~21.9 km high (~3× Everest) and spans ~600 km wide, yet its average slope is surprisingly gentle (~5°)."
+      },
+      "temperature": {
+        "q": "How much can temperature swing in a single Martian day?",
+        "a": "In craters like Jezero or Gale, diurnal temperature swings exceed 60–80 K due to low thermal inertia and thin air."
+      },
+      "blueSunset": {
+        "q": "What color are sunsets on Mars?",
+        "a": "Bluish near the Sun: fine Martian dust scatters red light at wide angles while letting blue light pass forward."
+      },
+      "phobos": {
+        "q": "Which way does Phobos rise and set in the Martian sky?",
+        "a": "Phobos orbits faster than Mars rotates (~7 h 39 min), so it rises in the west and sets in the east."
+      },
+      "dustStorm": {
+        "q": "Can dust storms cover the entire planet Mars?",
+        "a": "Yes: planet-encircling storms can dim sunlight for weeks, even though wind dynamic pressure remains low due to thin air."
+      },
+      "moonTemp": {
+        "q": "What extreme temperatures does a lunar rover face?",
+        "a": "With no atmosphere, the surface swings from ~390 K (+117 °C) in sunlight to ~100 K (-173 °C) during lunar night."
+      },
+      "moonFootprints": {
+        "q": "Why are Apollo footprints still intact after more than 50 years?",
+        "a": "The Moon has no wind or rain; only gradual micrometeorite impacts erode regolith over millions of years."
+      },
+      "moonDay": {
+        "q": "How long is a full solar day on the Moon?",
+        "a": "About 29.5 Earth days (~14 days of sunlight followed by ~14 days of darkness), requiring robust energy storage."
+      },
+      "atacamaRovers": {
+        "q": "Why has NASA tested rover prototypes in the Atacama Desert?",
+        "a": "Because of extreme hyperaridity, saline soils, high UV flux, and near-zero vegetation in sectors like Yungay."
+      },
+      "perchlorate": {
+        "q": "Which chemical compound do Atacama and Mars soils share?",
+        "a": "Both contain natural perchlorates and salts, valuable for studying regolith chemistry and extremophile limits."
+      }
+    }
+  },
+  "learnHub": {
+    "pickCategory": "Choose a science adventure to explore:",
+    "score": "Challenges: {{correct}}/{{total}}",
+    "badgeTitle": "Planetary Explorer completed!",
+    "badgeDesc": "You answered all mini-challenges correctly using real physics and Earth–planet boundaries.",
+    "categories": {
+      "body": {
+        "title": "Your body",
+        "subtitle": "Weight, mass & jumps",
+        "teaser": "Would you weigh less on Mars while keeping the exact same mass?"
+      },
+      "physics": {
+        "title": "Impossible physics",
+        "subtitle": "Throws, waves & water",
+        "teaser": "Why does open-air liquid water boil or freeze on Mars?"
+      },
+      "engineering": {
+        "title": "Space engineering",
+        "subtitle": "Rovers, slopes & dust",
+        "teaser": "Does a rover in Atacama feel the same traction as in Jezero Crater?"
+      },
+      "curiosities": {
+        "title": "Curiosities",
+        "subtitle": "Sound, climate & radiation",
+        "teaser": "Discover 14 real facts verified by NASA missions and Atacama analogs."
+      }
+    },
+    "astronautCard": {
+      "title": "Your physical profile on {{body}}",
+      "mass": "Your mass",
+      "massSame": "Unchanged on any planet",
+      "weight": "Your weight (force)",
+      "scale": "Earth-scale reading: {{kgf}} kgf",
+      "jump": "Ideal vertical jump",
+      "jumpEarth": "On Earth: {{cm}} cm",
+      "airTime": "Hang time",
+      "airTimeEarth": "On Earth: {{s}} s"
+    }
+  },
+  "quickQuiz": {
+    "cta": "Quick mini-challenge",
+    "question": "If we send a 100 kg rover to {{body}}, what changes compared to Antofagasta?",
+    "optA": "Its mass drops and slope stops mattering",
+    "optB": "Its mass stays 100 kg, while its weight in N drops",
+    "optC": "Its maximum ground friction increases",
+    "tryAgain": "Almost — remember the difference between mass (kg) and weight (N).",
+    "explanation": "On {{body}} gravity is ~{{pct}}% of Earth: mass stays {{mass}} kg, while weight drops from {{earthN}} N to {{bodyN}} N."
   }
 }
