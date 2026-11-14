@@ -1,15 +1,16 @@
 # Centro Maestro de Sincronización (`docs/nehe/`) · Global · Local · Ciencia 30 m · Caja La Araucana
 
 > **Para:** Nehe & Dani (*Lattices Team*, NASA Space Apps Challenge 2026 — Sede Antofagasta)  
-> **Rama Activa:** `dani` (`origin/dani`) · **Sincronizado hasta:** `375bf7e` + `b4295e9` (`18:48 CLT`)  
-> **⭐ EMPIEZA AQUÍ (DOCUMENTOS TODO-EN-UNO):**
+> **Rama Activa:** `dani` (`origin/dani`) · **Sincronizado hasta:** `038b04f` + `bc9bd35` + `c735fc9` + `87c263a`  
+> **⭐ EMPIEZA AQUÍ (DOCUMENTOS SIMPLIFICADOS Y TODO-EN-UNO):**
+> 0. **[`RESUMEN_1_PAGINA_SIMPLIFICADO.md`](RESUMEN_1_PAGINA_SIMPLIFICADO.md)** — **⚡ RESUMEN ULTRA-SIMPLIFICADO EN 1 PÁGINA:** El problema, la solución, las 4 zonas de Antofagasta a $30\text{ m}$, el límite físico $\mathbf{B}$, los 3 pasos de la app, los 3 empleos locales en Antofagasta y el guion de 30 s.
 > 1. **[`SOLUCION_CONCRETA_FEEDBACK_MENTORES.md`](SOLUCION_CONCRETA_FEEDBACK_MENTORES.md)** — Cómo enfocamos el proyecto en las **4 zonas medidas de Antofagasta ↔ Luna y Marte** cumpliendo Global, Local, Ciencia 30 m y Caja La Araucana sin saturar de información.
-> 2. **[`FUNCIONAMIENTO_PASO_A_PASO_APP.md`](FUNCIONAMIENTO_PASO_A_PASO_APP.md)** — Guía clic por clic de las **4 pantallas y 4 pestañas de la aplicación** + guion de 45 segundos para la demo en vivo.
-> 3. **[`DOSSIER_MAESTRO_COMPLETO_NEHE.md`](DOSSIER_MAESTRO_COMPLETO_NEHE.md)** — Dossier completo (Problema Real + Propuesta de Valor e Innovación + Tabla Científica a 30 m con DEM Reales + Tabla Tres Mundos y Brecha $\mathbf{B}$ + 4 Ejes y Metas ODS de Caja La Araucana + Resumen de las 7 Slides).  
-> **📊 PRESENTACIONES PPTX Y PDF LISTAS PARA USAR (7 SLIDES CON CAPTURAS REALES):**
+> 2. **[`FUNCIONAMIENTO_PASO_A_PASO_APP.md`](FUNCIONAMIENTO_PASO_A_PASO_APP.md)** — Guía clic por clic del **Modo Explorar (`?view=explore`, 100 % estático/offline)** y del **Modo Laboratorio (`?view=app`, 4 pestañas)** + guion de 45 segundos para la demo en vivo.
+> 3. **[`DOSSIER_MAESTRO_COMPLETO_NEHE.md`](DOSSIER_MAESTRO_COMPLETO_NEHE.md)** — Dossier completo de respaldo técnico (Problema Real + Propuesta de Valor + Tabla Científica a 30 m con DEM Reales + Tabla Tres Mundos y Brecha $\mathbf{B}$ + 4 Ejes y Metas ODS de Caja La Araucana).  
+> **📊 PRESENTACIONES PPTX Y PDF SIMPLIFICADAS (7 SLIDES CON MENOS TEXTO, CAPTURAS REALES, LOGO V2 Y FONDOS CON MARCA DE AGUA IA):**
 > - **🌍 Global (100 % Inglés):** **[`ckepi-pitch-en.pptx`](ckepi-pitch-en.pptx)** · **[`ckepi-pitch-en.pdf`](ckepi-pitch-en.pdf)** · **[`ckepi-pitch-en.html`](ckepi-pitch-en.html)**
 > - **🇨🇱 Local Antofagasta / Caja La Araucana (Español):** **[`ckepi-pitch-es.pptx`](ckepi-pitch-es.pptx)** · **[`ckepi-pitch-es.pdf`](ckepi-pitch-es.pdf)** · **[`ckepi-pitch-es.html`](ckepi-pitch-es.html)**
-> - **⚙️ Script Generador Editable:** **[`build_deck_nehe.py`](build_deck_nehe.py)** + **[`pitch_verified_metrics.json`](pitch_verified_metrics.json)**
+> - **⚙️ Script Generador Editable:** **[`build_deck_nehe.py`](build_deck_nehe.py)** + **[`pitch_verified_metrics.json`](pitch_verified_metrics.json)** + **[`brand_and_backgrounds/`](brand_and_backgrounds/)**
 
 ---
 

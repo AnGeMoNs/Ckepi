@@ -1,5 +1,5 @@
-"""Build Ckepi's focused, mentor-aligned 7-slide presentation (PPTX + PDF + HTML) in English (Global) and Spanish (Local Antofagasta / Caja La Araucana).
-Refocused after mentor feedback: ZERO information overload, 100% concrete story centered on Antofagasta's 4 measured zones (30 m DEM) crossed with Mars (Jezero) & Moon (South Pole), fulfilling Global, Local, Scientific (30 m), and Caja La Araucana + UN SDG rubrics."""
+"""Build Ckepi's ultra-simplified, mentor-aligned 7-slide presentation (PPTX + PDF + HTML) in English (Global) and Spanish (Local Antofagasta / Caja La Araucana).
+Short sentences, high visual impact, zero walls of text, 100% rubric compliance."""
 
 from __future__ import annotations
 
@@ -45,7 +45,6 @@ SLIDE_BG_SCENES = [
 
 
 def prepare_brand_and_background_assets() -> dict[str, Path]:
-    """Copy Brand V2 assets and generate darkened 16:9 PNG slide backgrounds with visible AI watermark."""
     ASSETS_DIR.mkdir(parents=True, exist_ok=True)
     paths: dict[str, Path] = {}
 
@@ -76,7 +75,7 @@ def prepare_brand_and_background_assets() -> dict[str, Path]:
             composited = Image.alpha_composite(img, veil)
 
             draw = ImageDraw.Draw(composited)
-            wm_text = "AI-generated background & symbol · Ckepi (Art direction: Lattices Team)"
+            wm_text = "AI-generated background & symbol · Ckepi"
             font = ImageFont.load_default()
             bbox = draw.textbbox((0, 0), wm_text, font=font)
             tw = bbox[2] - bbox[0]
@@ -107,261 +106,226 @@ def load_metrics() -> dict[str, Any]:
 
 def build_copy(m: dict[str, Any]) -> dict[str, dict[str, Any]]:
     counts = m["schema_counts"]
-    atacama = m["atacama_cell"]
-    iv = atacama["iv_similarity_breakdown"]
 
     return {
         "en": {
             "lang": "en",
-            "badge_event": "NASA Space Apps 2026 · Identify Earth Locations that Analog Moon & Mars · Antofagasta, Chile",
+            "badge_event": "NASA Space Apps 2026 · Moon & Mars Analog Challenge · Antofagasta, Chile",
             "s1_title": "CKEPI",
-            "s1_subtitle": "Where in Antofagasta Can We Prepare for the Moon and Mars? Real 30 m NASA Evidence for Science & Community",
+            "s1_subtitle": "Where in Antofagasta Do We Prepare for the Moon and Mars?",
             "s1_tagline": (
-                "“We do not seek to prove that Atacama is identical to Mars. We seek to show which "
-                "characteristics it shares, which differences exist, and which new locations in "
-                "Antofagasta deserve to be studied using scientific evidence.”"
+                "“We do not seek to prove that Atacama is identical to Mars. We show what it shares, "
+                "what differs, and which new places in Antofagasta deserve to be studied with scientific evidence.”"
             ),
-            "s1_caption": "Live web app: 3 cardboard worlds (Moon · Antofagasta · Mars) + 3D globes + real 30 m DEM comparison",
-            "s1_meta": "Open-Source · Apache License 2.0 · Free Without Login · Brand V2: Salt, Copper & Sulfur",
-            "s2_kicker": "01 · THE CONCRETE PROBLEM & WHY IT MATTERS IN ANTOFAGASTA",
-            "s2_title": "Missions test in Earth deserts—but rely on visual similarity and leave citizens out",
-            "s2_p1_title": "1. The Real Scientific Problem (Recognized by NASA)",
-            "s2_p1_body": (
-                "Before going to the Moon or Mars, rovers and solar panels are tested on Earth. Yet missions keep defaulting "
-                "to the same famous site (Yungay) by visual resemblance, while vast sectors of Antofagasta remain unmeasured at 30 m."
-            ),
-            "s2_p2_title": "2. Who It Affects (Engineers & Our Local Community)",
-            "s2_p2_body": (
-                "Engineers need quantitative proof of where a terrain test is valid or invalid. Meanwhile, complex planetary GIS tools "
-                "exclude students, teachers, families, and people without scientific training."
-            ),
-            "s2_aud_title": "3. Concrete Value Proposition from Antofagasta",
-            "s2_aud_body": (
-                "Cross NASA Moon & Mars landing sites with 4 real measured zones of Antofagasta at 30 m—guiding field tests "
-                "while letting any citizen explore our desert with voice and pictograms."
-            ),
-            "s3_kicker": "02 · CONCRETE SOLUTION: ONE ENGINE, TWO EXPERIENCES (MOBILE-FIRST)",
-            "s3_title": "Focused and accessible: Explore Mode for everyone + Science Mode for researchers",
+            "s1_caption": "Live App: 3 cardboard worlds (Moon · Antofagasta · Mars) + 3D globes + 30 m NASA/ESA DEM proof",
+            "s1_meta": "Open-Source (Apache 2.0) · Free & No Login · Zero NASA Logos",
+            "s2_kicker": "01 · THE PROBLEM",
+            "s2_title": "Space missions test in deserts—but choose by sight and leave citizens out",
+            "s2_p1_title": "1. Visual Bias in Field Tests",
+            "s2_p1_body": "Missions keep repeating the same famous site (Yungay), while the rest of Antofagasta remains unmeasured at 30 m.",
+            "s2_p2_title": "2. Closed to the Community",
+            "s2_p2_body": "Planetary GIS tools are built only for specialists—excluding students, teachers, and families.",
+            "s2_aud_title": "3. Our Value Proposition",
+            "s2_aud_body": "Cross Moon & Mars landing sites with 4 real zones of Antofagasta at 30 m—for engineers and for every citizen.",
+            "s3_kicker": "02 · HOW CKEPI WORKS (STEP BY STEP)",
+            "s3_title": "Simple for the community, rigorous for the scientist",
             "s3_flow": [
                 (
-                    "1. Explore Mode (?view=explore)",
-                    "Three floating paper-cut worlds (Moon · Antofagasta · Mars). Tap one for a 4-step pictogram lesson, 10 kg backpack simulator, and voice readout (ES/PT/EN).",
+                    "Step 1 · Explore Mode (Community)",
+                    "3 floating cardboard worlds (Moon · Antofagasta · Mars). Tap one: pictograms, 10 kg backpack, and voice readout (ES/PT/EN).",
                 ),
                 (
-                    "2. Interactive Crossing (?view=app)",
-                    "Crosses Moon (Shackleton South Pole) and Mars (Jezero Crater) with Antofagasta's 4 real measured zones: Yes / Partial / No verdicts in < 0.4 s.",
+                    "Step 2 · Interactive Crossing",
+                    "Crosses Jezero (Mars) & Shackleton (Moon) with 4 Antofagasta zones: clear Yes / Partial / No verdicts in < 0.4 s.",
                 ),
                 (
-                    "3. Deep Science & 3D H3 Grid",
-                    "3D NASA Trek globes, 12,193 cached H3 cells (790 Res-2 & 11,403 Res-3), 30/60/90 m DEM distributions, and reproducible Markdown/CSV export.",
+                    "Step 3 · Deep Science & 3D Map",
+                    "3D NASA Trek globes, 12,193 H3 cells, 30 m slope histograms, physics lab, and field-trial sheet export (.md / .csv).",
                 ),
             ],
-            "s3_ui_card_title": "Built to Be Concrete, Fast & Universal (320px Mobile to 4K)",
+            "s3_ui_card_title": "Works Anywhere (320px Mobile to 4K · Offline-Ready Local Mode)",
             "s3_ui_notes": (
-                "Refocused after mentor feedback to eliminate visual overload: one question per screen, self-hosted Public Sans (USWDS) & "
-                "IBM Plex Mono (SIL OFL 1.1), custom SVG pictograms, >= 44 px touch targets, Web Speech API voice, 1,052 i18n keys (EN/ES/PT), "
-                f"and memoized DuckDB/SciPy backend answering real 30 m DEM comparisons in < 0.4 s across {counts['earth_h3_cells_total']:,} H3 cells."
+                f"• Local Explore Mode (?view=explore) runs 100% static (< 50 ms) with voice (Web Speech API) and >= 44 px buttons.\n"
+                f"• Science Mode (?view=app) runs on FastAPI + DuckDB ({counts['earth_h3_cells_total']:,} H3 cells) + MapLibre 3D + 1,052 i18n keys."
             ),
-            "s4_kicker": "03 · HOW IT WORKS: CAUSAL DECOMPOSITION (X → Y ∥ B) & NASA DATA",
-            "s4_title": "We never say '87% Mars': we separate Terrain (X), Climate (Y), and Physical Limits (B)",
-            "s4_x_title": "1. Substrate & Terrain (X · 10 Vars)",
-            "s4_x_list": "What we CAN test in Antofagasta: 30 m slope (°), local relief (m), roughness, albedo, thermal inertia, solar/UV flux, hyper-aridity.",
-            "s4_y_title": "2. Environmental Response (Y · 6 Vars)",
-            "s4_y_list": "What partially responds: diurnal thermal swing ΔT (K), nocturnal cooling rate, surface wind speed, aeolian dust mobilization.",
-            "s4_b_title": "3. Irreducible Limits (B · 3 Vars)",
-            "s4_b_list": "What Earth NEVER reproduces outdoors: surface gravity (0.38 g / 0.166 g), pressure (~0.6 kPa CO2 / vacuum), cosmic radiation (mSv/yr).",
-            "s4_formula": "30 m Common Scale: Wasserstein-1 (W1 in ° and m) + Kolmogorov–Smirnov (D_KS) + 2D Spatial Block Bootstrap (95% CI, 10×10 px blocks)",
-            "s4_sources_title": "Real Open Datasets Used in This Comparison (SPD-41a / FAIR)",
+            "s4_kicker": "03 · THE METHOD & REAL NASA DATA",
+            "s4_title": "We never say '87% Mars': we separate Terrain (X), Climate (Y), and Limits (B)",
+            "s4_x_title": "1. Terrain We CAN Test (X)",
+            "s4_x_list": "30 m slope (°), local relief (m), roughness, albedo, solar/UV flux, hyper-aridity (10 variables).",
+            "s4_y_title": "2. Climate Response (Y)",
+            "s4_y_list": "Day–night temperature swing ΔT (K), cooling rate, wind speed, dust (6 variables).",
+            "s4_b_title": "3. What Earth CANNOT Imitate (B)",
+            "s4_b_list": "Gravity (0.38 g / 0.166 g), thin CO2 air (~0.6 kPa) or vacuum (0 kPa), cosmic radiation (~230–380 mSv/yr).",
+            "s4_formula": "30 m Comparison: Wasserstein-1 (W1 in ° & m) + Kolmogorov–Smirnov (D_KS) + 2D Block Bootstrap (95% CI)",
+            "s4_sources_title": "Official Open Data Used (NASA & Partners)",
             "s4_sources": [
-                (
-                    "Mars & Moon (NASA)",
-                    "NASA MRO CTX / USGS Mars 2020 TRN DEM Mosaic (Jezero, 20 m → 30 m), Perseverance MEDA, Curiosity REMS & RAD (~230 mSv/yr), LRO LOLA & Diviner, NASA Trek WMTS, NSSDCA Fact Sheet.",
-                ),
-                (
-                    "Antofagasta & Earth",
-                    "ESA Copernicus DEM GLO-30 (UTM 19S at 30 m · DLR/Airbus/EU/ESA), NASA POWER v2.5, Open-Meteo ERA5-Land, ISRIC SoilGrids v2.0, Macrostrat.",
-                ),
+                ("Mars & Moon", "NASA MRO CTX DEM (Jezero 20m→30m), Perseverance MEDA, Curiosity REMS/RAD, LRO LOLA/Diviner, Trek WMTS, NSSDCA."),
+                ("Antofagasta", "ESA Copernicus DEM GLO-30 (UTM 19S at 30 m · DLR/Airbus/EU/ESA), NASA POWER v2.5, ERA5-Land, SoilGrids, Macrostrat."),
             ],
-            "s5_kicker": "04 · CONCRETE FINDING IN ANTOFAGASTA: 4 REAL ZONES AT 30 m VS. MARS & MOON",
-            "s5_title": "Jezero Crater (Mars CTX DEM, 1.70° median slope) vs. 4 Real Antofagasta Zones (6×6 km at 30 m)",
-            "s5_match_title": "4 Measured Zones in Antofagasta Region (30 m DEM Ranking)",
+            "s5_kicker": "04 · THE FINDING IN ANTOFAGASTA (REAL 30 m DATA)",
+            "s5_title": "Jezero Crater (Mars, 1.70° slope) vs. 4 Real Zones in Antofagasta (6×6 km at 30 m)",
+            "s5_match_title": "What Matches & What Fails at 30 m (Slope W1)",
             "s5_metrics": [
-                ("1. ✅ Pampa Central (Cell 83b224 · 1,408 m)", "W1 = 0.54° [CI 0.40°–0.65°], KS = 0.15 (BEST MATCH)"),
-                ("   ↳ Relief & Multiscale Stability", "Relief W1 = 1.8 m · Holds at 60 m (0.40°) & 90 m (0.27°)"),
-                ("2. ⚖️ Classic Yungay Control (24.08°S)", "W1 = 3.32°, KS = 0.31 (Steep tails P90 = 15.11°; best for aridity)"),
-                ("3. ⚠️ Near Yungay (Cell 83b220 · 1,423 m)", "W1 = 3.70° [CI 3.22°–4.20°], KS = 0.52 (Hillier than Jezero)"),
-                ("4. ❌ Salar / Salt Flat (Cell 83b225 · 2,301 m)", "W1 = 1.71°, KS = 0.82 (FAILS: Too flat, P50 = 0.19°)"),
-                ("5. ❌ High Andes / Pajonales (83b221 · 4,195 m)", "W1 = 6.92°, KS = 0.67 (FAILS: Too steep, P50 = 7.89°)"),
+                ("1. ✅ Pampa Central (Cell 83b224)", "W1 = 0.54° [CI 0.40°–0.65°] · 6× closer than Yungay!"),
+                ("   ↳ Multiscale & Relief", "Relief W1 = 1.8 m · Holds at 60 m (0.40°) & 90 m (0.27°)"),
+                ("2. ⚖️ Classic Yungay Control", "W1 = 3.32° (Steep hills P90 = 15.1°; best for hyper-aridity)"),
+                ("3. ⚠️ Near Yungay (Cell 83b220)", "W1 = 3.70° · KS = 0.52 (Hillier than Jezero floor)"),
+                ("4. ❌ Salar Salt Flat (Cell 83b225)", "W1 = 1.71° · KS = 0.82 (FAILS: Too flat, P50 = 0.19°)"),
+                ("5. ❌ High Andes / Pajonales (83b221)", "W1 = 6.92° · KS = 0.67 (FAILS: Too steep, P50 = 7.89°)"),
             ],
-            "s5_brk_title": "What Earth Cannot Imitate (Irreducible Gap B · Why We Pre-Select, Not Certify)",
+            "s5_brk_title": "Physical Limits B (Never Reproducible on Earth)",
             "s5_brk_rows": [
-                ("Gravity (10 kg Backpack)", "3.8 kg Mars (0.38 g) / 1.7 kg Moon (0.166 g)", "10.0 kg Antofagasta (1.00 g)"),
-                ("Air / Pressure", "~0.6 kPa CO2 Mars / 0 kPa Moon vacuum", "101.3 kPa N2/O2 (~80.7 kPa at 2,450 m)"),
-                ("Cosmic Radiation", "~230 mSv/yr Mars (RAD) / ~380 Moon", "~2.4 mSv/yr Earth (magnetic shield)"),
-                ("Day–Night ΔT", "-59 to -65 °C Mars / ΔT ~290 K Moon", "15 °C Earth mean (ΔT ~28 K Atacama)"),
+                ("10 kg Backpack", "3.8 kg Mars (0.38 g) / 1.7 kg Moon (0.166 g)", "10.0 kg Earth (1.00 g)"),
+                ("Air Pressure", "~0.6 kPa CO2 Mars / 0 kPa Moon", "101.3 kPa Earth"),
+                ("Radiation", "~230 mSv/yr Mars / ~380 Moon", "~2.4 mSv/yr Earth"),
+                ("Temperature", "-59 to -65 °C Mars / ΔT ~290 K Moon", "15 °C Earth mean"),
             ],
             "s5_honesty": (
-                f"What to test in Pampa 83b224: rover wheels, suspension & optical/LiDAR navigation on Jezero-like slopes (W1 = 0.54° vs 3.32° in Yungay). "
-                f"What to test in Yungay ({atacama['earth_cell_h3']}): hyper-arid astrobiology & UV (Aridity {iv['aridity_index']:.3f}). Never valid outdoors: parachutes, convective cooling, GCR shielding."
+                "Result: Pampa Central (83b224) is pre-selected to test rover wheels, suspension & cameras on Jezero-like slopes. "
+                "Yungay remains best for hyper-arid astrobiology. We pre-select sites for field study; we never certify mission safety."
             ),
-            "s6_kicker": "05 · CONCRETE IMPACT IN ANTOFAGASTA: CAJA LA ARAUCANA 4 AXES, JOBS & UN SDGs",
-            "s6_title": "Connecting space science with local education, regional jobs, and sustainable open access",
-            "s6_sus_title": "4 Caja La Araucana Axes & Concrete Value for Antofagasta",
+            "s6_kicker": "05 · LOCAL IMPACT IN ANTOFAGASTA · CAJA LA ARAUCANA & UN SDGs",
+            "s6_title": "4 Caja La Araucana Pillars, Regional Jobs & Open Sustainability",
+            "s6_sus_title": "4 Caja La Araucana Axes & Antofagasta Jobs",
             "s6_sus_items": [
-                "1. Frontier Science for All (SDG 4.3): Zero-jargon Explore Mode with cardboard worlds, pictograms, and voice readout for schools, families, and seniors.",
-                "2. STEAM Skills & Local Employability (SDG 4.4, 8): Trains elevation map reading (geomatics), spatial statistics, and Python/NASA data skills directly applicable to Antofagasta jobs: mining robotics & automation, astronomical observatories, and desert solar energy.",
-                "3. Local Territorial Discovery (SDG 9.5, 10, 13): Characterizes 4 zones of Antofagasta and proves Pampa Central (83b224) beats classic Yungay for rover slope trials.",
-                "4. Interregional Network ‘Lattices’ (SDG 17.3, 17.16, 17.17): Open Apache-2.0 platform connecting Antofagasta with universities, schools, and global agencies.",
+                "1. Science for All (SDG 4.3): Free cardboard-worlds mode with pictograms and voice for schools, families, and seniors.",
+                "2. STEAM & Local Jobs (SDG 4.4, 8): Trains geomatics, statistics, and NASA data skills for 3 real Antofagasta sectors: Mining Robotics, Astronomical Observatories, and Solar Energy.",
+                "3. Local Application (SDG 9.5, 10, 13): Puts 4 Antofagasta zones on the map and discovers Pampa 83b224 at 30 m.",
+                "4. Interregional Network ‘Lattices’ (SDG 17.3, 17.16, 17.17): Connects Antofagasta (UCN, UA, schools) with other regions.",
             ],
-            "s6_sdg_title": "Realistic Sustainability Hypothesis & Next Steps",
+            "s6_sdg_title": "Sustainability (Hypothesis to Validate)",
             "s6_sdg_items": [
-                "100% Free Public Core (Apache License 2.0): Web app, local educational mode, and open datasets stay permanently free with no login.",
-                "Institutional Hypothesis (To Validate): Municipalities, libraries, universities, and social funds sponsor guided STEAM school workshops, printable kits, and regional terrain reports (no unverified revenue or signed contracts claimed).",
-                "Next Steps: Field-validate Cell 83b224 with university rover prototypes and test Explore Mode in Antofagasta classrooms.",
+                "100% Free Public Core (Apache 2.0): Web app and educational mode stay permanently free with no login.",
+                "Institutional Hypothesis: Municipalities, libraries, and universities fund guided STEAM workshops, printable kits, and regional terrain reports (no unverified revenue claimed).",
+                "Next Step: Field-validate Pampa 83b224 with university rover prototypes and local schools.",
             ],
-            "s7_kicker": "06 · OPEN SCIENCE LEGAL CREDITS, BRAND V2 & MANDATORY AI DISCLOSURE",
-            "s7_title": "Full Legal Attribution (SPD-41a / FAIR), Self-Hosted Fonts & AI Watermarking",
-            "s7_credits_title": "Legal Open Science Citations & Brand Identity V2 ('Salt, Copper & Sulfur')",
+            "s7_kicker": "06 · OPEN SCIENCE CREDITS, BRAND V2 & AI DISCLOSURE",
+            "s7_title": "Legal Attribution (SPD-41a / FAIR) & Transparent AI Watermarking",
+            "s7_credits_title": "Open Science Legal Credits & Brand V2 ('Salt, Copper & Sulfur')",
             "s7_credits": (
-                "• Code License: Apache License 2.0 (OSI-approved).\n"
-                "• NASA Open Data (17 U.S.C. § 105 Public Domain, text credit only, zero NASA logos): MRO CTX / USGS Mars 2020 TRN DEM (20 m), Mars 2020 MEDA, MSL REMS/RAD, LRO LOLA/Diviner, MGS MOLA, NASA POWER v2.5, NASA Trek WMTS, NSSDCA.\n"
-                "• Partner Data: ESA Copernicus DEM GLO-30 (© DLR e.V. 2010-2014 & Airbus Defence and Space GmbH 2014-2018 under COPERNICUS by EU & ESA), ERA5-Land, ISRIC SoilGrids v2.0 (CC BY 4.0), Macrostrat (CC BY 4.0).\n"
-                "• Typography, Pictograms & Brand V2: Self-hosted Public Sans (USWDS / SIL OFL 1.1) & IBM Plex Mono (SIL OFL 1.1) + custom SVG pictograms. Palette: Mineral Night #101F24, Rock Ink #183A3A, Warm Salt #FFF2D7, Pale Sulfur #E4ED83, Light Copper #E8A080."
+                "• Code: Apache License 2.0 · Zero NASA or third-party logos.\n"
+                "• NASA Open Data (17 U.S.C. § 105): MRO CTX DEM (USGS 20m), Mars 2020 MEDA, MSL REMS/RAD, LRO LOLA/Diviner, MGS MOLA, NASA POWER v2.5, Trek WMTS, NSSDCA.\n"
+                "• Partner Data: ESA Copernicus DEM GLO-30 (© DLR 2010-2014 & Airbus 2014-2018 under COPERNICUS by EU & ESA), ERA5-Land, SoilGrids (CC BY 4.0), Macrostrat (CC BY 4.0).\n"
+                "• Fonts & Brand V2: Self-hosted Public Sans (USWDS/OFL) & IBM Plex Mono (OFL) + custom SVG pictograms. Colors: #101F24, #183A3A, #FFF2D7, #E4ED83, #E8A080."
             ),
-            "s7_ai_title": "Complete AI (Super Intelligence) & Watermark Declaration (AI_DISCLOSURE.md)",
+            "s7_ai_title": "Super Intelligence (AI) & Watermark Disclosure (AI_DISCLOSURE.md)",
             "s7_ai_body": (
-                "• 100% Human Scientific Conception: Causal decomposition (X → Y ∥ B), 30 m DEM statistical comparison, and Antofagasta territorial thesis are 100% human work.\n"
-                "• Code & i18n Assistance: Claude Code, OpenAI Codex/GPT, and Google Antigravity assisted with code, tests, docs, and ES/PT/EN parity (1,052 keys) under human verification.\n"
-                "• Visual AI & Mandatory Visible Watermarks: Scientific maps, 3D globes, DEM plots, paper planets, and the in-app vector logo (ckepi-*-vector-dark.svg) contain ZERO generative AI. Decorative paper-cut backgrounds & raster paper symbol (OpenAI image_gen via Codex) display ‘AI-generated · Ckepi’, and the Home intro video (Google Gemini) displays a persistent ‘AI-generated video’ watermark."
+                "• 100% Human Scientific Conception: X → Y ∥ B model, 30 m DEM statistical proof, and Antofagasta findings are 100% human work.\n"
+                "• Code & i18n Assistance: Claude Code, OpenAI Codex/GPT, and Google Antigravity assisted with code, tests, and ES/PT/EN parity (1,052 keys) under human review.\n"
+                "• Visual AI & Mandatory Watermarks: Scientific maps, 3D globes, DEM plots, and the in-app vector logo contain ZERO generative AI. Decorative paper-cut backgrounds/symbol display ‘AI-generated · Ckepi’, and the Home intro video displays ‘AI-generated video’."
             ),
-            "s7_links": "Public Repo: https://github.com/AnGeMoNs/Ckepi  ·  Docs & 30 m Proof: docs/nehe/ & docs/RESULTADOS_TERRENO_REALES.md  ·  Team: Lattices (Antofagasta)",
-            "s7_closing": "“With Ckepi, a resemblance sparks curiosity; 30-meter scientific evidence in Antofagasta teaches us how far it truly goes.”",
+            "s7_links": "GitHub: https://github.com/AnGeMoNs/Ckepi  ·  Docs & 30 m Proof: docs/nehe/  ·  Lattices Team (Antofagasta, Chile)",
+            "s7_closing": "“With Ckepi, a resemblance sparks curiosity; 30-meter evidence in Antofagasta teaches us how far it goes.”",
         },
         "es": {
             "lang": "es",
             "badge_event": "NASA Space Apps 2026 · Sede Antofagasta & Caja La Araucana · Equipo Lattices",
             "s1_title": "CKEPI",
-            "s1_subtitle": "¿Dónde en Antofagasta nos preparamos para la Luna y Marte? Evidencia real a 30 m para la ciencia y la comunidad",
+            "s1_subtitle": "¿Dónde en Antofagasta nos preparamos para la Luna y Marte?",
             "s1_tagline": (
                 "“No queremos demostrar que Atacama es idéntico a Marte. Queremos mostrar qué "
-                "características comparte, qué diferencias existen y qué nuevos lugares de Antofagasta "
-                "merecen ser estudiados utilizando evidencia científica.”"
+                "comparte, en qué se diferencia y qué nuevos lugares de Antofagasta merecen "
+                "estudiarse con evidencia científica.”"
             ),
-            "s1_caption": "App en vivo: 3 mundos de cartón (Luna · Antofagasta · Marte) + globos 3D + terreno real a 30 m",
-            "s1_meta": "Ciencia Abierta · Apache License 2.0 · Gratis y Sin Login · Identidad V2: Sal, Cobre y Azufre",
-            "s2_kicker": "01 · EL PROBLEMA CONCRETO Y POR QUÉ IMPORTA EN ANTOFAGASTA",
-            "s2_title": "Las misiones ensayan en desiertos terrestres, pero eligen por vista y dejan fuera a la ciudadanía",
-            "s2_p1_title": "1. El Problema Científico Real (Reconocido por NASA)",
-            "s2_p1_body": (
-                "Antes de viajar a la Luna o a Marte, los rovers y paneles solares se prueban en la Tierra. Pero se suele repetir "
-                "el mismo sitio famoso por parecido visual (Yungay), mientras grandes zonas de Antofagasta siguen sin medirse a 30 m."
-            ),
-            "s2_p2_title": "2. A Quién Afecta (Ingenieros y Comunidad Local)",
-            "s2_p2_body": (
-                "Los ingenieros necesitan saber con datos qué prueba sirve y cuál falla. Al mismo tiempo, las herramientas científicas "
-                "actuales están llenas de jerga que deja fuera a escolares, familias y personas sin formación técnica."
-            ),
-            "s2_aud_title": "3. Propuesta de Valor Concreta desde Antofagasta",
-            "s2_aud_body": (
-                "Cruzar los sitios de aterrizaje de NASA en la Luna y Marte con 4 zonas reales medidas a 30 m en Antofagasta, "
-                "guiando ensayos reales y acercando nuestro desierto a cualquier persona con voz y pictogramas."
-            ),
-            "s3_kicker": "02 · SOLUCIÓN CONCRETA: UN MOTOR, DOS EXPERIENCIAS (MOBILE-FIRST)",
-            "s3_title": "Enfocado tras el feedback de mentores: Modo Explorar (comunidad) + Modo Ciencia (expertos)",
+            "s1_caption": "App en vivo: 3 mundos de cartón (Luna · Antofagasta · Marte) + globos 3D + prueba real a 30 m",
+            "s1_meta": "Código Abierto (Apache 2.0) · Gratis y Sin Login · Cero Logos NASA",
+            "s2_kicker": "01 · EL PROBLEMA",
+            "s2_title": "Las misiones ensayan en desiertos, pero eligen a simple vista y excluyen a la comunidad",
+            "s2_p1_title": "1. Se elige por parecido visual",
+            "s2_p1_body": "Se repite siempre el mismo sitio famoso (Yungay), mientras el resto de Antofagasta sigue sin medirse a 30 metros.",
+            "s2_p2_title": "2. Herramientas cerradas al público",
+            "s2_p2_body": "Los programas científicos actuales usan jerga técnica que deja fuera a escolares, docentes y familias.",
+            "s2_aud_title": "3. Nuestra Propuesta de Valor",
+            "s2_aud_body": "Cruzar la Luna y Marte con 4 zonas reales de Antofagasta medidas a 30 m: útil para ingenieros y simple para todos.",
+            "s3_kicker": "02 · CÓMO FUNCIONA CKEPI (PASO A PASO)",
+            "s3_title": "Simple para la comunidad, riguroso para el científico",
             "s3_flow": [
                 (
-                    "1. Modo Explorar (?view=explore)",
-                    "Tres mundos de cartón flotando (Luna · Antofagasta · Marte). Tocas uno y aprendes en 4 pasos con pictogramas, mochila de 10 kg y voz (ES/PT/EN).",
+                    "Paso 1 · Modo Explorar (Comunidad)",
+                    "3 mundos de cartón flotando (Luna · Antofagasta · Marte). Tocas uno: pictogramas, mochila de 10 kg y voz en vivo (ES/PT/EN).",
                 ),
                 (
-                    "2. Cruce Interactivo (?view=app)",
-                    "Cruza la Luna (Polo Sur) y Marte (Cráter Jezero) con las 4 zonas medidas de Antofagasta: veredictos Sí / En parte / No en < 0,4 s.",
+                    "Paso 2 · Cruce Interactivo",
+                    "Cruza Jezero (Marte) y Shackleton (Luna) con 4 zonas de Antofagasta: veredictos Sí / En parte / No en < 0,4 s.",
                 ),
                 (
-                    "3. Modo Ciencia y Malla H3 3D",
-                    "Globos 3D NASA Trek, 12.193 celdas H3 en caché (790 Res-2 y 11.403 Res-3), distribuciones DEM a 30/60/90 m y ficha exportable.",
+                    "Paso 3 · Modo Ciencia y Mapa 3D",
+                    "Globos 3D NASA Trek, 12.193 celdas H3, histogramas a 30 m, laboratorio físico y ficha de ensayo exportable (.md / .csv).",
                 ),
             ],
-            "s3_ui_card_title": "Simple por fuera, riguroso por dentro (320px Móvil a 4K)",
+            "s3_ui_card_title": "Funciona en Cualquier Celular o PC (320px a 4K · Modo Local Estático)",
             "s3_ui_notes": (
-                "Rediseñado tras la mentoría para eliminar la sobrecarga de información: una pregunta por pantalla, tipografías autoalojadas "
-                "Public Sans (USWDS) e IBM Plex Mono (SIL OFL 1.1), pictogramas propios en código, botones >= 44 px, lectura por voz Web Speech API, "
-                f"1.052 claves trilingües (ES/PT/EN) y motor DuckDB/SciPy precalculado que responde en < 0,4 s sobre {counts['earth_h3_cells_total']:,} celdas H3."
+                f"• El Modo Explorar (?view=explore) funciona 100 % estático (< 50 ms, incluso sin servidor) con voz Web Speech API y botones >= 44 px.\n"
+                f"• El Modo Ciencia (?view=app) corre sobre FastAPI + DuckDB ({counts['earth_h3_cells_total']:,} celdas H3) + MapLibre 3D + 1.052 claves trilingües."
             ),
-            "s4_kicker": "03 · CÓMO FUNCIONA: DESCOMPOSICIÓN CAUSAL (X → Y ∥ B) Y DATOS NASA",
-            "s4_title": "Nunca decimos «87 % igual a Marte»: separamos Terreno (X), Clima (Y) y Límites Físicos (B)",
-            "s4_x_title": "1. Sustrato y Terreno (X · 10 Vars)",
-            "s4_x_list": "Lo que SÍ podemos medir y probar en Antofagasta: pendiente a 30 m (°), relieve local (m), rugosidad, albedo, inercia térmica, flujo solar/UV y aridez.",
-            "s4_y_title": "2. Respuesta Climática (Y · 6 Vars)",
-            "s4_y_list": "Lo que se parece en parte: cambio térmico día–noche ΔT (K), enfriamiento nocturno, viento superficial y polvo en suspensión.",
-            "s4_b_title": "3. Límites Irreproducibles (B · 3 Vars)",
-            "s4_b_list": "Lo que la Tierra NUNCA imita al aire libre: gravedad (0,38 g / 0,166 g), presión (~0,6 kPa CO2 / vacío) y radiación cósmica (mSv/año).",
-            "s4_formula": "Escala común 30 m: Wasserstein-1 (W1 en ° y m) + Kolmogorov–Smirnov (D_KS) + Bootstrap espacial por bloques 2D (IC 95%, bloques 10×10 px)",
-            "s4_sources_title": "Datasets Abiertos Reales Utilizados (Cumplimiento SPD-41a / FAIR)",
+            "s4_kicker": "03 · EL MÉTODO Y LOS DATOS REALES DE NASA",
+            "s4_title": "Nunca decimos «87 % igual a Marte»: separamos Terreno (X), Clima (Y) y Límites (B)",
+            "s4_x_title": "1. Terreno que SÍ Probamos (X)",
+            "s4_x_list": "Pendiente a 30 m (°), relieve local (m), rugosidad, albedo, luz solar/UV e hiperaridez (10 variables).",
+            "s4_y_title": "2. Respuesta del Clima (Y)",
+            "s4_y_list": "Cambio térmico día–noche ΔT (K), enfriamiento nocturno, viento y polvo (6 variables).",
+            "s4_b_title": "3. Lo que la Tierra NO Imita (B)",
+            "s4_b_list": "Gravedad (0,38 g / 0,166 g), aire delgado de CO2 (~0,6 kPa) o vacío (0 kPa) y radiación cósmica (~230–380 mSv/año).",
+            "s4_formula": "Comparación a 30 m: Wasserstein-1 (W1 en ° y m) + Kolmogorov–Smirnov (D_KS) + Bootstrap 2D (IC 95%)",
+            "s4_sources_title": "Datos Abiertos Oficiales Utilizados (NASA y Agencias Socias)",
             "s4_sources": [
-                (
-                    "Marte y Luna (NASA)",
-                    "NASA MRO CTX / USGS Mars 2020 TRN DEM Mosaic (Jezero, 20 m → 30 m), Perseverance MEDA, Curiosity REMS y RAD (~230 mSv/año), LRO LOLA y Diviner, NASA Trek WMTS, NSSDCA.",
-                ),
-                (
-                    "Antofagasta y Tierra",
-                    "ESA Copernicus DEM GLO-30 (UTM 19S a 30 m · DLR/Airbus/UE/ESA), NASA POWER v2.5, Open-Meteo ERA5-Land, ISRIC SoilGrids v2.0, Macrostrat.",
-                ),
+                ("Marte y Luna", "NASA MRO CTX DEM (Jezero 20m→30m), Perseverance MEDA, Curiosity REMS/RAD, LRO LOLA/Diviner, Trek WMTS, NSSDCA."),
+                ("Antofagasta", "ESA Copernicus DEM GLO-30 (UTM 19S a 30 m · DLR/Airbus/UE/ESA), NASA POWER v2.5, ERA5-Land, SoilGrids, Macrostrat."),
             ],
-            "s5_kicker": "04 · HALLAZGO CONCRETO EN ANTOFAGASTA: 4 ZONAS REALES A 30 m VS. MARTE Y LUNA",
-            "s5_title": "Cráter Jezero (Marte CTX DEM, pendiente mediana 1,70°) vs. 4 Zonas de Antofagasta (6×6 km a 30 m)",
-            "s5_match_title": "Ranking de las 4 Zonas Medidas en Antofagasta (DEM Real a 30 m)",
+            "s5_kicker": "04 · EL HALLAZGO EN ANTOFAGASTA (DATOS REALES A 30 m)",
+            "s5_title": "Cráter Jezero (Marte, pendiente 1,70°) vs. 4 Zonas de Antofagasta (6×6 km a 30 m)",
+            "s5_match_title": "Qué Sí se Parece y Qué No a 30 m (Pendiente W1)",
             "s5_metrics": [
-                ("1. ✅ Pampa Central (Celda 83b224 · 1.408 m)", "W1 = 0,54° [IC 0,40°–0,65°], KS = 0,15 (MEJOR AJUSTE)"),
-                ("   ↳ Relieve y Estabilidad 30/60/90 m", "Relieve W1 = 1,8 m · Estable a 60 m (0,40°) y 90 m (0,27°)"),
-                ("2. ⚖️ Control Clásico Yungay (24,08°S)", "W1 = 3,32°, KS = 0,31 (Laderas fuertes P90 = 15,11°; ideal aridez)"),
-                ("3. ⚠️ Cerca de Yungay (Celda 83b220 · 1.423 m)", "W1 = 3,70° [IC 3,22°–4,20°], KS = 0,52 (Más quebrada)"),
-                ("4. ❌ Salar / Cordillera Sal (83b225 · 2.301 m)", "W1 = 1,71°, KS = 0,82 (NO SIRVE: Muy plana, P50 = 0,19°)"),
-                ("5. ❌ Alta Cordillera / Pajonales (83b221 · 4.195 m)", "W1 = 6,92°, KS = 0,67 (NO SIRVE: Muy abrupta, P50 = 7,89°)"),
+                ("1. ✅ Pampa Central (Celda 83b224)", "W1 = 0,54° [IC 0,40°–0,65°] · ¡6× más cerca que Yungay!"),
+                ("   ↳ Relieve y Escala 30/60/90 m", "Relieve W1 = 1,8 m · Estable a 60 m (0,40°) y 90 m (0,27°)"),
+                ("2. ⚖️ Yungay (Análogo Clásico)", "W1 = 3,32° (Laderas fuertes P90 = 15,1°; ideal en aridez)"),
+                ("3. ⚠️ Cerca de Yungay (Celda 83b220)", "W1 = 3,70° · KS = 0,52 (Más quebrada que Jezero)"),
+                ("4. ❌ Salar / Cordillera Sal (83b225)", "W1 = 1,71° · KS = 0,82 (NO SIRVE: Muy plana, P50 = 0,19°)"),
+                ("5. ❌ Alta Cordillera / Pajonales (83b221)", "W1 = 6,92° · KS = 0,67 (NO SIRVE: Muy abrupta, P50 = 7,89°)"),
             ],
-            "s5_brk_title": "Lo que la Tierra NO Puede Imitar (Brecha B · Preseleccionamos, No Certificamos)",
+            "s5_brk_title": "Límites Físicos B (Jamás Reproducibles en la Tierra)",
             "s5_brk_rows": [
-                ("Gravedad (Mochila 10 kg)", "3,8 kg Marte (0,38 g) / 1,7 kg Luna (0,166 g)", "10,0 kg Antofagasta (1,00 g)"),
-                ("Aire y Presión", "~0,6 kPa CO2 Marte / 0 kPa vacío Lunar", "101,3 kPa N2/O2 (~80,7 kPa a 2.450 m)"),
-                ("Radiación Cósmica", "~230 mSv/año Marte (RAD) / ~380 Luna", "~2,4 mSv/año Tierra (escudo magnético)"),
-                ("Cambio Día–Noche (ΔT)", "-59 a -65 °C Marte / ΔT ~290 K Luna", "15 °C media Tierra (ΔT ~28 K Atacama)"),
+                ("Mochila de 10 kg", "3,8 kg Marte (0,38 g) / 1,7 kg Luna (0,166 g)", "10,0 kg Antofagasta (1,00 g)"),
+                ("Presión del Aire", "~0,6 kPa CO2 Marte / 0 kPa Luna", "101,3 kPa Tierra"),
+                ("Radiación Cósmica", "~230 mSv/año Marte / ~380 Luna", "~2,4 mSv/año Tierra"),
+                ("Temperatura", "-59 a -65 °C Marte / ΔT ~290 K Luna", "15 °C media Tierra"),
             ],
             "s5_honesty": (
-                f"Qué ensayar en Pampa 83b224: ruedas, suspensión y navegación óptica/LiDAR en pendientes como Jezero (W1 = 0,54° vs 3,32° en Yungay). "
-                f"Qué ensayar en Yungay ({atacama['earth_cell_h3']}): astrobiología hiperárida y UV (Aridez {iv['aridity_index']:.3f}). Inválido al aire libre: paracaídas, convección y blindaje GCR."
+                "Conclusión: Preseleccionamos la Pampa de Antofagasta (83b224) para probar ruedas, suspensión y cámaras de rovers en pendientes como Jezero. "
+                "Yungay sigue siendo ideal para astrobiología hiperárida. Preseleccionamos para estudiar en terreno; no certificamos."
             ),
-            "s6_kicker": "05 · IMPACTO CONCRETO EN ANTOFAGASTA: 4 EJES CAJA LA ARAUCANA, EMPLEOS Y ODS",
-            "s6_title": "Conectando ciencia espacial con educación accesible, oficios regionales y acceso abierto",
-            "s6_sus_title": "Los 4 Ejes de Caja La Araucana y Valor para Antofagasta",
+            "s6_kicker": "05 · IMPACTO EN ANTOFAGASTA · CAJA LA ARAUCANA Y METAS ODS",
+            "s6_title": "Los 4 Ejes de Caja La Araucana, Empleos Locales y Sostenibilidad",
+            "s6_sus_title": "4 Ejes Caja La Araucana y Empleos en Antofagasta",
             "s6_sus_items": [
-                "1. Democratizar Ciencia de Frontera (ODS 4.3): Modo Explorar sin jerga con 3 mundos de cartón, pictogramas y lectura por voz para colegios, familias y personas mayores.",
-                "2. Habilidades STEAM y Empleabilidad Local (ODS 4.4, 8): Enseña lectura de mapas de elevación (geomática), estadística espacial y datos abiertos NASA conectados con oficios reales de Antofagasta: robótica y automatización minera, observatorios astronómicos y energía solar.",
-                "3. Aplicación Local en Antofagasta (ODS 9.5, 10, 13): Mide 4 zonas de nuestra región y demuestra que la Pampa (83b224) supera a Yungay para ensayos de pendiente.",
-                "4. Red Interregional ‘Lattices’ (ODS 17.3, 17.16, 17.17): Plataforma abierta (Apache-2.0) que conecta Antofagasta con universidades, liceos y agencias espaciales.",
+                "1. Ciencia para Todos (ODS 4.3): Modo Explorar gratuito con mundos de cartón, pictogramas y voz para colegios, familias y adultos mayores.",
+                "2. STEAM y Empleo Local (ODS 4.4, 8): Enseña geomática, estadística y datos NASA para 3 rubros reales de Antofagasta: Robótica Minera, Observatorios Astronómicos y Energía Solar.",
+                "3. Aplicación Local (ODS 9.5, 10, 13): Mide 4 zonas de Antofagasta y descubre el potencial de la Pampa (83b224) a 30 m.",
+                "4. Red Interregional ‘Lattices’ (ODS 17.3, 17.16, 17.17): Conecta Antofagasta (UCN, UA, liceos) con otras regiones de Chile.",
             ],
-            "s6_sdg_title": "Sostenibilidad Realista (Hipótesis por Validar) y Hoja de Ruta",
+            "s6_sdg_title": "Sostenibilidad (Hipótesis por Validar)",
             "s6_sdg_items": [
-                "Núcleo Público 100 % Gratuito (Apache License 2.0): La app web, el modo local educativo y los datos permanecen libres sin login ni cobros.",
-                "Hipótesis Institucional (Por Validar): Municipios, bibliotecas, universidades y fondos sociales financian talleres STEAM guiados, kits impresos y fichas de caracterización territorial (sin afirmar ventas ni convenios cerrados aún).",
-                "Siguientes Pasos: Validar en terreno la celda 83b224 con prototipos universitarios y probar el Modo Explorar en aulas de Antofagasta.",
+                "Núcleo Público 100 % Gratuito (Apache 2.0): La web y el modo educativo permanecen abiertos sin login ni cobros.",
+                "Hipótesis Institucional: Municipios, bibliotecas y universidades financian talleres STEAM guiados, kits impresos y fichas territoriales (sin afirmar ventas ni convenios cerrados aún).",
+                "Siguiente Paso: Validar la celda 83b224 en terreno con rovers universitarios y colegios de Antofagasta.",
             ],
-            "s7_kicker": "06 · CRÉDITOS LEGALES OPEN SCIENCE, IDENTIDAD V2 Y DECLARACIÓN DE IA",
-            "s7_title": "Atribución Legal (SPD-41a / FAIR), Fuentes Autoalojadas y Marca de Agua IA",
-            "s7_credits_title": "Citas Legales Open Science e Identidad V2 («Sal, Cobre y Azufre»)",
+            "s7_kicker": "06 · CRÉDITOS OPEN SCIENCE, IDENTIDAD V2 Y DECLARACIÓN DE IA",
+            "s7_title": "Atribución Legal (SPD-41a / FAIR) y Marca de Agua Transparente de IA",
+            "s7_credits_title": "Créditos Legales Open Science e Identidad V2 («Sal, Cobre y Azufre»)",
             "s7_credits": (
-                "• Licencia de Código: Apache License 2.0 (aprobada por OSI).\n"
-                "• Datos Abiertos NASA (17 U.S.C. § 105 Dominio Público, solo texto, cero logos NASA): MRO CTX / USGS Mars 2020 TRN DEM (20 m), Mars 2020 MEDA, MSL REMS/RAD, LRO LOLA/Diviner, MGS MOLA, NASA POWER v2.5, NASA Trek WMTS, NSSDCA.\n"
-                "• Datos Socios: ESA Copernicus DEM GLO-30 (© DLR e.V. 2010-2014 y Airbus Defence and Space GmbH 2014-2018 bajo COPERNICUS por UE y ESA), ERA5-Land, ISRIC SoilGrids v2.0 (CC BY 4.0), Macrostrat (CC BY 4.0).\n"
-                "• Tipografía, Pictogramas e Identidad V2: Public Sans (USWDS / SIL OFL 1.1) e IBM Plex Mono (SIL OFL 1.1) autoalojadas + pictogramas SVG propios. Paleta V2: Noche Mineral #101F24, Tinta de Roca #183A3A, Sal Cálida #FFF2D7, Azufre Pálido #E4ED83, Cobre Luminoso #E8A080."
+                "• Código: Apache License 2.0 · Cero logos de NASA ni de terceros.\n"
+                "• Datos NASA (17 U.S.C. § 105): MRO CTX DEM (USGS 20m), Mars 2020 MEDA, MSL REMS/RAD, LRO LOLA/Diviner, MGS MOLA, NASA POWER v2.5, Trek WMTS, NSSDCA.\n"
+                "• Datos Socios: ESA Copernicus DEM GLO-30 (© DLR 2010-2014 y Airbus 2014-2018 bajo COPERNICUS por UE y ESA), ERA5-Land, SoilGrids (CC BY 4.0), Macrostrat (CC BY 4.0).\n"
+                "• Fuentes e Identidad V2: Public Sans (USWDS/OFL) e IBM Plex Mono (OFL) autoalojadas + pictogramas SVG propios. Paleta: #101F24, #183A3A, #FFF2D7, #E4ED83, #E8A080."
             ),
-            "s7_ai_title": "Declaración Completa de IA y Marca de Agua Obligatoria (AI_DISCLOSURE.md)",
+            "s7_ai_title": "Declaración de IA y Marcas de Agua Visibles (AI_DISCLOSURE.md)",
             "s7_ai_body": (
-                "• Concepción Científica 100 % Humana: La descomposición causal (X → Y ∥ B), la comparación estadística DEM a 30 m y el hallazgo territorial en Antofagasta son 100 % autoría humana.\n"
-                "• Asistencia en Código e i18n: Claude Code, OpenAI Codex/GPT y Google Antigravity asistieron en código, tests, documentación y paridad ES/PT/EN (1.052 claves) bajo revisión humana.\n"
-                "• IA Visual y Marcas de Agua Visibles: Los mapas científicos, globos 3D, gráficos DEM, planetas de papel y el logo vectorial en la app (ckepi-*-vector-dark.svg) tienen CERO IA generativa. Los 12 fondos decorativos paper-cut y el símbolo raster (OpenAI image_gen vía Codex) llevan marca visible ‘AI-generated · Ckepi’, y el video intro (Google Gemini) lleva marca persistente ‘Video generado con IA / AI-generated video’."
+                "• Idea Científica 100 % Humana: El modelo X → Y ∥ B, la prueba DEM a 30 m y el hallazgo en Antofagasta son 100 % del equipo humano.\n"
+                "• Asistencia en Código e i18n: Claude Code, OpenAI Codex/GPT y Google Antigravity asistieron en código, tests y paridad ES/PT/EN (1.052 claves) bajo revisión humana.\n"
+                "• IA Visual con Marca de Agua: Los mapas científicos, globos 3D, gráficos DEM y el logo vectorial en la app tienen CERO IA generativa. Los fondos decorativos paper-cut llevan la marca visible ‘AI-generated · Ckepi’ y el video intro lleva ‘Video generado con IA / AI-generated video’."
             ),
-            "s7_links": "Repositorio Público: https://github.com/AnGeMoNs/Ckepi  ·  Dossier y Prueba 30 m: docs/nehe/ y docs/RESULTADOS_TERRENO_REALES.md  ·  Equipo: Lattices (Antofagasta)",
-            "s7_closing": "“Con Ckepi, una semejanza despierta la curiosidad; la evidencia científica a 30 metros en Antofagasta nos enseña hasta dónde llega.”",
+            "s7_links": "GitHub: https://github.com/AnGeMoNs/Ckepi  ·  Dossier y Prueba 30 m: docs/nehe/  ·  Equipo Lattices (Antofagasta, Chile)",
+            "s7_closing": "“Con Ckepi, una semejanza despierta la curiosidad; la evidencia a 30 metros en Antofagasta nos enseña hasta dónde llega.”",
         },
     }
 
@@ -397,6 +361,7 @@ def render_html(c: dict[str, Any], assets: dict[str, Path]) -> str:
     )
     sus_html = "".join(f"<li>{item}</li>" for item in c["s6_sus_items"])
     sdg_html = "".join(f"<li>{item}</li>" for item in c["s6_sdg_items"])
+    ui_lines = "<br/><br/>".join(c["s3_ui_notes"].split("\n"))
     credits_lines = "<br/>".join(c["s7_credits"].split("\n"))
     ai_lines = "<br/>".join(c["s7_ai_body"].split("\n"))
 
@@ -434,27 +399,18 @@ def render_html(c: dict[str, Any], assets: dict[str, Path]) -> str:
     align-items: center;
     margin-bottom: 4px;
   }}
-  .brand-logo-sm {{
-    height: 36px;
-    width: auto;
-    object-fit: contain;
-  }}
-  .brand-logo-lg {{
-    height: 68px;
-    width: auto;
-    object-fit: contain;
-    margin-bottom: 10px;
-  }}
+  .brand-logo-sm {{ height: 36px; width: auto; object-fit: contain; }}
+  .brand-logo-lg {{ height: 72px; width: auto; object-fit: contain; margin-bottom: 10px; }}
   .kicker {{
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: #E4ED83;
     margin-bottom: 4px;
   }}
-  h1 {{ font-size: 48px; font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; color: #FFF2D7; }}
-  h2 {{ font-size: 26px; font-weight: 750; line-height: 1.16; margin-bottom: 10px; color: #FFF2D7; }}
+  h1 {{ font-size: 50px; font-weight: 800; line-height: 1.05; color: #FFF2D7; }}
+  h2 {{ font-size: 27px; font-weight: 750; line-height: 1.16; margin-bottom: 10px; color: #FFF2D7; }}
   .pill {{
     display: inline-block;
     padding: 6px 14px;
@@ -472,25 +428,25 @@ def render_html(c: dict[str, Any], assets: dict[str, Path]) -> str:
     background: rgba(16, 31, 36, 0.92);
     border: 1px solid rgba(255, 242, 215, 0.22);
     border-radius: 14px;
-    padding: 14px 18px;
+    padding: 15px 18px;
     box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38);
   }}
-  .card-title {{ font-size: 15.5px; font-weight: 700; margin-bottom: 6px; color: #FFF2D7; }}
+  .card-title {{ font-size: 16.5px; font-weight: 700; margin-bottom: 6px; color: #FFF2D7; }}
   .copper {{ color: #E8A080; }}
   .sulfur {{ color: #E4ED83; }}
   .danger {{ color: #fca5a5; }}
   .ok {{ color: #86efac; }}
-  p, li {{ font-size: 13.2px; line-height: 1.43; color: #EBE4D5; }}
+  p, li {{ font-size: 14px; line-height: 1.45; color: #EBE4D5; }}
   ul {{ padding-left: 18px; }}
-  li {{ margin-bottom: 7px; }}
+  li {{ margin-bottom: 8px; }}
   .tagline {{
-    font-size: 16.5px;
+    font-size: 17.5px;
     line-height: 1.42;
     color: #FFF2D7;
-    background: rgba(24, 58, 58, 0.78);
+    background: rgba(24, 58, 58, 0.82);
     border-left: 4px solid #E4ED83;
     border-radius: 8px;
-    padding: 12px 16px;
+    padding: 14px 18px;
     margin: 14px 0;
   }}
   .shot {{
@@ -518,45 +474,45 @@ def render_html(c: dict[str, Any], assets: dict[str, Path]) -> str:
     background: rgba(232, 160, 128, 0.2);
     color: #E8A080;
     font-weight: 700;
-    font-size: 11.5px;
+    font-size: 12px;
     margin-right: 10px;
     white-space: nowrap;
   }}
-  .source-row {{ display: flex; align-items: baseline; margin-top: 7px; font-size: 12.8px; color: #EBE4D5; }}
+  .source-row {{ display: flex; align-items: baseline; margin-top: 8px; font-size: 13.5px; color: #EBE4D5; }}
   .formula {{
-    margin-top: 9px;
-    padding: 9px 14px;
+    margin-top: 10px;
+    padding: 10px 14px;
     border-radius: 10px;
     background: rgba(24, 58, 58, 0.9);
     border: 1px solid rgba(228, 237, 131, 0.4);
     font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 12.5px;
+    font-size: 13px;
     color: #E4ED83;
   }}
   .metrics-grid {{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }}
   .metric {{
     background: rgba(24, 58, 58, 0.78);
     border-radius: 9px;
-    padding: 7px 10px;
+    padding: 8px 10px;
     border: 1px solid rgba(255, 242, 215, 0.18);
   }}
-  .m-label {{ font-size: 11px; color: #BAC6C3; font-weight: 600; }}
-  .m-val {{ font-size: 12.8px; font-weight: 750; color: #E4ED83; margin-top: 2px; }}
-  table {{ width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12.2px; }}
-  th, td {{ padding: 6px 8px; border-bottom: 1px solid rgba(255, 242, 215, 0.16); text-align: left; color: #EBE4D5; }}
+  .m-label {{ font-size: 11.5px; color: #BAC6C3; font-weight: 600; }}
+  .m-val {{ font-size: 13.2px; font-weight: 750; color: #E4ED83; margin-top: 2px; }}
+  table {{ width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }}
+  th, td {{ padding: 7px 8px; border-bottom: 1px solid rgba(255, 242, 215, 0.16); text-align: left; color: #EBE4D5; }}
   th {{ color: #FFF2D7; }}
   td.warn {{ color: #E8A080; font-weight: 700; }}
   .honesty-box {{
     margin-top: 9px;
-    padding: 9px 14px;
+    padding: 10px 14px;
     border-radius: 10px;
     background: rgba(24, 58, 58, 0.92);
     border: 1px solid rgba(232, 160, 128, 0.5);
-    font-size: 12.2px;
+    font-size: 13px;
     color: #FFF2D7;
   }}
   .closing {{
-    font-size: 18px;
+    font-size: 18.5px;
     font-weight: 700;
     text-align: center;
     color: #FFF2D7;
@@ -578,9 +534,9 @@ def render_html(c: dict[str, Any], assets: dict[str, Path]) -> str:
   <div class="grid-hero">
     <div>
       <img class="brand-logo-lg" src="{logo_horiz}" alt="CKEPI Logo" />
-      <p style="font-size:17.5px; color:#E8A080; margin-top:4px; font-weight:650;">{c['s1_subtitle']}</p>
+      <p style="font-size:21px; color:#E8A080; margin-top:4px; font-weight:700;">{c['s1_subtitle']}</p>
       <div class="tagline">{c['s1_tagline']}</div>
-      <p style="font-size:12.5px; color:#E4ED83; font-weight:600;">{c['s1_meta']}</p>
+      <p style="font-size:13.5px; color:#E4ED83; font-weight:600;">{c['s1_meta']}</p>
     </div>
     <div>
       <img class="shot shot-tall" src="{shot_mars}" alt="Ckepi 3D Explorer" />
@@ -600,7 +556,7 @@ def render_html(c: dict[str, Any], assets: dict[str, Path]) -> str:
     <img class="brand-logo-sm" src="{logo_horiz}" alt="CKEPI Logo" />
   </div>
   <div class="grid-2" style="flex:1; align-items:center;">
-    <div style="display:flex; flex-direction:column; gap:11px;">
+    <div style="display:flex; flex-direction:column; gap:12px;">
       <div class="card">
         <div class="card-title copper">{c['s2_p1_title']}</div>
         <p>{c['s2_p1_body']}</p>
@@ -636,7 +592,7 @@ def render_html(c: dict[str, Any], assets: dict[str, Path]) -> str:
     <img class="shot shot-med" src="{shot_analysis}" alt="Causal Decomposition & Matrix" />
     <div class="card" style="height:100%; display:flex; flex-direction:column; justify-content:center;">
       <div class="card-title sulfur">{c['s3_ui_card_title']}</div>
-      <p>{c['s3_ui_notes']}</p>
+      <p>{ui_lines}</p>
     </div>
   </div>
   <div class="footer"><span>Ckepi · 3 / 7</span><span>{c['s3_kicker']}</span></div>
@@ -733,14 +689,14 @@ def render_html(c: dict[str, Any], assets: dict[str, Path]) -> str:
   <div class="grid-2">
     <div class="card">
       <div class="card-title sulfur">{c['s7_credits_title']}</div>
-      <p style="font-size:12px; line-height:1.4;">{credits_lines}</p>
+      <p style="font-size:12.5px; line-height:1.42;">{credits_lines}</p>
     </div>
     <div class="card">
       <div class="card-title copper">{c['s7_ai_title']}</div>
-      <p style="font-size:12px; line-height:1.4;">{ai_lines}</p>
+      <p style="font-size:12.5px; line-height:1.42;">{ai_lines}</p>
     </div>
   </div>
-  <div class="card" style="text-align:center; font-size:13px; color:#FFF2D7; padding:9px 14px;">{c['s7_links']}</div>
+  <div class="card" style="text-align:center; font-size:13.5px; color:#FFF2D7; padding:9px 14px;">{c['s7_links']}</div>
   <div class="closing">{c['s7_closing']}</div>
   <div class="footer"><span>Ckepi · 7 / 7</span><span>{c['s7_kicker']}</span></div>
 </section>
@@ -788,7 +744,7 @@ def _add_card(
     title: str,
     body: str,
     title_color: tuple[int, int, int] = C_WARM_SALT,
-    body_size: int = 12,
+    body_size: int = 13,
     fill_rgb: tuple[int, int, int] = C_MINERAL_NIGHT,
     border_rgb: tuple[int, int, int] = C_ROCK_INK,
 ) -> None:
@@ -803,15 +759,15 @@ def _add_card(
     tf.word_wrap = True
     tf.margin_left = Inches(0.18)
     tf.margin_right = Inches(0.18)
-    tf.margin_top = Inches(0.13)
+    tf.margin_top = Inches(0.14)
     p1 = tf.paragraphs[0]
     r1 = p1.add_run()
     r1.text = title
-    r1.font.size = Pt(14.5)
+    r1.font.size = Pt(15.5)
     r1.font.bold = True
     r1.font.color.rgb = RGBColor(*title_color)
     p2 = tf.add_paragraph()
-    p2.space_before = Pt(5)
+    p2.space_before = Pt(6)
     r2 = p2.add_run()
     r2.text = body
     r2.font.size = Pt(body_size)
@@ -832,77 +788,77 @@ def build_pptx(c: dict[str, Any], assets: dict[str, Path], pptx_path: Path) -> N
     # Slide 1
     s1 = prs.slides.add_slide(blank)
     _apply_slide_bg_and_logo(s1, assets["slide1_home"], logo_horiz, show_top_right_logo=False)
-    _add_textbox(s1, 0.65, 0.38, 11.8, 0.38, c["badge_event"], 11, True, C_PALE_SULFUR)
-    s1.shapes.add_picture(str(logo_horiz), Inches(0.65), Inches(0.92), width=Inches(3.4))
-    _add_textbox(s1, 0.65, 2.05, 6.15, 0.9, c["s1_subtitle"], 15, True, C_LIGHT_COPPER)
+    _add_textbox(s1, 0.65, 0.38, 11.8, 0.38, c["badge_event"], 11.5, True, C_PALE_SULFUR)
+    s1.shapes.add_picture(str(logo_horiz), Inches(0.65), Inches(0.95), width=Inches(3.6))
+    _add_textbox(s1, 0.65, 2.1, 6.15, 0.85, c["s1_subtitle"], 19, True, C_LIGHT_COPPER)
     _add_card(
         s1,
         0.65,
         3.05,
         6.15,
-        1.95,
-        "Concrete Focus / Enfoque Concreto en Antofagasta",
+        1.9,
+        "Our Innovation / Nuestra Innovación",
         c["s1_tagline"],
         C_PALE_SULFUR,
-        13,
+        14,
         C_ROCK_INK,
         C_PALE_SULFUR,
     )
-    _add_textbox(s1, 0.65, 5.2, 6.15, 0.45, c["s1_meta"], 11, True, C_WARM_SALT)
+    _add_textbox(s1, 0.65, 5.18, 6.15, 0.45, c["s1_meta"], 12, True, C_WARM_SALT)
     s1.shapes.add_picture(shot_mars, Inches(7.05), Inches(1.02), width=Inches(5.6))
-    _add_textbox(s1, 7.05, 5.15, 5.6, 0.45, c["s1_caption"], 10, False, C_TEXT_MUTED, PP_ALIGN.CENTER)
+    _add_textbox(s1, 7.05, 5.15, 5.6, 0.45, c["s1_caption"], 10.5, False, C_TEXT_MUTED, PP_ALIGN.CENTER)
 
     # Slide 2
     s2 = prs.slides.add_slide(blank)
     _apply_slide_bg_and_logo(s2, assets["slide2_problema"], logo_horiz)
-    _add_textbox(s2, 0.65, 0.35, 10.3, 0.32, c["s2_kicker"], 11, True, C_PALE_SULFUR)
-    _add_textbox(s2, 0.65, 0.68, 10.3, 0.6, c["s2_title"], 22, True, C_WARM_SALT)
-    _add_card(s2, 0.65, 1.5, 5.9, 1.72, c["s2_p1_title"], c["s2_p1_body"], C_LIGHT_COPPER, 11.5)
-    _add_card(s2, 0.65, 3.35, 5.9, 1.72, c["s2_p2_title"], c["s2_p2_body"], C_PALE_SULFUR, 11.5)
-    _add_card(s2, 0.65, 5.2, 5.9, 1.72, c["s2_aud_title"], c["s2_aud_body"], C_OK_GREEN, 11.5)
+    _add_textbox(s2, 0.65, 0.35, 10.3, 0.32, c["s2_kicker"], 11.5, True, C_PALE_SULFUR)
+    _add_textbox(s2, 0.65, 0.68, 10.3, 0.6, c["s2_title"], 23, True, C_WARM_SALT)
+    _add_card(s2, 0.65, 1.5, 5.9, 1.7, c["s2_p1_title"], c["s2_p1_body"], C_LIGHT_COPPER, 13.5)
+    _add_card(s2, 0.65, 3.35, 5.9, 1.7, c["s2_p2_title"], c["s2_p2_body"], C_PALE_SULFUR, 13.5)
+    _add_card(s2, 0.65, 5.2, 5.9, 1.7, c["s2_aud_title"], c["s2_aud_body"], C_OK_GREEN, 13.5)
     s2.shapes.add_picture(shot_moon, Inches(6.85), Inches(1.5), width=Inches(5.8))
 
     # Slide 3
     s3 = prs.slides.add_slide(blank)
     _apply_slide_bg_and_logo(s3, assets["slide3_solucion"], logo_horiz)
-    _add_textbox(s3, 0.65, 0.35, 10.3, 0.32, c["s3_kicker"], 11, True, C_PALE_SULFUR)
-    _add_textbox(s3, 0.65, 0.68, 10.3, 0.6, c["s3_title"], 22, True, C_WARM_SALT)
+    _add_textbox(s3, 0.65, 0.35, 10.3, 0.32, c["s3_kicker"], 11.5, True, C_PALE_SULFUR)
+    _add_textbox(s3, 0.65, 0.68, 10.3, 0.6, c["s3_title"], 23, True, C_WARM_SALT)
     for i, (t, b) in enumerate(c["s3_flow"]):
-        _add_card(s3, 0.65 + i * 4.08, 1.48, 3.85, 1.85, t, b, C_LIGHT_COPPER, 11.5)
+        _add_card(s3, 0.65 + i * 4.08, 1.48, 3.85, 1.85, t, b, C_LIGHT_COPPER, 12.5)
     s3.shapes.add_picture(shot_analysis, Inches(0.65), Inches(3.52), width=Inches(6.2))
-    _add_card(s3, 7.1, 3.52, 5.55, 3.38, c["s3_ui_card_title"], c["s3_ui_notes"], C_PALE_SULFUR, 11.5)
+    _add_card(s3, 7.1, 3.52, 5.55, 3.38, c["s3_ui_card_title"], c["s3_ui_notes"], C_PALE_SULFUR, 12.5)
 
     # Slide 4
     s4 = prs.slides.add_slide(blank)
     _apply_slide_bg_and_logo(s4, assets["slide4_ciencia"], logo_horiz)
-    _add_textbox(s4, 0.65, 0.35, 10.3, 0.32, c["s4_kicker"], 11, True, C_PALE_SULFUR)
-    _add_textbox(s4, 0.65, 0.68, 10.3, 0.6, c["s4_title"], 22, True, C_WARM_SALT)
-    _add_card(s4, 0.65, 1.48, 3.85, 2.0, c["s4_x_title"], c["s4_x_list"], C_PALE_SULFUR, 11.5)
-    _add_card(s4, 4.73, 1.48, 3.85, 2.0, c["s4_y_title"], c["s4_y_list"], C_LIGHT_COPPER, 11.5)
-    _add_card(s4, 8.81, 1.48, 3.85, 2.0, c["s4_b_title"], c["s4_b_list"], C_WARN_RED, 11.5)
-    _add_textbox(s4, 0.65, 3.62, 12.0, 0.52, c["s4_formula"], 11.5, True, C_PALE_SULFUR)
+    _add_textbox(s4, 0.65, 0.35, 10.3, 0.32, c["s4_kicker"], 11.5, True, C_PALE_SULFUR)
+    _add_textbox(s4, 0.65, 0.68, 10.3, 0.6, c["s4_title"], 23, True, C_WARM_SALT)
+    _add_card(s4, 0.65, 1.48, 3.85, 2.0, c["s4_x_title"], c["s4_x_list"], C_PALE_SULFUR, 13)
+    _add_card(s4, 4.73, 1.48, 3.85, 2.0, c["s4_y_title"], c["s4_y_list"], C_LIGHT_COPPER, 13)
+    _add_card(s4, 8.81, 1.48, 3.85, 2.0, c["s4_b_title"], c["s4_b_list"], C_WARN_RED, 13)
+    _add_textbox(s4, 0.65, 3.62, 12.0, 0.52, c["s4_formula"], 12.5, True, C_PALE_SULFUR)
     sources_text = "\n\n".join(f"• {k}: {v}" for k, v in c["s4_sources"])
-    _add_card(s4, 0.65, 4.28, 12.0, 2.6, c["s4_sources_title"], sources_text, C_WARM_SALT, 11)
+    _add_card(s4, 0.65, 4.28, 12.0, 2.6, c["s4_sources_title"], sources_text, C_WARM_SALT, 12)
 
     # Slide 5
     s5 = prs.slides.add_slide(blank)
     _apply_slide_bg_and_logo(s5, assets["slide5_hallazgo"], logo_horiz)
-    _add_textbox(s5, 0.65, 0.35, 10.3, 0.32, c["s5_kicker"], 11, True, C_PALE_SULFUR)
-    _add_textbox(s5, 0.65, 0.68, 10.3, 0.6, c["s5_title"], 21, True, C_WARM_SALT)
+    _add_textbox(s5, 0.65, 0.35, 10.3, 0.32, c["s5_kicker"], 11.5, True, C_PALE_SULFUR)
+    _add_textbox(s5, 0.65, 0.68, 10.3, 0.6, c["s5_title"], 22, True, C_WARM_SALT)
     metrics_text = "\n".join(f"• {k}: {v}" for k, v in c["s5_metrics"])
-    _add_card(s5, 0.65, 1.45, 5.9, 3.7, c["s5_match_title"], metrics_text, C_OK_GREEN, 10.8)
+    _add_card(s5, 0.65, 1.45, 5.9, 3.7, c["s5_match_title"], metrics_text, C_OK_GREEN, 11.5)
     brk_text = "\n".join(f"• {var}: {mars}  vs.  {earth}" for var, mars, earth in c["s5_brk_rows"])
-    _add_card(s5, 6.75, 1.45, 5.9, 3.7, c["s5_brk_title"], brk_text, C_LIGHT_COPPER, 10.8)
+    _add_card(s5, 6.75, 1.45, 5.9, 3.7, c["s5_brk_title"], brk_text, C_LIGHT_COPPER, 12)
     _add_card(
         s5,
         0.65,
         5.3,
         12.0,
         1.58,
-        "Concrete Action in Antofagasta (What Is Valid vs. Invalid)",
+        "Concrete Takeaway / Conclusión Práctica",
         c["s5_honesty"],
         C_PALE_SULFUR,
-        10.5,
+        11.5,
         C_ROCK_INK,
         C_LIGHT_COPPER,
     )
@@ -910,8 +866,8 @@ def build_pptx(c: dict[str, Any], assets: dict[str, Path], pptx_path: Path) -> N
     # Slide 6
     s6 = prs.slides.add_slide(blank)
     _apply_slide_bg_and_logo(s6, assets["slide6_araucana"], logo_horiz)
-    _add_textbox(s6, 0.65, 0.35, 10.3, 0.32, c["s6_kicker"], 11, True, C_PALE_SULFUR)
-    _add_textbox(s6, 0.65, 0.68, 10.3, 0.6, c["s6_title"], 22, True, C_WARM_SALT)
+    _add_textbox(s6, 0.65, 0.35, 10.3, 0.32, c["s6_kicker"], 11.5, True, C_PALE_SULFUR)
+    _add_textbox(s6, 0.65, 0.68, 10.3, 0.6, c["s6_title"], 23, True, C_WARM_SALT)
     _add_card(
         s6,
         0.65,
@@ -921,7 +877,7 @@ def build_pptx(c: dict[str, Any], assets: dict[str, Path], pptx_path: Path) -> N
         c["s6_sus_title"],
         "\n\n".join(f"• {x}" for x in c["s6_sus_items"]),
         C_PALE_SULFUR,
-        10.8,
+        11.5,
     )
     _add_card(
         s6,
@@ -932,18 +888,18 @@ def build_pptx(c: dict[str, Any], assets: dict[str, Path], pptx_path: Path) -> N
         c["s6_sdg_title"],
         "\n\n".join(f"• {x}" for x in c["s6_sdg_items"]),
         C_LIGHT_COPPER,
-        10.8,
+        12,
     )
 
     # Slide 7
     s7 = prs.slides.add_slide(blank)
     _apply_slide_bg_and_logo(s7, assets["slide7_creditos"], logo_horiz)
-    _add_textbox(s7, 0.65, 0.35, 10.3, 0.32, c["s7_kicker"], 11, True, C_PALE_SULFUR)
-    _add_textbox(s7, 0.65, 0.68, 10.3, 0.6, c["s7_title"], 22, True, C_WARM_SALT)
-    _add_card(s7, 0.65, 1.45, 5.9, 3.65, c["s7_credits_title"], c["s7_credits"], C_PALE_SULFUR, 10)
-    _add_card(s7, 6.75, 1.45, 5.9, 3.65, c["s7_ai_title"], c["s7_ai_body"], C_LIGHT_COPPER, 10)
-    _add_textbox(s7, 0.65, 5.22, 12.0, 0.42, c["s7_links"], 11.5, False, C_WARM_SALT, PP_ALIGN.CENTER)
-    _add_textbox(s7, 0.65, 5.75, 12.0, 0.75, c["s7_closing"], 16.5, True, C_PALE_SULFUR, PP_ALIGN.CENTER)
+    _add_textbox(s7, 0.65, 0.35, 10.3, 0.32, c["s7_kicker"], 11.5, True, C_PALE_SULFUR)
+    _add_textbox(s7, 0.65, 0.68, 10.3, 0.6, c["s7_title"], 23, True, C_WARM_SALT)
+    _add_card(s7, 0.65, 1.45, 5.9, 3.65, c["s7_credits_title"], c["s7_credits"], C_PALE_SULFUR, 10.5)
+    _add_card(s7, 6.75, 1.45, 5.9, 3.65, c["s7_ai_title"], c["s7_ai_body"], C_LIGHT_COPPER, 10.5)
+    _add_textbox(s7, 0.65, 5.22, 12.0, 0.42, c["s7_links"], 12, False, C_WARM_SALT, PP_ALIGN.CENTER)
+    _add_textbox(s7, 0.65, 5.75, 12.0, 0.75, c["s7_closing"], 17, True, C_PALE_SULFUR, PP_ALIGN.CENTER)
 
     prs.save(str(pptx_path))
 
