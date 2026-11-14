@@ -20,6 +20,9 @@ const config: Config = {
         "planet-mars": "rgb(var(--color-planet-mars) / <alpha-value>)",
         "planet-moon": "rgb(var(--color-planet-moon) / <alpha-value>)",
       },
+      boxShadow: {
+        elevated: "0 12px 32px -12px rgb(15 23 42 / 0.28)",
+      },
     },
   },
   plugins: [],

@@ -11,6 +11,7 @@ import {
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
+import { InfoTooltip } from "../ui/InfoTooltip";
 
 interface AnalogComparisonMatrixProps {
   matches: AnalogMatchItem[];
@@ -70,8 +71,9 @@ export function AnalogComparisonMatrix({
                 exportReportMarkdown(
                   activeSite,
                   matches,
-                  (k) => t(k),
-                  matches.find((m) => m.earth_cell_h3 === selectedH3) ?? matches[0]
+                  (k, p) => t(k, p),
+                  matches.find((m) => m.earth_cell_h3 === selectedH3) ?? matches[0],
+                  lang
                 )
               }
             >
@@ -145,9 +147,24 @@ export function AnalogComparisonMatrix({
               <tr>
                 <th className="px-4 py-3 font-semibold">{t("comparisonMatrix.siteCol")}</th>
                 <th className="px-4 py-3 font-semibold">{t("comparisonMatrix.typeCol")}</th>
-                <th className="px-4 py-3 font-semibold">S_ind</th>
-                <th className="px-4 py-3 font-semibold">S_dep</th>
-                <th className="px-4 py-3 font-semibold">R_break</th>
+                <th className="px-4 py-3 font-semibold">
+                  <span className="inline-flex items-center gap-0.5">
+                    S_ind
+                    <InfoTooltip label="S_ind" text={t("comparisonMatrix.sIndTooltip")} />
+                  </span>
+                </th>
+                <th className="px-4 py-3 font-semibold">
+                  <span className="inline-flex items-center gap-0.5">
+                    S_dep
+                    <InfoTooltip label="S_dep" text={t("comparisonMatrix.sDepTooltip")} />
+                  </span>
+                </th>
+                <th className="px-4 py-3 font-semibold">
+                  <span className="inline-flex items-center gap-0.5">
+                    R_break
+                    <InfoTooltip label="R_break" text={t("comparisonMatrix.rBreakTooltip")} />
+                  </span>
+                </th>
                 <th className="px-4 py-3 font-semibold">{t("comparisonMatrix.bestTestCol")}</th>
               </tr>
             </thead>

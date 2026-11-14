@@ -10,7 +10,8 @@
     "modes": {
       "mission": "Misión",
       "explorer": "Explorador STEAM"
-    }
+    },
+    "mobileMenuLabel": "Preferencias"
   },
   "controls": {
     "targetSite": "Objetivo Planetario (ROI)",
@@ -60,7 +61,21 @@
     "refreshing": "Sincronizando con NASA y Open-Meteo...",
     "shareLink": "Compartir enlace",
     "copiedLink": "¡Copiado!",
-    "penalizeEstimated": "Penalizar objetivos planetarios estimados en el ranking (puntaje ajustado por confianza)"
+    "penalizeEstimated": "Penalizar objetivos planetarios estimados en el ranking (puntaje ajustado por confianza)",
+    "openSettings": "Configurar misión",
+    "closeSettings": "Cerrar ajustes",
+    "drawerTitle": "Configuración de misión",
+    "updating": "Actualizando resultados…",
+    "actionsGroup": "Acciones",
+    "refreshedToast": "Datasets y análisis actualizados.",
+    "exportedToast": "Archivo exportado correctamente.",
+    "dismissToast": "Cerrar notificación",
+    "emptyTitle": "Ningún análogo cumple los umbrales actuales",
+    "emptyDescription": "Prueba reducir los umbrales mínimos de similitud (S_ind o S_dep) para ampliar los candidatos terrestres.",
+    "emptyAction": "Restablecer umbrales",
+    "mapSwitcherLabel": "Vista de mapa",
+    "mapViewPlanet": "Planeta",
+    "mapViewEarth": "Tierra"
   },
   "bodies": {
     "moon": "Luna",
@@ -79,7 +94,9 @@
     "step2Desc": "Haz clic en un hexágono o en cualquier lugar del mapa para consultar NASA POWER y Copernicus DEM en vivo.",
     "step3Title": "3. Revisa qué funciona y qué falla",
     "step3Desc": "Consulta el veredicto, compara variable por variable o ajusta porcentajes en Modo Manual.",
-    "transparencyNote": "Cada valor indica su origen (medido, derivado o modelo físico) para saber siempre qué es telemetría real y qué es estimado."
+    "transparencyNote": "Cada valor indica su origen (medido, derivado o modelo físico) para saber siempre qué es telemetría real y qué es estimado.",
+    "dismiss": "Ocultar guía",
+    "reopen": "Ver guía rápida"
   },
   "manualMode": {
     "title": "Comparación Manual (Variable por Variable)",
@@ -102,7 +119,10 @@
     "siteCol": "Ubicación Terrestre",
     "typeCol": "Categoría",
     "bestTestCol": "Prueba Principal Validada",
-    "exportReport": "Informe (.md)"
+    "exportReport": "Informe (.md)",
+    "sIndTooltip": "Similitud en variables ambientales independientes (ej. gravedad, temperatura, radiación).",
+    "sDepTooltip": "Similitud en respuesta operativa y condiciones dependientes del terreno.",
+    "rBreakTooltip": "Riesgo agregado de ruptura de la analogía en la Tierra respecto al sitio objetivo."
   },
   "layers": {
     "independent": "Independiente (X)",
@@ -204,25 +224,98 @@
     "liveProbed": "Sondeado en vivo"
   },
   "variables": {
-    "topographic_roughness": { "label": "Rugosidad Topográfica", "unit": "índice 0-1", "hint": "Irregularidad del micro-relieve y presencia de rocas; afecta ruedas de rovers y sensores de aterrizaje." },
-    "slope_deg": { "label": "Pendiente Media", "unit": "°", "hint": "Inclinación promedio del suelo en grados; clave para tracción de rovers y estabilidad de aterrizadores." },
-    "thermal_inertia": { "label": "Inercia Térmica", "unit": "TIU", "hint": "Resistencia del suelo a cambiar de temperatura; distingue polvo fino de roca expuesta." },
-    "surface_albedo": { "label": "Albedo Superficial", "unit": "0-1", "hint": "Fracción de luz solar reflejada por el suelo; regula el calentamiento y el contraste óptico." },
-    "solar_flux_wm2": { "label": "Flujo Solar Incidente", "unit": "W/m²", "hint": "Energía solar disponible por metro cuadrado para paneles fotovoltaicos y balance térmico." },
-    "subsurface_ice_frac": { "label": "Hielo Subsuperficial", "unit": "fracción", "hint": "Proporción estimada de hielo de agua bajo el regolito; clave para perforación y recursos ISRU." },
-    "aridity_index": { "label": "Índice de Hiperaridez", "unit": "0-1", "hint": "Nivel de sequedad extrema (1 = hiperárido); evita que la humedad altere la mecánica del suelo." },
-    "relative_humidity_pct": { "label": "Humedad Relativa", "unit": "%", "hint": "Vapor de agua en el aire; valores cercanos a cero imitan mejor la sequedad lunar/marciana." },
-    "uv_irradiance_index": { "label": "Índice de Irradiancia UV", "unit": "índice UV", "hint": "Intensidad de radiación ultravioleta que degrada polímeros, trajes y celdas solares." },
-    "vegetation_lai_proxy": { "label": "Cobertura Vegetal (LAI)", "unit": "m²/m²", "hint": "Densidad de vegetación (0 = suelo desnudo); los análogos planetarios requieren terreno mineral sin plantas." },
-    "diurnal_temp_amplitude_k": { "label": "Amplitud Térmica Diurna (ΔT)", "unit": "K", "hint": "Diferencia de temperatura entre el día y la noche; provoca fatiga térmica en baterías y sellos." },
-    "nocturnal_cooling_k_hr": { "label": "Tasa de Enfriamiento Nocturno", "unit": "K/h", "hint": "Rapidez con la que cae la temperatura al anochecer; evalúa aislamiento y supervivencia térmica." },
-    "mean_surface_temp_k": { "label": "Temperatura Media Superficial", "unit": "K", "hint": "Temperatura promedio del suelo en Kelvin; define necesidades de lubricación criogénica y calefacción." },
-    "surface_wind_ms": { "label": "Velocidad del Viento Superficial", "unit": "m/s", "hint": "Viento cercano a la superficie; relevante en Marte para transporte de polvo y estabilidad de drones." },
-    "aeolian_dust_flux": { "label": "Flujo Eólico de Polvo", "unit": "índice 0-1", "hint": "Cantidad de polvo en suspensión; prueba abrasión en lentes ópticas y suciedad en paneles solares." },
-    "ice_sublimation_rate": { "label": "Tasa de Sublimación de Hielo", "unit": "índice 0-1", "hint": "Velocidad a la que el hielo pasa a gas; clave para ensayos de trampas frías y perforación." },
-    "gravity_g": { "label": "Gravedad Superficial", "unit": "g" },
-    "atm_pressure_mbar": { "label": "Presión Atmosférica", "unit": "mbar" },
-    "radiation_msv_yr": { "label": "Radiación Ionizante (GCR)", "unit": "mSv/año" }
+    "topographic_roughness": {
+      "label": "Rugosidad Topográfica",
+      "unit": "índice 0-1",
+      "hint": "Irregularidad del micro-relieve y presencia de rocas; afecta ruedas de rovers y sensores de aterrizaje."
+    },
+    "slope_deg": {
+      "label": "Pendiente Media",
+      "unit": "°",
+      "hint": "Inclinación promedio del suelo en grados; clave para tracción de rovers y estabilidad de aterrizadores."
+    },
+    "thermal_inertia": {
+      "label": "Inercia Térmica",
+      "unit": "TIU",
+      "hint": "Resistencia del suelo a cambiar de temperatura; distingue polvo fino de roca expuesta."
+    },
+    "surface_albedo": {
+      "label": "Albedo Superficial",
+      "unit": "0-1",
+      "hint": "Fracción de luz solar reflejada por el suelo; regula el calentamiento y el contraste óptico."
+    },
+    "solar_flux_wm2": {
+      "label": "Flujo Solar Incidente",
+      "unit": "W/m²",
+      "hint": "Energía solar disponible por metro cuadrado para paneles fotovoltaicos y balance térmico."
+    },
+    "subsurface_ice_frac": {
+      "label": "Hielo Subsuperficial",
+      "unit": "fracción",
+      "hint": "Proporción estimada de hielo de agua bajo el regolito; clave para perforación y recursos ISRU."
+    },
+    "aridity_index": {
+      "label": "Índice de Hiperaridez",
+      "unit": "0-1",
+      "hint": "Nivel de sequedad extrema (1 = hiperárido); evita que la humedad altere la mecánica del suelo."
+    },
+    "relative_humidity_pct": {
+      "label": "Humedad Relativa",
+      "unit": "%",
+      "hint": "Vapor de agua en el aire; valores cercanos a cero imitan mejor la sequedad lunar/marciana."
+    },
+    "uv_irradiance_index": {
+      "label": "Índice de Irradiancia UV",
+      "unit": "índice UV",
+      "hint": "Intensidad de radiación ultravioleta que degrada polímeros, trajes y celdas solares."
+    },
+    "vegetation_lai_proxy": {
+      "label": "Cobertura Vegetal (LAI)",
+      "unit": "m²/m²",
+      "hint": "Densidad de vegetación (0 = suelo desnudo); los análogos planetarios requieren terreno mineral sin plantas."
+    },
+    "diurnal_temp_amplitude_k": {
+      "label": "Amplitud Térmica Diurna (ΔT)",
+      "unit": "K",
+      "hint": "Diferencia de temperatura entre el día y la noche; provoca fatiga térmica en baterías y sellos."
+    },
+    "nocturnal_cooling_k_hr": {
+      "label": "Tasa de Enfriamiento Nocturno",
+      "unit": "K/h",
+      "hint": "Rapidez con la que cae la temperatura al anochecer; evalúa aislamiento y supervivencia térmica."
+    },
+    "mean_surface_temp_k": {
+      "label": "Temperatura Media Superficial",
+      "unit": "K",
+      "hint": "Temperatura promedio del suelo en Kelvin; define necesidades de lubricación criogénica y calefacción."
+    },
+    "surface_wind_ms": {
+      "label": "Velocidad del Viento Superficial",
+      "unit": "m/s",
+      "hint": "Viento cercano a la superficie; relevante en Marte para transporte de polvo y estabilidad de drones."
+    },
+    "aeolian_dust_flux": {
+      "label": "Flujo Eólico de Polvo",
+      "unit": "índice 0-1",
+      "hint": "Cantidad de polvo en suspensión; prueba abrasión en lentes ópticas y suciedad en paneles solares."
+    },
+    "ice_sublimation_rate": {
+      "label": "Tasa de Sublimación de Hielo",
+      "unit": "índice 0-1",
+      "hint": "Velocidad a la que el hielo pasa a gas; clave para ensayos de trampas frías y perforación."
+    },
+    "gravity_g": {
+      "label": "Gravedad Superficial",
+      "unit": "g"
+    },
+    "atm_pressure_mbar": {
+      "label": "Presión Atmosférica",
+      "unit": "mbar"
+    },
+    "radiation_msv_yr": {
+      "label": "Radiación Ionizante (GCR)",
+      "unit": "mSv/año"
+    }
   },
   "breakage": {
     "alerts": {
@@ -430,6 +523,41 @@
       "uv_shielded_rock": "Relevante para supervivencia microbiana protegida de UV bajo alta irradiancia.",
       "general_organic": "Referencia base de preservación orgánica y control de contaminación planetaria."
     }
+  },
+  "nav": {
+    "label": "Secciones de análisis",
+    "maps": "Mapas",
+    "decomposition": "Decomposición",
+    "diagnostics": "Diagnóstico",
+    "ranking": "Ranking"
+  },
+  "export": {
+    "reportTitle": "Reporte Ckepi",
+    "body": "Cuerpo",
+    "coordinates": "Coordenadas",
+    "confidenceLevel": "Nivel de confianza",
+    "sources": "Fuentes",
+    "featuredAnalog": "Análogo destacado",
+    "h3Index": "Índice H3",
+    "category": "Categoría",
+    "knownAnalog": "Análogo conocido",
+    "newCandidate": "Nuevo candidato",
+    "similarity": "Similitud",
+    "combined": "Combinado",
+    "whyAnalogous": "Por qué es análogo (factores principales)",
+    "whereBreaks": "Dónde se rompe la analogía (límites en la Tierra)",
+    "targetVsEarth": "Objetivo {{target}} vs Tierra {{earth}}",
+    "breakageLabel": "Ruptura",
+    "recommendedUse": "Uso recomendado de exploración",
+    "validTests": "Pruebas de campo válidas:",
+    "invalidTests": "No se puede probar en la Tierra (requiere simulación o vuelo):",
+    "topAnalogs": "Principales análogos terrestres",
+    "rankCol": "#",
+    "regionCol": "Región",
+    "categoryCol": "Categoría",
+    "countryCol": "País",
+    "knownShort": "Conocido",
+    "newShort": "Nuevo",
+    "unknown": "desconocido"
   }
 }
-

@@ -4,7 +4,7 @@ import * as maplibregl from "maplibre-gl";
 import { useTranslation } from "react-i18next";
 
 import { formatNumber, formatPercent } from "../../i18n";
-import { MAP_COLORS } from "../../theme/mapColors";
+import { getMapColors } from "../../theme/mapColors";
 import type { AnalogMatchItem, EarthOverlayLayer, ThemeMode } from "../../types/analog";
 import { Badge } from "../ui/Badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
@@ -249,6 +249,8 @@ export function AnalogMap({
         promoteId: "earth_cell_h3",
       });
 
+      const mapColors = getMapColors(theme);
+
       map.addLayer({
         id: "h3-analogs-fill",
         type: "fill",
@@ -257,10 +259,10 @@ export function AnalogMap({
           "fill-color": [
             "case",
             [">=", ["get", "combined_score"], 0.75],
-            MAP_COLORS.matchHigh,
+            mapColors.matchHigh,
             [">=", ["get", "combined_score"], 0.55],
-            MAP_COLORS.matchMid,
-            MAP_COLORS.matchLow,
+            mapColors.matchMid,
+            mapColors.matchLow,
           ],
           "fill-opacity": [
             "case",
@@ -279,12 +281,12 @@ export function AnalogMap({
           "line-color": [
             "case",
             ["==", ["get", "is_selected"], 1],
-            MAP_COLORS.selectedOutline,
+            mapColors.selectedOutline,
             [">=", ["get", "combined_score"], 0.75],
-            MAP_COLORS.matchHigh,
+            mapColors.matchHigh,
             [">=", ["get", "combined_score"], 0.55],
-            MAP_COLORS.matchMid,
-            MAP_COLORS.matchLow,
+            mapColors.matchMid,
+            mapColors.matchLow,
           ],
           "line-width": [
             "case",
@@ -500,8 +502,8 @@ export function AnalogMap({
         {probingCoords && (
           <div className="rounded border border-accent/40 bg-accent/10 px-3 py-2 text-xs font-medium text-accent">
             {t("map.probingLocation", {
-              lat: probingCoords.lat.toFixed(2),
-              lon: probingCoords.lon.toFixed(2),
+              lat: formatNumber(probingCoords.lat, i18n.language, 2),
+              lon: formatNumber(probingCoords.lon, i18n.language, 2),
             })}
           </div>
         )}

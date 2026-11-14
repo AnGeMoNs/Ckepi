@@ -5,14 +5,20 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { useTranslation } from "react-i18next";
 
 import { formatNumber } from "../../i18n";
-import { PLANET_MARKER_COLORS } from "../../theme/mapColors";
-import type { PlanetaryBody, PlanetaryOverlayLayer, PlanetarySite } from "../../types/analog";
+import { getPlanetMarkerColors } from "../../theme/mapColors";
+import type {
+  PlanetaryBody,
+  PlanetaryOverlayLayer,
+  PlanetarySite,
+  ThemeMode,
+} from "../../types/analog";
 import { Badge } from "../ui/Badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 
 interface PlanetaryMapProps {
   body: PlanetaryBody;
   sites: PlanetarySite[];
+  theme?: ThemeMode;
   activeTarget: { lat: number; lon: number; label: string } | null;
   probingPlanetCoords: { lat: number; lon: number } | null;
   onSelectBody: (body: PlanetaryBody) => void;
@@ -44,6 +50,7 @@ function vector3ToLatLon(point: THREE.Vector3): { lat: number; lon: number } {
 export function PlanetaryMap({
   body,
   sites,
+  theme = "dark",
   activeTarget,
   probingPlanetCoords,
   onSelectBody,
@@ -238,6 +245,7 @@ export function PlanetaryMap({
       group.remove(child);
     }
 
+    const markerColors = getPlanetMarkerColors(theme);
     const bodySites = sites.filter((s) => s.body === body);
     for (const s of bodySites) {
       const isActive =
@@ -248,7 +256,7 @@ export function PlanetaryMap({
       const pin = new THREE.Mesh(
         new THREE.SphereGeometry(isActive ? 0.032 : 0.022, 16, 16),
         new THREE.MeshBasicMaterial({
-          color: isActive ? PLANET_MARKER_COLORS.activeTarget : PLANET_MARKER_COLORS.trackedZone,
+          color: isActive ? markerColors.activeTarget : markerColors.trackedZone,
         })
       );
       pin.position.copy(pos);
@@ -259,7 +267,7 @@ export function PlanetaryMap({
       const halo = new THREE.Mesh(
         new THREE.RingGeometry(0.048, 0.088, 32),
         new THREE.MeshBasicMaterial({
-          color: PLANET_MARKER_COLORS.trackedZone,
+          color: markerColors.trackedZone,
           side: THREE.DoubleSide,
           transparent: true,
           opacity: isActive ? 0.8 : 0.45,
@@ -283,14 +291,14 @@ export function PlanetaryMap({
     ) {
       const customPin = new THREE.Mesh(
         new THREE.SphereGeometry(0.034, 16, 16),
-        new THREE.MeshBasicMaterial({ color: PLANET_MARKER_COLORS.estimatedProbe })
+        new THREE.MeshBasicMaterial({ color: markerColors.estimatedProbe })
       );
       customPin.position.copy(
         latLonToVector3(activeTarget.lat, activeTarget.lon, SPHERE_RADIUS * 1.018)
       );
       group.add(customPin);
     }
-  }, [sites, body, activeTarget]);
+  }, [sites, body, activeTarget, theme]);
 
   const handleZoom = (factor: number) => {
     const cam = cameraRef.current;
@@ -399,7 +407,7 @@ export function PlanetaryMap({
 
           {(textureLoading || probingPlanetCoords) && (
             <div className="pointer-events-none absolute bottom-3 left-3 z-10 flex items-center gap-2 rounded border border-accent bg-surface-elevated/95 px-3 py-1.5 text-xs font-medium text-content">
-              <Sparkles className="h-3.5 w-3.5 animate-pulse text-accent" aria-hidden="true" />
+              <Sparkles className="h-3.5 w-3.5 animate-pulse motion-reduce:animate-none text-accent" aria-hidden="true" />
               {probingPlanetCoords
                 ? t("planetaryMap.probingTarget", {
                     body: t(`bodies.${body}`),

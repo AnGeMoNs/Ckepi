@@ -1,4 +1,7 @@
+import { formatNumber, formatPercent } from "../i18n";
 import type { AnalogMatchItem, PlanetarySite } from "../types/analog";
+
+type TranslateFn = (key: string, params?: Record<string, string | number>) => string;
 
 function downloadBlob(filename: string, content: string, mimeType: string): void {
   const blob = new Blob([content], { type: mimeType });
@@ -15,7 +18,7 @@ function downloadBlob(filename: string, content: string, mimeType: string): void
 export function exportMatchesToCsv(
   matches: AnalogMatchItem[],
   siteId: string,
-  translate: (key: string) => string
+  translate: TranslateFn
 ): void {
   const headers = [
     "rank",
@@ -61,7 +64,7 @@ export function exportMatchesToCsv(
 export function exportMatchesToGeoJson(
   matches: AnalogMatchItem[],
   siteId: string,
-  translate: (key: string) => string
+  translate: TranslateFn
 ): void {
   const features = matches.map((m, idx) => ({
     type: "Feature",
@@ -93,18 +96,22 @@ export function exportMatchesToGeoJson(
 export function exportReportMarkdown(
   site: PlanetarySite,
   matches: AnalogMatchItem[],
-  translate: (key: string) => string,
-  selectedMatch?: AnalogMatchItem
+  translate: TranslateFn,
+  selectedMatch?: AnalogMatchItem,
+  lang = "es"
 ): void {
   const focus = selectedMatch ?? matches[0];
   const top = matches.slice(0, 5);
+  const confidenceScore = formatPercent(site.confidence?.score ?? 0, lang);
+  const confidenceLevel = site.confidence?.level ?? translate("export.unknown");
+
   const lines = [
-    `# Ckepi Report: ${translate(site.name_key)}`,
+    `# ${translate("export.reportTitle")}: ${translate(site.name_key)}`,
     ``,
-    `- **Body:** ${site.body.toUpperCase()}`,
-    `- **Coordinates:** (${site.coordinates.lat}, ${site.coordinates.lon})`,
-    `- **Confidence Level:** ${site.confidence?.level ?? "unknown"} (${Math.round((site.confidence?.score ?? 0) * 100)}%)`,
-    `- **Sources:** ${site.data_sources.join(", ")}`,
+    `- **${translate("export.body")}:** ${site.body.toUpperCase()}`,
+    `- **${translate("export.coordinates")}:** (${formatNumber(site.coordinates.lat, lang, 3)}, ${formatNumber(site.coordinates.lon, lang, 3)})`,
+    `- **${translate("export.confidenceLevel")}:** ${confidenceLevel} (${confidenceScore})`,
+    `- **${translate("export.sources")}:** ${site.data_sources.join(", ")}`,
     ``,
   ];
 
@@ -117,44 +124,49 @@ export function exportReportMarkdown(
       .slice(0, 5);
     const broken = focus.breakage_alerts.filter((b) => b.is_broken);
     const categoryLabel = focus.is_benchmark
-      ? `Known Analog${focus.known_analog_name ? ` (${focus.known_analog_name})` : ""}`
-      : "New Candidate";
+      ? `${translate("export.knownAnalog")}${focus.known_analog_name ? ` (${focus.known_analog_name})` : ""}`
+      : translate("export.newCandidate");
 
     lines.push(
-      `## Featured Analog: ${translate(focus.region_key)}`,
+      `## ${translate("export.featuredAnalog")}: ${translate(focus.region_key)}`,
       ``,
-      `- **H3 Index:** \`${focus.earth_cell_h3}\` (res ${focus.h3_resolution})`,
-      `- **Coordinates:** (${focus.coordinates.lat.toFixed(3)}, ${focus.coordinates.lon.toFixed(3)})`,
-      `- **Category:** ${categoryLabel}`,
-      `- **Similarity:** S_ind ${(focus.s_ind * 100).toFixed(1)}% · S_dep ${(focus.s_dep * 100).toFixed(1)}% · Combined ${(focus.combined_score * 100).toFixed(1)}%`,
+      `- **${translate("export.h3Index")}:** \`${focus.earth_cell_h3}\` (res ${focus.h3_resolution})`,
+      `- **${translate("export.coordinates")}:** (${formatNumber(focus.coordinates.lat, lang, 3)}, ${formatNumber(focus.coordinates.lon, lang, 3)})`,
+      `- **${translate("export.category")}:** ${categoryLabel}`,
+      `- **${translate("export.similarity")}:** S_ind ${formatPercent(focus.s_ind, lang)} · S_dep ${formatPercent(focus.s_dep, lang)} · ${translate("export.combined")} ${formatPercent(focus.combined_score, lang)}`,
       ``,
-      `### Why It Is Analogous (Strongest Drivers)`,
-      ...allSims.map(([k, v]) => `- ${translate(`variables.${k}.label`)}: ${(v * 100).toFixed(1)}%`),
-      ``,
-      `### Where the Analogy Breaks (Earth's Limits)`,
-      ...broken.map(
-        (b) =>
-          `- ${translate(`variables.${b.variable}.label`)}: Target ${b.planetary_value} vs Earth ${b.earth_baseline_value} (Breakage ${(b.breakage_index * 100).toFixed(1)}%)`
+      `### ${translate("export.whyAnalogous")}`,
+      ...allSims.map(
+        ([k, v]) => `- ${translate(`variables.${k}.label`)}: ${formatPercent(v, lang)}`
       ),
       ``,
-      `### Recommended Exploration Use`,
-      `**Valid field tests:**`,
+      `### ${translate("export.whereBreaks")}`,
+      ...broken.map(
+        (b) =>
+          `- ${translate(`variables.${b.variable}.label`)}: ${translate("export.targetVsEarth", {
+            target: formatNumber(b.planetary_value, lang, 2),
+            earth: formatNumber(b.earth_baseline_value, lang, 2),
+          })} (${translate("export.breakageLabel")} ${formatPercent(b.breakage_index, lang)})`
+      ),
+      ``,
+      `### ${translate("export.recommendedUse")}`,
+      `**${translate("export.validTests")}**`,
       ...focus.engineering_recommendations.valid_tests.map((k) => `- ${translate(k)}`),
       ``,
-      `**Cannot be tested on Earth (requires simulation/flight):**`,
+      `**${translate("export.invalidTests")}**`,
       ...focus.engineering_recommendations.invalid_tests.map((k) => `- ${translate(k)}`),
       ``
     );
   }
 
   lines.push(
-    `## Top Terrestrial Analogs`,
+    `## ${translate("export.topAnalogs")}`,
     ``,
-    `| # | Region | Category | Country | S_ind | S_dep | Combined | R_break |`,
+    `| ${translate("export.rankCol")} | ${translate("export.regionCol")} | ${translate("export.categoryCol")} | ${translate("export.countryCol")} | S_ind | S_dep | ${translate("export.combined")} | R_break |`,
     `|---|---|---|---|---|---|---|---|`,
     ...top.map(
       (m, i) =>
-        `| ${i + 1} | ${translate(m.region_key)}${m.known_analog_name ? ` (${m.known_analog_name})` : ""} | ${m.is_benchmark ? "Known" : "New"} | ${m.country_code} | ${(m.s_ind * 100).toFixed(1)}% | ${(m.s_dep * 100).toFixed(1)}% | ${(m.combined_score * 100).toFixed(1)}% | ${(m.r_break_overall * 100).toFixed(1)}% |`
+        `| ${i + 1} | ${translate(m.region_key)}${m.known_analog_name ? ` (${m.known_analog_name})` : ""} | ${m.is_benchmark ? translate("export.knownShort") : translate("export.newShort")} | ${m.country_code} | ${formatPercent(m.s_ind, lang)} | ${formatPercent(m.s_dep, lang)} | ${formatPercent(m.combined_score, lang)} | ${formatPercent(m.r_break_overall, lang)} |`
     )
   );
   downloadBlob(
@@ -163,4 +175,3 @@ export function exportReportMarkdown(
     "text/markdown;charset=utf-8;"
   );
 }
-

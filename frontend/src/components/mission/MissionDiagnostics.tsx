@@ -86,7 +86,7 @@ export function MissionDiagnostics({
           <Button
             variant="secondary"
             onClick={() =>
-              exportReportMarkdown(comparison.site, [match], (k) => t(k), match)
+              exportReportMarkdown(comparison.site, [match], (k, p) => t(k, p), match, lang)
             }
           >
             <Download className="h-4 w-4" aria-hidden="true" />
