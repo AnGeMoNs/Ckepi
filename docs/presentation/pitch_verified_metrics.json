@@ -1,0 +1,430 @@
+{
+  "schema_counts": {
+    "independent_variables": 10,
+    "dependent_variables": 6,
+    "breakage_variables": 3,
+    "total_canonical_variables": 19,
+    "known_analog_benchmarks": 25,
+    "curated_planetary_sites": 5,
+    "earth_h3_cells_total": 1757,
+    "earth_h3_by_resolution": {
+      "2": 1629,
+      "3": 114,
+      "4": 7,
+      "5": 7
+    }
+  },
+  "health": {
+    "status": "ok",
+    "version": "0.1.0"
+  },
+  "jezero_breakage": [
+    {
+      "variable": "gravity_g",
+      "planetary_value": 0.378,
+      "earth_baseline_value": 1.0,
+      "breakage_index": 0.622,
+      "is_broken": true,
+      "alert_key": "breakage.alerts.gravity_mismatch"
+    },
+    {
+      "variable": "atm_pressure_mbar",
+      "planetary_value": 8.07,
+      "earth_baseline_value": 1013.25,
+      "breakage_index": 0.992,
+      "is_broken": true,
+      "alert_key": "breakage.alerts.pressure_mismatch"
+    },
+    {
+      "variable": "radiation_msv_yr",
+      "planetary_value": 230.0,
+      "earth_baseline_value": 2.4,
+      "breakage_index": 0.9896,
+      "is_broken": true,
+      "alert_key": "breakage.alerts.radiation_mismatch"
+    }
+  ],
+  "jezero_top_weights": [
+    [
+      "thermal_inertia",
+      0.5095
+    ],
+    [
+      "uv_irradiance_index",
+      0.3683
+    ],
+    [
+      "solar_flux_wm2",
+      0.1222
+    ],
+    [
+      "topographic_roughness",
+      0.0
+    ],
+    [
+      "slope_deg",
+      0.0
+    ]
+  ],
+  "atacama_cell": {
+    "earth_cell_h3": "82b227fffffffff",
+    "h3_resolution": 2,
+    "coordinates": {
+      "lat": -24.1385,
+      "lon": -69.58155
+    },
+    "h3_boundary": [
+      [
+        -69.79423,
+        -22.49963
+      ],
+      [
+        -71.24968,
+        -23.56572
+      ],
+      [
+        -71.04212,
+        -25.20012
+      ],
+      [
+        -69.36681,
+        -25.75133
+      ],
+      [
+        -67.92958,
+        -24.68301
+      ],
+      [
+        -68.14893,
+        -23.06606
+      ],
+      [
+        -69.79423,
+        -22.49963
+      ]
+    ],
+    "region_key": "regions.global_h3_cell",
+    "country_code": "--",
+    "biome_key": "biomes.hyperarid_desert",
+    "is_benchmark": true,
+    "is_pareto_optimal": false,
+    "known_analog_name": "Atacama Desert (Yungay)",
+    "s_ind": 0.3436,
+    "s_dep": 0.2823,
+    "combined_score": 0.3191,
+    "confidence_adjusted_score": 0.3015,
+    "score_uncertainty": 0.0637,
+    "confidence_interval": [
+      0.2553,
+      0.3828
+    ],
+    "effective_scale_km": 158.2,
+    "r_break_overall": 0.8664,
+    "iv_similarity_breakdown": {
+      "topographic_roughness": 0.4792,
+      "slope_deg": 0.6016,
+      "thermal_inertia": 0.6906,
+      "surface_albedo": 0.7659,
+      "solar_flux_wm2": 0.4918,
+      "subsurface_ice_frac": 0.9048,
+      "aridity_index": 0.9822,
+      "relative_humidity_pct": 0.4406,
+      "uv_irradiance_index": 0.1909,
+      "vegetation_lai_proxy": 1.0
+    },
+    "dv_similarity_breakdown": {
+      "diurnal_temp_amplitude_k": 0.2512,
+      "nocturnal_cooling_k_hr": 0.3685,
+      "mean_surface_temp_k": 0.183,
+      "surface_wind_ms": 0.227,
+      "aeolian_dust_flux": 0.2808,
+      "ice_sublimation_rate": 1.0
+    },
+    "breakage_alerts": [
+      {
+        "variable": "gravity_g",
+        "planetary_value": 0.378,
+        "earth_baseline_value": 1.0,
+        "breakage_index": 0.622,
+        "is_broken": true,
+        "alert_key": "breakage.alerts.gravity_mismatch"
+      },
+      {
+        "variable": "atm_pressure_mbar",
+        "planetary_value": 8.07,
+        "earth_baseline_value": 851.04,
+        "breakage_index": 0.9905,
+        "is_broken": true,
+        "alert_key": "breakage.alerts.pressure_mismatch"
+      },
+      {
+        "variable": "radiation_msv_yr",
+        "planetary_value": 230.0,
+        "earth_baseline_value": 3.07,
+        "breakage_index": 0.9867,
+        "is_broken": true,
+        "alert_key": "breakage.alerts.radiation_mismatch"
+      }
+    ],
+    "engineering_recommendations": {
+      "viability_tier": "partial",
+      "valid_tests": [
+        "tests.valid.baseline_instrument_calibration"
+      ],
+      "invalid_tests": [
+        "tests.invalid.parachute_aerodynamics",
+        "tests.invalid.convective_thermal_cooling",
+        "tests.invalid.reduced_gravity_kinematics",
+        "tests.invalid.unshielded_gcr_electronics"
+      ]
+    },
+    "earth_variables": {
+      "independent": {
+        "topographic_roughness": 0.6039,
+        "slope_deg": 1.319,
+        "thermal_inertia": 199.8,
+        "surface_albedo": 0.27,
+        "solar_flux_wm2": 657.56,
+        "subsurface_ice_frac": 0.0,
+        "aridity_index": 0.9755,
+        "relative_humidity_pct": 23.45,
+        "uv_irradiance_index": 14.96,
+        "vegetation_lai_proxy": 0.0
+      },
+      "dependent": {
+        "diurnal_temp_amplitude_k": 30.03,
+        "nocturnal_cooling_k_hr": 1.913,
+        "mean_surface_temp_k": 300.46,
+        "surface_wind_ms": 2.6,
+        "aeolian_dust_flux": 0.2628,
+        "ice_sublimation_rate": 0.0
+      },
+      "breakage": {
+        "gravity_g": 1.0,
+        "atm_pressure_mbar": 851.04,
+        "radiation_msv_yr": 3.07
+      }
+    },
+    "provenance": {
+      "source_apis": [
+        "Open-Meteo Copernicus DEM",
+        "Open-Meteo ERA5"
+      ],
+      "observation_window": "2024-03-01 / 2024-03-07",
+      "fetched_at": "2026-11-13T21:01:41.565303+00:00",
+      "is_live_probed": false
+    }
+  },
+  "atacama_compare_summary": {
+    "valid_tests_count": 0,
+    "invalid_tests_count": 0,
+    "valid_tests": [],
+    "invalid_tests": [],
+    "sample_deltas": [
+      {
+        "variable": "slope_deg",
+        "layer": "independent",
+        "planetary_value": 6.4,
+        "earth_value": 1.319,
+        "similarity_score": 0.6016,
+        "weight": 0.0,
+        "is_breakage": false
+      },
+      {
+        "variable": "aridity_index",
+        "layer": "independent",
+        "planetary_value": 0.98,
+        "earth_value": 0.9755,
+        "similarity_score": 0.9822,
+        "weight": 0.0,
+        "is_breakage": false
+      },
+      {
+        "variable": "diurnal_temp_amplitude_k",
+        "layer": "dependent",
+        "planetary_value": 92.1917,
+        "earth_value": 30.03,
+        "similarity_score": 0.2512,
+        "weight": 0.1667,
+        "is_breakage": false
+      },
+      {
+        "variable": "gravity_g",
+        "layer": "breakage",
+        "planetary_value": 0.378,
+        "earth_value": 1.0,
+        "similarity_score": 0.378,
+        "weight": 0.0,
+        "is_breakage": true
+      },
+      {
+        "variable": "atm_pressure_mbar",
+        "layer": "breakage",
+        "planetary_value": 8.07,
+        "earth_value": 851.04,
+        "similarity_score": 0.0095,
+        "weight": 0.0,
+        "is_breakage": true
+      },
+      {
+        "variable": "radiation_msv_yr",
+        "layer": "breakage",
+        "planetary_value": 230.0,
+        "earth_value": 3.07,
+        "similarity_score": 0.0133,
+        "weight": 0.0,
+        "is_breakage": true
+      }
+    ]
+  },
+  "moon_top_match": {
+    "earth_cell_h3": "820897fffffffff",
+    "h3_resolution": 2,
+    "coordinates": {
+      "lat": 57.94913,
+      "lon": 19.23221
+    },
+    "h3_boundary": [
+      [
+        17.2862,
+        58.92634
+      ],
+      [
+        16.36093,
+        57.6227
+      ],
+      [
+        18.27524,
+        56.63295
+      ],
+      [
+        21.11408,
+        56.92073
+      ],
+      [
+        22.14428,
+        58.20922
+      ],
+      [
+        20.23591,
+        59.22587
+      ],
+      [
+        17.2862,
+        58.92634
+      ]
+    ],
+    "region_key": "regions.global_h3_cell",
+    "country_code": "--",
+    "biome_key": "biomes.probed_location",
+    "is_benchmark": false,
+    "is_pareto_optimal": true,
+    "known_analog_name": null,
+    "s_ind": 0.8584,
+    "s_dep": 0.1105,
+    "combined_score": 0.5593,
+    "confidence_adjusted_score": 0.5145,
+    "score_uncertainty": 0.0806,
+    "confidence_interval": [
+      0.4787,
+      0.6398
+    ],
+    "effective_scale_km": 158.2,
+    "r_break_overall": 0.943,
+    "iv_similarity_breakdown": {
+      "topographic_roughness": 0.0743,
+      "slope_deg": 0.1576,
+      "thermal_inertia": 0.1788,
+      "surface_albedo": 0.9355,
+      "solar_flux_wm2": 0.8983,
+      "subsurface_ice_frac": 0.3114,
+      "aridity_index": 0.0448,
+      "relative_humidity_pct": 0.045,
+      "uv_irradiance_index": 0.7582,
+      "vegetation_lai_proxy": 0.5719
+    },
+    "dv_similarity_breakdown": {
+      "diurnal_temp_amplitude_k": 0.0163,
+      "nocturnal_cooling_k_hr": 0.4832,
+      "mean_surface_temp_k": 0.0448,
+      "surface_wind_ms": 0.2982,
+      "aeolian_dust_flux": 0.7933,
+      "ice_sublimation_rate": 0.4984
+    },
+    "breakage_alerts": [
+      {
+        "variable": "gravity_g",
+        "planetary_value": 0.165,
+        "earth_baseline_value": 1.0,
+        "breakage_index": 0.835,
+        "is_broken": true,
+        "alert_key": "breakage.alerts.gravity_mismatch"
+      },
+      {
+        "variable": "atm_pressure_mbar",
+        "planetary_value": 1e-12,
+        "earth_baseline_value": 1022.64,
+        "breakage_index": 1.0,
+        "is_broken": true,
+        "alert_key": "breakage.alerts.pressure_mismatch"
+      },
+      {
+        "variable": "radiation_msv_yr",
+        "planetary_value": 380.0,
+        "earth_baseline_value": 2.28,
+        "breakage_index": 0.994,
+        "is_broken": true,
+        "alert_key": "breakage.alerts.radiation_mismatch"
+      }
+    ],
+    "engineering_recommendations": {
+      "viability_tier": "partial",
+      "valid_tests": [
+        "tests.valid.none_humid_mismatch"
+      ],
+      "invalid_tests": [
+        "tests.invalid.parachute_aerodynamics",
+        "tests.invalid.convective_thermal_cooling",
+        "tests.invalid.reduced_gravity_kinematics",
+        "tests.invalid.unshielded_gcr_electronics",
+        "tests.invalid.electrostatic_vacuum_dust"
+      ]
+    },
+    "earth_variables": {
+      "independent": {
+        "topographic_roughness": 0.03,
+        "slope_deg": 0.026,
+        "thermal_inertia": 436.7,
+        "surface_albedo": 0.15,
+        "solar_flux_wm2": 228.99,
+        "subsurface_ice_frac": 0.0,
+        "aridity_index": 0.2235,
+        "relative_humidity_pct": 86.81,
+        "uv_irradiance_index": 4.77,
+        "vegetation_lai_proxy": 0.475
+      },
+      "dependent": {
+        "diurnal_temp_amplitude_k": 5.57,
+        "nocturnal_cooling_k_hr": 0.371,
+        "mean_surface_temp_k": 275.77,
+        "surface_wind_ms": 6.05,
+        "aeolian_dust_flux": 0.0579,
+        "ice_sublimation_rate": 0.0
+      },
+      "breakage": {
+        "gravity_g": 1.0,
+        "atm_pressure_mbar": 1022.64,
+        "radiation_msv_yr": 2.28
+      }
+    },
+    "provenance": {
+      "source_apis": [
+        "Open-Meteo Copernicus DEM",
+        "Open-Meteo ERA5"
+      ],
+      "observation_window": "2024-03-01 / 2024-03-07",
+      "fetched_at": "2026-11-13T21:01:41.565303+00:00",
+      "is_live_probed": false
+    }
+  }
+}
