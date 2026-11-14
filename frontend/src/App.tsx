@@ -1,9 +1,25 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Header } from "./components/layout/Header";
-import { ExplorerPage } from "./pages/ExplorerPage";
+import { HomePage } from "./pages/HomePage";
 import type { ReadingMode, ThemeMode } from "./types/analog";
+
+// The software loads only after the intro, so the home stays light.
+const Header = lazy(() =>
+  import("./components/layout/Header").then((m) => ({ default: m.Header }))
+);
+const ExplorerPage = lazy(() =>
+  import("./pages/ExplorerPage").then((m) => ({ default: m.ExplorerPage }))
+);
+
+type View = "home" | "app";
+
+/** Shared links (?site=, ?tab=, ?profile=) and ?view=app open the software directly. */
+function viewFromLocation(): View {
+  if (typeof window === "undefined") return "home";
+  const params = new URLSearchParams(window.location.search);
+  return ["view", "site", "tab", "profile"].some((key) => params.has(key)) ? "app" : "home";
+}
 
 const THEME_STORAGE_KEY = "ckepi-theme";
 
@@ -17,9 +33,7 @@ function getInitialTheme(): ThemeMode {
   } catch {
     // Ignore storage access errors
   }
-  if (window.matchMedia?.("(prefers-color-scheme: light)").matches) {
-    return "light";
-  }
+  // Brand default is dark so the jump from the intro into the app stays coherent.
   return "dark";
 }
 
@@ -27,6 +41,19 @@ export default function App() {
   const { t, i18n } = useTranslation();
   const [theme, setTheme] = useState<ThemeMode>(getInitialTheme);
   const [readingMode, setReadingMode] = useState<ReadingMode>("mission");
+  const [view, setView] = useState<View>(viewFromLocation);
+
+  useEffect(() => {
+    const onPopState = () => setView(viewFromLocation());
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  const enterApp = () => {
+    window.history.pushState({}, "", "?view=app");
+    setView("app");
+    window.scrollTo({ top: 0 });
+  };
 
   useLayoutEffect(() => {
     const root = document.documentElement;
@@ -46,6 +73,10 @@ export default function App() {
     document.documentElement.lang = i18n.language.slice(0, 2) || "es";
   }, [i18n.language]);
 
+  if (view === "home") {
+    return <HomePage onEnter={enterApp} />;
+  }
+
   return (
     <div className="min-h-screen bg-surface text-content transition-colors">
       <a
@@ -54,13 +85,15 @@ export default function App() {
       >
         {t("nav.skipToContent")}
       </a>
-      <Header
-        theme={theme}
-        onToggleTheme={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
-        readingMode={readingMode}
-        onChangeReadingMode={setReadingMode}
-      />
-      <ExplorerPage theme={theme} readingMode={readingMode} />
+      <Suspense fallback={<div className="min-h-screen bg-ckepi-space" aria-busy="true" />}>
+        <Header
+          theme={theme}
+          onToggleTheme={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
+          readingMode={readingMode}
+          onChangeReadingMode={setReadingMode}
+        />
+        <ExplorerPage theme={theme} readingMode={readingMode} />
+      </Suspense>
     </div>
   );
 }

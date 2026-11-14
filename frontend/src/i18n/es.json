@@ -1108,5 +1108,15 @@
     },
     "sustainabilityTitle": "Modelo de Sostenibilidad Institucional:",
     "sustainabilityBody": "Núcleo 100 % open source (Apache-2.0) para educación pública + servicios a instituciones para caracterizar sitios de prueba."
+  },
+  "home": {
+    "skip": "Saltar intro",
+    "replay": "Ver la intro de nuevo",
+    "tagline": "Tierra · Luna · Marte, comparados con datos abiertos de NASA",
+    "question": "¿Qué se parece? ¿Cuánto? ¿Y qué no?",
+    "cta": "Explorar los tres mundos",
+    "dataNote": "Ejemplo real: una zona poco estudiada de Antofagasta se parece a las pendientes del cráter Jezero más que el análogo clásico, Yungay (W₁ = 0,54° frente a 3,32°, a 30 m). Preseleccionamos lugares para estudiar; no los certificamos.",
+    "aiBadge": "Video generado con IA",
+    "credits": "Datos: NASA, ESA y agencias socias. Ckepi no está afiliado ni respaldado por NASA."
   }
 }

@@ -19,9 +19,22 @@ const config: Config = {
         "status-break": "rgb(var(--color-status-break) / <alpha-value>)",
         "planet-mars": "rgb(var(--color-planet-mars) / <alpha-value>)",
         "planet-moon": "rgb(var(--color-planet-moon) / <alpha-value>)",
+        // Brand kit (frontend/public/img/ckepi/tokens.json)
+        "ckepi-space": "#05070D",
+        "ckepi-ink": "#132A38",
+        "ckepi-earth": "#38BDF8",
+        "ckepi-moon": "#CBD5E1",
+        "ckepi-mars": "#FB923C",
+        "ckepi-paper": "#F5F2EB",
+        "ckepi-hex": "#1C1F26",
+        "ckepi-hex-edge": "#2A2E37",
       },
       boxShadow: {
         elevated: "0 12px 32px -12px rgb(15 23 42 / 0.28)",
+        "ckepi-glow": "0 0 32px rgb(251 146 60 / 0.45)",
+      },
+      dropShadow: {
+        "ckepi-logo": "0 8px 24px rgb(0 0 0 / 0.6)",
       },
     },
   },

@@ -1108,5 +1108,15 @@
     },
     "sustainabilityTitle": "Institutional Sustainability Model:",
     "sustainabilityBody": "100% open-source core (Apache-2.0) for public education + services for institutions to characterize test sites."
+  },
+  "home": {
+    "skip": "Skip intro",
+    "replay": "Replay intro",
+    "tagline": "Earth · Moon · Mars, compared with open NASA data",
+    "question": "What matches? By how much? And what doesn't?",
+    "cta": "Explore the three worlds",
+    "dataNote": "Real example: an under-studied area of Antofagasta matches Jezero crater's slopes more closely than the classic Yungay analog (W₁ = 0.54° vs. 3.32°, at 30 m). We pre-select places to study; we do not certify them.",
+    "aiBadge": "AI-generated video",
+    "credits": "Data: NASA, ESA and partner agencies. Ckepi is not affiliated with or endorsed by NASA."
   }
 }
