@@ -6,7 +6,10 @@ import {
   Globe,
   MapPin,
   Mountain,
+  RotateCcw,
+  Search,
   Sparkles,
+  X,
   ZoomIn,
 } from "lucide-react";
 import * as maplibregl from "maplibre-gl";
@@ -16,6 +19,11 @@ import { useTranslation } from "react-i18next";
 import { formatNumber, formatPercent } from "../../i18n";
 import { getMapColors } from "../../theme/mapColors";
 import type { AnalogMatchItem, EarthOverlayLayer, ThemeMode } from "../../types/analog";
+import {
+  filterAndSortMatches,
+  type AnalogCategoryFilter,
+  type AnalogSortKey,
+} from "../../utils/analogFilter";
 import { Badge } from "../ui/Badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 
@@ -161,17 +169,26 @@ export function AnalogMap({
   const [isTerrain3d, setIsTerrain3d] = useState(false);
   const [hoveredH3, setHoveredH3] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<AnalogCategoryFilter>("all");
+  const [sortBy, setSortBy] = useState<AnalogSortKey>("combined");
 
   const hoveredH3Ref = useRef<string | null>(null);
   const prevStyleKeyRef = useRef<string>(`${theme}:${overlayLayer}`);
   const prevGlobeRef = useRef<boolean>(isGlobe);
   const prevTerrainRef = useRef<boolean>(isTerrain3d);
-
-  const displayedMatches = useMemo(() => {
-    if (!drilldownState) return matches;
-    const childSet = new Set(drilldownState.childIds);
-    return matches.filter((m) => childSet.has(m.earth_cell_h3));
-  }, [matches, drilldownState]);
+  const displayedMatches = useMemo(
+    () =>
+      filterAndSortMatches({
+        matches,
+        drilldownChildIds: drilldownState?.childIds,
+        searchQuery,
+        category: categoryFilter,
+        sortBy,
+        translate: t,
+      }),
+    [matches, drilldownState, searchQuery, categoryFilter, sortBy, t]
+  );
 
   const matchLookup = useMemo(() => {
     const map = new Map<string, { match: AnalogMatchItem; rank: number }>();
@@ -185,7 +202,6 @@ export function AnalogMap({
     });
     return map;
   }, [displayedMatches, matches]);
-
   const selectedEntry = useMemo(
     () => (selectedH3 ? matchLookup.get(selectedH3) ?? null : null),
     [matchLookup, selectedH3]
@@ -569,6 +585,7 @@ export function AnalogMap({
           </select>
           <button
             type="button"
+            aria-pressed={isGlobe}
             onClick={() => setIsGlobe((prev) => !prev)}
             className="inline-flex min-h-11 items-center gap-1.5 rounded border border-border-subtle bg-surface px-2.5 py-1.5 text-xs font-medium text-content hover:bg-surface-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
           >
@@ -588,15 +605,36 @@ export function AnalogMap({
             <Mountain className="h-3.5 w-3.5" aria-hidden="true" />
             <span>{t("map.terrain3d")}</span>
           </button>
+          <button
+            type="button"
+            onClick={() => {
+              mapRef.current?.flyTo({
+                center: [0, 15],
+                zoom: 1.45,
+                pitch: isTerrain3d ? 25 : 0,
+                duration: 750,
+              });
+            }}
+            className="inline-flex min-h-11 items-center gap-1.5 rounded border border-border-subtle bg-surface px-2.5 py-1.5 text-xs font-medium text-content hover:bg-surface-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+          >
+            <RotateCcw className="h-3.5 w-3.5 text-content-muted" aria-hidden="true" />
+            <span>{t("map.resetView")}</span>
+          </button>
           {selectedH3 && onRefineCell && (
             <button
               type="button"
-              disabled={isRefining}
+              disabled={isRefining || (selectedMatch?.h3_resolution ?? 0) >= 5}
               onClick={() => onRefineCell(selectedH3)}
-              className="inline-flex min-h-11 items-center gap-1.5 rounded border border-accent/40 bg-accent/10 px-2.5 py-1.5 text-xs font-medium text-accent hover:bg-accent/20 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-accent/40"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded border border-accent/40 bg-accent/10 px-2.5 py-1.5 text-xs font-medium text-accent hover:bg-accent/20 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-accent/40"
             >
               <ZoomIn className="h-3.5 w-3.5" aria-hidden="true" />
-              <span>{isRefining ? t("map.refiningZone") : t("map.refineZone")}</span>
+              <span>
+                {selectedMatch && selectedMatch.h3_resolution >= 5
+                  ? t("map.maxResReached")
+                  : isRefining
+                  ? t("map.refiningZone")
+                  : t("map.refineZone")}
+              </span>
             </button>
           )}
           <Badge variant="default">
@@ -627,7 +665,11 @@ export function AnalogMap({
         </div>
 
         {probingCoords && (
-          <div className="rounded border border-accent/40 bg-accent/10 px-3 py-2 text-xs font-medium text-accent">
+          <div
+            role="status"
+            aria-live="polite"
+            className="rounded border border-accent/40 bg-accent/10 px-3 py-2 text-xs font-medium text-accent"
+          >
             {t("map.probingLocation", {
               lat: formatNumber(probingCoords.lat, i18n.language, 2),
               lon: formatNumber(probingCoords.lon, i18n.language, 2),
@@ -945,9 +987,103 @@ export function AnalogMap({
             )}
           </div>
 
+          {matches.length > 0 && (
+            <div className="flex flex-col gap-2 rounded-lg border border-border-subtle bg-surface p-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+              <div className="relative min-w-0 flex-1 sm:max-w-xs">
+                <label htmlFor="analog-search-input" className="sr-only">
+                  {t("map.searchLabel")}
+                </label>
+                <Search
+                  className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-content-muted"
+                  aria-hidden="true"
+                />
+                <input
+                  id="analog-search-input"
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t("map.searchPlaceholder")}
+                  className="min-h-11 w-full rounded border border-border-subtle bg-surface-elevated pl-9 pr-11 text-xs text-content placeholder:text-content-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    aria-label={t("map.clearSearch")}
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-0.5 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded text-content-muted hover:text-content focus:outline-none focus:ring-2 focus:ring-accent/40"
+                  >
+                    <X className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1" role="group" aria-label={t("map.searchLabel")}>
+                  {(
+                    [
+                      { id: "all", label: t("map.filterAll") },
+                      { id: "discovery", label: t("map.discoveryBadge") },
+                      { id: "benchmark", label: t("map.benchmarkBadge") },
+                    ] as const
+                  ).map((tab) => {
+                    const active = categoryFilter === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        aria-pressed={active}
+                        onClick={() => setCategoryFilter(tab.id)}
+                        className={`min-h-11 rounded border px-2.5 py-1.5 text-xs font-medium transition focus:outline-none focus:ring-2 focus:ring-accent/40 ${
+                          active
+                            ? "border-accent bg-accent/15 text-accent"
+                            : "border-border-subtle bg-surface-elevated text-content-muted hover:bg-surface-muted hover:text-content"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div>
+                  <label htmlFor="analog-sort-select" className="sr-only">
+                    {t("map.sortLabel")}
+                  </label>
+                  <select
+                    id="analog-sort-select"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as AnalogSortKey)}
+                    className="min-h-11 rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5 text-xs font-medium text-content focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+                  >
+                    <option value="combined">{t("map.sortCombined")}</option>
+                    <option value="s_ind">{t("map.sortSInd")}</option>
+                    <option value="s_dep">{t("map.sortSDep")}</option>
+                    <option value="lowest_breakage">{t("map.sortLowestBreak")}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
+
           {displayedMatches.length === 0 ? (
-            <div className="rounded border border-border-subtle bg-surface p-4 text-sm text-content-muted">
-              {t("map.emptyResults")}
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded border border-border-subtle bg-surface p-4 text-sm text-content-muted">
+              <span>
+                {matches.length > 0 && (searchQuery.trim() !== "" || categoryFilter !== "all")
+                  ? t("map.emptyFilteredResults")
+                  : t("map.emptyResults")}
+              </span>
+              {matches.length > 0 && (searchQuery.trim() !== "" || categoryFilter !== "all") && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setCategoryFilter("all");
+                  }}
+                  className="min-h-11 rounded border border-accent/40 bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent hover:bg-accent/20 focus:outline-none focus:ring-2 focus:ring-accent/40"
+                >
+                  {t("map.clearFilters")}
+                </button>
+              )}
             </div>
           ) : (
             <>

@@ -3,16 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ckepi — Planetary Analog Decomposition</title>
+    <title>CKEPI — Tierra · Luna · Marte</title>
+    <meta name="description" content="CKEPI compara la Tierra, la Luna y Marte con datos abiertos de NASA: qué se parece, cuánto y qué no." />
+    <meta name="theme-color" content="#101F24" />
+    <link rel="icon" type="image/svg+xml" href="/img/ckepi/svg/ckepi-symbol-vector-dark.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/ckepi/icons/ckepi-vector-32.png" />
+    <link rel="apple-touch-icon" href="/img/ckepi/icons/ckepi-vector-180.png" />
     <script>
       (function () {
         try {
           var t = localStorage.getItem("ckepi-theme");
-          var isLight =
-            t === "light" ||
-            (t !== "dark" &&
-              window.matchMedia &&
-              window.matchMedia("(prefers-color-scheme: light)").matches);
+          // Brand default is dark (see App.getInitialTheme).
+          var isLight = t === "light";
           if (!isLight) document.documentElement.classList.add("dark");
           var l = localStorage.getItem("ckepi-lang");
           if (l === "es" || l === "pt" || l === "en") {

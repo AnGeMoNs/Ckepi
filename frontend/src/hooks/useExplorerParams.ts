@@ -63,10 +63,12 @@ export function useExplorerParams() {
     ? (rawMetric as DistanceMetricType)
     : "euclidean";
 
-  const [selectedBody, setSelectedBody] = useState<PlanetaryBody>("mars");
-  const [selectedSiteId, setSelectedSiteId] = useState<string>(
-    initialParams?.get("site") || "mars_jezero_crater"
+  const initialSiteId = initialParams?.get("site")?.trim().slice(0, 160) || "mars_jezero_crater";
+  // Infer the body from the site id so a shared lunar link works even before the catalog loads.
+  const [selectedBody, setSelectedBody] = useState<PlanetaryBody>(
+    /^(moon_|probe_moon_)/.test(initialSiteId) ? "moon" : "mars"
   );
+  const [selectedSiteId, setSelectedSiteId] = useState<string>(initialSiteId);
   const [customProbedSite, setCustomProbedSite] = useState<PlanetarySite | null>(null);
   const [modelType, setModelType] = useState<DecompositionModelType>(initialModel);
   const [distanceMetric, setDistanceMetric] = useState<DistanceMetricType>(initialMetric);

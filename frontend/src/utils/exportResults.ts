@@ -3,6 +3,7 @@ import type {
   AnalogMatchItem,
   MissionAiAnalysisResponse,
   PlanetarySite,
+  TerrainDistributionComparison,
 } from "../types/analog";
 
 type TranslateFn = (key: string, params?: Record<string, string | number>) => string;
@@ -103,7 +104,8 @@ export function exportReportMarkdown(
   translate: TranslateFn,
   selectedMatch?: AnalogMatchItem,
   lang = "es",
-  aiAnalysis?: MissionAiAnalysisResponse | null
+  aiAnalysis?: MissionAiAnalysisResponse | null,
+  statisticalDistribution?: TerrainDistributionComparison | null
 ): void {
   const focus = selectedMatch ?? matches[0];
   const top = matches.slice(0, 5);
@@ -160,6 +162,32 @@ export function exportReportMarkdown(
       ``,
       `**${translate("export.invalidTests")}**`,
       ...focus.engineering_recommendations.invalid_tests.map((k) => `- ${translate(k)}`),
+      ``
+    );
+
+    if (statisticalDistribution) {
+      const sDist = statisticalDistribution.slope_distribution;
+      const rDist = statisticalDistribution.relief_distribution;
+      lines.push(
+        `### Common-Scale (30 m) Terrain Distribution Analysis (Wasserstein-1 & KS)`,
+        `- **Target DEM Source:** ${statisticalDistribution.planetary_dem_source}`,
+        `- **Earth DEM Source:** ${statisticalDistribution.earth_dem_source}`,
+        `- **Control Benchmark DEM:** ${statisticalDistribution.control_benchmark_name}`,
+        `- **Slope Distribution Distance (30 m):** W₁ = ${sDist.wasserstein_distance.toFixed(2)}° (95% 2D Block-Bootstrap CI: ${sDist.w1_ci_95[0].toFixed(2)}°–${sDist.w1_ci_95[1].toFixed(2)}°), KS D = ${sDist.ks_statistic.toFixed(3)} (vs Yungay Control W₁ = ${sDist.control_yungay_w1.toFixed(2)}°)`,
+        `- **Local Relief Distance (300x300 m window):** W₁ = ${rDist.wasserstein_distance.toFixed(2)} m (95% 2D Block-Bootstrap CI: ${rDist.w1_ci_95[0].toFixed(2)}–${rDist.w1_ci_95[1].toFixed(2)} m), KS D = ${rDist.ks_statistic.toFixed(3)}`,
+        `- **Multi-Scale Sensitivity (30 m / 60 m / 90 m):**`,
+        ...statisticalDistribution.scale_sensitivity.map(
+          (pt) =>
+            `  - **${pt.resolution_m} m scale:** Slope W₁ = ${pt.slope_wasserstein_deg.toFixed(2)}°, KS D = ${pt.slope_ks_stat.toFixed(3)}, Relief W₁ = ${pt.relief_wasserstein_m.toFixed(2)} m, Earth P50/P90 = ${pt.earth_slope_median_deg.toFixed(2)}°/${pt.earth_slope_p90_deg.toFixed(2)}°`
+        ),
+        ``
+      );
+    }
+
+    lines.push(
+      `### Territorial Impact (Antofagasta & Caja La Araucana — UN SDGs)`,
+      `- **La Araucana Strategic Alignment:** (1) Democratizing frontier science, (2) STEAM employability & open data science, (3) Local application in Antofagasta Region, (4) Interregional innovation lattice.`,
+      `- **Verified UN SDG Targets:** ODS 4.3, 4.4 (STEAM & technical education), ODS 8 & 9.5 (scientific research & innovation), ODS 10 (territorial equity), ODS 17.3, 17.16, 17.17 (multi-stakeholder partnerships).`,
       ``
     );
   }

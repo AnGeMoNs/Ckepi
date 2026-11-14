@@ -1,0 +1,163 @@
+{
+  "tool": "OpenAI built-in image_gen via Codex",
+  "date": "2026-11-14",
+  "note": "Prompt specifications; final mobile Explorer uses only #0B1D3A and #102747, no warm colors. Mobile problem explicitly excludes planets and orbital arcs. Mobile three-world arc stays at very top.",
+  "images": [
+    {
+      "name": "home",
+      "orientation": "desktop",
+      "source": "/home/dani/.codex/generated_images/01a1db37-6533-7572-8114-34e96bfd2d60/exec-e5225c67-a7e9-4afc-b4c9-ba4a8c720389.png",
+      "scene_prompt": "A deep tunnel of contour-line paper layers receding to a dark starry center, an Atacama desert night landscape at the bottom (ochre plains, dry hills, salt flat, one distant Andean volcano), a layered orange-yellow sun in the top-right corner. Empty dark center for the title.",
+      "base_prompt": "Handcrafted layered paper-cut illustration, top-quality paper diorama photographed with soft studio light, visible paper texture, subtle drop shadows between layers. Palette: midnight blue #0B1D3A, mid blue #1E3A6E, space black, cream white, Atacama orange #D9822B, sun yellow #F2C14E, Mars rust #C1440E. Calm, low-detail composition designed as a website background: large empty low-contrast area for text, no busy details in that area. No text, no letters, no logos, no NASA insignia, no seals, no flags, no people, no faces, no rings on Mars, no Saturn. No watermark baked into image; attribution will be overlaid by the website.",
+      "target": [
+        2560,
+        1440
+      ],
+      "layout_prompt": "Landscape 16:9 composition, target 2560×1440.",
+      "review": "Reviewed individually; no text, logos, faces, flags, Saturn or rings on Mars observed. Decorative illustration, not scientific data."
+    },
+    {
+      "name": "home",
+      "orientation": "mobile",
+      "source": "/home/dani/.codex/generated_images/01a1db37-6533-7572-8114-34e96bfd2d60/exec-a31405c7-5c64-4c93-b681-16325757c6bd.png",
+      "scene_prompt": "A deep tunnel of contour-line paper layers receding to a dark starry center, an Atacama desert night landscape at the bottom (ochre plains, dry hills, salt flat, one distant Andean volcano), a layered orange-yellow sun in the top-right corner. Empty dark center for the title.",
+      "base_prompt": "Handcrafted layered paper-cut illustration, top-quality paper diorama photographed with soft studio light, visible paper texture, subtle drop shadows between layers. Palette: midnight blue #0B1D3A, mid blue #1E3A6E, space black, cream white, Atacama orange #D9822B, sun yellow #F2C14E, Mars rust #C1440E. Calm, low-detail composition designed as a website background: large empty low-contrast area for text, no busy details in that area. No text, no letters, no logos, no NASA insignia, no seals, no flags, no people, no faces, no rings on Mars, no Saturn. No watermark baked into image; attribution will be overlaid by the website.",
+      "target": [
+        1080,
+        1920
+      ],
+      "layout_prompt": "Portrait 9:16 composition, target 1080×1920. Keep the empty text area in the upper half. Adapt the scene vertically instead of cropping a landscape.",
+      "review": "Reviewed individually; no text, logos, faces, flags, Saturn or rings on Mars observed. Decorative illustration, not scientific data."
+    },
+    {
+      "name": "el-problema",
+      "orientation": "desktop",
+      "source": "/home/dani/.codex/generated_images/01a1db37-6533-7572-8114-34e96bfd2d60/exec-7a086ad3-7e1d-48f6-beae-61079fde5bb1.png",
+      "scene_prompt": "Atacama desert paper landscape at dusk on the left third; the right two thirds are a soft midnight-blue sky with sparse paper stars, empty for text.",
+      "base_prompt": "Handcrafted layered paper-cut illustration, top-quality paper diorama photographed with soft studio light, visible paper texture, subtle drop shadows between layers. Palette: midnight blue #0B1D3A, mid blue #1E3A6E, space black, cream white, Atacama orange #D9822B, sun yellow #F2C14E, Mars rust #C1440E. Calm, low-detail composition designed as a website background: large empty low-contrast area for text, no busy details in that area. No text, no letters, no logos, no NASA insignia, no seals, no flags, no people, no faces, no rings on Mars, no Saturn. No watermark baked into image; attribution will be overlaid by the website.",
+      "target": [
+        2560,
+        1440
+      ],
+      "layout_prompt": "Landscape 16:9 composition, target 2560×1440.",
+      "review": "Reviewed individually; no text, logos, faces, flags, Saturn or rings on Mars observed. Decorative illustration, not scientific data."
+    },
+    {
+      "name": "el-problema",
+      "orientation": "mobile",
+      "source": "/home/dani/.codex/generated_images/01a1db37-6533-7572-8114-34e96bfd2d60/exec-d3f27dd7-2a38-4d39-b58c-8db94de67f40.png",
+      "scene_prompt": "Atacama desert paper landscape at dusk on the left third; the right two thirds are a soft midnight-blue sky with sparse paper stars, empty for text.",
+      "base_prompt": "Handcrafted layered paper-cut illustration, top-quality paper diorama photographed with soft studio light, visible paper texture, subtle drop shadows between layers. Palette: midnight blue #0B1D3A, mid blue #1E3A6E, space black, cream white, Atacama orange #D9822B, sun yellow #F2C14E, Mars rust #C1440E. Calm, low-detail composition designed as a website background: large empty low-contrast area for text, no busy details in that area. No text, no letters, no logos, no NASA insignia, no seals, no flags, no people, no faces, no rings on Mars, no Saturn. No watermark baked into image; attribution will be overlaid by the website.",
+      "target": [
+        1080,
+        1920
+      ],
+      "layout_prompt": "Portrait 9:16 composition, target 1080×1920. Keep the empty text area in the upper half. Adapt the scene vertically instead of cropping a landscape.",
+      "review": "Reviewed individually; no text, logos, faces, flags, Saturn or rings on Mars observed. Decorative illustration, not scientific data."
+    },
+    {
+      "name": "que-hace-ckepi",
+      "orientation": "desktop",
+      "source": "/home/dani/.codex/generated_images/01a1db37-6533-7572-8114-34e96bfd2d60/exec-6550ac39-2cf9-420a-8426-153e39d24d48.png",
+      "scene_prompt": "Three small paper-craft worlds in a gentle arc across the top: Earth (blue with clouds), the Moon (grey, cratered), Mars (rust red, no rings), connected by thin dotted paper lines; the lower two thirds are a calm dark-blue paper background, empty for text.",
+      "base_prompt": "Handcrafted layered paper-cut illustration, top-quality paper diorama photographed with soft studio light, visible paper texture, subtle drop shadows between layers. Palette: midnight blue #0B1D3A, mid blue #1E3A6E, space black, cream white, Atacama orange #D9822B, sun yellow #F2C14E, Mars rust #C1440E. Calm, low-detail composition designed as a website background: large empty low-contrast area for text, no busy details in that area. No text, no letters, no logos, no NASA insignia, no seals, no flags, no people, no faces, no rings on Mars, no Saturn. No watermark baked into image; attribution will be overlaid by the website.",
+      "target": [
+        2560,
+        1440
+      ],
+      "layout_prompt": "Landscape 16:9 composition, target 2560×1440.",
+      "review": "Reviewed individually; no text, logos, faces, flags, Saturn or rings on Mars observed. Decorative illustration, not scientific data."
+    },
+    {
+      "name": "que-hace-ckepi",
+      "orientation": "mobile",
+      "source": "/home/dani/.codex/generated_images/01a1db37-6533-7572-8114-34e96bfd2d60/exec-2b9f0708-14a1-4a0f-9412-779ca51a5e31.png",
+      "scene_prompt": "Three small paper-craft worlds in a gentle arc across the top: Earth (blue with clouds), the Moon (grey, cratered), Mars (rust red, no rings), connected by thin dotted paper lines; the lower two thirds are a calm dark-blue paper background, empty for text.",
+      "base_prompt": "Handcrafted layered paper-cut illustration, top-quality paper diorama photographed with soft studio light, visible paper texture, subtle drop shadows between layers. Palette: midnight blue #0B1D3A, mid blue #1E3A6E, space black, cream white, Atacama orange #D9822B, sun yellow #F2C14E, Mars rust #C1440E. Calm, low-detail composition designed as a website background: large empty low-contrast area for text, no busy details in that area. No text, no letters, no logos, no NASA insignia, no seals, no flags, no people, no faces, no rings on Mars, no Saturn. No watermark baked into image; attribution will be overlaid by the website.",
+      "target": [
+        1080,
+        1920
+      ],
+      "layout_prompt": "Portrait 9:16 composition, target 1080×1920. Keep the empty text area in the upper half. Adapt the scene vertically instead of cropping a landscape.",
+      "review": "Reviewed individually; no text, logos, faces, flags, Saturn or rings on Mars observed. Decorative illustration, not scientific data."
+    },
+    {
+      "name": "el-hallazgo",
+      "orientation": "desktop",
+      "source": "/home/dani/.codex/generated_images/01a1db37-6533-7572-8114-34e96bfd2d60/exec-814049f1-734e-42b5-8027-0b8ae451849d.png",
+      "scene_prompt": "Split horizon made of contour-line paper layers: on the left, gentle orange Atacama desert terrain; on the right, rust-red Martian crater terrain with a fan-shaped delta; the contour lines of both sides flow into each other in the middle. Upper half calm dark sky, empty for text.",
+      "base_prompt": "Handcrafted layered paper-cut illustration, top-quality paper diorama photographed with soft studio light, visible paper texture, subtle drop shadows between layers. Palette: midnight blue #0B1D3A, mid blue #1E3A6E, space black, cream white, Atacama orange #D9822B, sun yellow #F2C14E, Mars rust #C1440E. Calm, low-detail composition designed as a website background: large empty low-contrast area for text, no busy details in that area. No text, no letters, no logos, no NASA insignia, no seals, no flags, no people, no faces, no rings on Mars, no Saturn. No watermark baked into image; attribution will be overlaid by the website.",
+      "target": [
+        2560,
+        1440
+      ],
+      "layout_prompt": "Landscape 16:9 composition, target 2560×1440.",
+      "review": "Reviewed individually; no text, logos, faces, flags, Saturn or rings on Mars observed. Decorative illustration, not scientific data."
+    },
+    {
+      "name": "el-hallazgo",
+      "orientation": "mobile",
+      "source": "/home/dani/.codex/generated_images/01a1db37-6533-7572-8114-34e96bfd2d60/exec-0f4b74ad-45c7-4b1a-984a-6d6c22abbda7.png",
+      "scene_prompt": "Split horizon made of contour-line paper layers: on the left, gentle orange Atacama desert terrain; on the right, rust-red Martian crater terrain with a fan-shaped delta; the contour lines of both sides flow into each other in the middle. Upper half calm dark sky, empty for text.",
+      "base_prompt": "Handcrafted layered paper-cut illustration, top-quality paper diorama photographed with soft studio light, visible paper texture, subtle drop shadows between layers. Palette: midnight blue #0B1D3A, mid blue #1E3A6E, space black, cream white, Atacama orange #D9822B, sun yellow #F2C14E, Mars rust #C1440E. Calm, low-detail composition designed as a website background: large empty low-contrast area for text, no busy details in that area. No text, no letters, no logos, no NASA insignia, no seals, no flags, no people, no faces, no rings on Mars, no Saturn. No watermark baked into image; attribution will be overlaid by the website.",
+      "target": [
+        1080,
+        1920
+      ],
+      "layout_prompt": "Portrait 9:16 composition, target 1080×1920. Keep the empty text area in the upper half. Adapt the scene vertically instead of cropping a landscape.",
+      "review": "Reviewed individually; no text, logos, faces, flags, Saturn or rings on Mars observed. Decorative illustration, not scientific data."
+    },
+    {
+      "name": "el-limite-honesto",
+      "orientation": "desktop",
+      "source": "/home/dani/.codex/generated_images/01a1db37-6533-7572-8114-34e96bfd2d60/exec-77d4b9cc-e26e-4a4e-890b-f504ec5367ba.png",
+      "scene_prompt": "A grey lunar south-pole crater rim lit by very low golden sunlight with long dark paper shadows, a black starry sky above; Earth tiny and blue in the far distance. Large empty dark area on the left for text.",
+      "base_prompt": "Handcrafted layered paper-cut illustration, top-quality paper diorama photographed with soft studio light, visible paper texture, subtle drop shadows between layers. Palette: midnight blue #0B1D3A, mid blue #1E3A6E, space black, cream white, Atacama orange #D9822B, sun yellow #F2C14E, Mars rust #C1440E. Calm, low-detail composition designed as a website background: large empty low-contrast area for text, no busy details in that area. No text, no letters, no logos, no NASA insignia, no seals, no flags, no people, no faces, no rings on Mars, no Saturn. No watermark baked into image; attribution will be overlaid by the website.",
+      "target": [
+        2560,
+        1440
+      ],
+      "layout_prompt": "Landscape 16:9 composition, target 2560×1440.",
+      "review": "Reviewed individually; no text, logos, faces, flags, Saturn or rings on Mars observed. Decorative illustration, not scientific data."
+    },
+    {
+      "name": "el-limite-honesto",
+      "orientation": "mobile",
+      "source": "/home/dani/.codex/generated_images/01a1db37-6533-7572-8114-34e96bfd2d60/exec-f43164c1-739b-4db6-8075-a523e8a95e9b.png",
+      "scene_prompt": "A grey lunar south-pole crater rim lit by very low golden sunlight with long dark paper shadows, a black starry sky above; Earth tiny and blue in the far distance. Large empty dark area on the left for text.",
+      "base_prompt": "Handcrafted layered paper-cut illustration, top-quality paper diorama photographed with soft studio light, visible paper texture, subtle drop shadows between layers. Palette: midnight blue #0B1D3A, mid blue #1E3A6E, space black, cream white, Atacama orange #D9822B, sun yellow #F2C14E, Mars rust #C1440E. Calm, low-detail composition designed as a website background: large empty low-contrast area for text, no busy details in that area. No text, no letters, no logos, no NASA insignia, no seals, no flags, no people, no faces, no rings on Mars, no Saturn. No watermark baked into image; attribution will be overlaid by the website.",
+      "target": [
+        1080,
+        1920
+      ],
+      "layout_prompt": "Portrait 9:16 composition, target 1080×1920. Keep the empty text area in the upper half. Adapt the scene vertically instead of cropping a landscape.",
+      "review": "Reviewed individually; no text, logos, faces, flags, Saturn or rings on Mars observed. Decorative illustration, not scientific data."
+    },
+    {
+      "name": "explorador",
+      "orientation": "desktop",
+      "source": "/home/dani/.codex/generated_images/01a1db37-6533-7572-8114-34e96bfd2d60/exec-78f2587f-2358-4ef8-ba63-6385e73da929.png",
+      "scene_prompt": "Very subtle, almost abstract layered paper contour lines in midnight blue and slightly lighter blue, extremely low contrast, no objects, no planets, seamless texture feel.",
+      "base_prompt": "Handcrafted layered paper-cut illustration, top-quality paper diorama photographed with soft studio light, visible paper texture, subtle drop shadows between layers. Palette: midnight blue #0B1D3A, mid blue #1E3A6E, space black, cream white, Atacama orange #D9822B, sun yellow #F2C14E, Mars rust #C1440E. Calm, low-detail composition designed as a website background: large empty low-contrast area for text, no busy details in that area. No text, no letters, no logos, no NASA insignia, no seals, no flags, no people, no faces, no rings on Mars, no Saturn. No watermark baked into image; attribution will be overlaid by the website.",
+      "target": [
+        2560,
+        1440
+      ],
+      "layout_prompt": "Landscape 16:9 composition, target 2560×1440.",
+      "review": "Reviewed individually; no text, logos, faces, flags, Saturn or rings on Mars observed. Decorative illustration, not scientific data."
+    },
+    {
+      "name": "explorador",
+      "orientation": "mobile",
+      "source": "/home/dani/.codex/generated_images/01a1db37-6533-7572-8114-34e96bfd2d60/exec-187accab-294a-4bb6-9308-4394c2e36f2d.png",
+      "scene_prompt": "Very subtle, almost abstract layered paper contour lines in midnight blue and slightly lighter blue, extremely low contrast, no objects, no planets, seamless texture feel.",
+      "base_prompt": "Handcrafted layered paper-cut illustration, top-quality paper diorama photographed with soft studio light, visible paper texture, subtle drop shadows between layers. Palette: midnight blue #0B1D3A, mid blue #1E3A6E, space black, cream white, Atacama orange #D9822B, sun yellow #F2C14E, Mars rust #C1440E. Calm, low-detail composition designed as a website background: large empty low-contrast area for text, no busy details in that area. No text, no letters, no logos, no NASA insignia, no seals, no flags, no people, no faces, no rings on Mars, no Saturn. No watermark baked into image; attribution will be overlaid by the website.",
+      "target": [
+        1080,
+        1920
+      ],
+      "layout_prompt": "Portrait 9:16 composition, target 1080×1920. Keep the empty text area in the upper half. Adapt the scene vertically instead of cropping a landscape.",
+      "review": "Reviewed individually; no text, logos, faces, flags, Saturn or rings on Mars observed. Decorative illustration, not scientific data."
+    }
+  ]
+}

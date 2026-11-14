@@ -33,9 +33,14 @@ from app.engine.ai_advisor import (
     request_openrouter_analysis,
     upsert_cached_ai_analysis,
 )
-from app.engine.analog_matcher import load_earth_grid, match_terrestrial_analogs
+from app.engine.analog_matcher import (
+    load_earth_grid,
+    match_terrestrial_analogs,
+    normalize_earth_grid_metadata,
+)
 from app.engine.causal_decomposer import compute_breakage_index, decompose_planetary_site
 from app.engine.mission_advisor import resolve_profile_weights
+from app.engine.terrain_statistics import compute_terrain_distribution_comparison
 from app.etl.earth_api import probe_earth_location
 from app.etl.http_utils import create_async_http_client, create_http_client
 from app.etl.geology_and_habitability import (
@@ -52,6 +57,9 @@ from app.etl.seed_datasets import (
     upsert_earth_cell,
 )
 from app.models.schemas import (
+    _VALID_DV_SET,
+    _VALID_IV_SET,
+    _validate_unit_dict,
     AnalogMatchItem,
     AnalogRefineRequest,
     AnalogRefineResponse,
@@ -69,6 +77,7 @@ from app.models.schemas import (
     PlanetaryProbeResponse,
     PlanetarySite,
     SiteComparisonResponse,
+    TestProfileType,
     VariableDelta,
 )
 
@@ -79,6 +88,7 @@ class AppState:
     sites_by_id: dict[str, PlanetarySite] = {}
     duckdb_path: Path | None = None
     decomposition_cache: OrderedDict[tuple[str, str], DecompositionResponse] = OrderedDict()
+    datasets_cache: OrderedDict[str, tuple[float, MultiAgencyCatalogResponse]] = OrderedDict()
     tile_cache: OrderedDict[tuple[str, int, int, int], tuple[bytes, str]] = OrderedDict()
     ai_cache: OrderedDict[str, MissionAiAnalysisResponse] = OrderedDict()
     ai_inflight: dict[str, asyncio.Future[MissionAiAnalysisResponse]] = {}
@@ -92,6 +102,8 @@ state = AppState()
 MAX_TILE_CACHE_ENTRIES = 512
 MAX_DECOMP_CACHE_ENTRIES = 128
 MAX_AI_CACHE_ENTRIES = 256
+MAX_DATASETS_CACHE_ENTRIES = 128
+DATASETS_CACHE_TTL_SEC = 1800.0
 
 
 def _enforce_sliding_window_rate_limit(
@@ -299,13 +311,62 @@ def _build_comparison_response(
             )
         )
 
-    return SiteComparisonResponse(site=site, match=match, variable_deltas=deltas)
+    stat_dist = compute_terrain_distribution_comparison(site, match)
+    return SiteComparisonResponse(
+        site=site,
+        match=match,
+        variable_deltas=deltas,
+        statistical_distribution=stat_dist,
+    )
+
+
+def _parse_weight_json(
+    raw: str | None,
+    allowed_keys: set[str],
+    param_name: str,
+) -> dict[str, float] | None:
+    """Parse and validate a JSON dictionary of [0, 1] variable weights from query params."""
+    if not raw:
+        return None
+    try:
+        parsed = json.loads(raw)
+        if not isinstance(parsed, dict):
+            raise ValueError(f"{param_name} must be a JSON object")
+        return _validate_unit_dict(parsed, allowed_keys)
+    except (json.JSONDecodeError, TypeError, ValueError) as exc:
+        raise HTTPException(
+            status_code=422,
+            detail={"error_key": "errors.invalid_weights", "params": {"param": param_name}},
+        ) from exc
 
 
 @app.get("/api/v1/health")
-def health_check() -> dict[str, str]:
-    """Readiness probe returning status key and API version."""
-    return {"status": "ok", "version": settings.app_version}
+def health_check() -> dict[str, str | int]:
+    """Readiness probe returning status, API version, and DuckDB index metrics."""
+    earth_cells_count = 0
+    planetary_sites_count = len(state.sites_by_id)
+    try:
+        db_path = state.duckdb_path or (settings.data_dir / "ckepi.duckdb")
+        if db_path.exists():
+            conn = duckdb.connect(str(db_path), read_only=True)
+            try:
+                row = conn.execute("SELECT COUNT(*) FROM earth_h3_grid").fetchone()
+                earth_cells_count = int(row[0]) if row else 0
+                if planetary_sites_count == 0:
+                    site_row = conn.execute(
+                        "SELECT COUNT(DISTINCT site_id) FROM planetary_timeseries"
+                    ).fetchone()
+                    planetary_sites_count = int(site_row[0]) if site_row else 0
+            finally:
+                conn.close()
+    except Exception:
+        logger.debug("Health check DB count skipped cleanly")
+    return {
+        "status": "ok",
+        "version": settings.app_version,
+        "earth_cells_count": earth_cells_count,
+        "planetary_sites_count": planetary_sites_count,
+    }
 
 
 @app.get("/api/v1/tiles/trek/{body}/{z}/{y}/{x}.jpg")
@@ -463,6 +524,7 @@ def refresh_datasets() -> dict[str, str]:
             state.sites_by_id = {s.site_id: s for s in load_cached_planetary_sites()}
             state.decomposition_cache.clear()
             state.ai_cache.clear()
+            state.datasets_cache.clear()
         return {"status": "refreshed"}
     except Exception as exc:
         logger.exception("Dataset refresh failed")
@@ -594,10 +656,12 @@ def probe_earth_coordinate(payload: EarthProbeRequest) -> SiteComparisonResponse
 
     conn = duckdb.connect(str(db_path), read_only=True)
     try:
-        df_cell = conn.execute(
-            "SELECT * FROM earth_h3_grid WHERE earth_cell_h3 = ?",
-            [str(cell_record["earth_cell_h3"])],
-        ).df()
+        df_cell = normalize_earth_grid_metadata(
+            conn.execute(
+                "SELECT * FROM earth_h3_grid WHERE earth_cell_h3 = ?",
+                [str(cell_record["earth_cell_h3"])],
+            ).df()
+        )
     finally:
         conn.close()
 
@@ -607,8 +671,13 @@ def probe_earth_coordinate(payload: EarthProbeRequest) -> SiteComparisonResponse
         causal_weights=decomposition.global_iv_weights,
         df_earth=df_cell,
         limit=1,
+        custom_weights=resolve_profile_weights(payload.test_profile, payload.custom_iv_weights),
+        custom_dv_weights=payload.custom_dv_weights,
+        penalize_estimated=payload.penalize_estimated,
     )
-    return _build_comparison_response(site, search_res.matches[0], search_res.causal_weights_used)
+    return _build_comparison_response(
+        site, search_res.matches[0], search_res.causal_weights_used, payload.custom_dv_weights
+    )
 
 
 @app.get("/api/v1/analogs/{h3_index}/compare/{site_id}", response_model=SiteComparisonResponse)
@@ -616,16 +685,24 @@ def compare_cell_with_site(
     h3_index: str,
     site_id: str,
     model_type: DecompositionModelType = Query(default="ridge"),
+    test_profile: TestProfileType = Query(default="causal_auto"),
+    penalize_estimated: bool = Query(default=False),
+    iv_weights: str | None = Query(default=None),
+    dv_weights: str | None = Query(default=None),
 ) -> SiteComparisonResponse:
     """Compare one specific Earth H3 cell side-by-side against a planetary ROI."""
+    parsed_iv = _parse_weight_json(iv_weights, _VALID_IV_SET, "iv_weights")
+    parsed_dv = _parse_weight_json(dv_weights, _VALID_DV_SET, "dv_weights")
     site = _get_site_or_404(site_id)
     db_path = _get_duckdb_path()
 
     conn = duckdb.connect(str(db_path), read_only=True)
     try:
-        df_cell = conn.execute(
-            "SELECT * FROM earth_h3_grid WHERE earth_cell_h3 = ?", [h3_index]
-        ).df()
+        df_cell = normalize_earth_grid_metadata(
+            conn.execute(
+                "SELECT * FROM earth_h3_grid WHERE earth_cell_h3 = ?", [h3_index]
+            ).df()
+        )
     finally:
         conn.close()
 
@@ -635,20 +712,32 @@ def compare_cell_with_site(
             detail={"error_key": "errors.cell_not_found", "params": {"h3_index": h3_index}},
         )
 
-    df_ts = _load_planetary_timeseries(db_path, site.site_id)
-    decomposition = decompose_planetary_site(site, df_ts, model_type=model_type)
+    decomposition = _get_decomposition_cached(site, db_path, model_type)
     search_res = match_terrestrial_analogs(
         site=site,
         causal_weights=decomposition.global_iv_weights,
         df_earth=df_cell,
         limit=1,
+        custom_weights=resolve_profile_weights(test_profile, parsed_iv),
+        custom_dv_weights=parsed_dv,
+        penalize_estimated=penalize_estimated,
     )
-    return _build_comparison_response(site, search_res.matches[0], search_res.causal_weights_used)
+    return _build_comparison_response(
+        site, search_res.matches[0], search_res.causal_weights_used, parsed_dv
+    )
 
 
 @app.get("/api/v1/earth/{h3_index}/datasets", response_model=MultiAgencyCatalogResponse)
 def get_earth_cell_datasets(h3_index: str) -> MultiAgencyCatalogResponse:
     """Discover real NASA CMR, ESA Copernicus, CSA & JAXA open datasets for an Earth H3 cell."""
+    cached_entry = state.datasets_cache.get(h3_index)
+    if cached_entry is not None:
+        cached_at, cached_payload = cached_entry
+        if (time.monotonic() - cached_at) < DATASETS_CACHE_TTL_SEC:
+            state.datasets_cache.move_to_end(h3_index)
+            return cached_payload
+        state.datasets_cache.pop(h3_index, None)
+
     db_path = _get_duckdb_path()
     conn = duckdb.connect(str(db_path), read_only=True)
     try:
@@ -677,9 +766,16 @@ def get_earth_cell_datasets(h3_index: str) -> MultiAgencyCatalogResponse:
     surface_albedo = float(row[6])
     thermal_inertia = float(row[7])
 
-    catalog = discover_space_agency_datasets(lat=lat, lon=lon)
-    with create_http_client(timeout=5.0) as client:
-        geology = fetch_macrostrat_geology(lat=lat, lon=lon, client=client)
+    def _fetch_geology():
+        with create_http_client(timeout=6.0) as client:
+            return fetch_macrostrat_geology(lat=lat, lon=lon, client=client)
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        catalog_fut = pool.submit(discover_space_agency_datasets, lat=lat, lon=lon)
+        geology_fut = pool.submit(_fetch_geology)
+        catalog = catalog_fut.result()
+        geology = geology_fut.result()
+
     subsurface = evaluate_subsurface_analog(lat=lat, lon=lon, geology=geology)
     habitability = evaluate_habitability_profile(
         mean_temp_k=mean_temp_k,
@@ -696,7 +792,7 @@ def get_earth_cell_datasets(h3_index: str) -> MultiAgencyCatalogResponse:
         thermal_inertia=thermal_inertia,
         geology=geology,
     )
-    return MultiAgencyCatalogResponse(
+    response = MultiAgencyCatalogResponse(
         earth_cell_h3=h3_index,
         lat=catalog["lat"],
         lon=catalog["lon"],
@@ -707,6 +803,10 @@ def get_earth_cell_datasets(h3_index: str) -> MultiAgencyCatalogResponse:
         habitability=habitability,
         regolith_simulant=regolith_simulant,
     )
+    state.datasets_cache[h3_index] = (time.monotonic(), response)
+    if len(state.datasets_cache) > MAX_DATASETS_CACHE_ENTRIES:
+        state.datasets_cache.popitem(last=False)
+    return response
 
 
 @app.post(
@@ -728,6 +828,19 @@ def refine_analog_cell(payload: AnalogRefineRequest) -> AnalogRefineResponse:
     child_res = min(parent_res + 1, 5)
     child_cells = sorted(h3.cell_to_children(payload.earth_cell_h3, child_res))[:7]
 
+    placeholders = ", ".join(["?"] * len(child_cells))
+    conn = duckdb.connect(str(db_path), read_only=True)
+    try:
+        df_existing = conn.execute(
+            f"SELECT * FROM earth_h3_grid WHERE earth_cell_h3 IN ({placeholders})",
+            child_cells,
+        ).df()
+    finally:
+        conn.close()
+
+    existing_ids = set(df_existing["earth_cell_h3"].astype(str)) if not df_existing.empty else set()
+    missing_cells = [cid for cid in child_cells if cid not in existing_ids]
+
     def _hydrate_child(child_id: str) -> dict[str, object]:
         c_lat, c_lon = h3.cell_to_latlng(child_id)
         return probe_earth_location(
@@ -741,39 +854,50 @@ def refine_analog_cell(payload: AnalogRefineRequest) -> AnalogRefineResponse:
             is_live_probed=True,
         )
 
-    try:
-        with ThreadPoolExecutor(max_workers=4) as pool:
-            child_records = list(pool.map(_hydrate_child, child_cells))
-    except Exception as exc:
-        logger.exception("H3 cell refinement failed for %s", payload.earth_cell_h3)
-        raise HTTPException(
-            status_code=502,
-            detail={"error_key": "errors.external_api_unavailable", "params": {}},
-        ) from exc
+    child_records: list[dict[str, object]] = []
+    if missing_cells:
+        try:
+            with ThreadPoolExecutor(max_workers=4) as pool:
+                child_records = list(pool.map(_hydrate_child, missing_cells))
+        except Exception as exc:
+            logger.exception("H3 cell refinement failed for %s", payload.earth_cell_h3)
+            raise HTTPException(
+                status_code=502,
+                detail={"error_key": "errors.external_api_unavailable", "params": {}},
+            ) from exc
 
-    with state.write_lock:
-        for rec in child_records:
-            upsert_earth_cell(db_path, rec)
+        with state.write_lock:
+            for rec in child_records:
+                upsert_earth_cell(db_path, rec)
 
-    df_children = pd.DataFrame(child_records)
-    df_children["h3_boundary_json"] = df_children["h3_boundary_json"].apply(
-        lambda v: v if isinstance(v, str) else json.dumps(v)
-    )
-    df_children["source_apis_json"] = df_children["source_apis_json"].apply(
-        lambda v: v if isinstance(v, str) else json.dumps(v)
-    )
+    frames: list[pd.DataFrame] = []
+    if not df_existing.empty:
+        frames.append(df_existing)
+    if child_records:
+        df_new = pd.DataFrame(child_records)
+        df_new["h3_boundary_json"] = df_new["h3_boundary_json"].apply(
+            lambda v: v if isinstance(v, str) else json.dumps(v)
+        )
+        df_new["source_apis_json"] = df_new["source_apis_json"].apply(
+            lambda v: v if isinstance(v, str) else json.dumps(v)
+        )
+        frames.append(df_new)
+    df_children = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
     decomposition = _get_decomposition_cached(site, db_path, payload.model_type)
     search_res = match_terrestrial_analogs(
         site=site,
         causal_weights=decomposition.global_iv_weights,
         df_earth=df_children,
-        limit=len(child_records),
-        custom_weights=resolve_profile_weights(payload.test_profile, None),
+        limit=max(len(df_children), 1),
+        custom_weights=resolve_profile_weights(payload.test_profile, payload.custom_iv_weights),
+        custom_dv_weights=payload.custom_dv_weights,
         penalize_estimated=payload.penalize_estimated,
     )
     top_comp = (
-        _build_comparison_response(site, search_res.matches[0], search_res.causal_weights_used)
+        _build_comparison_response(
+            site, search_res.matches[0], search_res.causal_weights_used, payload.custom_dv_weights
+        )
         if search_res.matches
         else None
     )

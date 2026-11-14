@@ -354,6 +354,18 @@
     "maxResReached": "Detalhe máximo (H3-5)",
     "drilldownActive": "Visualizando {{count}} sub-zonas dentro de H3 {{parent}}",
     "exitDrilldown": "Voltar à visão global",
+    "resetView": "Visão global",
+    "searchPlaceholder": "Buscar região, país, análogo ou H3...",
+    "searchLabel": "Filtrar células análogas",
+    "clearSearch": "Limpar busca",
+    "filterAll": "Todas",
+    "sortLabel": "Ordenar por",
+    "sortCombined": "Pontuação combinada",
+    "sortSInd": "Maior S_ind (substrato)",
+    "sortSDep": "Maior S_dep (resposta)",
+    "sortLowestBreak": "Menor R_break",
+    "emptyFilteredResults": "Nenhuma célula corresponde à busca ou filtro atual.",
+    "clearFilters": "Limpar filtros",
     "resolutionBadge": "H3 Res {{res}}",
     "probeHint": "Clique em qualquer ponto do mapa para consultar NASA POWER + Copernicus DEM + ERA5 ao vivo.",
     "probingLocation": "Consultando telemetria real para ({{lat}}, {{lon}})...",
@@ -390,8 +402,8 @@
   },
   "mission": {
     "title": "Diagnóstico de Missão e Comparação Física",
-    "quickVerdictTitle": "Veredicto Rápido",
-    "quickVerdictBody": "{{earthSite}} replica {{score}} das condições físicas de {{targetSite}} ({{validCount}} teste(s) de missão validado(s)). A analogia falha em: {{brokenVars}}.",
+    "quickVerdictTitle": "Veredicto Físico Desacoplado",
+    "quickVerdictBody": "{{earthSite}} apresenta similaridade desacoplada S_ind={{sInd}} e S_dep={{sDep}} (pontuação combinada {{score}} ±{{uncertainty}}) frente a {{targetSite}}, habilitando {{validCount}} ensaio(s) de campo. Lacuna física irredutível (B) na Terra: {{brokenVars}}.",
     "explorerSummaryTitle": "O que podemos testar aqui e o que NÃO se parece?",
     "explorerSummaryBody": "Em {{earthSite}}, o terreno tem {{score}} de similaridade (±{{uncertainty}}) na escala de ~{{scaleKm}} km. O que a Terra NÃO consegue imitar aqui: {{brokenVars}}.",
     "nasaAttribution": "Fontes: NASA PDS · LRO LOLA · MRO/MSL · NASA POWER · ESA Copernicus",
@@ -482,7 +494,7 @@
     }
   },
   "regions": {
-    "atacama_yungay": "Deserto do Atacama — Yungay, Chile",
+    "atacama_yungay": "Deserto do Atacama — Yungay, Antofagasta, Chile",
     "mcmurdo_dry_valleys": "Vales Secos de McMurdo, Antártida",
     "haughton_crater": "Cratera de Impacto Haughton, Ilha Devon, Canadá",
     "krafla_iceland": "Campo Vulcânico Krafla / Askja, Islândia",
@@ -507,7 +519,10 @@
     "amazon_central_basin": "Bacia Amazônica Central (Controle Negativo), Brasil",
     "pantanal_wetland": "Pantanal (Controle Negativo), Brasil",
     "custom_probed_cell": "Ponto Sondado ao Vivo (Malha H3)",
-    "global_h3_cell": "Célula Global Terrestre (H3)"
+    "global_h3_cell": "Célula Global Terrestre (H3)",
+    "antofagasta_salar_pajonales": "Salar de Pajonales / Llano de la Paciencia, Antofagasta, Chile",
+    "antofagasta_cordillera_sal": "Cordillera de la Sal (Valle de la Luna), Antofagasta, Chile",
+    "antofagasta_pampa_central": "Pampa Central — Sierra Gorda, Antofagasta, Chile"
   },
   "biomes": {
     "hyperarid_desert": "Deserto Hiperárido",
@@ -536,6 +551,8 @@
     "unknown_body": "Corpo planetário desconhecido.",
     "invalid_tile_coords": "Coordenadas de tile fora do intervalo.",
     "tile_unavailable": "Tile do NASA Trek indisponível.",
+    "clipboard_failed": "Não foi possível copiar. Verifique a permissão da área de transferência ou baixe a ficha; para compartilhar, copie o endereço do navegador.",
+    "invalid_response": "O servidor retornou uma resposta inválida. Tente novamente.",
     "ai_not_configured": "A análise IA não está habilitada: falta configurar OPENROUTER_API_KEY no backend.",
     "ai_rate_limited": "Limite temporário de solicitações ao assistente IA atingido. Aguarde alguns segundos ou verifique sua cota no OpenRouter.",
     "ai_provider_unavailable": "Não foi possível obter resposta do provedor OpenRouter no momento. Tente novamente.",
@@ -579,7 +596,19 @@
     "maps": "Mapas",
     "decomposition": "Decomposição",
     "diagnostics": "Diagnóstico",
-    "ranking": "Ranking"
+    "ranking": "Ranking",
+    "tabsLabel": "Seções do Ckepi",
+    "compare": "Comparar",
+    "learn": "Aprender",
+    "plan": "Planejar",
+    "evidence": "Evidência",
+    "backToCompare": "Voltar para Comparar",
+    "continueToPlan": "Ir para Planejar",
+    "viewEvidence": "Ver Evidência e ODS",
+    "focusAtacama": "📍 Comparar com Atacama",
+    "globalLabel": "Alcance global",
+    "locationLabel": "Localização específica",
+    "skipToContent": "Pular para o conteúdo principal"
   },
   "export": {
     "reportTitle": "Relatório Ckepi",
@@ -650,6 +679,540 @@
     "jez1": {
       "name": "JEZ-1 (Simulante do Delta de Jezero — Perseverance)",
       "mineralogy": "Carbonatos de Mg, filossilicatos de esmectita e olivina deltaica"
+    }
+  },
+  "curiosity": {
+    "title": "Você sabia que em uma inclinação semelhante a força normal muda drasticamente?",
+    "body": "Em {{body}} com inclinação de {{slope}}°, um rover de 100 kg exerce {{targetNormal}} N de força normal contra {{earthNormal}} N na Terra. Isso reduz o peso, mas também a tração.",
+    "cta": "Experimentar em Aprender",
+    "nextFact": "Outra curiosidade",
+    "thermalTitle": "Você sabia que a amplitude térmica diária muda o projeto de um rover?",
+    "thermalBody": "Em {{site}}, a amplitude térmica é {{planetVal}} K contra {{earthVal}} K na célula terrestre comparada. Ciclos extremos exigem isolamento térmico e baterias protegidas.",
+    "roughnessTitle": "Você sabia que a rugosidade do terreno define o tamanho mínimo da roda?",
+    "roughnessBody": "O índice de rugosidade é {{planetVal}} em {{site}} vs {{earthVal}} no setor terrestre. Terrenos rugosos no Atacama ajudam a validar suspensão.",
+    "gravityTitle": "Você sabia que a gravidade reduz o peso, mas não a massa?",
+    "gravityBody": "Em {{body}}, um objeto de 80 kg continua com 80 kg de massa, mas pesa {{marsN}} N (ou {{moonN}} N na Lua) contra 784,5 N na Terra."
+  },
+  "learn": {
+    "title": "Laboratório de Física Planetária — E se…?",
+    "subtitle": "Simuladores locais em unidades SI conectados ao corpo e sítio selecionados. Compare Terra, Marte e Lua com equações e limites explícitos.",
+    "experimentSelectorLabel": "Seletor de experimentos",
+    "idealizedModel": "Modelo idealizado",
+    "equationLabel": "Equação e unidades",
+    "curiositiesTitle": "Curiosidades contextuais",
+    "challengesTitle": "Minidesafios contextualizados",
+    "correctLabel": "Correto!",
+    "reviewLabel": "Revise a explicação",
+    "noComparisonHint": "Selecione uma célula terrestre em Comparar para vincular dados reais de inclinação terrestre a estes desafios.",
+    "controls": {
+      "massKg": "Massa (m)",
+      "massExact": "Massa exata (kg)",
+      "earthJumpCm": "Salto vertical na Terra",
+      "throwSpeed": "Velocidade inicial (v₀)",
+      "throwAngle": "Ângulo de lançamento (θ)",
+      "poolDepth": "Profundidade da piscina (d)",
+      "rockMass": "Massa da rocha (m)",
+      "targetAccel": "Aceleração alvo (a)",
+      "roverMass": "Massa do rover (m)",
+      "slopeDeg": "Inclinação do terreno (θ)",
+      "frictionCoeff": "Coeficiente de atrito ideal (μ)",
+      "windSpeedMs": "Velocidade do vento (v)",
+      "waterTempC": "Temperatura da água (T)"
+    },
+    "experiments": {
+      "weight": {
+        "tab": "Peso e gravidade",
+        "question": "Sua massa muda ao viajar para Marte ou para a Lua?",
+        "intro": "A massa (kg) é invariante; o que muda é a força gravitacional ou peso (N).",
+        "massInvariant": "Massa invariante: {{mass}} kg (equiv. balança terrestre: {{kgf}} kgf)",
+        "limits": "Suposições: gravidade superficial média padrão (Terra 9,80665; Marte 3,71; Lua 1,62 m/s²). Uma balança calibrada na Terra mostraria kgf menores, não menos massa."
+      },
+      "jump": {
+        "tab": "Saltar",
+        "question": "Quão alto você saltaria com o mesmo impulso inicial?",
+        "intro": "Com a mesma velocidade de saída, a altura máxima varia inversamente com g.",
+        "limits": "Modelo vertical ideal sem resistência do ar ou carga de traje espacial pressurizado. Em Marte (~2,64×) e Lua (~6,05×), o traje e a biomecânica limitam o impulso real."
+      },
+      "projectile": {
+        "tab": "Lançar bola",
+        "question": "Como muda a parábola ao lançar um objeto?",
+        "intro": "Trajetória balística ideal sem arrasto aerodinâmico a partir da mesma altura.",
+        "svgLabel": "Comparação de trajetórias parabólicas na Terra, Marte e Lua",
+        "limits": "Sem arrasto atmosférico; alcance máximo ideal ocorre a 45° e não depende da massa neste modelo."
+      },
+      "waves": {
+        "tab": "Ondas em habitat",
+        "question": "O que aconteceria com as ondas em uma piscina dentro de um habitat pressurizado?",
+        "intro": "Simulação dentro de um habitat pressurizado e termicamente controlado (não ao ar livre em Marte).",
+        "habitatBadge": "Dentro de habitat pressurizado",
+        "limits": "Válido apenas em regime de água rasa (d ≪ λ): em Marte a velocidade é ~0,615× (~38,5% mais lenta). Em água profunda depende de λ."
+      },
+      "rocks": {
+        "tab": "Rochas e inércia",
+        "question": "É igualmente fácil acelerar uma rocha mesmo pesando menos?",
+        "intro": "Levantar contra a gravidade exige menos força, mas acelerar horizontalmente exige a mesma força líquida F = m·a.",
+        "limits": "A inércia (massa) não diminui em Marte ou na Lua. Menor peso também reduz o atrito estático máximo com o solo."
+      },
+      "rover": {
+        "tab": "Rover e inclinações",
+        "question": "Como a gravidade afeta um rover subindo uma inclinação?",
+        "intro": "Decomposição de forças em plano inclinado conectada às inclinações do sítio e análogo terrestre.",
+        "loadSiteSlope": "Carregar inclinação sítio ({{slope}}°)",
+        "loadEarthSlope": "Carregar inclinação Terra ({{slope}}°)",
+        "slipRisk": "Risco de deslizamento ideal",
+        "idealGrip": "Dentro de μ·N ideal",
+        "limits": "Modelo rígido ideal (tan θ ≤ μ). Em regolito real ou areia solta do Atacama, o afundamento das rodas reduz a tração antes do limite ideal.",
+        "diagramLabel": "Diagrama interativo de forças sobre rover em inclinação de {{slope}} graus"
+      },
+      "wind": {
+        "tab": "Poeira e vento",
+        "question": "Um vento de 100 km/h em Marte empurra igual ao da Terra?",
+        "intro": "A pressão dinâmica depende da densidade do ar ρ: em Marte a atmosfera é ~60× menos densa.",
+        "densityLabel": "Densidade atmosférica",
+        "limits": "Valores ilustrativos médios de densidade superficial (Terra ~1,225 kg/m³; Marte ~0,020 kg/m³). A densidade real varia com altitude e estação."
+      },
+      "water": {
+        "tab": "Água e pressão",
+        "question": "O que acontece com a água líquida ao ar livre no Atacama vs Marte?",
+        "intro": "A estabilidade da água líquida depende de pressão e temperatura; a pressão marciana (~0,61 kPa) margeia o ponto triplo.",
+        "boilingLabel": "Ponto de ebulição aprox.",
+        "sea_level": "Antofagasta / Nível do mar (101,3 kPa)",
+        "altiplano": "Altiplano / Puna (~60 kPa)",
+        "mars": "Marte superfície (~0,61 kPa)",
+        "regimes": {
+          "solid": "Gelo (sólido)",
+          "liquid": "Água líquida estável",
+          "vapor_or_boiling": "Ebulição / vapor",
+          "triple_point_unstable": "Instável (ferve/sublima perto do ponto triplo)"
+        },
+        "limits": "Aproximação educativa baseada no ponto triplo da água (0,611657 kPa; 0,01 °C) e Clausius-Clapeyron. Salmouras alteram o ponto de congelamento."
+      }
+    },
+    "curiosities": {
+      "pressureTitle": "Água líquida ao ar livre em Marte (~0,6 kPa)",
+      "pressureDesc": "Diferente de Antofagasta (~101 kPa ao nível do mar), a pressão marciana fica em torno de 0,6 kPa: água exposta ferve, congela ou sublima conforme a temperatura.",
+      "dustTitle": "Tempestades de poeira e pressão dinâmica",
+      "dustDesc": "Mesmo com ventos rápidos, a baixa densidade atmosférica marciana (~1% da Terra) gera menor pressão dinâmica q = 0,5·ρ·v².",
+      "atacamaTitle": "Por que Atacama / Yungay é um análogo-chave?",
+      "atacamaDesc": "Sua hiperaridez extrema, radiação UV e solos salinos permitem estudar processos análogos a Marte, mas gravidade (1 g), pressão e radiação cósmica continuam irreproduzíveis.",
+      "soundTitle": "O som em Marte (~240 m/s e atenuado)",
+      "soundDesc": "Em uma atmosfera tênue de CO₂ (~0,6 kPa), a velocidade do som fica em ~240 m/s (vs ~343 m/s na Terra) e sons agudos atenuam rápido. Sem traje pressurizado não é seguro falar ao ar livre.",
+      "solTitle": "Um dia marciano dura 24 h 39 min (vs 29,5 dias na Lua)",
+      "solDesc": "Um sol marciano é apenas 39 minutos maior que um dia terrestre, enquanto na Lua o ciclo dia/noite dura ~29,5 dias terrestres, desafiando a energia solar.",
+      "commsTitle": "Atraso de comunicações Terra–Marte (3 a 22 min)",
+      "commsDesc": "Conforme a distância orbital (55 a 401 milhões de km), um sinal de rádio leva entre ~3 e ~22 minutos por trecho, exigindo navegação autônoma dos rovers."
+    },
+    "challenges": {
+      "mass": {
+        "question": "1. Se um estudante de 70 kg viaja para a cratera Jezero, o que acontece com sua massa e seu peso?",
+        "optA": "Sua massa cai para ~26 kg e o peso permanece 686 N",
+        "optB": "Sua massa continua 70 kg e seu peso cai para ~260 N",
+        "optC": "Tanto a massa quanto o peso caem para um terço",
+        "explanation": "A massa é intrínseca (70 kg). O peso é a força gravitacional P = m·g ≈ 70 × 3,71 ≈ 259,7 N."
+      },
+      "roverDynamic": {
+        "question": "2. Pela inclinação ativa ({{slope}}°) perto de {{site}}, o que ocorre com um rover de 100 kg em comparação à Terra?",
+        "optA": "Sobe com maior tração porque pesa menos",
+        "optB": "A componente paralela cai (de {{earthN}} N para {{marsN}} N), mas a força normal também cai (para {{marsNormalN}} N em Marte)",
+        "optC": "Uma inclinação de 15° é universalmente segura em qualquer solo",
+        "explanation": "Menor gravidade reduz a força paralela ({{earthN}} N → {{marsN}} N), mas também reduz a força normal ({{marsNormalN}} N) e o atrito máximo μ·N."
+      },
+      "nonReplicable": {
+        "question": "3. Qual variável de Marte NÃO podemos replicar em ensaios abertos no Atacama?",
+        "optA": "Inclinação topográfica e rugosidade do terreno",
+        "optB": "Radiação UV superficial e baixa umidade relativa",
+        "optC": "Gravidade (0,38 g), atmosfera de CO₂ a ~0,6 kPa e radiação ionizante GCR",
+        "explanation": "As barreiras físicas de ruptura B (gravidade, pressão atmosférica e radiação cósmica) não são reproduzíveis em campo aberto na Terra."
+      },
+      "distributions": {
+        "question": "4. O que significa dizer que duas distribuições de inclinação são semelhantes entre Jezero e Atacama?",
+        "optA": "Que ambos os locais são idênticos para pouso sem testes",
+        "optB": "Semelhança morfológica parcial em uma variável independente X, não equivalência física total",
+        "optC": "Que a atmosfera e a temperatura são iguais",
+        "explanation": "O Ckepi desacopla X, Y e B: semelhança geométrica de inclinações não implica equivalência ambiental completa."
+      }
+    },
+    "showScienceDetails": "Ver equação e limites científicos",
+    "hideScienceDetails": "Ocultar equação e limites",
+    "categories": {
+      "body": "Seu corpo em outros mundos",
+      "physics": "Física impossível",
+      "engineering": "Engenharia espacial",
+      "curiosities": "Curiosidades planetárias"
+    }
+  },
+  "plan": {
+    "title": "Planejar — Ficha de Ensaio Local e Economia Circular",
+    "subtitle": "Transforme a evidência comparativa em uma proposta preliminar de ensaio responsável, priorizando equipamentos reutilizáveis e limites explícitos.",
+    "exportBtn": "Exportar ficha (.md)",
+    "circularTitle": "Lista de equipamentos reutilizáveis / empréstimo (ODS 12)",
+    "circularNote": "Lista de planejamento para incentivar reutilização e empréstimo entre escolas/universidades. Não representa inventário verificado.",
+    "noEquipmentSelected": "Nenhum equipamento selecionado",
+    "limitsTitle": "Limites físicos irreproduzíveis e alcance",
+    "limitsNote": "Esta ficha é educativa/preliminar: não certifica terrenos, não substitui licenças nem valida viabilidade de missão espacial real.",
+    "collaborationTitle": "Parcerias e transferência local (ODS 17)",
+    "collaborationNote": "Projetado para replicação em nós educativos e universitários sem coletar dados pessoais.",
+    "costsPending": "Pendente de cotação local",
+    "notesPlaceholder": "Registre observações de campo, precauções de segurança ou dúvidas para o ensaio...",
+    "disclaimer": "Aviso: custos pendentes de cotação, inventário apenas referencial para economia circular e nenhum dado pessoal é armazenado.",
+    "noSiteSelected": "Selecione um sítio planetário em Comparar.",
+    "noCellSelected": "Nenhuma célula terrestre selecionada ainda.",
+    "defaults": {
+      "title": "Ensaio preliminar de tração e sensores em análogo árido",
+      "objective": "Avaliar inclinação, deslizamento em solo granular e registro térmico comparando uma célula H3 do Atacama com os dados de inclinação de Marte."
+    },
+    "fields": {
+      "planetarySite": "Sítio planetário alvo",
+      "earthCell": "Célula terrestre H3 selecionada",
+      "trialTitle": "Título do ensaio",
+      "costs": "Estimativa de custos",
+      "objective": "Objetivo e hipótese do ensaio",
+      "notes": "Notas de segurança e terreno"
+    },
+    "equipment": {
+      "imu_inclinometer": "Inclinômetro / sensor IMU reutilizável",
+      "rover_wheels_chassis": "Chassi e rodas de protótipo STEAM em empréstimo",
+      "lifepo4_battery": "Bateria LiFePO4 recarregável compartilhada",
+      "portable_weather_station": "Estação meteorológica / piranômetro portátil",
+      "open_microcontroller": "Microcontrolador aberto (Arduino / ESP32 / RPi)"
+    },
+    "presetsLabel": "Modelos rápidos de ensaio",
+    "presets": {
+      "rover": {
+        "label": "🤖 Tração de rover",
+        "title": "Ensaio de tração e inclinação em solo árido",
+        "objective": "Medir deslizamento de rodas e inclinação com IMU comparando uma célula H3 do Atacama com as inclinações de Jezero."
+      },
+      "thermal": {
+        "label": "🌡️ Sensores térmicos",
+        "title": "Registro de amplitude térmica e albedo superficial",
+        "objective": "Comparar a variação térmica diurna e radiação solar em terreno hiperárido para calibrar sensores de baixo custo."
+      },
+      "steam": {
+        "label": "🎓 Oficina escolar STEAM",
+        "title": "Atividade prática de física planetária e análogos",
+        "objective": "Demonstrar massa vs peso, inclinação segura e limites físicos irreproduzíveis usando dados abertos da NASA."
+      }
+    },
+    "copyBtn": "Copiar ficha",
+    "copiedBtn": "Copiado",
+    "breakageAlertsLabel": "Fronteiras físicas ativas",
+    "validTestsShort": "Testes válidos em campo",
+    "invalidTestsShort": "Não extrapoláveis na Terra",
+    "draftSessionNote": "Seu rascunho é mantido ao mudar de aba durante esta sessão. Baixe-o antes de recarregar ou fechar a página."
+  },
+  "evidence": {
+    "title": "Evidência, Fontes Abertas e Objetivos de Desenvolvimento Sustentável",
+    "subtitle": "Rastreabilidade completa de dados NASA, agências parceiras, premissas do modelo causal e transparência de IA.",
+    "globalTitle": "Global — Cobertura e ciência aberta",
+    "globalDesc": "Comparações reproduzíveis entre malha terrestre H3 e destinos Lua/Marte usando APIs científicas abertas.",
+    "locationTitle": "Localização — Sítio com coordenadas verificáveis",
+    "locationDesc": "Cada ponto (Jezero, Yungay/Atacama ou outra célula H3) preserva coordenadas, janela temporal e nível de confiança explícito.",
+    "methodTitle": "Metodologia científica: Decomposição Causal X → Y e Barreiras B",
+    "xTitle": "Forçantes independentes (X)",
+    "xDesc": "Inclinação, rugosidade, albedo, fluxo solar, inércia térmica, gelo subsuperficial, aridez e umidade.",
+    "yTitle": "Respostas dependentes (Y)",
+    "yDesc": "Amplitude térmica diurna ΔT, resfriamento noturno, vento superficial, fluxo de poeira.",
+    "bTitle": "Barreiras irreproduzíveis (B)",
+    "bDesc": "Gravidade superficial, pressão atmosférica e radiação ionizante GCR. Nunca colapsadas em uma única porcentagem.",
+    "activeProvenance": "Procedência do sítio planetário ativo",
+    "earthProvenance": "Procedência da célula terrestre comparada",
+    "sourcesTitle": "Catálogo de fontes abertas integradas",
+    "table": {
+      "agency": "Agência / Fonte",
+      "dataset": "Serviço / Dataset",
+      "role": "Uso no Ckepi",
+      "type": "Natureza"
+    },
+    "sources": {
+      "trek": "Camadas base WMTS de Marte (Viking/MOLA) e Lua (LRO WAC/LOLA).",
+      "pds": "Telemetria de superfície (REMS, MEDA) e cobertura orbital (LOLA, Diviner, CRISM, SHARAD).",
+      "power": "Climatologia solar, albedo satelital e grânulos MODIS/SMAP + GIBS.",
+      "copernicus": "Elevação, inclinação, rugosidade (DEM 90m) e séries climáticas ERA5-Land.",
+      "partners": "Propriedades de solo, litologia Macrostrat e catálogos Sentinel/RADARSAT/G-Portal."
+    },
+    "sdgTitle": "Integração de ODS (Proposta educativa e científica)",
+    "sdgHonestyNote": "Nota de rigor: os ODS abaixo refletem a proposta de produto e metas de referência; indicadores de impacto só são reportados quando medidos.",
+    "sdg4Title": "ODS 4 — Educação de qualidade (Metas 4.3 e 4.4) [Principal]",
+    "sdg4Desc": "Laboratório de física planetária, unidades SI, equações explícitas e minidesafios STEAM conectados a dados reais.",
+    "sdg9Title": "ODS 9 — Indústria, inovação e infraestrutura (Meta 9.5) [Principal]",
+    "sdg9Desc": "Comparação geoespacial reproduzível, decomposição causal transparente e planejamento de ensaios de rovers/sensores.",
+    "sdg12Title": "ODS 12 — Consumo e produção responsáveis (Meta 12.5) [Complementar]",
+    "sdg12Desc": "Abordagem de economia circular no planejamento de ensaios via empréstimo e reutilização de equipamentos.",
+    "sdg17Title": "ODS 17 — Parcerias e meios de implementação (Metas 17.3, 17.16, 17.17) [Complementar]",
+    "sdg17Desc": "Arquitetura aberta e replicável entre comunidades educativas e pesquisa regional.",
+    "aiDisclosureTitle": "Declaração de uso de IA (AI_DISCLOSURE.md)",
+    "aiDisclosureDesc": "A concepção científica (decomposição X → Y / B em malha H3) é humana. Assistentes de IA apoiaram implementação, refatoração e paridade trilíngue es/pt/en, revisadas pela equipe."
+  },
+  "funFacts": {
+    "title": "Curiosidades planetárias interativas",
+    "subtitle": "Toque em cada cartão para revelar o dado científico e sua fonte NASA/peer-reviewed.",
+    "progress": "{{count}} de {{total}} descobertas",
+    "filterLabel": "Filtrar curiosidades por corpo ou região",
+    "filterAll": "Todas",
+    "tapToReveal": "Tocar para descobrir",
+    "hide": "Ocultar",
+    "sourceLabel": "Fonte",
+    "allDiscovered": "Você descobriu todas as curiosidades planetárias!",
+    "tags": {
+      "mars": "Marte",
+      "moon": "Lua",
+      "atacama": "Atacama"
+    },
+    "items": {
+      "sound": {
+        "q": "Por que sua voz soaria diferente e muito mais baixa em Marte?",
+        "a": "Na atmosfera tênue de CO₂ (~0,6 kPa), o som viaja a ~240 m/s (vs ~343 m/s na Terra) e frequências agudas atenuam muito rápido."
+      },
+      "sol": {
+        "q": "Quanto tempo dura realmente um dia em Marte?",
+        "a": "Um sol marciano dura 24 h 39 min 35 s: quase igual a um dia terrestre, facilitando o planejamento de turnos de rovers."
+      },
+      "comms": {
+        "q": "É possível dirigir um rover em Marte com joystick em tempo real?",
+        "a": "Não: conforme a distância orbital, um sinal de rádio leva entre ~3 e ~22 minutos por trecho, exigindo navegação autônoma local."
+      },
+      "radiation": {
+        "q": "Quanta radiação um astronauta recebe rumo a Marte?",
+        "a": "Sem campo magnético global nem atmosfera densa, a dose na superfície supera amplamente os ~2,4 mSv/ano médios terrestres."
+      },
+      "olympus": {
+        "q": "Quão grande é o Monte Olimpo frente aos vulcões do Atacama?",
+        "a": "Atinge ~21,9 km de altura (~3× o Everest) e ~600 km de diâmetro, embora sua inclinação média seja suave (~5°)."
+      },
+      "temperature": {
+        "q": "Quantos graus a temperatura pode variar em um único dia marciano?",
+        "a": "Em crateras como Jezero ou Gale, a amplitude térmica diária passa de 60–80 K devido à baixa inércia térmica e atmosfera rarefeita."
+      },
+      "blueSunset": {
+        "q": "De que cor são os pores do sol em Marte?",
+        "a": "Azuladas perto do Sol: a poeira fina espalha a luz vermelha em ângulos largos e deixa passar o azul."
+      },
+      "phobos": {
+        "q": "Onde nasce e onde se põe a lua Fobos no céu marciano?",
+        "a": "Fobos orbita mais rápido que a rotação de Marte (~7 h 39 min), nascendo no oeste e se pondo no leste."
+      },
+      "dustStorm": {
+        "q": "Tempestades de poeira podem cobrir todo o planeta Marte?",
+        "a": "Sim: tempestades globais bloqueiam a luz solar por semanas, embora a pressão dinâmica seja baixa pela pouca densidade do ar."
+      },
+      "moonTemp": {
+        "q": "Quais temperaturas extremas um rover enfrenta na Lua?",
+        "a": "Sem atmosfera, a superfície vai de ~390 K (+117 °C) sob o Sol a ~100 K (-173 °C) na noite lunar."
+      },
+      "moonFootprints": {
+        "q": "Por que as pegadas da Apollo seguem intactas há mais de 50 anos?",
+        "a": "A Lua não tem vento nem chuva; apenas impactos graduais de micrometeoritos alteram o regolito em milhões de anos."
+      },
+      "moonDay": {
+        "q": "Quanto dura um dia solar completo na Lua?",
+        "a": "Cerca de 29,5 dias terrestres (~14 dias de luz seguidos de ~14 dias de escuridão), exigindo armazenamento robusto de energia."
+      },
+      "atacamaRovers": {
+        "q": "Por que a NASA testou protótipos de rovers no deserto do Atacama?",
+        "a": "Pela hiperaridez extrema, solos salinos, alta radiação UV e quase ausência de vegetação em áreas como Yungay."
+      },
+      "perchlorate": {
+        "q": "Que composto químico os solos do Atacama e de Marte compartilham?",
+        "a": "Ambos contêm percloratos e sais naturais, úteis para estudar a química do regolito e habitabilidade extrema."
+      }
+    }
+  },
+  "learnHub": {
+    "pickCategory": "Escolha uma aventura científica para explorar:",
+    "score": "Desafios: {{correct}}/{{total}}",
+    "badgeTitle": "Explorador(a) Planetário(a) concluído!",
+    "badgeDesc": "Você acertou todos os minidesafios aplicando física real e limites entre a Terra e outros mundos.",
+    "categories": {
+      "body": {
+        "title": "Seu corpo",
+        "subtitle": "Peso, massa e saltos",
+        "teaser": "Você pesaria menos em Marte, mas continuaria com a mesma massa?"
+      },
+      "physics": {
+        "title": "Física impossível",
+        "subtitle": "Lançamentos, ondas e água",
+        "teaser": "Por que a água líquida ao ar livre ferve ou congela em Marte?"
+      },
+      "engineering": {
+        "title": "Engenharia espacial",
+        "subtitle": "Rovers, inclinações e poeira",
+        "teaser": "Um rover no Atacama sente a mesma tração que na cratera Jezero?"
+      },
+      "curiosities": {
+        "title": "Curiosidades",
+        "subtitle": "Som, clima e radiação",
+        "teaser": "Descubra 14 fatos reais verificados por missões da NASA e análogos do Atacama."
+      }
+    },
+    "astronautCard": {
+      "title": "Seu perfil físico em {{body}}",
+      "mass": "Sua massa",
+      "massSame": "Não muda em nenhum planeta",
+      "weight": "Seu peso (força)",
+      "scale": "Balança terrestre: {{kgf}} kgf",
+      "jump": "Salto vertical ideal",
+      "jumpEarth": "Na Terra: {{cm}} cm",
+      "airTime": "Tempo no ar",
+      "airTimeEarth": "Na Terra: {{s}} s"
+    }
+  },
+  "quickQuiz": {
+    "cta": "Minidesafio rápido",
+    "question": "Se enviarmos um rover de 100 kg para {{body}}, o que muda em relação a Antofagasta?",
+    "optA": "Sua massa diminui e a inclinação deixa de importar",
+    "optB": "Sua massa continua 100 kg, mas seu peso em N diminui",
+    "optC": "Aumenta seu atrito máximo com o solo",
+    "tryAgain": "Quase — lembre a diferença entre massa (kg) e peso (N).",
+    "explanation": "Em {{body}} a gravidade é ~{{pct}}% da terrestre: a massa segue 100 kg ({{mass}} kg), mas o peso cai de {{earthN}} N para {{bodyN}} N."
+  },
+  "distribution": {
+    "title": "Comparação Estatística de Distribuições Topográficas (Escala Comum 30 m)",
+    "subtitle": "Distâncias Wasserstein-1 (W₁) e Kolmogorov–Smirnov (D_KS) sobre {{samples}} pixels a {{spacing}} m/px (Terra em UTM 19S; Marte na projeção equirretangular do CTX DEM, com escala verdadeira em Jezero).",
+    "commonScaleBadge": "Escala comum {{spacing}} m/px",
+    "bootstrapBadge": "Bootstrap 2D: {{iterations}} iter ({{blockSize}}×{{blockSize}} px)",
+    "targetDemLabel": "DEM Alvo",
+    "earthDemLabel": "DEM Setor Terrestre",
+    "controlDemLabel": "Controle Clássico",
+    "slopeCardTitle": "Distribuição de Declividade (30 m · Diferenças Finitas Centrais)",
+    "slopeStatement": "A distribuição de declividades de {{earthSite}} difere da de {{targetSite}} em W₁ = {{w1}}° (IC 95 %: {{ciLow}}°–{{ciHigh}}°, KS D = {{ks}}), frente a W₁ = {{controlW1}}° no controle clássico de Yungay.",
+    "reliefCardTitle": "Distribuição de Relevo Local (Janela móvel 300×300 m)",
+    "reliefStatement": "A distribuição de relevo local (Z_max − Z_min em 300×300 m) de {{earthSite}} difere de {{targetSite}} em W₁ = {{w1}} m (IC 95 %: {{ciLow}}–{{ciHigh}} m, KS D = {{ks}}), frente a W₁ = {{controlW1}} m em Yungay.",
+    "histogramTitle": "Histogramas Sobrepostos de Densidade Empírica (Alvo vs. Setor Selecionado vs. Controle Yungay)",
+    "toggleSlope": "Declividade (° a 30 m)",
+    "toggleRelief": "Relevo Local (m, 300×300 m)",
+    "controlYungayLabel": "Controle Clássico: Yungay (24,1°S)",
+    "transectTitle": "Perfil Longitudinal Comparado de Elevação Relativa (Transecto de 3,6 km a 30 m/px)",
+    "transectSubtitle": "Compara amplitude geomorfológica e rugosidade métrica sem extrapolar escalas incompatíveis.",
+    "scaleTableTitle": "Análise de Sensibilidade Multiescala (30 m · 60 m · 90 m)",
+    "scaleTableHint": "Verifica a estabilidade estatística sob agregação espacial (evita artefatos de resolução).",
+    "colScale": "Escala espacial",
+    "colSlopeW1": "W₁ Declividade (°)",
+    "colSlopeKs": "KS D (Declividade)",
+    "colReliefW1": "W₁ Relevo (m)",
+    "colSlopeP50": "P50 (Terra vs. Alvo)",
+    "colSlopeP90": "P90 (Terra vs. Alvo)",
+    "noteStatTitle": "Rigor Estatístico (Autocorrelação 2D)",
+    "noteStatBody": "Pixels vizinhos de um DEM possuem autocorrelação espacial. Por isso, os IC 95 % são estimados via bootstrap por blocos 2D (10×10 px = 300×300 m) e não por amostragem i.i.d. ingênua.",
+    "noteRadTitle": "Física de Radiação (Curiosity/RAD)",
+    "noteRadBody": "Em Marte, o Curiosity/RAD mediu ~0,64 mSv/dia (~230 mSv/ano GCR+SEP; Hassler et al., 2014, Science). O Atacama (~2,4 mSv/ano) valida óptica UV e terreno, mas não blindagem nuclear.",
+    "noteBioTitle": "Fronteira Robótica vs. Astrobiologia",
+    "noteBioBody": "Esta comparação certifica fidelidade geomorfológica e termo-radiativa para tração de rovers, navegação LiDAR e perfuração ISRU; não afirma habitabilidade biológica superficial."
+  },
+  "threeWorlds": {
+    "title": "Três Mundos na sua Mão: Terra · Lua · Marte (Alfabetização STEAM)",
+    "subtitle": "Explore com dados oficiais da NASA NSSDCA o que muda entre mundos e por que Antofagasta serve para treinar missões reais.",
+    "listenVoice": "Ouvir explicação",
+    "stopVoice": "Parar voz",
+    "speechScript": "Bem-vindo ao Ckepi, Três Mundos na sua Mão. Se uma mochila pesa 10 quilos em Antofagasta, na Lua pesa apenas 1,7 quilos e em Marte 3,8 quilos. Hoje comparamos {{earthSite}} com {{targetSite}}: a diferença estatística de declividade a 30 metros é de {{w1Slope}} graus. Em Antofagasta podemos testar rodas, câmeras e brocas de um rover, mas a baixa gravidade, a falta de ar e a radiação espacial só podem ser simuladas em câmaras especiais.",
+    "levels": {
+      "level1": "Nível 1: Olhar (Cotidiano)",
+      "level2": "Nível 2: Comparar (Física)",
+      "level3": "Nível 3: Investigar (Ruptura B)"
+    },
+    "earth": {
+      "name": "Terra (Antofagasta)",
+      "summary": "Nosso laboratório natural hiperárido com atmosfera densa e escudo magnético protetor.",
+      "backpack": "Mochila de 10 kg parece pesar 10,0 kg (1,00 g).",
+      "air": "Ar respirável a 1013 mbar (N₂/O₂); permite voar drones e resfriar equipamentos por convecção.",
+      "dayAndTemp": "Dia solar: 24 h 00 min · Temp. média global: ~15 °C (288 K).",
+      "radiation": "Radiação natural: ~2,4 mSv/ano (protegida por magnetosfera e atmosfera)."
+    },
+    "moon": {
+      "name": "Lua (Polo Sul / Mares)",
+      "summary": "Mundo sem ar com sombras permanentes nos polos e poeira abrasiva carregada eletricamente.",
+      "backpack": "Mochila de 10 kg parece pesar 1,7 kg (0,166 g).",
+      "air": "Vácuo extremo (0 mbar): sem som, sem vento e sem paraquedas possíveis.",
+      "dayAndTemp": "Dia solar: ~29,5 dias terrestres · Amplitude térmica extrema (>260 K).",
+      "radiation": "Radiação superficial: ~380 mSv/ano sem escudo magnético."
+    },
+    "mars": {
+      "name": "Marte (Cratera Jezero / Gale)",
+      "summary": "Deserto frio com atmosfera muito rarefeita de CO₂, antigos deltas lacustres e tempestades de poeira.",
+      "backpack": "Mochila de 10 kg parece pesar 3,8 kg (0,38 g).",
+      "air": "Atmosfera tênue de CO₂ (~6,1 mbar, <1 % da Terra): exige rotores de alta velocidade.",
+      "dayAndTemp": "Dia solar (Sol): 24 h 39 min · Temp. média: −63 °C (210 K).",
+      "radiation": "Radiação medida pelo Curiosity/RAD: ~230 mSv/ano (~0,64 mSv/dia, Hassler et al. 2014)."
+    },
+    "quiz": {
+      "question": "Micro-desafio STEAM: você precisa testar a suspensão de um rover para o fundo da Cratera Jezero (declividade mediana 1,7° numa janela de 6 km do CTX DEM). Qual setor de Antofagasta escolheria?",
+      "sourceNote": "Dados reais: CTX DEM de Jezero (NASA MRO, USGS) vs. Copernicus GLO-30, a 30 m",
+      "options": {
+        "pajonales": "B) Célula Salar de Pajonales (H3 83b221…, 4.200–5.270 m)",
+        "yungay": "C) Yungay, o análogo clássico",
+        "pampa": "A) Célula Pampa Central (H3 83b224…, ~1.400 m)"
+      },
+      "feedback": {
+        "pajonales": "Não desta vez: é terreno de alta cordilheira com declividades muito maiores (mediana 7,9° vs. 1,7°; W₁ = 6,9°). Um bom exemplo do que NÃO se parece com Jezero.",
+        "yungay": "Yungay é famoso pela hiperaridez, mas em declividade fica mais longe de Jezero (W₁ = 3,3°) porque tem encostas fortes. O análogo clássico nem sempre é o melhor para cada ensaio.",
+        "pampa": "Boa escolha! Sua distribuição de declividades difere da de Jezero em W₁ = 0,54° (IC 95 %: 0,40°–0,65°) e o resultado se mantém a 60 e 90 m. É um candidato para estudo em campo, não um local certificado: a gravidade, a pressão e a radiação de Marte não se reproduzem na Terra."
+      }
+    }
+  },
+  "araucana": {
+    "title": "Impacto Territorial Região de Antofagasta e Aliança Caja La Araucana",
+    "badgeLocal": "Sede Antofagasta 2026",
+    "badgeOds": "Metas ODS Verificadas",
+    "antofagastaLabTitle": "Laboratório Natural Região de Antofagasta (Seleção em 1 Clique)",
+    "antofagastaLabSubtitle": "Clique num nó regional para carregar sua comparação de terreno a 30 m (CTX DEM de Jezero vs. Copernicus GLO-30) e seu diagnóstico de missão:",
+    "utmScaleBadge": "UTM Zona 19S (EPSG:32719) · 30 m",
+    "nodes": {
+      "pajonalesRole": "Caso negativo: célula de alta cordilheira (4.200–5.270 m) com declividades muito maiores que Jezero (W₁ = 6,9° a 30 m).",
+      "cordilleraRole": "Quase plana (declividade mediana 0,2°): mais lisa que o fundo de Jezero (W₁ = 1,7°, KS = 0,82).",
+      "pampaRole": "Melhor ajuste de declividade com o fundo de Jezero (W₁ = 0,54° a 30 m; mantém-se a 60 e 90 m). Candidato para estudo em campo.",
+      "yungayRole": "Controle clássico da literatura. Em declividade fica mais longe de Jezero (W₁ ≈ 3,3–3,7°); seu valor é a hiperaridez."
+    },
+    "pillarsTitle": "Alinhamento com os 4 Objetivos Estratégicos da Caja La Araucana e Metas ODS",
+    "pillarsSubtitle": "Rastreabilidade direta com o Relatório Integrado de Sustentabilidade e desenvolvimento territorial:",
+    "pillars": {
+      "p1Title": "1. Democratizar Ciência de Fronteira",
+      "p1Body": "Converte telemetria bruta da NASA PDS e ESA Copernicus em um laboratório aberto no navegador, gratuito e com leitura por voz para escolas e famílias.",
+      "p2Title": "2. Competências STEAM e Empregabilidade",
+      "p2Body": "Treina habilidades reais de alta demanda em Antofagasta: Python, DuckDB, GeoParquet, malhas espaciais H3 e estatística não paramétrica (Wasserstein/KS).",
+      "p3Title": "3. Aplicação Local em Antofagasta",
+      "p3Body": "Valoriza setores subexplorados da região (Salar de Pajonales, Cordillera de la Sal, Pampa Central) para robótica de mineração/espacial, energia solar e astroturismo científico.",
+      "p4Title": "4. Rede Inter-regional de Inovação (Lattice)",
+      "p4Body": "Arquitetura H3 escalável que conecta o nó Antofagasta com Atacama, Coquimbo, Biobío e Magalhães junto às universidades regionais (UCN, UA)."
+    },
+    "sustainabilityTitle": "Modelo de Sustentabilidade Institucional:",
+    "sustainabilityBody": "Núcleo 100 % open source (Apache-2.0) para educação pública + serviços para instituições caracterizarem locais de teste."
+  },
+  "home": {
+    "skip": "Pular introdução",
+    "replay": "Ver a introdução de novo",
+    "tagline": "Terra · Lua · Marte, comparados com dados abertos da NASA",
+    "question": "O que se parece? Quanto? E o que não?",
+    "cta": "Explorar os três mundos",
+    "dataNote": "Exemplo real: uma área pouco estudada de Antofagasta se parece com as encostas da cratera Jezero mais do que o análogo clássico, Yungay (W₁ = 0,54° vs. 3,32°, a 30 m). Pré-selecionamos lugares para estudar; não os certificamos.",
+    "aiBadge": "Vídeo gerado com IA",
+    "credits": "Dados: NASA, ESA e agências parceiras. O Ckepi não é afiliado nem endossado pela NASA."
+  },
+  "story": {
+    "progressLabel": "Etapas da apresentação",
+    "goToStep": "Ir para a etapa {{n}} de {{total}}",
+    "stepOf": "Etapa {{n}} de {{total}}",
+    "skip": "Ir para o software",
+    "back": "Voltar",
+    "next": "Próximo",
+    "enter": "Entrar no software",
+    "listen": "Ouvir",
+    "stopListening": "Parar",
+    "problem": {
+      "title": "Para ir à Lua e a Marte, primeiro se testa na Terra",
+      "body": "As missões ensaiam seus equipamentos em lugares da Terra parecidos com a Lua ou Marte. Mas muitos são escolhidos pela aparência, e outros lugares que poderiam servir continuam sem estudo."
+    },
+    "whatItDoes": {
+      "title": "O CKEPI compara dimensão por dimensão",
+      "body": "Com dados abertos da NASA e de agências parceiras, comparamos terreno, clima e radiação da Terra, da Lua e de Marte. Para cada lugar mostramos o que se parece, quanto e o que não."
+    },
+    "finding": {
+      "title": "Uma descoberta em Antofagasta",
+      "body": "Na mesma escala de 30 metros, uma área pouco estudada da região (célula H3 83b224) se parece com as encostas da cratera Jezero de Marte mais do que o análogo clássico, Yungay: uma diferença de 0,54° contra 3,32°.",
+      "source": "Dados: modelo de elevação CTX de Jezero (NASA MRO, USGS) e Copernicus GLO-30 (ESA). Distância Wasserstein-1 das declividades, IC 95 % 0,40°–0,65°."
+    },
+    "limits": {
+      "title": "O que a Terra não consegue imitar",
+      "body": "Em Marte a gravidade é 0,38 vez a da Terra, o ar é cerca de 160 vezes mais rarefeito e a radiação é muito maior. Nenhum deserto reproduz isso. Por isso o CKEPI pré-seleciona lugares para estudo em campo; não os certifica."
     }
   }
 }

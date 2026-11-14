@@ -41,7 +41,8 @@ async function fetchApiResponse(url: string, init?: RequestInit): Promise<Respon
       },
       ...init,
     });
-  } catch {
+  } catch (error) {
+    if (init?.signal?.aborted) throw error;
     throw new ApiClientError("errors.network_error");
   }
 
@@ -64,19 +65,26 @@ async function fetchApiResponse(url: string, init?: RequestInit): Promise<Respon
 
 async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetchApiResponse(url, init);
-  return (await response.json()) as T;
+  try {
+    return (await response.json()) as T;
+  } catch (error) {
+    if (init?.signal?.aborted) throw error;
+    throw new ApiClientError("errors.invalid_response");
+  }
 }
 
-export function fetchPlanetarySites(): Promise<PlanetarySite[]> {
-  return requestJson<PlanetarySite[]>("/api/v1/planetary-sites");
+export function fetchPlanetarySites(signal?: AbortSignal): Promise<PlanetarySite[]> {
+  return requestJson<PlanetarySite[]>("/api/v1/planetary-sites", { signal });
 }
 
 export function runDecomposition(
   siteId: string,
-  modelType: DecompositionModelType
+  modelType: DecompositionModelType,
+  signal?: AbortSignal
 ): Promise<DecompositionResponse> {
   return requestJson<DecompositionResponse>("/api/v1/decompose", {
     method: "POST",
+    signal,
     body: JSON.stringify({
       site_id: siteId,
       model_type: modelType,
@@ -121,14 +129,60 @@ export function searchAnalogs(params: SearchAnalogsParams): Promise<AnalogSearch
   });
 }
 
+export interface CompareCellOptions {
+  signal?: AbortSignal;
+  testProfile?: TestProfileType;
+  penalizeEstimated?: boolean;
+  customIvWeights?: Record<string, number>;
+  customDvWeights?: Record<string, number>;
+}
+
+function appendWeightParams(
+  params: URLSearchParams,
+  options?: Omit<CompareCellOptions, "signal">
+): void {
+  if (!options) return;
+  if (options.testProfile && options.testProfile !== "causal_auto") {
+    params.set("test_profile", options.testProfile);
+  }
+  if (options.penalizeEstimated) {
+    params.set("penalize_estimated", "true");
+  }
+  if (
+    options.testProfile === "manual_custom" &&
+    options.customIvWeights &&
+    Object.keys(options.customIvWeights).length > 0
+  ) {
+    params.set("iv_weights", JSON.stringify(options.customIvWeights));
+  }
+  if (
+    options.testProfile === "manual_custom" &&
+    options.customDvWeights &&
+    Object.keys(options.customDvWeights).length > 0
+  ) {
+    params.set("dv_weights", JSON.stringify(options.customDvWeights));
+  }
+}
+
 export function compareCellWithSite(
   h3Index: string,
   siteId: string,
-  modelType: DecompositionModelType
+  modelType: DecompositionModelType,
+  signalOrOptions?: AbortSignal | CompareCellOptions
 ): Promise<SiteComparisonResponse> {
-  const query = new URLSearchParams({ model_type: modelType }).toString();
+  const isSignal =
+    signalOrOptions != null &&
+    ("aborted" in signalOrOptions ||
+      (typeof AbortSignal !== "undefined" && signalOrOptions instanceof AbortSignal));
+  const options: CompareCellOptions = isSignal
+    ? { signal: signalOrOptions as AbortSignal }
+    : (signalOrOptions as CompareCellOptions | undefined) ?? {};
+
+  const query = new URLSearchParams({ model_type: modelType });
+  appendWeightParams(query, options);
   return requestJson<SiteComparisonResponse>(
-    `/api/v1/analogs/${encodeURIComponent(h3Index)}/compare/${encodeURIComponent(siteId)}?${query}`
+    `/api/v1/analogs/${encodeURIComponent(h3Index)}/compare/${encodeURIComponent(siteId)}?${query.toString()}`,
+    { signal: options.signal }
   );
 }
 
@@ -136,7 +190,8 @@ export function probeEarthCoordinate(
   lat: number,
   lon: number,
   siteId: string,
-  modelType: DecompositionModelType
+  modelType: DecompositionModelType,
+  options?: Omit<CompareCellOptions, "signal">
 ): Promise<SiteComparisonResponse> {
   return requestJson<SiteComparisonResponse>("/api/v1/earth/probe", {
     method: "POST",
@@ -145,6 +200,12 @@ export function probeEarthCoordinate(
       lon,
       site_id: siteId,
       model_type: modelType,
+      test_profile: options?.testProfile ?? "causal_auto",
+      penalize_estimated: options?.penalizeEstimated ?? false,
+      custom_iv_weights:
+        options?.testProfile === "manual_custom" ? options.customIvWeights : undefined,
+      custom_dv_weights:
+        options?.testProfile === "manual_custom" ? options.customDvWeights : undefined,
     }),
   });
 }
@@ -165,6 +226,7 @@ export interface ProbePlanetaryParams {
   minSInd: number;
   minSDep: number;
   excludeBenchmarks: boolean;
+  penalizeEstimated?: boolean;
   limit: number;
   customIvWeights?: Record<string, number>;
   customDvWeights?: Record<string, number>;
@@ -186,6 +248,7 @@ export function probePlanetaryLocation(
       min_s_ind: params.minSInd,
       min_s_dep: params.minSDep,
       exclude_benchmarks: params.excludeBenchmarks,
+      penalize_estimated: params.penalizeEstimated ?? false,
       limit: params.limit,
       custom_iv_weights: params.customIvWeights,
       custom_dv_weights: params.customDvWeights,
@@ -205,7 +268,9 @@ export function refineAnalogCell(
   siteId: string,
   modelType: DecompositionModelType,
   penalizeEstimated = false,
-  testProfile: TestProfileType = "causal_auto"
+  testProfile: TestProfileType = "causal_auto",
+  customIvWeights?: Record<string, number>,
+  customDvWeights?: Record<string, number>
 ): Promise<AnalogRefineResponse> {
   return requestJson<AnalogRefineResponse>("/api/v1/analogs/refine", {
     method: "POST",
@@ -215,6 +280,8 @@ export function refineAnalogCell(
       model_type: modelType,
       test_profile: testProfile,
       penalize_estimated: penalizeEstimated,
+      custom_iv_weights: testProfile === "manual_custom" ? customIvWeights : undefined,
+      custom_dv_weights: testProfile === "manual_custom" ? customDvWeights : undefined,
     }),
   });
 }

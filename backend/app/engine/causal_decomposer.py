@@ -166,7 +166,31 @@ def decompose_planetary_site(
         )
 
     if total_r2_weight > 1e-9:
-        global_weights = _normalize_weights(weighted_sum / total_r2_weight)
+        temporal_vec = weighted_sum / total_r2_weight
+        temporal_norm = _normalize_weights(temporal_vec)
+        col_stds = np.nanstd(x_raw, axis=0)
+        spatial_priors = {
+            "topographic_roughness": 0.14,
+            "slope_deg": 0.12,
+            "surface_albedo": 0.08,
+            "subsurface_ice_frac": 0.10,
+            "aridity_index": 0.22,
+            "relative_humidity_pct": 0.16,
+            "vegetation_lai_proxy": 0.18,
+        }
+        static_vec = np.array(
+            [
+                spatial_priors.get(col, 0.05) if col_stds[i] < 1e-6 else 0.0
+                for i, col in enumerate(INDEPENDENT_VARIABLES)
+            ],
+            dtype=float,
+        )
+        if float(np.sum(static_vec)) > 1e-9:
+            static_vec = static_vec / float(np.sum(static_vec))
+            t_arr = np.array([temporal_norm[col] for col in INDEPENDENT_VARIABLES], dtype=float)
+            global_weights = _normalize_weights(0.40 * t_arr + 0.60 * static_vec)
+        else:
+            global_weights = temporal_norm
     else:
         global_weights = _normalize_weights(np.ones(len(INDEPENDENT_VARIABLES)))
 
