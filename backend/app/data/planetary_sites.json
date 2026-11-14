@@ -1,0 +1,257 @@
+[
+  {
+    "site_id": "moon_shackleton_pole",
+    "body": "moon",
+    "name_key": "sites.moon_shackleton_pole.name",
+    "mission_context_key": "sites.moon_shackleton_pole.context",
+    "data_sources": [
+      "NASA PDS ODE LRO DLRE",
+      "NASA LRO LOLA",
+      "NASA LRO LEND"
+    ],
+    "coordinates": {
+      "lat": -89.68,
+      "lon": 129.78
+    },
+    "variables": {
+      "independent": {
+        "topographic_roughness": 0.68,
+        "slope_deg": 18.5,
+        "thermal_inertia": 58.0,
+        "surface_albedo": 0.16,
+        "solar_flux_wm2": 266.51,
+        "subsurface_ice_frac": 0.35,
+        "aridity_index": 1.0,
+        "relative_humidity_pct": 0.0,
+        "uv_irradiance_index": 3.5242,
+        "vegetation_lai_proxy": 0.0
+      },
+      "dependent": {
+        "diurnal_temp_amplitude_k": 190.7417,
+        "nocturnal_cooling_k_hr": 4.3711,
+        "mean_surface_temp_k": 157.7292,
+        "surface_wind_ms": 0.0,
+        "aeolian_dust_flux": 0.0,
+        "ice_sublimation_rate": 0.1741
+      },
+      "breakage": {
+        "gravity_g": 0.165,
+        "atm_pressure_mbar": 1e-12,
+        "radiation_msv_yr": 380.0
+      }
+    },
+    "provenance": {
+      "source_apis": [
+        "NASA PDS ODE (LRO DLRE PRP)",
+        "NASA PDS ODE LRO DLRE"
+      ],
+      "observation_window": "NASA PDS ODE LRO DLRE PRP (0 products)",
+      "fetched_at": "2026-11-13T17:57:32.752609+00:00",
+      "is_live_probed": false
+    }
+  },
+  {
+    "site_id": "moon_tranquillitatis_lava",
+    "body": "moon",
+    "name_key": "sites.moon_tranquillitatis_lava.name",
+    "mission_context_key": "sites.moon_tranquillitatis_lava.context",
+    "data_sources": [
+      "NASA PDS ODE LRO DLRE",
+      "NASA LRO LROC",
+      "NASA LRO LOLA"
+    ],
+    "coordinates": {
+      "lat": 8.33,
+      "lon": 33.22
+    },
+    "variables": {
+      "independent": {
+        "topographic_roughness": 0.58,
+        "slope_deg": 14.2,
+        "thermal_inertia": 85.0,
+        "surface_albedo": 0.09,
+        "solar_flux_wm2": 879.9065,
+        "subsurface_ice_frac": 0.0,
+        "aridity_index": 1.0,
+        "relative_humidity_pct": 0.0,
+        "uv_irradiance_index": 11.6372,
+        "vegetation_lai_proxy": 0.0
+      },
+      "dependent": {
+        "diurnal_temp_amplitude_k": 266.1242,
+        "nocturnal_cooling_k_hr": 6.0987,
+        "mean_surface_temp_k": 206.7623,
+        "surface_wind_ms": 0.0,
+        "aeolian_dust_flux": 0.0,
+        "ice_sublimation_rate": 0.0
+      },
+      "breakage": {
+        "gravity_g": 0.165,
+        "atm_pressure_mbar": 1e-12,
+        "radiation_msv_yr": 380.0
+      }
+    },
+    "provenance": {
+      "source_apis": [
+        "NASA PDS ODE (LRO DLRE GDR_L3)",
+        "NASA PDS ODE LRO DLRE"
+      ],
+      "observation_window": "2009-07-05 \u2014 2009-12-24 (12 PDS LRO GDR_L3)",
+      "fetched_at": "2026-11-13T17:57:34.309868+00:00",
+      "is_live_probed": false
+    }
+  },
+  {
+    "site_id": "mars_jezero_crater",
+    "body": "mars",
+    "name_key": "sites.mars_jezero_crater.name",
+    "mission_context_key": "sites.mars_jezero_crater.context",
+    "data_sources": [
+      "Perseverance MEDA",
+      "NASA Mars REMS API",
+      "MRO THEMIS"
+    ],
+    "coordinates": {
+      "lat": 18.38,
+      "lon": 77.58
+    },
+    "variables": {
+      "independent": {
+        "topographic_roughness": 0.42,
+        "slope_deg": 6.4,
+        "thermal_inertia": 281.2361,
+        "surface_albedo": 0.23,
+        "solar_flux_wm2": 409.1863,
+        "subsurface_ice_frac": 0.03,
+        "aridity_index": 0.98,
+        "relative_humidity_pct": 0.5,
+        "uv_irradiance_index": 7.5083,
+        "vegetation_lai_proxy": 0.0
+      },
+      "dependent": {
+        "diurnal_temp_amplitude_k": 92.1917,
+        "nocturnal_cooling_k_hr": 7.4044,
+        "mean_surface_temp_k": 235.9208,
+        "surface_wind_ms": 10.0132,
+        "aeolian_dust_flux": 0.5803,
+        "ice_sublimation_rate": 0.0
+      },
+      "breakage": {
+        "gravity_g": 0.378,
+        "atm_pressure_mbar": 8.07,
+        "radiation_msv_yr": 230.0
+      }
+    },
+    "provenance": {
+      "source_apis": [
+        "NASA Mars 2020 MEDA + MSL REMS API",
+        "Perseverance MEDA"
+      ],
+      "observation_window": "2025-12-14 \u2014 2026-08-25 (240 sols)",
+      "fetched_at": "2026-11-13T17:57:31.561007+00:00",
+      "is_live_probed": false
+    }
+  },
+  {
+    "site_id": "mars_gale_crater",
+    "body": "mars",
+    "name_key": "sites.mars_gale_crater.name",
+    "mission_context_key": "sites.mars_gale_crater.context",
+    "data_sources": [
+      "Curiosity REMS API",
+      "MRO THEMIS",
+      "MRO CRISM"
+    ],
+    "coordinates": {
+      "lat": -5.4,
+      "lon": 137.8
+    },
+    "variables": {
+      "independent": {
+        "topographic_roughness": 0.51,
+        "slope_deg": 9.8,
+        "thermal_inertia": 338.1688,
+        "surface_albedo": 0.21,
+        "solar_flux_wm2": 472.4146,
+        "subsurface_ice_frac": 0.02,
+        "aridity_index": 0.98,
+        "relative_humidity_pct": 0.5,
+        "uv_irradiance_index": 7.5055,
+        "vegetation_lai_proxy": 0.0
+      },
+      "dependent": {
+        "diurnal_temp_amplitude_k": 92.5288,
+        "nocturnal_cooling_k_hr": 7.3664,
+        "mean_surface_temp_k": 234.9596,
+        "surface_wind_ms": 10.0121,
+        "aeolian_dust_flux": 0.5802,
+        "ice_sublimation_rate": 0.0
+      },
+      "breakage": {
+        "gravity_g": 0.378,
+        "atm_pressure_mbar": 7.69,
+        "radiation_msv_yr": 220.0
+      }
+    },
+    "provenance": {
+      "source_apis": [
+        "NASA Mars MSL Curiosity REMS API",
+        "Curiosity REMS API"
+      ],
+      "observation_window": "2025-08-08 \u2014 2026-08-25 (365 sols)",
+      "fetched_at": "2026-11-13T17:57:31.180400+00:00",
+      "is_live_probed": false
+    }
+  },
+  {
+    "site_id": "mars_arcadia_planitia",
+    "body": "mars",
+    "name_key": "sites.mars_arcadia_planitia.name",
+    "mission_context_key": "sites.mars_arcadia_planitia.context",
+    "data_sources": [
+      "MRO SHARAD",
+      "NASA Mars REMS API",
+      "Mars Odyssey GRS"
+    ],
+    "coordinates": {
+      "lat": 46.7,
+      "lon": -172.0
+    },
+    "variables": {
+      "independent": {
+        "topographic_roughness": 0.22,
+        "slope_deg": 2.1,
+        "thermal_inertia": 173.76,
+        "surface_albedo": 0.27,
+        "solar_flux_wm2": 200.6929,
+        "subsurface_ice_frac": 0.62,
+        "aridity_index": 0.98,
+        "relative_humidity_pct": 0.5,
+        "uv_irradiance_index": 7.54,
+        "vegetation_lai_proxy": 0.0
+      },
+      "dependent": {
+        "diurnal_temp_amplitude_k": 92.455,
+        "nocturnal_cooling_k_hr": 7.4378,
+        "mean_surface_temp_k": 235.4675,
+        "surface_wind_ms": 10.0138,
+        "aeolian_dust_flux": 0.5804,
+        "ice_sublimation_rate": 0.1797
+      },
+      "breakage": {
+        "gravity_g": 0.378,
+        "atm_pressure_mbar": 8.17,
+        "radiation_msv_yr": 235.0
+      }
+    },
+    "provenance": {
+      "source_apis": [
+        "NASA Mars MSL Curiosity REMS API",
+        "MRO SHARAD"
+      ],
+      "observation_window": "2026-02-01 \u2014 2026-08-25 (200 sols)",
+      "fetched_at": "2026-11-13T17:57:31.739560+00:00",
+      "is_live_probed": false
+    }
+  }
+]

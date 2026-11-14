@@ -1,0 +1,424 @@
+{
+  "app": {
+    "title": "Ckepi",
+    "subtitle": "Causal Variable Decomposition & Planetary Analog Engine",
+    "challengeBadge": "NASA Space Apps 2026",
+    "themeLight": "Light mode",
+    "themeDark": "Dark mode",
+    "languageLabel": "Language"
+  },
+  "controls": {
+    "targetSite": "Planetary Target (ROI)",
+    "modelType": "Decomposition Model",
+    "modelTypeHint": "Statistical algorithm (Ridge or Random Forest) used to infer which terrain variables drive environmental responses.",
+    "modelOverriddenNote": "Note: In Preset or Manual mode, analog ranking uses the selected profile weights; this model only updates the causal chart.",
+    "ridge": "Ridge Regression (Regularized Linear)",
+    "randomForest": "Random Forest (Non-Linear)",
+    "testProfile": "Test Objective (Moon / Mars)",
+    "profiles": {
+      "causal_auto": "Automatic Causal Weights (X → Y)",
+      "navigation_landing": "Landing & LiDAR Hazard Avoidance",
+      "rover_mobility": "Rover Wheel Mobility & Robotics",
+      "isru_ice_drilling": "ISRU Subsurface Ice & Drilling",
+      "lava_tube_habitat": "Lava Tubes & Habitat Construction",
+      "solar_power_thermal": "Solar Power, UV & Thermal Stress",
+      "manual_custom": "Manual Mode (Variable by Variable)"
+    },
+    "profileDescriptions": {
+      "causal_auto": "Automatically derives variable importance from the statistical decomposition (X → Y) of the selected planetary target.",
+      "navigation_landing": "Prioritizes surface roughness, terrain slope, albedo, and bare ground for LiDAR hazard avoidance and landing.",
+      "rover_mobility": "Prioritizes terrain roughness, slope, hyper-aridity, bare soil, and thermal inertia for wheel traction tests.",
+      "isru_ice_drilling": "Prioritizes subsurface water-ice fraction, thermal inertia, solar flux, and dryness for ISRU drilling.",
+      "lava_tube_habitat": "Prioritizes low-albedo basaltic contrast, roughness, slope, and thermal inertia for skylight and habitat analogs.",
+      "solar_power_thermal": "Prioritizes solar flux, UV irradiance, thermal inertia, albedo, and humidity for photovoltaic & thermal tests."
+    },
+    "profileInspector": {
+      "showMore": "See more (variables)",
+      "showLess": "Hide details",
+      "weightsTitle": "Variables & weights used by this preset",
+      "editInManual": "Adjust in Manual Mode",
+      "zeroVarsNote": "Variables not listed here have 0% weight in this preset. Click \"Adjust in Manual Mode\" to modify or add any variable."
+    },
+    "advancedToggle": "Advanced scientific settings",
+    "discoveryOnly": "Discovery Mode (Hide classic benchmarks)",
+    "discoveryHint": "Filters well-studied sites like Atacama or McMurdo to surface underexplored terrestrial analogs.",
+    "minSInd": "Min. Substrate Similarity (S_ind)",
+    "minSIndHelp": "Filters out Earth cells that do not meet this terrain & surface similarity.",
+    "minSDep": "Min. Response Similarity (S_dep)",
+    "minSDepHelp": "Filters out Earth cells that do not meet this thermal & environmental response.",
+    "resetWeights": "Restore causal weights",
+    "loading": "Computing decomposition & H3 grid...",
+    "retry": "Retry",
+    "dataSources": "Data sources",
+    "lastUpdated": "Analysis updated",
+    "refreshApis": "Refresh live APIs",
+    "refreshing": "Syncing with NASA & Open-Meteo...",
+    "shareLink": "Share link",
+    "copiedLink": "Copied!",
+    "penalizeEstimated": "Penalize estimated planetary targets in ranking (confidence-adjusted score)"
+  },
+  "bodies": {
+    "moon": "Moon",
+    "mars": "Mars"
+  },
+  "guide": {
+    "title": "How this tool works (3 steps)",
+    "show": "Show guide",
+    "hide": "Hide guide",
+    "badgeLiveApi": "Live API",
+    "badgeCatalog": "H3 Catalog",
+    "badgeModel": "Physical Model",
+    "step1Title": "1. Pick a Moon or Mars target",
+    "step1Desc": "Choose a key mission site or click anywhere on the 3D globe to probe it.",
+    "step2Title": "2. Explore Earth analogs",
+    "step2Desc": "Click any hexagon or anywhere on Earth to fetch live NASA POWER & Copernicus DEM telemetry.",
+    "step3Title": "3. Inspect what works and what breaks",
+    "step3Desc": "Review the verdict, variable-by-variable deltas, or tune weights in Manual Mode.",
+    "transparencyNote": "Every value shows its data origin (measured, derived, or physical model) so you always know what is real telemetry and what is estimated."
+  },
+  "manualMode": {
+    "title": "Manual Comparison (Variable by Variable)",
+    "badge": "Custom Rules",
+    "subtitle": "Set the weight (0% = ignore) and minimum similarity (0% = no filter) for each physical variable.",
+    "resetEqual": "Equal weights (100%)",
+    "zeroAll": "Clear all (0%)",
+    "apply": "Apply manual comparison",
+    "targetValue": "Target",
+    "weightLabel": "Priority weight",
+    "minSimLabel": "Min. similarity",
+    "independentGroup": "Independent Variables / Substrate (X)",
+    "dependentGroup": "Dependent Variables / Environmental Response (Y)",
+    "globalFilterActive": "Global filters active in Advanced Settings: S_ind ≥ {{sInd}}, S_dep ≥ {{sDep}}",
+    "clearGlobalFilters": "Clear global filters (0%)"
+  },
+  "comparisonMatrix": {
+    "title": "Side-by-Side Candidate Comparison (Top 4)",
+    "subtitle": "Click any row or card to inspect its detailed physical profile.",
+    "siteCol": "Terrestrial Location",
+    "typeCol": "Category",
+    "bestTestCol": "Primary Validated Test",
+    "exportReport": "Report (.md)"
+  },
+  "layers": {
+    "independent": "Independent (X)",
+    "dependent": "Dependent (Y)",
+    "breakage": "Physical Breakage (B)"
+  },
+  "sites": {
+    "moon_shackleton_pole": {
+      "name": "Lunar South Pole — Shackleton Crater",
+      "context": "Polar rim with extreme grazing illumination, permanently shadowed regions, and subsurface hydrogen/ice."
+    },
+    "moon_tranquillitatis_lava": {
+      "name": "Mare Tranquillitatis — Lava Tube Skylight",
+      "context": "Low-albedo basaltic plain with collapsed lava tube pits and extreme diurnal thermal swings (>260 K)."
+    },
+    "mars_jezero_crater": {
+      "name": "Mars — Jezero Crater (Lacustrine Delta)",
+      "context": "Ancient river delta with carbonates and clays, moderate thermal inertia, and active aeolian dust transport."
+    },
+    "mars_gale_crater": {
+      "name": "Mars — Gale Crater (Aeolis Mons)",
+      "context": "Stratified sulfate deposits and dark dune fields experiencing active wind-driven sediment transport."
+    },
+    "mars_arcadia_planitia": {
+      "name": "Mars — Arcadia Planitia (Shallow Ice)",
+      "context": "Smooth volcanic plains overlying extensive shallow water-ice sheets of high ISRU interest."
+    },
+    "custom_moon": "Selected Lunar Target",
+    "custom_moon_context": "Lunar coordinate probed live via NASA PDS ODE (LRO Diviner / LOLA) and radiative equilibrium.",
+    "custom_mars": "Selected Martian Target",
+    "custom_mars_context": "Martian coordinate probed live via NASA Mars REMS telemetry and orbital solar geometry."
+  },
+  "planetaryMap": {
+    "title": "Interactive 3D Moon & Mars Globe (NASA Trek)",
+    "subtitle": "Rotate, zoom, and click any crater or pole on the 3D sphere to find analogs across Earth.",
+    "dragHint": "Drag to rotate 360° · Scroll or +/- to zoom · Click any point to probe.",
+    "loadingGlobe": "Loading 360° NASA Trek global mosaic...",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "resetView": "Center on target",
+    "moonLayer": "NASA LRO WAC Global Mosaic 303ppd",
+    "marsLayer": "NASA MGS MOLA Global Altimetry 463m",
+    "layerLabel": "Planet layer",
+    "layers": {
+      "moon_wac": "Optical Mosaic (LRO WAC)",
+      "moon_lola": "Laser Altimetry (LRO LOLA)",
+      "mars_color": "Natural Color (Viking MDIM21)",
+      "mars_mola": "Laser Altimetry (MGS MOLA)"
+    },
+    "probingTarget": "Querying NASA PDS for ({{lat}}, {{lon}})...",
+    "clickedTarget": "Selected target",
+    "legendTracked": "Tracked mission zone (High confidence)",
+    "legendEstimated": "Probed point (Estimated)"
+  },
+  "confidence": {
+    "title": "Data Confidence & Coverage Transparency",
+    "unknownSite": "Nearest tracked site",
+    "pdsCount": "{{count}} NASA PDS LRO products",
+    "distanceKm": "{{km}} km from {{site}}",
+    "realVarsLabel": "Observed / Orbital Physics",
+    "estimatedVarsLabel": "Estimated by Latitude / Regime",
+    "levels": {
+      "high": "High Confidence",
+      "medium": "Medium Confidence",
+      "estimated": "Physical Estimation"
+    },
+    "tracked_high": "Tracked zone with direct rover or orbiter instrumentation. Physical parameters come from curated NASA mission datasets.",
+    "tracked_mars_curated": "Curated Mars mission zone: surface weather and dust come from Curiosity REMS / Perseverance MEDA telemetry, solar flux from orbital geometry, and terrain/ice constants from published MRO/LOLA references.",
+    "tracked_moon_curated": "Curated Moon zone: observation timestamps come from NASA PDS ODE LRO Diviner, diurnal temperatures from Stefan-Boltzmann radiative physics, and terrain/ice constants from published LRO references.",
+    "origins": {
+      "measured": "Measured",
+      "derived": "Derived",
+      "model": "Model",
+      "constant": "Ref. Constant",
+      "default": "Fallback"
+    },
+    "mars_extrapolated": "Honest estimation notice: This coordinate is {{km}} km from {{site}}. Atmospheric telemetry is extrapolated from Curiosity REMS (Gale Crater) + orbital solar geometry, while terrain (slope, roughness, albedo, ice) is estimated by Martian latitude regime.",
+    "moon_pds_partial": "Partial orbital coverage: {{count}} real LRO Diviner products were found in NASA PDS ODE for this region, combined with radiative thermal physics. Slope, roughness, and ice are estimated by lunar regime.",
+    "moon_estimated": "Honest estimation notice: No direct LRO Diviner products were found in NASA PDS ODE for this exact cell. Surface and terrain parameters are estimated from lunar latitude/longitude regime and Stefan-Boltzmann radiative physics."
+  },
+  "decomposition": {
+    "title": "Causal Variable Decomposition",
+    "subtitle": "Statistical separation of independent forcings (X), environmental responses (Y), and physical breakage limits (B).",
+    "independentTitle": "Global Causal Weights (Independent Variables X)",
+    "dependentTitle": "Explained Variance per Response (Y = f(X))",
+    "pcaTitle": "Substrate Principal Components (PCA)",
+    "breakageTitle": "Physical Breakage Profile (Irreproducible on Earth)",
+    "r2Label": "Explained R²",
+    "sampleCount": "ROI Samples",
+    "weightLabel": "Causal weight",
+    "componentLabel": "PC{{index}}",
+    "varianceLabel": "Variance",
+    "breakageThresholdNote": "Variables with breakage index ≥ 60% automatically trigger experimental invalidity alerts.",
+    "notMeasured": "N/A (No sensor / Airless)"
+  },
+  "provenance": {
+    "title": "Real Data Provenance",
+    "window": "Observation window",
+    "liveProbed": "Live probed"
+  },
+  "variables": {
+    "topographic_roughness": { "label": "Topographic Roughness", "unit": "0-1 index", "hint": "Micro-relief irregularity and rockiness affecting rover wheels and landing hazard sensors." },
+    "slope_deg": { "label": "Mean Terrain Slope", "unit": "°", "hint": "Average terrain inclination in degrees; critical for rover climbing and lander stability." },
+    "thermal_inertia": { "label": "Thermal Inertia", "unit": "TIU", "hint": "How slowly the ground heats up and cools down; separates fine dust from exposed bedrock." },
+    "surface_albedo": { "label": "Surface Albedo", "unit": "0-1", "hint": "Fraction of sunlight reflected by the surface; governs solar heating and optical contrast." },
+    "solar_flux_wm2": { "label": "Incident Solar Flux", "unit": "W/m²", "hint": "Available solar power per square meter for photovoltaic arrays and thermal balance." },
+    "subsurface_ice_frac": { "label": "Subsurface Ice", "unit": "fraction", "hint": "Estimated water-ice fraction in the regolith; key for ISRU drilling and habitat water." },
+    "aridity_index": { "label": "Hyper-Aridity Index", "unit": "0-1", "hint": "Extreme dryness (1 = hyper-arid); ensures moisture does not distort regolith mechanics." },
+    "relative_humidity_pct": { "label": "Relative Humidity", "unit": "%", "hint": "Atmospheric water vapor; near-zero humidity best approximates lunar/Martian dryness." },
+    "uv_irradiance_index": { "label": "UV Irradiance Index", "unit": "UV index", "hint": "Ultraviolet radiation intensity stressing polymers, spacesuits, and solar cells." },
+    "vegetation_lai_proxy": { "label": "Vegetation Cover (LAI)", "unit": "m²/m²", "hint": "Plant cover density (0 = barren); planetary analogs require bare mineral ground." },
+    "diurnal_temp_amplitude_k": { "label": "Diurnal Temp. Amplitude (ΔT)", "unit": "K", "hint": "Day-to-night temperature swing causing thermal fatigue in batteries, seals, and electronics." },
+    "nocturnal_cooling_k_hr": { "label": "Nocturnal Cooling Rate", "unit": "K/h", "hint": "Speed of temperature drop after sunset; tests thermal survival and insulation." },
+    "mean_surface_temp_k": { "label": "Mean Surface Temperature", "unit": "K", "hint": "Average surface temperature in Kelvin; drives cryogenic lubrication and heating needs." },
+    "surface_wind_ms": { "label": "Surface Wind Speed", "unit": "m/s", "hint": "Near-surface wind speed; relevant for Mars dust transport and rotorcraft stability." },
+    "aeolian_dust_flux": { "label": "Aeolian Dust Flux", "unit": "0-1 index", "hint": "Airborne dust intensity; tests optical lens abrasion and solar panel dust accumulation." },
+    "ice_sublimation_rate": { "label": "Ice Sublimation Rate", "unit": "0-1 index", "hint": "Rate at which exposed ice sublimates; critical for cold-trap and drilling tests." },
+    "gravity_g": { "label": "Surface Gravity", "unit": "g" },
+    "atm_pressure_mbar": { "label": "Atmospheric Pressure", "unit": "mbar" },
+    "radiation_msv_yr": { "label": "Ionizing Radiation (GCR)", "unit": "mSv/yr" }
+  },
+  "breakage": {
+    "alerts": {
+      "gravity_mismatch": "Reduced gravity incompatible with open-air terrestrial kinematics",
+      "pressure_mismatch": "Lunar vacuum or thin CO₂ atmosphere cannot be replicated at ambient pressure",
+      "radiation_mismatch": "Galactic cosmic radiation flux without magnetospheric shielding"
+    }
+  },
+  "map": {
+    "title": "Global H3 Terrestrial Analog Grid",
+    "subtitle": "Click or tap an H3 hexagon or card to inspect its decoupled profile and mission diagnostics.",
+    "legendHigh": "High match (≥ 75%)",
+    "legendMid": "Moderate match (55–74%)",
+    "legendLow": "Partial match (< 55%)",
+    "benchmarkBadge": "Classic Benchmark",
+    "discoveryBadge": "New Discovery",
+    "evaluatedCount": "{{count}} H3 cells evaluated",
+    "globe3d": "3D Globe",
+    "flat2d": "2D Map",
+    "refineZone": "Refine zone (7 H3 sub-cells)",
+    "refiningZone": "Refining 7 H3 sub-cells...",
+    "terrain3d": "3D Terrain",
+    "emptyResults": "No cells meet the current thresholds. Lower the minimum S_ind or S_dep sliders.",
+    "topMatchesTitle": "Top Analog Cells",
+    "rankBadge": "#{{rank}}",
+    "paginationStatus": "Page {{page}} of {{totalPages}} · {{total}} results",
+    "prevPage": "Previous",
+    "nextPage": "Next",
+    "subdivideAction": "Subdivide into 7 sub-hexagons",
+    "maxResReached": "Max detail (H3-5)",
+    "drilldownActive": "Viewing {{count}} sub-zones inside H3 {{parent}}",
+    "exitDrilldown": "Back to global view",
+    "resolutionBadge": "H3 Res {{res}}",
+    "probeHint": "Click anywhere on the map to query NASA POWER + Copernicus DEM + ERA5 live.",
+    "probingLocation": "Querying real telemetry for ({{lat}}, {{lon}})...",
+    "layerLabel": "Satellite Layer",
+    "layers": {
+      "basemap": "Base Map",
+      "satellite_hd": "Satellite HD (ESRI Imagery)",
+      "sentinel2_cloudless": "Sentinel-2 Cloudless (ESA)",
+      "gibs_truecolor": "NASA Worldview (VIIRS True Color)",
+      "gibs_lst": "NASA Worldview (Land Surface Temp.)",
+      "gibs_aerosol": "NASA Worldview (Dust / Aerosols)"
+    }
+  },
+  "agencies": {
+    "title": "Multi-Agency Catalog (NASA · ESA · CSA · JAXA)",
+    "subtitle": "Real satellite scenes and open products available for this H3 cell:",
+    "loading": "Querying NASA CMR and ESA Copernicus catalogs...",
+    "openPortal": "Open resource"
+  },
+  "mission": {
+    "title": "Mission Diagnostics & Physical Comparison",
+    "quickVerdictTitle": "Plain-Language Verdict",
+    "quickVerdictBody": "{{earthSite}} replicates {{score}} of the physical conditions of {{targetSite}} ({{validCount}} validated mission test(s)). The analogy breaks down on: {{brokenVars}}.",
+    "noneBroken": "no critical physical boundaries",
+    "knownAnalogRef": "Includes classic literature analog: {{name}}",
+    "earthLimitsTitle": "Earth's Limits as a Laboratory",
+    "earthLimitsMoon": "Earth (1g, 1013 mbar, ~2.4 mSv/yr) cannot replicate lunar gravity ({{gravity}} g), hard vacuum ({{pressure}} mbar with electrostatic dust and no convective cooling), or unshielded space radiation ({{radiation}} mSv/yr). Validate these separately in vacuum chambers and flight simulations.",
+    "earthLimitsMars": "Earth (1g, 1013 mbar, ~2.4 mSv/yr) cannot replicate Martian gravity ({{gravity}} g), thin CO₂ atmosphere ({{pressure}} mbar — unsuitable for terrestrial parachutes or convective cooling), or surface radiation ({{radiation}} mSv/yr). Validate aerodynamics and radiation hardening in dedicated chambers.",
+    "explorationUseTitle": "Recommended Exploration Use",
+    "explorationUseBody": "This {{status}} site ({{earthSite}}) prepares missions for {{targetSite}} through field-validated campaigns: {{tests}}.",
+    "selectedCell": "Selected Cell",
+    "coordinates": "Coordinates",
+    "h3Index": "H3 Index",
+    "sIndLabel": "Substrate Similarity (S_ind)",
+    "sDepLabel": "Response Similarity (S_dep)",
+    "rBreakLabel": "Breakage Index (R_break)",
+    "rBreakHelp": "Measures physical boundaries that Earth cannot replicate (surface gravity, vacuum/CO₂ pressure, and cosmic radiation).",
+    "combinedLabel": "Combined Score",
+    "viabilityTitle": "Analog Viability",
+    "viabilityTiers": {
+      "high": "High Operational Viability",
+      "moderate": "Moderate Viability",
+      "partial": "Partial / Limited Viability"
+    },
+    "validTestsTitle": "Valid Engineering Tests at This Site",
+    "invalidTestsTitle": "Invalid Tests (Breakage Limits)",
+    "comparisonTitle": "Variable-by-Variable Comparison",
+    "variableCol": "Variable",
+    "layerCol": "Layer",
+    "weightCol": "Weight",
+    "allLayers": "All Layers",
+    "planetaryCol": "Target",
+    "earthCol": "Earth",
+    "similarityCol": "Similarity",
+    "statusBroken": "Breakage",
+    "statusAligned": "Aligned"
+  },
+  "tests": {
+    "valid": {
+      "lidar_hazard_avoidance": "Autonomous LiDAR navigation & topographic hazard avoidance",
+      "rover_wheel_mobility": "Rover wheel traction, sinkage & mobility on fine/rocky regolith",
+      "battery_thermal_cycling": "Battery thermal cycling stress & passive nocturnal insulation",
+      "cryogenic_seal_lubrication": "Cryogenic actuator seals, bearings & cold-start lubrication",
+      "optical_dust_abrasion": "Fine dust abrasion & electrostatic mitigation on optical sensors",
+      "drone_rotor_stability": "Autonomous rotorcraft hover & gust-rejection flight testing",
+      "uv_polymer_degradation": "High-UV polymer, spacesuit & optical coating degradation",
+      "spectrometer_low_humidity": "Low-vapor Raman/LIBS spectrometer calibration without condensation",
+      "subsurface_ice_drilling": "Cryogenic drilling & ISRU subsurface ice prospecting",
+      "lava_tube_habitat_recon": "Subsurface basaltic lava tube mapping & structural shielding",
+      "solar_low_angle_power": "Photovoltaic tracking under grazing high-latitude solar angles",
+      "baseline_instrument_calibration": "Baseline spectrometer & field instrument calibration",
+      "none_humid_mismatch": "Unsuitable for planetary field tests (excess moisture and vegetation cover)"
+    },
+    "invalid": {
+      "parachute_aerodynamics": "Supersonic parachute aerodynamic deployment",
+      "convective_thermal_cooling": "Terrestrial atmospheric convective cooling dissipation",
+      "reduced_gravity_kinematics": "Low-gravity hopping dynamics, anchoring & ballistic mechanics",
+      "unshielded_gcr_electronics": "Avionics tolerance to unshielded galactic cosmic rays & solar particles",
+      "electrostatic_vacuum_dust": "Hard-vacuum lunar electrostatic dust levitation"
+    }
+  },
+  "regions": {
+    "atacama_yungay": "Atacama Desert — Yungay, Chile",
+    "mcmurdo_dry_valleys": "McMurdo Dry Valleys, Antarctica",
+    "haughton_crater": "Haughton Impact Crater, Devon Island, Canada",
+    "krafla_iceland": "Krafla / Askja Volcanic Field, Iceland",
+    "mauna_kea_tephra": "Mauna Kea Volcanic Tephra, Hawaii, USA",
+    "mojave_death_valley": "Mojave / Death Valley, USA",
+    "rio_tinto_basin": "Rio Tinto Acidic Basin, Spain",
+    "qaidam_dalangtan": "Qaidam Basin — Dalangtan Playa, China",
+    "puna_ojos_salado": "Puna de Atacama — Ojos del Salado, Chile/Arg.",
+    "salar_uyuni_margin": "Salar de Uyuni Margin, Bolivia",
+    "harrat_khaybar_lava": "Harrat Khaybar Lava Tubes, Saudi Arabia",
+    "erta_ale_shield": "Erta Ale Basaltic Shield, Ethiopia",
+    "svalbard_adventdalen": "Adventdalen Permafrost, Svalbard, Norway",
+    "lut_yardangs": "Dasht-e Lut Basaltic Yardangs, Iran",
+    "tanezrouft_reg": "Tanezrouft Hyper-Arid Reg, Algeria",
+    "namib_gravel_plains": "Namib Gravel Plains, Namibia",
+    "taklamakan_margin": "Taklamakan Aeolian Margin, China",
+    "kangerlussuaq_periglacial": "Kangerlussuaq Periglacial Margin, Greenland",
+    "torngat_polar_cirques": "Torngat Polar Cirques, Labrador, Canada",
+    "tolbachik_tephra": "Tolbachik Volcanic Tephra & Caves, Kamchatka",
+    "allan_hills_icefield": "Allan Hills Icefield, Antarctica",
+    "chott_el_djerid": "Chott el Djerid Evaporite Playa, Tunisia",
+    "amazon_central_basin": "Central Amazon Basin (Negative Control), Brazil",
+    "pantanal_wetland": "Pantanal Wetland (Negative Control), Brazil",
+    "custom_probed_cell": "Live Probed Point (H3 Grid)",
+    "global_h3_cell": "Global Terrestrial Cell (H3)"
+  },
+  "biomes": {
+    "hyperarid_desert": "Hyper-Arid Desert",
+    "polar_cold_desert": "Polar Cold Desert",
+    "arctic_impact_crater": "Arctic Impact Crater",
+    "volcanic_basalt": "Volcanic Basalt Field",
+    "acidic_evaporite": "Acidic Evaporite Basin",
+    "evaporite_playa": "Salt / Sulfate Playa",
+    "high_altitude_volcanic": "High-Altitude Volcanic Ridge",
+    "lava_tube_basalt": "Basaltic Lava Tube Field",
+    "polar_permafrost": "Polar Permafrost",
+    "aeolian_basin": "Active Aeolian Basin",
+    "tropical_rainforest": "Tropical Rainforest",
+    "humid_wetland": "Continental Wetland",
+    "probed_location": "Live Satellite Evaluation"
+  },
+  "errors": {
+    "site_not_found": "Planetary site not found: {{site_id}}",
+    "timeseries_not_found": "No time-series data found for site: {{site_id}}",
+    "cell_not_found": "Earth H3 cell not found: {{h3_index}}",
+    "external_api_unavailable": "Failed to query external NASA / Open-Meteo APIs: {{detail}}",
+    "network_error": "Unable to connect to the Ckepi analytical engine.",
+    "unknown_error": "An unexpected error occurred while processing the analysis.",
+    "rate_limited": "Too many live probe requests. Please wait a moment and try again.",
+    "unauthorized": "Administrator token required to refresh datasets.",
+    "unknown_body": "Unknown planetary body.",
+    "invalid_tile_coords": "Tile coordinates out of range.",
+    "tile_unavailable": "NASA Trek tile unavailable."
+  },
+  "geology": {
+    "title": "Geology & Lithology",
+    "lithology": "Lithology",
+    "age": "Age",
+    "unavailable": "No Macrostrat geologic polygon available for this coordinate."
+  },
+  "subsurface": {
+    "title": "Subsurface & Lava Tubes",
+    "detectedBadge": "Subsurface Analog",
+    "surfaceOnlyBadge": "Surface Terrain",
+    "documented_system": "Documented lava tube, ice cave, or analog cavern system within this region.",
+    "volcanic_potential": "Basaltic/volcanic lithology favorable for lava tubes and sub-surface shielding tests.",
+    "karst_potential": "Evaporite/carbonate lithology suitable for chemotrophic cave and dissolution studies.",
+    "no_known_caves": "No documented lava tube or cave system; analog value is primarily surface/atmospheric."
+  },
+  "habitability": {
+    "title": "Habitability & Extremophiles",
+    "extremophilesLabel": "Model organisms",
+    "regimes": {
+      "cryophilic": "Cryophilic / Permafrost",
+      "halophilic_xerophilic": "Halophilic / Hyperarid",
+      "chemolithotrophic": "Chemolithotrophic / Volcanic",
+      "uv_endolithic": "High-UV Endolithic",
+      "polyextremophile": "Polyextremophile"
+    },
+    "biosig": {
+      "ice_permafrost": "Relevant for polar ice-margin biosignatures and sub-surface preservation.",
+      "endolithic_salts": "Relevant for salt-crust endoliths and evaporite biosignature retention.",
+      "iron_sulfur_mineral": "Relevant for iron/sulfur redox metabolisms in Martian volcanic terrains.",
+      "uv_shielded_rock": "Relevant for UV-shielded subsurface microbial survival under high solar flux.",
+      "general_organic": "Baseline terrestrial organic preservation and contamination control reference."
+    }
+  }
+}
+

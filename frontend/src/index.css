@@ -1,0 +1,44 @@
+@import "maplibre-gl/dist/maplibre-gl.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-surface: 248 250 252;
+  --color-surface-elevated: 255 255 255;
+  --color-surface-muted: 241 245 249;
+  --color-content: 15 23 42;
+  --color-content-muted: 71 85 105;
+  --color-border-subtle: 226 232 240;
+  --color-accent: 37 99 235;
+  --color-accent-foreground: 255 255 255;
+  --color-status-valid: 16 185 129;
+  --color-status-warn: 245 158 11;
+  --color-status-break: 239 68 68;
+  --color-planet-mars: 217 70 43;
+  --color-planet-moon: 99 102 241;
+}
+
+.dark {
+  --color-surface: 9 13 22;
+  --color-surface-elevated: 17 24 39;
+  --color-surface-muted: 30 41 59;
+  --color-content: 241 245 249;
+  --color-content-muted: 148 163 184;
+  --color-border-subtle: 51 65 85;
+  --color-accent: 56 189 248;
+  --color-accent-foreground: 9 13 22;
+  --color-status-valid: 52 211 153;
+  --color-status-warn: 251 191 36;
+  --color-status-break: 248 113 113;
+  --color-planet-mars: 249 115 22;
+  --color-planet-moon: 129 140 248;
+}
+
+html,
+body {
+  min-height: 100%;
+  overflow-x: hidden;
+}
+

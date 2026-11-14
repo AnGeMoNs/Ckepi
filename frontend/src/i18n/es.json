@@ -1,0 +1,424 @@
+{
+  "app": {
+    "title": "Ckepi",
+    "subtitle": "Motor de Descomposición Causal y Análogos Planetarios",
+    "challengeBadge": "NASA Space Apps 2026",
+    "themeLight": "Modo claro",
+    "themeDark": "Modo oscuro",
+    "languageLabel": "Idioma"
+  },
+  "controls": {
+    "targetSite": "Objetivo Planetario (ROI)",
+    "modelType": "Modelo de Descomposición",
+    "modelTypeHint": "Algoritmo estadístico (Ridge o Random Forest) que calcula qué variables del terreno explican mejor el ambiente.",
+    "modelOverriddenNote": "Nota: En modo Preestablecido o Manual, el ranking usa los pesos del perfil elegido; este modelo solo actualiza el gráfico causal.",
+    "ridge": "Regresión Ridge (Lineal Regularizada)",
+    "randomForest": "Random Forest (No Lineal)",
+    "testProfile": "Objetivo de Prueba (Luna / Marte)",
+    "profiles": {
+      "causal_auto": "Pesos Causales Automáticos (X → Y)",
+      "navigation_landing": "Aterrizaje y Navegación LiDAR",
+      "rover_mobility": "Movilidad de Rovers y Robótica",
+      "isru_ice_drilling": "ISRU: Hielo Subsuperficial y Perforación",
+      "lava_tube_habitat": "Tubos de Lava y Construcción de Hábitats",
+      "solar_power_thermal": "Energía Solar, UV y Estrés Térmico",
+      "manual_custom": "Modo Manual (Variable por Variable)"
+    },
+    "profileDescriptions": {
+      "causal_auto": "Calcula automáticamente la importancia de cada variable según la descomposición estadística (X → Y) del destino seleccionado.",
+      "navigation_landing": "Prioriza rugosidad, pendiente, albedo y suelo desnudo para pruebas de aterrizaje y evasión de obstáculos LiDAR.",
+      "rover_mobility": "Prioriza rugosidad, pendiente, hiperaridez, ausencia de vegetación e inercia térmica para tracción de rovers.",
+      "isru_ice_drilling": "Prioriza hielo subsuperficial, inercia térmica, flujo solar y sequedad para ensayos de perforación ISRU.",
+      "lava_tube_habitat": "Prioriza contraste basáltico (albedo), rugosidad, pendiente e inercia térmica para análogos de tubos de lava y hábitats.",
+      "solar_power_thermal": "Prioriza flujo solar, radiación UV, inercia térmica, albedo y humedad para ensayos fotovoltaicos y térmicos."
+    },
+    "profileInspector": {
+      "showMore": "Ver más (variables)",
+      "showLess": "Ver menos",
+      "weightsTitle": "Variables y pesos que considera este enfoque",
+      "editInManual": "Ajustar en Modo Manual",
+      "zeroVarsNote": "Las variables que no aparecen tienen 0% de peso en este enfoque. Pulsa «Ajustar en Modo Manual» para modificar o activar cualquiera."
+    },
+    "advancedToggle": "Ajustes científicos avanzados",
+    "discoveryOnly": "Modo Descubrimiento (Ocultar análogos clásicos)",
+    "discoveryHint": "Filtra sitios conocidos como Atacama o McMurdo para descubrir candidatos poco estudiados.",
+    "minSInd": "Mín. Similitud Sustrato (S_ind)",
+    "minSIndHelp": "Oculta celdas terrestres que no alcanzan esta similitud de terreno y superficie.",
+    "minSDep": "Mín. Similitud Respuesta (S_dep)",
+    "minSDepHelp": "Oculta celdas terrestres que no alcanzan esta similitud térmica y ambiental.",
+    "resetWeights": "Restaurar pesos causales",
+    "loading": "Calculando descomposición y malla H3...",
+    "retry": "Reintentar",
+    "dataSources": "Fuentes de datos",
+    "lastUpdated": "Análisis actualizado",
+    "refreshApis": "Actualizar APIs en vivo",
+    "refreshing": "Sincronizando con NASA y Open-Meteo...",
+    "shareLink": "Compartir enlace",
+    "copiedLink": "¡Copiado!",
+    "penalizeEstimated": "Penalizar objetivos planetarios estimados en el ranking (puntaje ajustado por confianza)"
+  },
+  "bodies": {
+    "moon": "Luna",
+    "mars": "Marte"
+  },
+  "guide": {
+    "title": "Cómo funciona esta herramienta (3 pasos)",
+    "show": "Ver guía",
+    "hide": "Ocultar guía",
+    "badgeLiveApi": "API en vivo",
+    "badgeCatalog": "Catálogo H3",
+    "badgeModel": "Modelo físico",
+    "step1Title": "1. Elige un destino en Luna o Marte",
+    "step1Desc": "Selecciona un sitio clave o haz clic en cualquier punto del globo 3D para sondearlo.",
+    "step2Title": "2. Explora análogos en la Tierra",
+    "step2Desc": "Haz clic en un hexágono o en cualquier lugar del mapa para consultar NASA POWER y Copernicus DEM en vivo.",
+    "step3Title": "3. Revisa qué funciona y qué falla",
+    "step3Desc": "Consulta el veredicto, compara variable por variable o ajusta porcentajes en Modo Manual.",
+    "transparencyNote": "Cada valor indica su origen (medido, derivado o modelo físico) para saber siempre qué es telemetría real y qué es estimado."
+  },
+  "manualMode": {
+    "title": "Comparación Manual (Variable por Variable)",
+    "badge": "Reglas Propias",
+    "subtitle": "Ajusta el peso (0% = ignorar) y la similitud mínima exigida (0% = sin filtro) para cada variable.",
+    "resetEqual": "Pesos iguales (100%)",
+    "zeroAll": "Limpiar todo (0%)",
+    "apply": "Aplicar comparación manual",
+    "targetValue": "Objetivo",
+    "weightLabel": "Peso / Importancia",
+    "minSimLabel": "Similitud mínima",
+    "independentGroup": "Variables Independientes / Sustrato (X)",
+    "dependentGroup": "Variables Dependientes / Respuesta Ambiental (Y)",
+    "globalFilterActive": "Filtros globales activos en Ajustes avanzados: S_ind ≥ {{sInd}}, S_dep ≥ {{sDep}}",
+    "clearGlobalFilters": "Quitar filtros globales (0%)"
+  },
+  "comparisonMatrix": {
+    "title": "Comparativa Lado a Lado de Candidatos (Top 4)",
+    "subtitle": "Haz clic o toca cualquier fila para inspeccionar su perfil físico detallado.",
+    "siteCol": "Ubicación Terrestre",
+    "typeCol": "Categoría",
+    "bestTestCol": "Prueba Principal Validada",
+    "exportReport": "Informe (.md)"
+  },
+  "layers": {
+    "independent": "Independiente (X)",
+    "dependent": "Dependiente (Y)",
+    "breakage": "Ruptura Física (B)"
+  },
+  "sites": {
+    "moon_shackleton_pole": {
+      "name": "Polo Sur Lunar — Cráter Shackleton",
+      "context": "Borde polar con iluminación rasante extrema, cráteres permanentemente sombreados e hidrógeno/hielo subsuperficial."
+    },
+    "moon_tranquillitatis_lava": {
+      "name": "Mare Tranquillitatis — Claraboya de Tubo de Lava",
+      "context": "Llanura basáltica de bajo albedo con tubos de lava colapsados y oscilación térmica diurna extrema (>260 K)."
+    },
+    "mars_jezero_crater": {
+      "name": "Marte — Cráter Jezero (Delta Lacustre)",
+      "context": "Antiguo delta fluvial con carbonatos/arcillas, inercia térmica moderada y alta actividad eólica de polvo."
+    },
+    "mars_gale_crater": {
+      "name": "Marte — Cráter Gale (Aeolis Mons)",
+      "context": "Depósitos estratificados de sulfatos y campos de dunas oscuras con transporte activo de sedimentos eólicos."
+    },
+    "mars_arcadia_planitia": {
+      "name": "Marte — Arcadia Planitia (Hielo Somero)",
+      "context": "Llanuras volcánicas suaves sobre láminas extensas de hielo de agua subsuperficial de interés ISRU."
+    },
+    "custom_moon": "Objetivo Lunar Seleccionado",
+    "custom_moon_context": "Coordenada lunar sondeada en vivo vía NASA PDS ODE (LRO Diviner / LOLA) y modelado radiativo.",
+    "custom_mars": "Objetivo Marciano Seleccionado",
+    "custom_mars_context": "Coordenada marciana sondeada en vivo vía telemetría NASA Mars REMS y geometría solar orbital."
+  },
+  "planetaryMap": {
+    "title": "Globo 3D Interactivo de la Luna y Marte (NASA Trek)",
+    "subtitle": "Rota, haz zoom y haz clic en cualquier cráter o polo de la esfera 3D para buscar análogos en la Tierra.",
+    "dragHint": "Arrastra para rotar 360° · Rueda o +/- para zoom · Haz clic para sondear.",
+    "loadingGlobe": "Cargando mosaico global 360° de NASA Trek...",
+    "zoomIn": "Acercar zoom",
+    "zoomOut": "Alejar zoom",
+    "resetView": "Centrar en objetivo",
+    "moonLayer": "NASA LRO WAC Mosaico Global 303ppd",
+    "marsLayer": "NASA MGS MOLA Altimetría Global 463m",
+    "layerLabel": "Capa planetaria",
+    "layers": {
+      "moon_wac": "Mosaico Óptico (LRO WAC)",
+      "moon_lola": "Altimetría Láser (LRO LOLA)",
+      "mars_color": "Color Natural (Viking MDIM21)",
+      "mars_mola": "Altimetría Láser (MGS MOLA)"
+    },
+    "probingTarget": "Consultando NASA PDS para ({{lat}}, {{lon}})...",
+    "clickedTarget": "Punto seleccionado",
+    "legendTracked": "Zona rastreada (Alta confianza)",
+    "legendEstimated": "Punto sondeado (Estimado)"
+  },
+  "confidence": {
+    "title": "Confianza de Datos y Cobertura Instrumental",
+    "unknownSite": "Sitio rastreado más cercano",
+    "pdsCount": "{{count}} productos NASA PDS LRO",
+    "distanceKm": "A {{km}} km de {{site}}",
+    "realVarsLabel": "Observado / Física Orbital",
+    "estimatedVarsLabel": "Estimado por Latitud / Régimen",
+    "levels": {
+      "high": "Alta Confianza",
+      "medium": "Confianza Media",
+      "estimated": "Estimación Física"
+    },
+    "tracked_high": "Zona rastreada con instrumentación directa de rover u orbitador. Los parámetros físicos provienen de conjuntos de datos reales curados de misiones NASA.",
+    "tracked_mars_curated": "Zona curada de misión en Marte: clima superficial y polvo provienen de telemetría Curiosity REMS / Perseverance MEDA, flujo solar de geometría orbital, y relieve/hielo de constantes de referencia publicadas.",
+    "tracked_moon_curated": "Zona curada de misión en la Luna: fechas observacionales provienen de NASA PDS ODE LRO Diviner, temperaturas diurnas de física radiativa Stefan-Boltzmann, y relieve/hielo de constantes de referencia LRO.",
+    "origins": {
+      "measured": "Medido",
+      "derived": "Derivado",
+      "model": "Modelo",
+      "constant": "Constante ref.",
+      "default": "Respaldo"
+    },
+    "mars_extrapolated": "Aviso de estimación: Esta coordenada está a {{km}} km de {{site}}. La telemetría atmosférica se extrapola desde Curiosity REMS (Cráter Gale) + geometría solar orbital, mientras que el relieve (pendiente, rugosidad, albedo, hielo) es una estimación por latitud marciana.",
+    "moon_pds_partial": "Cobertura orbital parcial: Se encontraron {{count}} productos reales LRO Diviner en NASA PDS ODE para esta región, combinados con física radiativa. Pendiente, rugosidad y hielo se estiman por régimen lunar.",
+    "moon_estimated": "Aviso de estimación: No se encontraron productos directos LRO Diviner en NASA PDS ODE para esta celda exacta. Los parámetros del terreno se estiman según régimen de latitud/longitud lunar y equilibrio radiativo."
+  },
+  "decomposition": {
+    "title": "Descomposición Causal de Variables",
+    "subtitle": "Separación estadística entre forzamientos independientes (X), respuestas ambientales (Y) y límites de ruptura (B).",
+    "independentTitle": "Pesos Causales Globales (Variables Independientes X)",
+    "dependentTitle": "Varianza Explicada por Respuesta (Y = f(X))",
+    "pcaTitle": "Componentes Principales del Sustrato (PCA)",
+    "breakageTitle": "Perfil de Ruptura Física (Irreproducible en la Tierra)",
+    "r2Label": "R² explicado",
+    "sampleCount": "Muestras ROI",
+    "weightLabel": "Peso causal",
+    "componentLabel": "CP{{index}}",
+    "varianceLabel": "Varianza",
+    "breakageThresholdNote": "Las variables con índice de ruptura ≥ 60% generan alertas automáticas de invalidez experimental.",
+    "notMeasured": "N/A (Sin sensor / Sin atmósfera)"
+  },
+  "provenance": {
+    "title": "Trazabilidad de Datos Reales",
+    "window": "Ventana observacional",
+    "liveProbed": "Sondeado en vivo"
+  },
+  "variables": {
+    "topographic_roughness": { "label": "Rugosidad Topográfica", "unit": "índice 0-1", "hint": "Irregularidad del micro-relieve y presencia de rocas; afecta ruedas de rovers y sensores de aterrizaje." },
+    "slope_deg": { "label": "Pendiente Media", "unit": "°", "hint": "Inclinación promedio del suelo en grados; clave para tracción de rovers y estabilidad de aterrizadores." },
+    "thermal_inertia": { "label": "Inercia Térmica", "unit": "TIU", "hint": "Resistencia del suelo a cambiar de temperatura; distingue polvo fino de roca expuesta." },
+    "surface_albedo": { "label": "Albedo Superficial", "unit": "0-1", "hint": "Fracción de luz solar reflejada por el suelo; regula el calentamiento y el contraste óptico." },
+    "solar_flux_wm2": { "label": "Flujo Solar Incidente", "unit": "W/m²", "hint": "Energía solar disponible por metro cuadrado para paneles fotovoltaicos y balance térmico." },
+    "subsurface_ice_frac": { "label": "Hielo Subsuperficial", "unit": "fracción", "hint": "Proporción estimada de hielo de agua bajo el regolito; clave para perforación y recursos ISRU." },
+    "aridity_index": { "label": "Índice de Hiperaridez", "unit": "0-1", "hint": "Nivel de sequedad extrema (1 = hiperárido); evita que la humedad altere la mecánica del suelo." },
+    "relative_humidity_pct": { "label": "Humedad Relativa", "unit": "%", "hint": "Vapor de agua en el aire; valores cercanos a cero imitan mejor la sequedad lunar/marciana." },
+    "uv_irradiance_index": { "label": "Índice de Irradiancia UV", "unit": "índice UV", "hint": "Intensidad de radiación ultravioleta que degrada polímeros, trajes y celdas solares." },
+    "vegetation_lai_proxy": { "label": "Cobertura Vegetal (LAI)", "unit": "m²/m²", "hint": "Densidad de vegetación (0 = suelo desnudo); los análogos planetarios requieren terreno mineral sin plantas." },
+    "diurnal_temp_amplitude_k": { "label": "Amplitud Térmica Diurna (ΔT)", "unit": "K", "hint": "Diferencia de temperatura entre el día y la noche; provoca fatiga térmica en baterías y sellos." },
+    "nocturnal_cooling_k_hr": { "label": "Tasa de Enfriamiento Nocturno", "unit": "K/h", "hint": "Rapidez con la que cae la temperatura al anochecer; evalúa aislamiento y supervivencia térmica." },
+    "mean_surface_temp_k": { "label": "Temperatura Media Superficial", "unit": "K", "hint": "Temperatura promedio del suelo en Kelvin; define necesidades de lubricación criogénica y calefacción." },
+    "surface_wind_ms": { "label": "Velocidad del Viento Superficial", "unit": "m/s", "hint": "Viento cercano a la superficie; relevante en Marte para transporte de polvo y estabilidad de drones." },
+    "aeolian_dust_flux": { "label": "Flujo Eólico de Polvo", "unit": "índice 0-1", "hint": "Cantidad de polvo en suspensión; prueba abrasión en lentes ópticas y suciedad en paneles solares." },
+    "ice_sublimation_rate": { "label": "Tasa de Sublimación de Hielo", "unit": "índice 0-1", "hint": "Velocidad a la que el hielo pasa a gas; clave para ensayos de trampas frías y perforación." },
+    "gravity_g": { "label": "Gravedad Superficial", "unit": "g" },
+    "atm_pressure_mbar": { "label": "Presión Atmosférica", "unit": "mbar" },
+    "radiation_msv_yr": { "label": "Radiación Ionizante (GCR)", "unit": "mSv/año" }
+  },
+  "breakage": {
+    "alerts": {
+      "gravity_mismatch": "Gravedad reducida incompatible con cinemática terrestre al aire libre",
+      "pressure_mismatch": "Vacío lunar o atmósfera tenue (CO₂) no replicable a presión ambiente",
+      "radiation_mismatch": "Flujo de radiación cósmica galáctica sin blindaje magnetosférico"
+    }
+  },
+  "map": {
+    "title": "Malla Global H3 de Análogos Terrestres",
+    "subtitle": "Haz clic o toca un hexágono H3 o una tarjeta para inspeccionar su perfil desacoplado y diagnóstico de misión.",
+    "legendHigh": "Alta similitud (≥ 75%)",
+    "legendMid": "Similitud media (55–74%)",
+    "legendLow": "Similitud parcial (< 55%)",
+    "benchmarkBadge": "Benchmark Clásico",
+    "discoveryBadge": "Nuevo Descubrimiento",
+    "evaluatedCount": "{{count}} celdas H3 evaluadas",
+    "globe3d": "Globo 3D",
+    "flat2d": "Mapa 2D",
+    "refineZone": "Refinar zona (7 sub-celdas H3)",
+    "refiningZone": "Refinando 7 sub-celdas H3...",
+    "terrain3d": "Relieve 3D",
+    "emptyResults": "Ninguna celda cumple los umbrales actuales. Reduce los filtros mínimos de S_ind o S_dep.",
+    "topMatchesTitle": "Principales Celdas Análogas",
+    "rankBadge": "{{rank}}°",
+    "paginationStatus": "Página {{page}} de {{totalPages}} · {{total}} resultados",
+    "prevPage": "Anterior",
+    "nextPage": "Siguiente",
+    "subdivideAction": "Subdividir en 7 sub-hexágonos",
+    "maxResReached": "Máximo detalle (H3-5)",
+    "drilldownActive": "Viendo {{count}} sub-zonas dentro de H3 {{parent}}",
+    "exitDrilldown": "Volver a vista global",
+    "resolutionBadge": "H3 Res {{res}}",
+    "probeHint": "Haz clic en cualquier lugar del mapa para consultar NASA POWER + Copernicus DEM + ERA5 en vivo.",
+    "probingLocation": "Consultando telemetría real para ({{lat}}, {{lon}})...",
+    "layerLabel": "Capa Satelital",
+    "layers": {
+      "basemap": "Mapa Base",
+      "satellite_hd": "Satélite HD (ESRI Imagery)",
+      "sentinel2_cloudless": "Sentinel-2 Sin Nubes (ESA)",
+      "gibs_truecolor": "NASA Worldview (VIIRS Color Real)",
+      "gibs_lst": "NASA Worldview (Temp. Superficial)",
+      "gibs_aerosol": "NASA Worldview (Polvo / Aerosoles)"
+    }
+  },
+  "agencies": {
+    "title": "Catálogo Multi-Agencia (NASA · ESA · CSA · JAXA)",
+    "subtitle": "Escenas y productos satelitales reales disponibles para esta celda H3:",
+    "loading": "Consultando catálogos de NASA CMR y ESA Copernicus...",
+    "openPortal": "Abrir recurso"
+  },
+  "mission": {
+    "title": "Diagnóstico de Misión y Comparación Física",
+    "quickVerdictTitle": "Veredicto Rápido",
+    "quickVerdictBody": "{{earthSite}} replica el {{score}} de las condiciones físicas de {{targetSite}} ({{validCount}} prueba(s) de misión validada(s)). La analogía se rompe en: {{brokenVars}}.",
+    "noneBroken": "ninguna frontera física crítica",
+    "knownAnalogRef": "Incluye análogo clásico de literatura: {{name}}",
+    "earthLimitsTitle": "Límites de la Tierra como laboratorio",
+    "earthLimitsMoon": "La Tierra (1 g, 1013 mbar, ~2,4 mSv/año) no reproduce la gravedad lunar ({{gravity}} g), el vacío extremo ({{pressure}} mbar con polvo electrostático y sin convección), ni la radiación espacial sin magnetosfera ({{radiation}} mSv/año). Deben validarse aparte en cámaras de vacío y simulación.",
+    "earthLimitsMars": "La Tierra (1 g, 1013 mbar, ~2,4 mSv/año) no reproduce la gravedad marciana ({{gravity}} g), la atmósfera tenue de CO₂ ({{pressure}} mbar, incompatible con paracaídas terrestres o enfriamiento convectivo), ni la radiación superficial ({{radiation}} mSv/año). Requiere cámaras hipobáricas y pruebas de aviónica.",
+    "explorationUseTitle": "Cómo usar este análogo para preparar la exploración",
+    "explorationUseBody": "Este sitio ({{status}} — {{earthSite}}) permite preparar campañas hacia {{targetSite}} mediante pruebas de campo válidas: {{tests}}.",
+    "selectedCell": "Celda Seleccionada",
+    "coordinates": "Coordenadas",
+    "h3Index": "Índice H3",
+    "sIndLabel": "Similitud Sustrato (S_ind)",
+    "sDepLabel": "Similitud Respuesta (S_dep)",
+    "rBreakLabel": "Índice Ruptura (R_break)",
+    "rBreakHelp": "Mide las fronteras físicas que la Tierra no puede replicar (gravedad, vacío/presión de CO₂ y radiación cósmica).",
+    "combinedLabel": "Puntaje Combinado",
+    "viabilityTitle": "Viabilidad Analógica",
+    "viabilityTiers": {
+      "high": "Alta Viabilidad Operativa",
+      "moderate": "Viabilidad Moderada",
+      "partial": "Viabilidad Parcial / Limitada"
+    },
+    "validTestsTitle": "Pruebas de Ingeniería Válidas en este Sitio",
+    "invalidTestsTitle": "Pruebas Inválidas (Límites de Ruptura)",
+    "comparisonTitle": "Comparación Variable por Variable",
+    "variableCol": "Variable",
+    "layerCol": "Capa",
+    "weightCol": "Peso",
+    "allLayers": "Todas",
+    "planetaryCol": "Objetivo",
+    "earthCol": "Tierra",
+    "similarityCol": "Similitud",
+    "statusBroken": "Ruptura",
+    "statusAligned": "Alineado"
+  },
+  "tests": {
+    "valid": {
+      "lidar_hazard_avoidance": "Navegación autónoma LiDAR y evasión de obstáculos topográficos",
+      "rover_wheel_mobility": "Tracción de ruedas, hundimiento y movilidad de rovers en suelo fino/rocoso",
+      "battery_thermal_cycling": "Estrés térmico cíclico de baterías y aislamiento nocturno pasivo",
+      "cryogenic_seal_lubrication": "Sellos criogénicos, rodamientos y lubricación de actuadores en frío extremo",
+      "optical_dust_abrasion": "Abrasión por polvo fino y mitigación electrostática en sensores ópticos",
+      "drone_rotor_stability": "Vuelo de drones/helicópteros autónomos y rechazo de ráfagas eólicas",
+      "uv_polymer_degradation": "Degradación por alta radiación UV en polímeros, trajes y recubrimientos",
+      "spectrometer_low_humidity": "Calibración Raman/LIBS de baja humedad sin condensación óptica",
+      "subsurface_ice_drilling": "Perforación criogénica y prospección ISRU de hielo subsuperficial",
+      "lava_tube_habitat_recon": "Mapeo subterráneo de tubos de lava basálticos y protección estructural",
+      "solar_low_angle_power": "Seguimiento fotovoltaico con ángulos solares rasantes de alta latitud",
+      "baseline_instrument_calibration": "Calibración básica de espectrómetros e instrumentación de campo",
+      "none_humid_mismatch": "Inadecuado para pruebas de campo planetarias (exceso de humedad y cobertura vegetal)"
+    },
+    "invalid": {
+      "parachute_aerodynamics": "Despliegue aerodinámico de paracaídas supersónicos",
+      "convective_thermal_cooling": "Disipación térmica por convección atmosférica terrestre",
+      "reduced_gravity_kinematics": "Dinámica de salto, anclaje y mecánica balística en baja gravedad",
+      "unshielded_gcr_electronics": "Tolerancia de aviónica a radiación cósmica galáctica y partículas solares",
+      "electrostatic_vacuum_dust": "Levitación electrostática de polvo en vacío lunar duro"
+    }
+  },
+  "regions": {
+    "atacama_yungay": "Desierto de Atacama — Yungay, Chile",
+    "mcmurdo_dry_valleys": "Valles Secos de McMurdo, Antártida",
+    "haughton_crater": "Cráter de Impacto Haughton, Isla Devon, Canadá",
+    "krafla_iceland": "Campo Volcánico Krafla / Askja, Islandia",
+    "mauna_kea_tephra": "Tefra Volcánica Mauna Kea, Hawái, EE. UU.",
+    "mojave_death_valley": "Mojave / Valle de la Muerte, EE. UU.",
+    "rio_tinto_basin": "Cuenca Ácida de Río Tinto, España",
+    "qaidam_dalangtan": "Cuenca de Qaidam — Playa Dalangtan, China",
+    "puna_ojos_salado": "Puna de Atacama — Ojos del Salado, Chile/Arg.",
+    "salar_uyuni_margin": "Margen del Salar de Uyuni, Bolivia",
+    "harrat_khaybar_lava": "Tubos de Lava Harrat Khaybar, Arabia Saudita",
+    "erta_ale_shield": "Escudo Basáltico Erta Ale, Etiopía",
+    "svalbard_adventdalen": "Permafrost Adventdalen, Svalbard, Noruega",
+    "lut_yardangs": "Yardangs Basálticos de Dasht-e Lut, Irán",
+    "tanezrouft_reg": "Reg Hiperárido de Tanezrouft, Argelia",
+    "namib_gravel_plains": "Planicies de Grava del Namib, Namibia",
+    "taklamakan_margin": "Margen Eólico del Taklamakan, China",
+    "kangerlussuaq_periglacial": "Margen Periglacial Kangerlussuaq, Groenlandia",
+    "torngat_polar_cirques": "Circos Polares de Torngat, Labrador, Canadá",
+    "tolbachik_tephra": "Tefra y Cuevas Volcánicas Tolbachik, Kamchatka",
+    "allan_hills_icefield": "Campo de Hielo Allan Hills, Antártida",
+    "chott_el_djerid": "Playa Evaporítica Chott el Djerid, Túnez",
+    "amazon_central_basin": "Cuenca Amazónica Central (Control Negativo), Brasil",
+    "pantanal_wetland": "Humedal del Pantanal (Control Negativo), Brasil",
+    "custom_probed_cell": "Punto Sondeado en Vivo (Malla H3)",
+    "global_h3_cell": "Celda Global Terrestre (H3)"
+  },
+  "biomes": {
+    "hyperarid_desert": "Desierto Hiperárido",
+    "polar_cold_desert": "Desierto Frío Polar",
+    "arctic_impact_crater": "Cráter de Impacto Ártico",
+    "volcanic_basalt": "Campo Basáltico Volcánico",
+    "acidic_evaporite": "Cuenca Evaporítica Ácida",
+    "evaporite_playa": "Playa Salina / Sulfatos",
+    "high_altitude_volcanic": "Cresta Volcánica de Gran Altitud",
+    "lava_tube_basalt": "Basalto con Tubos de Lava",
+    "polar_permafrost": "Permafrost Polar",
+    "aeolian_basin": "Cuenca Eólica Activa",
+    "tropical_rainforest": "Selva Tropical Húmeda",
+    "humid_wetland": "Humedal Continental",
+    "probed_location": "Evaluación Satelital en Vivo"
+  },
+  "errors": {
+    "site_not_found": "Sitio planetario no encontrado: {{site_id}}",
+    "timeseries_not_found": "No existen series temporales para el sitio: {{site_id}}",
+    "cell_not_found": "Celda terrestre H3 no encontrada: {{h3_index}}",
+    "external_api_unavailable": "Error al consultar las APIs externas de NASA / Open-Meteo: {{detail}}",
+    "network_error": "No fue posible conectar con el motor analítico Ckepi.",
+    "unknown_error": "Ocurrió un error inesperado al procesar el análisis.",
+    "rate_limited": "Demasiadas solicitudes de sondeo en vivo. Espera unos segundos e inténtalo de nuevo.",
+    "unauthorized": "Se requiere token de administrador para actualizar los conjuntos de datos.",
+    "unknown_body": "Cuerpo planetario desconocido.",
+    "invalid_tile_coords": "Coordenadas de tile fuera de rango.",
+    "tile_unavailable": "Tile de NASA Trek no disponible."
+  },
+  "geology": {
+    "title": "Geología y Litología",
+    "lithology": "Litología",
+    "age": "Edad",
+    "unavailable": "Sin polígono geológico de Macrostrat disponible para esta coordenada."
+  },
+  "subsurface": {
+    "title": "Subsuelo y Tubos de Lava",
+    "detectedBadge": "Análogo Subterráneo",
+    "surfaceOnlyBadge": "Terreno Superficial",
+    "documented_system": "Sistema documentado de tubos de lava, cuevas de hielo o cavernas análogas en esta región.",
+    "volcanic_potential": "Litología basáltica/volcánica favorable para tubos de lava y pruebas de blindaje subterráneo.",
+    "karst_potential": "Litología evaporítica/carbonatada apta para cuevas quimiotróficas y estudios de disolución.",
+    "no_known_caves": "Sin sistemas de tubos de lava o cuevas documentadas; el valor análogo es superficial/atmosférico."
+  },
+  "habitability": {
+    "title": "Habitabilidad y Extremófilos",
+    "extremophilesLabel": "Organismos modelo",
+    "regimes": {
+      "cryophilic": "Criófilo / Permafrost",
+      "halophilic_xerophilic": "Halófilo / Hiperárido",
+      "chemolithotrophic": "Quimiolitótrofo / Volcánico",
+      "uv_endolithic": "Endolítico Alta-UV",
+      "polyextremophile": "Poliextremófilo"
+    },
+    "biosig": {
+      "ice_permafrost": "Relevante para biofirmas en márgenes de hielo polar y preservación subsuperficial.",
+      "endolithic_salts": "Relevante para endolitos en costras salinas y retención de biofirmas en evaporitas.",
+      "iron_sulfur_mineral": "Relevante para metabolismos redox de hierro/azufre en terrenos volcánicos marcianos.",
+      "uv_shielded_rock": "Relevante para supervivencia microbiana protegida de UV bajo alta irradiancia.",
+      "general_organic": "Referencia base de preservación orgánica y control de contaminación planetaria."
+    }
+  }
+}
+

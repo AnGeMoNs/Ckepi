@@ -1,0 +1,436 @@
+import { useEffect, useRef, useState } from "react";
+import { Compass, Minus, Plus, RotateCcw, Sparkles } from "lucide-react";
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { useTranslation } from "react-i18next";
+
+import { formatNumber } from "../../i18n";
+import { PLANET_MARKER_COLORS } from "../../theme/mapColors";
+import type { PlanetaryBody, PlanetaryOverlayLayer, PlanetarySite } from "../../types/analog";
+import { Badge } from "../ui/Badge";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
+
+interface PlanetaryMapProps {
+  body: PlanetaryBody;
+  sites: PlanetarySite[];
+  activeTarget: { lat: number; lon: number; label: string } | null;
+  probingPlanetCoords: { lat: number; lon: number } | null;
+  onSelectBody: (body: PlanetaryBody) => void;
+  onSelectSite: (siteId: string) => void;
+  onProbePlanet: (body: PlanetaryBody, lat: number, lon: number) => void;
+}
+
+const SPHERE_RADIUS = 1.0;
+
+function latLonToVector3(lat: number, lon: number, radius: number): THREE.Vector3 {
+  const u = (lon + 180) / 360;
+  const phi = u * 2 * Math.PI;
+  const theta = (90 - lat) * (Math.PI / 180);
+  const x = -radius * Math.cos(phi) * Math.sin(theta);
+  const y = radius * Math.cos(theta);
+  const z = radius * Math.sin(phi) * Math.sin(theta);
+  return new THREE.Vector3(x, y, z);
+}
+
+function vector3ToLatLon(point: THREE.Vector3): { lat: number; lon: number } {
+  const n = point.clone().normalize();
+  const lat = 90 - Math.acos(Math.max(-1, Math.min(1, n.y))) * (180 / Math.PI);
+  let phi = Math.atan2(n.z, -n.x);
+  if (phi < 0) phi += 2 * Math.PI;
+  const lon = (phi / (2 * Math.PI)) * 360 - 180;
+  return { lat, lon };
+}
+
+export function PlanetaryMap({
+  body,
+  sites,
+  activeTarget,
+  probingPlanetCoords,
+  onSelectBody,
+  onSelectSite,
+  onProbePlanet,
+}: PlanetaryMapProps) {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const controlsRef = useRef<OrbitControls | null>(null);
+  const sphereMeshRef = useRef<THREE.Mesh | null>(null);
+  const markersGroupRef = useRef<THREE.Group | null>(null);
+
+  const bodyRef = useRef(body);
+  const onSelectSiteRef = useRef(onSelectSite);
+  const onProbeRef = useRef(onProbePlanet);
+  bodyRef.current = body;
+  onSelectSiteRef.current = onSelectSite;
+  onProbeRef.current = onProbePlanet;
+
+  const [textureLoading, setTextureLoading] = useState(true);
+  const [layer, setLayer] = useState<PlanetaryOverlayLayer>(
+    body === "moon" ? "moon_wac" : "mars_color"
+  );
+
+  // Reset default optical layer when switching between Moon and Mars
+  useEffect(() => {
+    setLayer(body === "moon" ? "moon_wac" : "mars_color");
+  }, [body]);
+
+  // Initialize Three.js WebGL 3D Globe once
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const width = container.clientWidth || 400;
+    const height = container.clientHeight || 320;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
+    camera.position.set(0, 0.4, 2.75);
+    cameraRef.current = camera;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.innerHTML = "";
+    container.appendChild(renderer.domElement);
+
+    const ambient = new THREE.AmbientLight(0xffffff, 1.35);
+    scene.add(ambient);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.45);
+    dirLight.position.set(4, 3, 5);
+    scene.add(dirLight);
+
+    const geometry = new THREE.SphereGeometry(SPHERE_RADIUS, 64, 48);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      roughness: 0.9,
+      metalness: 0.05,
+    });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+    sphereMeshRef.current = sphere;
+
+    const markersGroup = new THREE.Group();
+    scene.add(markersGroup);
+    markersGroupRef.current = markersGroup;
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.enablePan = false;
+    controls.minDistance = 1.28;
+    controls.maxDistance = 4.6;
+    controls.rotateSpeed = 0.65;
+    controls.zoomSpeed = 0.85;
+    controlsRef.current = controls;
+
+    // Click vs drag raycasting
+    const raycaster = new THREE.Raycaster();
+    let downX = 0;
+    let downY = 0;
+
+    const handlePointerDown = (ev: PointerEvent) => {
+      downX = ev.clientX;
+      downY = ev.clientY;
+    };
+
+    const handlePointerUp = (ev: PointerEvent) => {
+      const dist = Math.hypot(ev.clientX - downX, ev.clientY - downY);
+      if (dist > 6) return;
+
+      const rect = renderer.domElement.getBoundingClientRect();
+      const pointer = new THREE.Vector2(
+        ((ev.clientX - rect.left) / rect.width) * 2 - 1,
+        -((ev.clientY - rect.top) / rect.height) * 2 + 1
+      );
+
+      raycaster.setFromCamera(pointer, camera);
+
+      // Check marker pins first
+      if (markersGroupRef.current) {
+        const markerHits = raycaster.intersectObjects(markersGroupRef.current.children, false);
+        const siteId = markerHits[0]?.object?.userData?.siteId;
+        if (typeof siteId === "string" && siteId.length > 0) {
+          onSelectSiteRef.current(siteId);
+          return;
+        }
+      }
+
+      // Otherwise intersect planetary sphere for arbitrary (lat, lon) probing
+      const hits = raycaster.intersectObject(sphere, false);
+      if (hits.length > 0) {
+        const { lat, lon } = vector3ToLatLon(hits[0].point);
+        onProbeRef.current(bodyRef.current, lat, lon);
+      }
+    };
+
+    renderer.domElement.addEventListener("pointerdown", handlePointerDown);
+    renderer.domElement.addEventListener("pointerup", handlePointerUp);
+
+    let animId = 0;
+    const animate = () => {
+      animId = requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    const observer = new ResizeObserver(() => {
+      const w = container.clientWidth || 400;
+      const h = container.clientHeight || 320;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    });
+    observer.observe(container);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      observer.disconnect();
+      renderer.domElement.removeEventListener("pointerdown", handlePointerDown);
+      renderer.domElement.removeEventListener("pointerup", handlePointerUp);
+      controls.dispose();
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+      sphereMeshRef.current = null;
+      markersGroupRef.current = null;
+      cameraRef.current = null;
+      controlsRef.current = null;
+    };
+  }, []);
+
+  // Load full equirectangular NASA Trek global texture when body or layer switches
+  useEffect(() => {
+    const sphere = sphereMeshRef.current;
+    if (!sphere) return;
+    if (body === "moon" && !layer.startsWith("moon_")) return;
+    if (body === "mars" && !layer.startsWith("mars_")) return;
+
+    setTextureLoading(true);
+    const loader = new THREE.TextureLoader();
+    loader.load(
+      `/api/v1/textures/planet/${body}/${layer}.jpg`,
+      (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        const mat = sphere.material as THREE.MeshStandardMaterial;
+        if (mat.map) mat.map.dispose();
+        mat.map = texture;
+        mat.needsUpdate = true;
+        setTextureLoading(false);
+      },
+      undefined,
+      () => {
+        setTextureLoading(false);
+      }
+    );
+  }, [body, layer]);
+
+  // Sync 3D markers on sphere & smoothly orient camera toward activeTarget
+  useEffect(() => {
+    const group = markersGroupRef.current;
+    if (!group) return;
+    while (group.children.length > 0) {
+      const child = group.children[0] as THREE.Mesh;
+      child.geometry.dispose();
+      (child.material as THREE.Material).dispose();
+      group.remove(child);
+    }
+
+    const bodySites = sites.filter((s) => s.body === body);
+    for (const s of bodySites) {
+      const isActive =
+        activeTarget &&
+        Math.abs(activeTarget.lat - s.coordinates.lat) < 0.05 &&
+        Math.abs(activeTarget.lon - s.coordinates.lon) < 0.05;
+      const pos = latLonToVector3(s.coordinates.lat, s.coordinates.lon, SPHERE_RADIUS * 1.015);
+      const pin = new THREE.Mesh(
+        new THREE.SphereGeometry(isActive ? 0.032 : 0.022, 16, 16),
+        new THREE.MeshBasicMaterial({
+          color: isActive ? PLANET_MARKER_COLORS.activeTarget : PLANET_MARKER_COLORS.trackedZone,
+        })
+      );
+      pin.position.copy(pos);
+      pin.userData = { siteId: s.site_id };
+      group.add(pin);
+
+      // Coverage halo marking tracked high-confidence zone
+      const halo = new THREE.Mesh(
+        new THREE.RingGeometry(0.048, 0.088, 32),
+        new THREE.MeshBasicMaterial({
+          color: PLANET_MARKER_COLORS.trackedZone,
+          side: THREE.DoubleSide,
+          transparent: true,
+          opacity: isActive ? 0.8 : 0.45,
+        })
+      );
+      halo.position.copy(
+        latLonToVector3(s.coordinates.lat, s.coordinates.lon, SPHERE_RADIUS * 1.008)
+      );
+      halo.lookAt(pos.clone().multiplyScalar(2));
+      halo.userData = { siteId: s.site_id };
+      group.add(halo);
+    }
+
+    if (
+      activeTarget &&
+      !bodySites.some(
+        (s) =>
+          Math.abs(activeTarget.lat - s.coordinates.lat) < 0.05 &&
+          Math.abs(activeTarget.lon - s.coordinates.lon) < 0.05
+      )
+    ) {
+      const customPin = new THREE.Mesh(
+        new THREE.SphereGeometry(0.034, 16, 16),
+        new THREE.MeshBasicMaterial({ color: PLANET_MARKER_COLORS.estimatedProbe })
+      );
+      customPin.position.copy(
+        latLonToVector3(activeTarget.lat, activeTarget.lon, SPHERE_RADIUS * 1.018)
+      );
+      group.add(customPin);
+    }
+  }, [sites, body, activeTarget]);
+
+  const handleZoom = (factor: number) => {
+    const cam = cameraRef.current;
+    const ctrl = controlsRef.current;
+    if (!cam || !ctrl) return;
+    const dir = cam.position.clone().sub(ctrl.target);
+    const nextDist = Math.max(ctrl.minDistance, Math.min(ctrl.maxDistance, dir.length() * factor));
+    dir.setLength(nextDist);
+    cam.position.copy(ctrl.target).add(dir);
+    ctrl.update();
+  };
+
+  const handleFocusTarget = () => {
+    const cam = cameraRef.current;
+    const ctrl = controlsRef.current;
+    if (!cam || !ctrl) return;
+    const dist = cam.position.length() || 2.6;
+    if (activeTarget) {
+      const dir = latLonToVector3(activeTarget.lat, activeTarget.lon, dist);
+      cam.position.copy(dir);
+    } else {
+      cam.position.set(0, 0.4, 2.75);
+    }
+    ctrl.update();
+  };
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <CardTitle className="flex items-center gap-2">
+            <Compass className="h-5 w-5 text-accent" aria-hidden="true" />
+            {t("planetaryMap.title")}
+          </CardTitle>
+          <p className="mt-1 text-xs text-content-muted">{t("planetaryMap.dragHint")}</p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-1.5">
+          <select
+            aria-label={t("planetaryMap.layerLabel")}
+            value={layer}
+            onChange={(e) => setLayer(e.target.value as PlanetaryOverlayLayer)}
+            className="min-h-11 rounded border border-border-subtle bg-surface px-2.5 py-1 text-xs font-medium text-content focus:border-accent focus:outline-none"
+          >
+            {body === "moon" ? (
+              <>
+                <option value="moon_wac">{t("planetaryMap.layers.moon_wac")}</option>
+                <option value="moon_lola">{t("planetaryMap.layers.moon_lola")}</option>
+              </>
+            ) : (
+              <>
+                <option value="mars_color">{t("planetaryMap.layers.mars_color")}</option>
+                <option value="mars_mola">{t("planetaryMap.layers.mars_mola")}</option>
+              </>
+            )}
+          </select>
+
+          {(["moon", "mars"] as PlanetaryBody[]).map((b) => (
+            <button
+              key={b}
+              type="button"
+              onClick={() => onSelectBody(b)}
+              className={`min-h-11 rounded border px-3 py-1.5 text-xs font-semibold transition ${
+                body === b
+                  ? "border-accent bg-accent text-white"
+                  : "border-border-subtle bg-surface text-content hover:bg-surface-muted"
+              }`}
+            >
+              {t(`bodies.${b}`)}
+            </button>
+          ))}
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-3">
+        <div className="relative h-72 w-full overflow-hidden rounded border border-border-subtle bg-surface-muted sm:h-80">
+          <div ref={containerRef} className="h-full w-full cursor-grab active:cursor-grabbing" />
+
+          {/* Accessible 3D Zoom & Focus Controls */}
+          <div className="absolute right-2 top-2 z-10 flex flex-col gap-1.5">
+            <button
+              type="button"
+              onClick={() => handleZoom(0.78)}
+              aria-label={t("planetaryMap.zoomIn")}
+              className="flex min-h-11 min-w-11 items-center justify-center rounded border border-border-subtle bg-surface-elevated/90 text-content shadow-sm backdrop-blur hover:border-accent"
+            >
+              <Plus className="h-4 w-4" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              onClick={() => handleZoom(1.28)}
+              aria-label={t("planetaryMap.zoomOut")}
+              className="flex min-h-11 min-w-11 items-center justify-center rounded border border-border-subtle bg-surface-elevated/90 text-content shadow-sm backdrop-blur hover:border-accent"
+            >
+              <Minus className="h-4 w-4" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              onClick={handleFocusTarget}
+              aria-label={t("planetaryMap.resetView")}
+              className="flex min-h-11 min-w-11 items-center justify-center rounded border border-border-subtle bg-surface-elevated/90 text-content shadow-sm backdrop-blur hover:border-accent"
+            >
+              <RotateCcw className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
+
+          {(textureLoading || probingPlanetCoords) && (
+            <div className="pointer-events-none absolute bottom-3 left-3 z-10 flex items-center gap-2 rounded border border-accent bg-surface-elevated/95 px-3 py-1.5 text-xs font-medium text-content">
+              <Sparkles className="h-3.5 w-3.5 animate-pulse text-accent" aria-hidden="true" />
+              {probingPlanetCoords
+                ? t("planetaryMap.probingTarget", {
+                    body: t(`bodies.${body}`),
+                    lat: formatNumber(probingPlanetCoords.lat, lang, 2),
+                    lon: formatNumber(probingPlanetCoords.lon, lang, 2),
+                  })
+                : t("planetaryMap.loadingGlobe")}
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-content-muted">
+          <div className="flex flex-wrap items-center gap-3">
+            <span>{t(`planetaryMap.layers.${layer}`)}</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full border-2 border-status-valid bg-status-valid/30" />
+              {t("planetaryMap.legendTracked")}
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-status-warn" />
+              {t("planetaryMap.legendEstimated")}
+            </span>
+          </div>
+          {activeTarget && (
+            <Badge variant="accent">
+              {activeTarget.label} ({formatNumber(activeTarget.lat, lang, 2)},{" "}
+              {formatNumber(activeTarget.lon, lang, 2)})
+            </Badge>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
