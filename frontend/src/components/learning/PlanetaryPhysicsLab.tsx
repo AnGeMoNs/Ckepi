@@ -84,6 +84,7 @@ export function PlanetaryPhysicsLab({
   const [frictionCoeff, setFrictionCoeff] = useState<number>(0.55);
   const [windSpeedMs, setWindSpeedMs] = useState<number>(28);
   const [waterTempC, setWaterTempC] = useState<number>(15);
+  const [showScienceDetails, setShowScienceDetails] = useState<boolean>(true);
 
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
 
@@ -110,16 +111,17 @@ export function PlanetaryPhysicsLab({
   const windRes = useMemo(() => computeDynamicWindPressure(windSpeedMs), [windSpeedMs]);
   const waterRes = useMemo(() => evaluateWaterStability(waterTempC), [waterTempC]);
 
-  const experiments: { id: ExperimentId; label: string }[] = [
-    { id: "weight", label: t("learn.experiments.weight.tab") },
-    { id: "jump", label: t("learn.experiments.jump.tab") },
-    { id: "projectile", label: t("learn.experiments.projectile.tab") },
-    { id: "waves", label: t("learn.experiments.waves.tab") },
-    { id: "rocks", label: t("learn.experiments.rocks.tab") },
-    { id: "rover", label: t("learn.experiments.rover.tab") },
-    { id: "wind", label: t("learn.experiments.wind.tab") },
-    { id: "water", label: t("learn.experiments.water.tab") },
+  const experiments: { id: ExperimentId; label: string; categoryKey: string }[] = [
+    { id: "weight", label: t("learn.experiments.weight.tab"), categoryKey: "learn.categories.body" },
+    { id: "jump", label: t("learn.experiments.jump.tab"), categoryKey: "learn.categories.body" },
+    { id: "projectile", label: t("learn.experiments.projectile.tab"), categoryKey: "learn.categories.physics" },
+    { id: "waves", label: t("learn.experiments.waves.tab"), categoryKey: "learn.categories.physics" },
+    { id: "water", label: t("learn.experiments.water.tab"), categoryKey: "learn.categories.physics" },
+    { id: "rocks", label: t("learn.experiments.rocks.tab"), categoryKey: "learn.categories.engineering" },
+    { id: "rover", label: t("learn.experiments.rover.tab"), categoryKey: "learn.categories.engineering" },
+    { id: "wind", label: t("learn.experiments.wind.tab"), categoryKey: "learn.categories.engineering" },
   ];
+  const activeExpMeta = experiments.find((e) => e.id === experiment) ?? experiments[0];
 
   // Dynamic mini-challenge grounded in real compared slope data when available
   const dynamicSlopeVal = earthSlopeDeg ?? siteSlopeDeg ?? 15;
@@ -235,7 +237,21 @@ export function PlanetaryPhysicsLab({
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Experiment Tabs */}
+          {/* Experiment Tabs + Thematic Category + Level-3 Toggle */}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <Badge variant="default">{t(activeExpMeta.categoryKey)}</Badge>
+            <button
+              type="button"
+              aria-expanded={showScienceDetails}
+              onClick={() => setShowScienceDetails((prev) => !prev)}
+              className="min-h-11 rounded-lg border border-border-subtle bg-surface px-3 py-1.5 text-xs font-medium text-content-muted transition-colors hover:bg-surface-muted hover:text-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            >
+              {showScienceDetails
+                ? t("learn.hideScienceDetails")
+                : t("learn.showScienceDetails")}
+            </button>
+          </div>
+
           <div
             role="tablist"
             aria-label={t("learn.experimentSelectorLabel")}
@@ -343,12 +359,14 @@ export function PlanetaryPhysicsLab({
                 })}
               </div>
 
-              <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
+              {showScienceDetails && (
+                <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
                 <p className="font-semibold text-content">
                   {t("learn.equationLabel")}: P = m · g [N]
                 </p>
                 <p className="mt-1">{t("learn.experiments.weight.limits")}</p>
-              </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -419,12 +437,14 @@ export function PlanetaryPhysicsLab({
                 })}
               </div>
 
-              <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
+              {showScienceDetails && (
+                <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
                 <p className="font-semibold text-content">
                   {t("learn.equationLabel")}: h = v₀² / (2·g) [m]
                 </p>
                 <p className="mt-1">{t("learn.experiments.jump.limits")}</p>
-              </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -533,12 +553,14 @@ export function PlanetaryPhysicsLab({
                 </div>
               </div>
 
-              <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
+              {showScienceDetails && (
+                <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
                 <p className="font-semibold text-content">
                   {t("learn.equationLabel")}: R = v₀² · sin(2θ) / g [m]
                 </p>
                 <p className="mt-1">{t("learn.experiments.projectile.limits")}</p>
-              </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -601,12 +623,14 @@ export function PlanetaryPhysicsLab({
                 })}
               </div>
 
-              <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
+              {showScienceDetails && (
+                <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
                 <p className="font-semibold text-content">
                   {t("learn.equationLabel")}: c ≈ √(g · d) [m/s] (d ≪ λ)
                 </p>
                 <p className="mt-1">{t("learn.experiments.waves.limits")}</p>
-              </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -699,12 +723,14 @@ export function PlanetaryPhysicsLab({
                 })}
               </div>
 
-              <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
+              {showScienceDetails && (
+                <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
                 <p className="font-semibold text-content">
                   {t("learn.equationLabel")}: F_g = m·g ; F_neta = m·a ; F_fric,max ≈ μ·m·g [N]
                 </p>
                 <p className="mt-1">{t("learn.experiments.rocks.limits")}</p>
-              </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -839,12 +865,14 @@ export function PlanetaryPhysicsLab({
                 })}
               </div>
 
-              <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
+              {showScienceDetails && (
+                <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
                 <p className="font-semibold text-content">
                   {t("learn.equationLabel")}: F_∥ = m·g·sin(θ) ; N = m·g·cos(θ) ; F_fric,max ≈ μ·N [N]
                 </p>
                 <p className="mt-1">{t("learn.experiments.rover.limits")}</p>
-              </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -910,12 +938,14 @@ export function PlanetaryPhysicsLab({
                 })}
               </div>
 
-              <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
+              {showScienceDetails && (
+                <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
                 <p className="font-semibold text-content">
                   {t("learn.equationLabel")}: q = 0.5 · ρ · v² [Pa = N/m²]
                 </p>
                 <p className="mt-1">{t("learn.experiments.wind.limits")}</p>
-              </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -981,12 +1011,14 @@ export function PlanetaryPhysicsLab({
                 })}
               </div>
 
-              <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
+              {showScienceDetails && (
+                <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
                 <p className="font-semibold text-content">
                   {t("learn.equationLabel")}: P_triple ≈ 0.6117 kPa · T_triple = 0.01 °C
                 </p>
                 <p className="mt-1">{t("learn.experiments.water.limits")}</p>
-              </div>
+                </div>
+              )}
             </div>
           )}
         </CardContent>
@@ -994,11 +1026,12 @@ export function PlanetaryPhysicsLab({
 
       {/* Contextual Curiosities */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-accent" aria-hidden="true" />
             <CardTitle>{t("learn.curiositiesTitle")}</CardTitle>
           </div>
+          <Badge variant="default">{t("learn.categories.curiosities")}</Badge>
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-3 md:grid-cols-3">
           <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
@@ -1012,6 +1045,18 @@ export function PlanetaryPhysicsLab({
           <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
             <p className="font-semibold text-content">{t("learn.curiosities.atacamaTitle")}</p>
             <p className="mt-1 text-content-muted">{t("learn.curiosities.atacamaDesc")}</p>
+          </div>
+          <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
+            <p className="font-semibold text-content">{t("learn.curiosities.soundTitle")}</p>
+            <p className="mt-1 text-content-muted">{t("learn.curiosities.soundDesc")}</p>
+          </div>
+          <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
+            <p className="font-semibold text-content">{t("learn.curiosities.solTitle")}</p>
+            <p className="mt-1 text-content-muted">{t("learn.curiosities.solDesc")}</p>
+          </div>
+          <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
+            <p className="font-semibold text-content">{t("learn.curiosities.commsTitle")}</p>
+            <p className="mt-1 text-content-muted">{t("learn.curiosities.commsDesc")}</p>
           </div>
         </CardContent>
       </Card>

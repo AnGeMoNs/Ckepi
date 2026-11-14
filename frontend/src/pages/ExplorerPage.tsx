@@ -484,12 +484,29 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   ];
 
   return (
-    <main className="mx-auto max-w-7xl space-y-6 px-3 py-5 sm:px-6">
+    <main id="main-content" className="mx-auto max-w-7xl space-y-6 px-3 py-5 sm:px-6">
       {/* Primary Journey Navigation: Compare · Learn · Plan · Evidence */}
       <nav
         aria-label={t("nav.tabsLabel")}
         role="tablist"
         className="flex flex-wrap gap-2 rounded-xl border border-border-subtle bg-surface-elevated p-2 shadow-sm"
+        onKeyDown={(e) => {
+          const idx = navTabs.findIndex((tab) => tab.id === activeTab);
+          if (idx === -1) return;
+          if (e.key === "ArrowRight") {
+            e.preventDefault();
+            setActiveTab(navTabs[(idx + 1) % navTabs.length].id);
+          } else if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            setActiveTab(navTabs[(idx - 1 + navTabs.length) % navTabs.length].id);
+          } else if (e.key === "Home") {
+            e.preventDefault();
+            setActiveTab(navTabs[0].id);
+          } else if (e.key === "End") {
+            e.preventDefault();
+            setActiveTab(navTabs[navTabs.length - 1].id);
+          }
+        }}
       >
         {navTabs.map((tab) => {
           const Icon = tab.icon;
@@ -497,9 +514,12 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           return (
             <button
               key={tab.id}
+              id={`tab-${tab.id}`}
               type="button"
               role="tab"
               aria-selected={active}
+              aria-controls={`panel-${tab.id}`}
+              tabIndex={active ? 0 : -1}
               onClick={() => setActiveTab(tab.id)}
               className={`flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-sm ${
                 active
@@ -523,33 +543,39 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         }
       >
         {activeTab === "learn" && (
-          <PlanetaryPhysicsLab
-            body={selectedBody}
-            activeSite={activeSite}
-            selectedCell={selectedCell}
-            comparison={comparison}
-            onGoToCompare={() => setActiveTab("compare")}
-            onGoToPlan={() => setActiveTab("plan")}
-          />
+          <div id="panel-learn" role="tabpanel" aria-labelledby="tab-learn">
+            <PlanetaryPhysicsLab
+              body={selectedBody}
+              activeSite={activeSite}
+              selectedCell={selectedCell}
+              comparison={comparison}
+              onGoToCompare={() => setActiveTab("compare")}
+              onGoToPlan={() => setActiveTab("plan")}
+            />
+          </div>
         )}
 
         {activeTab === "plan" && (
-          <FieldTrialPlanner
-            activeSite={activeSite}
-            selectedCell={selectedCell}
-            comparison={comparison}
-            onGoToCompare={() => setActiveTab("compare")}
-            onGoToEvidence={() => setActiveTab("evidence")}
-          />
+          <div id="panel-plan" role="tabpanel" aria-labelledby="tab-plan">
+            <FieldTrialPlanner
+              activeSite={activeSite}
+              selectedCell={selectedCell}
+              comparison={comparison}
+              onGoToCompare={() => setActiveTab("compare")}
+              onGoToEvidence={() => setActiveTab("evidence")}
+            />
+          </div>
         )}
 
         {activeTab === "evidence" && (
-          <EvidencePanel activeSite={activeSite} comparison={comparison} />
+          <div id="panel-evidence" role="tabpanel" aria-labelledby="tab-evidence">
+            <EvidencePanel activeSite={activeSite} comparison={comparison} />
+          </div>
         )}
       </Suspense>
 
       {activeTab === "compare" && (
-        <>
+        <div id="panel-compare" role="tabpanel" aria-labelledby="tab-compare" className="space-y-6">
           <GuidedStepsBanner />
 
       {/* Control Bar */}
@@ -929,7 +955,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           onSelectCell={(h3Index) => setSelectedH3(h3Index)}
         />
       )}
-        </>
+        </div>
       )}
     </main>
   );

@@ -515,12 +515,20 @@
     "viewEvidence": "View Evidence & SDGs",
     "focusAtacama": "📍 Compare with Atacama",
     "globalLabel": "Global scope",
-    "locationLabel": "Specific location"
+    "locationLabel": "Specific location",
+    "skipToContent": "Skip to main content"
   },
   "curiosity": {
     "title": "Did you know that on a similar slope the normal force changes drastically?",
     "body": "On {{body}} at a {{slope}}° slope, a 100 kg rover exerts {{targetNormal}} N of normal force compared to {{earthNormal}} N on Earth. Lower gravity reduces weight, but also traction.",
-    "cta": "Experiment in Learn"
+    "cta": "Experiment in Learn",
+    "nextFact": "Next fact",
+    "thermalTitle": "Did you know diurnal thermal amplitude drives rover thermal design?",
+    "thermalBody": "At {{site}}, diurnal thermal amplitude is {{planetVal}} K vs {{earthVal}} K in the compared Earth cell. Extreme swings require thermal insulation and heated batteries.",
+    "roughnessTitle": "Did you know terrain roughness sets minimum rover wheel size?",
+    "roughnessBody": "Surface roughness is {{planetVal}} at {{site}} vs {{earthVal}} in the Earth cell. Rough Atacama terrain helps validate suspension before regolith.",
+    "gravityTitle": "Did you know gravity lowers weight, never mass?",
+    "gravityBody": "On {{body}}, an 80 kg object still has 80 kg of mass, but weighs {{marsN}} N (or {{moonN}} N on the Moon) vs 784.5 N on Earth."
   },
   "learn": {
     "title": "Planetary Physics Lab — What if…?",
@@ -622,7 +630,13 @@
       "dustTitle": "Dust storms & dynamic pressure",
       "dustDesc": "Even with fast winds, Mars thin atmosphere (~1% of Earth density) produces lower dynamic pressure q = 0.5·ρ·v² at the same wind speed.",
       "atacamaTitle": "Why is Atacama / Yungay a key analog?",
-      "atacamaDesc": "Extreme hyperaridity, UV flux, and saline soils allow studying Mars-analog processes, while gravity (1 g), pressure, and cosmic radiation remain irreproducible."
+      "atacamaDesc": "Extreme hyperaridity, UV flux, and saline soils allow studying Mars-analog processes, while gravity (1 g), pressure, and cosmic radiation remain irreproducible.",
+      "soundTitle": "Sound on Mars (~240 m/s and attenuated)",
+      "soundDesc": "In Mars thin CO₂ atmosphere (~0.6 kPa), sound travels around 240 m/s (vs ~343 m/s on Earth) and high frequencies attenuate rapidly. Speaking outdoors without a suit is unsafe.",
+      "solTitle": "A Martian sol lasts 24 h 39 min (vs 29.5 days on the Moon)",
+      "solDesc": "A Martian sol is just 39 minutes longer than an Earth day, whereas the lunar day/night cycle lasts ~29.5 Earth days, challenging solar power storage.",
+      "commsTitle": "Earth–Mars signal delay (3 to 22 min one-way)",
+      "commsDesc": "Depending on orbital distance (55 to 401 million km), radio signals take ~3 to ~22 minutes each way—requiring local autonomous rover navigation."
     },
     "challenges": {
       "mass": {
@@ -653,6 +667,14 @@
         "optC": "Atmosphere and temperature are identical",
         "explanation": "Ckepi decouples X, Y, and B: geometric slope similarity never implies complete environmental or mechanical equivalence."
       }
+    },
+    "showScienceDetails": "View equation & scientific limits",
+    "hideScienceDetails": "Hide equation & limits",
+    "categories": {
+      "body": "Your body on other worlds",
+      "physics": "Impossible physics",
+      "engineering": "Space engineering",
+      "curiosities": "Planetary curiosities"
     }
   },
   "plan": {

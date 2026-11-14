@@ -515,12 +515,20 @@
     "viewEvidence": "Ver Evidência e ODS",
     "focusAtacama": "📍 Comparar com Atacama",
     "globalLabel": "Alcance global",
-    "locationLabel": "Localização específica"
+    "locationLabel": "Localização específica",
+    "skipToContent": "Pular para o conteúdo principal"
   },
   "curiosity": {
     "title": "Você sabia que em uma inclinação semelhante a força normal muda drasticamente?",
     "body": "Em {{body}} com inclinação de {{slope}}°, um rover de 100 kg exerce {{targetNormal}} N de força normal contra {{earthNormal}} N na Terra. Isso reduz o peso, mas também a tração.",
-    "cta": "Experimentar em Aprender"
+    "cta": "Experimentar em Aprender",
+    "nextFact": "Outra curiosidade",
+    "thermalTitle": "Você sabia que a amplitude térmica diária muda o projeto de um rover?",
+    "thermalBody": "Em {{site}}, a amplitude térmica é {{planetVal}} K contra {{earthVal}} K na célula terrestre comparada. Ciclos extremos exigem isolamento térmico e baterias protegidas.",
+    "roughnessTitle": "Você sabia que a rugosidade do terreno define o tamanho mínimo da roda?",
+    "roughnessBody": "O índice de rugosidade é {{planetVal}} em {{site}} vs {{earthVal}} no setor terrestre. Terrenos rugosos no Atacama ajudam a validar suspensão.",
+    "gravityTitle": "Você sabia que a gravidade reduz o peso, mas não a massa?",
+    "gravityBody": "Em {{body}}, um objeto de 80 kg continua com 80 kg de massa, mas pesa {{marsN}} N (ou {{moonN}} N na Lua) contra 784,5 N na Terra."
   },
   "learn": {
     "title": "Laboratório de Física Planetária — E se…?",
@@ -622,7 +630,13 @@
       "dustTitle": "Tempestades de poeira e pressão dinâmica",
       "dustDesc": "Mesmo com ventos rápidos, a baixa densidade atmosférica marciana (~1% da Terra) gera menor pressão dinâmica q = 0,5·ρ·v².",
       "atacamaTitle": "Por que Atacama / Yungay é um análogo-chave?",
-      "atacamaDesc": "Sua hiperaridez extrema, radiação UV e solos salinos permitem estudar processos análogos a Marte, mas gravidade (1 g), pressão e radiação cósmica continuam irreproduzíveis."
+      "atacamaDesc": "Sua hiperaridez extrema, radiação UV e solos salinos permitem estudar processos análogos a Marte, mas gravidade (1 g), pressão e radiação cósmica continuam irreproduzíveis.",
+      "soundTitle": "O som em Marte (~240 m/s e atenuado)",
+      "soundDesc": "Em uma atmosfera tênue de CO₂ (~0,6 kPa), a velocidade do som fica em ~240 m/s (vs ~343 m/s na Terra) e sons agudos atenuam rápido. Sem traje pressurizado não é seguro falar ao ar livre.",
+      "solTitle": "Um dia marciano dura 24 h 39 min (vs 29,5 dias na Lua)",
+      "solDesc": "Um sol marciano é apenas 39 minutos maior que um dia terrestre, enquanto na Lua o ciclo dia/noite dura ~29,5 dias terrestres, desafiando a energia solar.",
+      "commsTitle": "Atraso de comunicações Terra–Marte (3 a 22 min)",
+      "commsDesc": "Conforme a distância orbital (55 a 401 milhões de km), um sinal de rádio leva entre ~3 e ~22 minutos por trecho, exigindo navegação autônoma dos rovers."
     },
     "challenges": {
       "mass": {
@@ -653,6 +667,14 @@
         "optC": "Que a atmosfera e a temperatura são iguais",
         "explanation": "O Ckepi desacopla X, Y e B: semelhança geométrica de inclinações não implica equivalência ambiental completa."
       }
+    },
+    "showScienceDetails": "Ver equação e limites científicos",
+    "hideScienceDetails": "Ocultar equação e limites",
+    "categories": {
+      "body": "Seu corpo em outros mundos",
+      "physics": "Física impossível",
+      "engineering": "Engenharia espacial",
+      "curiosities": "Curiosidades planetárias"
     }
   },
   "plan": {

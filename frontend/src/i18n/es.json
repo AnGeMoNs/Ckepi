@@ -515,12 +515,20 @@
     "viewEvidence": "Ver Evidencia y ODS",
     "focusAtacama": "📍 Comparar con Atacama",
     "globalLabel": "Alcance global",
-    "locationLabel": "Ubicación específica"
+    "locationLabel": "Ubicación específica",
+    "skipToContent": "Saltar al contenido principal"
   },
   "curiosity": {
     "title": "¿Sabías que en una pendiente similar la fuerza normal cambia drásticamente?",
     "body": "En {{body}} con pendiente {{slope}}°, un rover de 100 kg ejerce {{targetNormal}} N de fuerza normal frente a {{earthNormal}} N en la Tierra. Eso reduce el peso, pero también la tracción.",
-    "cta": "Experimentar en Aprender"
+    "cta": "Experimentar en Aprender",
+    "nextFact": "Otro dato curioso",
+    "thermalTitle": "¿Sabías que la amplitud térmica diaria cambia radicalmente el diseño de un rover?",
+    "thermalBody": "En {{site}} la amplitud térmica es {{planetVal}} K frente a {{earthVal}} K en la celda terrestre comparada. Los ciclos extremos exigen aislamiento térmico y baterías protegidas.",
+    "roughnessTitle": "¿Sabías que la rugosidad del terreno define el tamaño mínimo de rueda?",
+    "roughnessBody": "El índice de rugosidad es {{planetVal}} en {{site}} vs {{earthVal}} en el sector terrestre. Terrenos rugosos en Atacama permiten validar suspensión antes de enfrentar regolito.",
+    "gravityTitle": "¿Sabías que la gravedad reduce el peso pero no la masa?",
+    "gravityBody": "En {{body}}, un objeto de 80 kg sigue teniendo 80 kg de masa, pero pesa {{marsN}} N (o {{moonN}} N en la Luna) frente a 784,5 N en la Tierra."
   },
   "learn": {
     "title": "Laboratorio de Física Planetaria — ¿Qué pasaría si…?",
@@ -622,7 +630,13 @@
       "dustTitle": "Tormentas de polvo y presión dinámica",
       "dustDesc": "Aunque el viento marciano sea rápido, su baja densidad atmosférica (~1% de la Tierra) produce menor presión dinámica q = 0,5·ρ·v² para una misma velocidad.",
       "atacamaTitle": "¿Por qué Atacama / Yungay es análogo clave?",
-      "atacamaDesc": "Su hiperaridez extrema, radiación UV y suelos salinos permiten estudiar procesos análogos a Marte, pero gravedad (1 g), presión y radiación cósmica siguen siendo irreproducibles."
+      "atacamaDesc": "Su hiperaridez extrema, radiación UV y suelos salinos permiten estudiar procesos análogos a Marte, pero gravedad (1 g), presión y radiación cósmica siguen siendo irreproducibles.",
+      "soundTitle": "El sonido en Marte (~240 m/s y atenuado)",
+      "soundDesc": "En una atmósfera tenue de CO₂ (~0,6 kPa), la velocidad del sonido ronda 240 m/s (vs ~343 m/s en Tierra) y los sonidos agudos se atenúan muy rápido. Sin casco presurizado no sería seguro hablar al aire libre.",
+      "solTitle": "Un día marciano dura 24 h 39 min (vs 29,5 días en la Luna)",
+      "solDesc": "Un sol marciano es apenas 39 minutos más largo que un día terrestre, mientras que en la Luna el ciclo día/noche dura ~29,5 días terrestres, desafiando la energía solar.",
+      "commsTitle": "Retardo de comunicaciones Tierra–Marte (3 a 22 min)",
+      "commsDesc": "Según la distancia orbital (55 a 401 millones de km), una señal de radio demora entre ~3 y ~22 minutos por trayecto: por eso los rovers deben navegar con autonomía local."
     },
     "challenges": {
       "mass": {
@@ -653,6 +667,14 @@
         "optC": "Que la atmósfera y temperatura son iguales",
         "explanation": "Ckepi desacopla X, Y y B: una similitud en geometría de pendientes no implica equivalencia ambiental o mecánica completa."
       }
+    },
+    "showScienceDetails": "Ver ecuación y límites científicos",
+    "hideScienceDetails": "Ocultar ecuación y límites",
+    "categories": {
+      "body": "Tu cuerpo en otros mundos",
+      "physics": "Física imposible",
+      "engineering": "Ingeniería espacial",
+      "curiosities": "Curiosidades planetarias"
     }
   },
   "plan": {
