@@ -43,8 +43,12 @@ const FieldTrialPlanner = lazy(() =>
     default: m.FieldTrialPlanner,
   }))
 );
-import { AnalogMap } from "../components/map/AnalogMap";
-import { PlanetaryMap } from "../components/map/PlanetaryMap";
+const AnalogMap = lazy(() =>
+  import("../components/map/AnalogMap").then((m) => ({ default: m.AnalogMap }))
+);
+const PlanetaryMap = lazy(() =>
+  import("../components/map/PlanetaryMap").then((m) => ({ default: m.PlanetaryMap }))
+);
 import { AnalogComparisonMatrix } from "../components/mission/AnalogComparisonMatrix";
 import {
   MANUAL_DV_KEYS,
@@ -893,41 +897,59 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
 
       {/* Dual Interactive Planetary & Global Earth Maps */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <PlanetaryMap
-          body={selectedBody}
-          sites={sites}
-          activeTarget={
-            activeSite
-              ? {
-                  lat: activeSite.coordinates.lat,
-                  lon: activeSite.coordinates.lon,
-                  label: t(activeSite.name_key),
-                }
-              : null
+        <Suspense
+          fallback={
+            <div className="flex h-80 items-center justify-center rounded-xl border border-border-subtle bg-surface-elevated text-sm text-content-muted">
+              <RefreshCw className="mr-2 h-4 w-4 animate-spin text-accent" aria-hidden="true" />
+              <span>{t("controls.loading")}</span>
+            </div>
           }
-          probingPlanetCoords={probingPlanetCoords}
-          onSelectBody={handleSelectBody}
-          onSelectSite={(siteId) => {
-            setCustomProbedSite(null);
-            setSelectedSiteId(siteId);
-          }}
-          onProbePlanet={(body, lat, lon) => void handleProbePlanet(body, lat, lon)}
-        />
+        >
+          <PlanetaryMap
+            body={selectedBody}
+            sites={sites}
+            activeTarget={
+              activeSite
+                ? {
+                    lat: activeSite.coordinates.lat,
+                    lon: activeSite.coordinates.lon,
+                    label: t(activeSite.name_key),
+                  }
+                : null
+            }
+            probingPlanetCoords={probingPlanetCoords}
+            onSelectBody={handleSelectBody}
+            onSelectSite={(siteId) => {
+              setCustomProbedSite(null);
+              setSelectedSiteId(siteId);
+            }}
+            onProbePlanet={(body, lat, lon) => void handleProbePlanet(body, lat, lon)}
+          />
+        </Suspense>
 
         {searchResult && (
-          <AnalogMap
-            matches={searchResult.matches}
-            totalEvaluated={searchResult.total_evaluated}
-            selectedH3={selectedH3}
-            theme={theme}
-            probingCoords={probingCoords}
-            isRefining={isRefining}
-            drilldownState={drilldownState}
-            onSelectCell={(h3Index) => setSelectedH3(h3Index)}
-            onProbeCoordinate={(lat, lon) => void handleProbeCoordinate(lat, lon)}
-            onRefineCell={(h3Index) => void handleRefineCell(h3Index)}
-            onExitDrilldown={() => setDrilldownState(null)}
-          />
+          <Suspense
+            fallback={
+              <div className="flex h-80 items-center justify-center rounded-xl border border-border-subtle bg-surface-elevated text-sm text-content-muted">
+                <RefreshCw className="mr-2 h-4 w-4 animate-spin text-accent" aria-hidden="true" />
+                <span>{t("controls.loading")}</span>
+              </div>
+            }
+          >
+            <AnalogMap
+              matches={searchResult.matches}
+              totalEvaluated={searchResult.total_evaluated}
+              selectedH3={selectedH3}
+              theme={theme}
+              probingCoords={probingCoords}
+              isRefining={isRefining}
+              drilldownState={drilldownState}
+              onSelectCell={(h3Index) => setSelectedH3(h3Index)}
+              onProbeCoordinate={(lat, lon) => void handleProbeCoordinate(lat, lon)}
+              onRefineCell={(h3Index) => void handleRefineCell(h3Index)}
+              onExitDrilldown={() => setDrilldownState(null)}
+            />
+          </Suspense>
         )}
       </div>
 

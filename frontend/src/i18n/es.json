@@ -598,7 +598,8 @@
         "loadEarthSlope": "Cargar pendiente Tierra ({{slope}}°)",
         "slipRisk": "Riesgo de deslizamiento ideal",
         "idealGrip": "Dentro de μ·N ideal",
-        "limits": "Modelo rígido ideal (tan θ ≤ μ). En regolito real marciano/lunar o arena suelta de Atacama, el hundimiento de ruedas y cohesión del suelo reducen la tracción antes del límite ideal."
+        "limits": "Modelo rígido ideal (tan θ ≤ μ). En regolito real marciano/lunar o arena suelta de Atacama, el hundimiento de ruedas y cohesión del suelo reducen la tracción antes del límite ideal.",
+        "diagramLabel": "Diagrama interactivo de fuerzas sobre rover en pendiente de {{slope}} grados"
       },
       "wind": {
         "tab": "Polvo y viento",
@@ -729,7 +730,9 @@
         "title": "Actividad práctica de física planetaria y análogos",
         "objective": "Demostrar masa vs peso, pendiente segura y límites físicos irreproducibles usando datos abiertos de NASA."
       }
-    }
+    },
+    "copyBtn": "Copiar ficha",
+    "copiedBtn": "Copiado"
   },
   "evidence": {
     "title": "Evidencia, Fuentes Abiertas y Objetivos de Desarrollo Sostenible",

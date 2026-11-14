@@ -598,7 +598,8 @@
         "loadEarthSlope": "Carregar inclinação Terra ({{slope}}°)",
         "slipRisk": "Risco de deslizamento ideal",
         "idealGrip": "Dentro de μ·N ideal",
-        "limits": "Modelo rígido ideal (tan θ ≤ μ). Em regolito real ou areia solta do Atacama, o afundamento das rodas reduz a tração antes do limite ideal."
+        "limits": "Modelo rígido ideal (tan θ ≤ μ). Em regolito real ou areia solta do Atacama, o afundamento das rodas reduz a tração antes do limite ideal.",
+        "diagramLabel": "Diagrama interativo de forças sobre rover em inclinação de {{slope}} graus"
       },
       "wind": {
         "tab": "Poeira e vento",
@@ -729,7 +730,9 @@
         "title": "Atividade prática de física planetária e análogos",
         "objective": "Demonstrar massa vs peso, inclinação segura e limites físicos irreproduzíveis usando dados abertos da NASA."
       }
-    }
+    },
+    "copyBtn": "Copiar ficha",
+    "copiedBtn": "Copiado"
   },
   "evidence": {
     "title": "Evidência, Fontes Abertas e Objetivos de Desenvolvimento Sustentável",

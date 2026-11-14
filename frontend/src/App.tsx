@@ -6,7 +6,7 @@ import { ExplorerPage } from "./pages/ExplorerPage";
 import type { ReadingMode, ThemeMode } from "./types/analog";
 
 export default function App() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [theme, setTheme] = useState<ThemeMode>("dark");
   const [readingMode, setReadingMode] = useState<ReadingMode>("mission");
 
@@ -18,6 +18,10 @@ export default function App() {
       root.classList.remove("dark");
     }
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.lang = i18n.language.slice(0, 2) || "es";
+  }, [i18n.language]);
 
   return (
     <div className="min-h-screen bg-surface text-content transition-colors">

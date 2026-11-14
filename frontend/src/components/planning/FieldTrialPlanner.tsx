@@ -1,7 +1,9 @@
 import { useState } from "react";
 import {
   AlertTriangle,
+  Check,
   ClipboardCheck,
+  Copy,
   Download,
   Recycle,
   ShieldAlert,
@@ -52,6 +54,7 @@ export function FieldTrialPlanner({
     "open_microcontroller",
   ]);
   const [localNotes, setLocalNotes] = useState<string>("");
+  const [copiedPlan, setCopiedPlan] = useState<boolean>(false);
 
   const applyPreset = (presetId: "rover" | "thermal" | "steam") => {
     setTrialTitle(t(`plan.presets.${presetId}.title`));
@@ -71,11 +74,11 @@ export function FieldTrialPlanner({
     );
   };
 
-  const handleExportPlan = () => {
+  const buildMarkdownPlan = () => {
     const siteName = activeSite ? t(activeSite.name_key) : "N/A";
     const cellName = selectedCell ? `${t(selectedCell.region_key)} (${selectedCell.earth_cell_h3})` : "N/A";
     const equipLabels = selectedEquipment.map((id) => `- [x] ${t(`plan.equipment.${id}`)}`).join("\n");
-    const md = [
+    return [
       `# ${trialTitle}`,
       "",
       `- **${t("plan.fields.planetarySite")}:** ${siteName}`,
@@ -102,6 +105,18 @@ export function FieldTrialPlanner({
     ]
       .filter(Boolean)
       .join("\n");
+  };
+
+  const handleCopyPlan = () => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      void navigator.clipboard.writeText(buildMarkdownPlan());
+      setCopiedPlan(true);
+      window.setTimeout(() => setCopiedPlan(false), 2000);
+    }
+  };
+
+  const handleExportPlan = () => {
+    const md = buildMarkdownPlan();
 
     const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -126,10 +141,23 @@ export function FieldTrialPlanner({
             </div>
             <p className="text-xs text-content-muted sm:text-sm">{t("plan.subtitle")}</p>
           </div>
-          <Button variant="primary" onClick={handleExportPlan}>
-            <Download className="h-4 w-4" aria-hidden="true" />
-            <span>{t("plan.exportBtn")}</span>
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="secondary" onClick={handleCopyPlan}>
+              {copiedPlan ? (
+                <Check className="h-4 w-4 text-status-valid" aria-hidden="true" />
+              ) : (
+                <Copy className="h-4 w-4" aria-hidden="true" />
+              )}
+              <span>{copiedPlan ? t("plan.copiedBtn") : t("plan.copyBtn")}</span>
+            </Button>
+            <Button variant="primary" onClick={handleExportPlan}>
+              <Download className="h-4 w-4" aria-hidden="true" />
+              <span>{t("plan.exportBtn")}</span>
+            </Button>
+            <span role="status" aria-live="polite" className="sr-only">
+              {copiedPlan ? t("plan.copiedBtn") : ""}
+            </span>
+          </div>
         </CardHeader>
 
         <CardContent className="space-y-5">

@@ -598,7 +598,8 @@
         "loadEarthSlope": "Load Earth slope ({{slope}}°)",
         "slipRisk": "Ideal slip risk",
         "idealGrip": "Within ideal μ·N",
-        "limits": "Ideal rigid model (tan θ ≤ μ). In real Martian/lunar regolith or loose Atacama sand, wheel sinkage and soil cohesion reduce traction before the ideal limit."
+        "limits": "Ideal rigid model (tan θ ≤ μ). In real Martian/lunar regolith or loose Atacama sand, wheel sinkage and soil cohesion reduce traction before the ideal limit.",
+        "diagramLabel": "Interactive free-body force diagram for rover on a {{slope}}-degree slope"
       },
       "wind": {
         "tab": "Dust & wind",
@@ -729,7 +730,9 @@
         "title": "Hands-on planetary physics and analog activity",
         "objective": "Demonstrate mass vs weight, safe slope limits, and irreproducible planetary boundaries using open NASA data."
       }
-    }
+    },
+    "copyBtn": "Copy sheet",
+    "copiedBtn": "Copied"
   },
   "evidence": {
     "title": "Evidence, Open Data Sources & Sustainable Development Goals",

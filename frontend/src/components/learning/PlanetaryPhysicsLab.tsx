@@ -963,6 +963,70 @@ export function PlanetaryPhysicsLab({
                 </label>
               </div>
 
+              <div className="rounded-xl border border-border-subtle bg-surface-elevated p-3">
+                <svg
+                  viewBox="0 0 320 120"
+                  className="h-32 w-full"
+                  role="img"
+                  aria-label={t("learn.experiments.rover.diagramLabel", {
+                    slope: formatNumber(slopeDeg, lang, 1),
+                  })}
+                >
+                  {(() => {
+                    const rad = (slopeDeg * Math.PI) / 180;
+                    const x0 = 40;
+                    const y0 = 102;
+                    const run = 190;
+                    const rise = Math.min(82, Math.tan(rad) * run);
+                    const xTop = x0 + run;
+                    const yTop = y0 - rise;
+                    const midX = x0 + run * 0.5;
+                    const midY = y0 - rise * 0.5;
+                    const activeRover = roverRes[targetBody];
+                    const slipColor = activeRover.idealSlipRisk ? "#ef4444" : "#10b981";
+                    return (
+                      <g>
+                        <polygon
+                          points={`${x0},${y0} ${xTop},${y0} ${xTop},${yTop}`}
+                          fill="currentColor"
+                          fillOpacity="0.1"
+                          stroke="currentColor"
+                          strokeOpacity="0.35"
+                          strokeWidth="1.5"
+                        />
+                        <g transform={`translate(${midX.toFixed(1)}, ${midY.toFixed(1)}) rotate(${(-slopeDeg).toFixed(1)})`}>
+                          <rect
+                            x="-18"
+                            y="-20"
+                            width="36"
+                            height="14"
+                            rx="3"
+                            fill={slipColor}
+                            fillOpacity="0.25"
+                            stroke={slipColor}
+                            strokeWidth="2"
+                          />
+                          <circle cx="-11" cy="-4" r="4" fill="currentColor" />
+                          <circle cx="11" cy="-4" r="4" fill="currentColor" />
+                        </g>
+                        <text x={x0 + 28} y={y0 - 6} fontSize="11" fill="currentColor" opacity="0.8">
+                          θ = {formatNumber(slopeDeg, lang, 1)}°
+                        </text>
+                        <text x="242" y="34" fontSize="10" fill="currentColor" opacity="0.8">
+                          {t(`bodies.${targetBody}`)}
+                        </text>
+                        <text x="242" y="50" fontSize="10" fill={slipColor} fontWeight="bold">
+                          F_∥ {formatNumber(activeRover.parallelForceN, lang, 0)} N
+                        </text>
+                        <text x="242" y="64" fontSize="10" fill="currentColor" opacity="0.75">
+                          μ·N {formatNumber(activeRover.maxTractionN, lang, 0)} N
+                        </text>
+                      </g>
+                    );
+                  })()}
+                </svg>
+              </div>
+
               <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                 {BODIES.map((b) => {
                   const item = roverRes[b];
