@@ -1,9 +1,24 @@
 # DOSSIER MAESTRO COMPLETO PARA NEHE — Ckepi (NASA Space Apps 2026 · Lattices Team)
 
-> **Documento Todo-en-Uno (Global + Local + Ciencia 30 m + Caja La Araucana y ODS + Pitch 3 min + Video 30 s + 7 Slides + Q&A)**  
-> **Rama Activa:** `dani` (`origin/dani`) · **Última actualización:** Sábado 14 de noviembre de 2026 (`17:44 CLT`)  
+> **Documento Todo-en-Uno (Global + Local + Ciencia 30 m + Caja La Araucana y ODS + PPTX/PDF EN y ES + Pitch 3 min + Video 30 s + Q&A)**  
+> **Rama Activa:** `dani` (`origin/dani`) · **Última actualización:** Sábado 14 de noviembre de 2026 (`18:48 CLT` · sincronizado hasta commit `375bf7e` + `b4295e9`)  
 > **Desafío Oficial:** *Identify Earth Locations that Analog the Permanent Moon Base Locations and Mars*  
 > **Sede:** Antofagasta, Chile (Universidad Católica del Norte · Organizado en Chile por **Caja La Araucana** junto a American Spaces)
+
+---
+
+## PARTE 0 · ARCHIVOS DE PRESENTACIÓN (.PPTX, .PDF Y .HTML) LISTOS PARA USAR
+
+Dentro de esta misma carpeta (`docs/nehe/`) ya están generadas las presentaciones de **7 diapositivas** con capturas reales de la aplicación (`shot_explorer_mars.png`, `shot_explorer_moon.png`, `shot_atacama_analysis.png`) y todas las métricas reales verificadas a 30 m, respetando el 100 % de las 3 rúbricas (Global NASA, Científica 30 m y Local Antofagasta / Caja La Araucana):
+
+| Modalidad | PowerPoint Editable (`.pptx`) | PDF Listo para Proyectar / Subir (`.pdf`) | Vista Web / Imprimible (`.html`) |
+|---|---|---|---|
+| **🌍 Global (100 % Inglés · 7 Slides)** | [`ckepi-pitch-en.pptx`](ckepi-pitch-en.pptx) | [`ckepi-pitch-en.pdf`](ckepi-pitch-en.pdf) | [`ckepi-pitch-en.html`](ckepi-pitch-en.html) y [`PPT_7_SLIDES_PROTOTYPE.html`](PPT_7_SLIDES_PROTOTYPE.html) |
+| **🇨🇱 Local Antofagasta / Caja La Araucana (Español · 7 Slides)** | [`ckepi-pitch-es.pptx`](ckepi-pitch-es.pptx) | [`ckepi-pitch-es.pdf`](ckepi-pitch-es.pdf) | [`ckepi-pitch-es.html`](ckepi-pitch-es.html) |
+
+> **¿Cómo regenerar los `.pptx`, `.pdf` y `.html` si cambias un texto?**  
+> Ejecuta desde la raíz del repositorio:  
+> `backend/.venv/bin/python docs/nehe/build_deck_nehe.py`
 
 ---
 
@@ -35,6 +50,7 @@
 ### 2.1 Datos y Método Verificados (`backend/scripts/precompute_real_terrain.py`)
 - **Marte (Objetivo):** **USGS Mars 2020 TRN CTX DEM Mosaic** del Cráter Jezero (**NASA MRO CTX**, $20\text{ m/px}$, dominio público, proyección Equirectangular con escala verdadera en $18,47^\circ\text{ N}$), remuestreado por promedio de área a **$30\text{ m/px}$**.
 - **Tierra (Candidatos en Antofagasta):** **ESA Copernicus DEM GLO-30** (DSM $1^{\prime\prime}$), reproyectado a **UTM Zona 19S (`EPSG:32719`, $30\text{ m/px}$)**. *(Nota: `NASADEM_HGT v001` no se usa en este build porque requiere cuenta Earthdata).*
+- **Malla Global H3 en Caché (`ckepi.duckdb`):** **12.193 celdas terrestres H3** ($790$ celdas Res-2 y $11.403$ celdas Res-3, con $10.000$ celdas Res-3 enriquecidas con ERA5-Land y refinamiento bajo demanda a 7 celdas hijas).
 - **Ventana de comparación:** $6 \times 6\text{ km}$ ($200 \times 200\text{ píxeles}$ a $30\text{ m/px}$).
 - **Variables derivadas en unidades métricas:**
   - **Pendiente (`slope_deg`, grados $^\circ$):** Diferencias finitas centrales de segundo orden con recorte de 1 píxel de borde.
@@ -71,27 +87,53 @@ Fuente verificada: **NASA NSSDCA Planetary Fact Sheets** (`https://nssdc.gsfc.na
 
 ---
 
-## PARTE 4 · CAJA LA ARAUCANA (4 OBJETIVOS OFICIALES) Y METAS ODS DECLARADAS
+## PARTE 4 · CAJA LA ARAUCANA (4 OBJETIVOS OFICIALES), METAS ODS Y SOSTENIBILIDAD
 
 | # | Objetivo Oficial Caja La Araucana | Metas ODS Declaradas | Cómo lo cumple Ckepi en Antofagasta |
 |---|---|---|---|
 | **1** | **Democratizar el acceso a ciencia de frontera** | **ODS `4.3`** | Recorrido accesible *«Tres Mundos para Todos»* (*1. Mirar · 2. Comparar · 3. Investigar*), gratuito, con lectura por voz (`Web Speech API`), botones $\ge 44\text{ px}$ y tarjetas imprimibles para personas con baja alfabetización digital. |
 | **2** | **Desarrollar competencias STEAM y empleabilidad** | **ODS `4.4` y `8`** | Acerca ciencia de datos espaciales (`H3`, `DuckDB`), estadística de terreno a $30\text{ m}$ ($W_1, D_{\text{KS}}$) y evaluación de sitios para robótica/minería y astro-geoturismo comunitario. |
 | **3** | **Generar soluciones con aplicación local** | **ODS `9.5`, `10` y `13`** | Pone en valor sectores poco estudiados de la Región de Antofagasta (celda `83b224fffffffff`, $W_1 = 0,54^\circ$), reduce brechas digital/etaria/territorial y optimiza la preselección satelital antes de campañas de campo. |
-| **4** | **Consolidar una red interregional de innovación (*Lattices*)** | **ODS `17.3`, `17.16` y `17.17`** | Articula a Caja La Araucana, UCN, UA y otras regiones de Chile con catálogos abiertos internacionales (`NASA`, `ESA`, `CSA`, `JAXA`) bajo licencia abierta `Apache-2.0`. |
+| **4** | **Consolidar una red interregional de innovación (*Lattices*)** | **ODS `17.3`, `17.16` y `17.17`** | Articula a Caja La Araucana, UCN, UA y otras regiones de Chile con catálogos abiertos internacionales (`NASA`, `ESA`, `CSA`, `JAXA`) bajo licencia abierta `Apache License 2.0`. |
+
+### Modelo de Sostenibilidad (Hipótesis Institucional Honesta)
+- **Núcleo 100 % gratuito y abierto (`Apache License 2.0`):** El acceso web, los datos y el modo educativo permanecen abiertos sin barreras de pago ni inicio de sesión.
+- **Hipótesis institucional por validar:** Municipios, bibliotecas, universidades y fondos sociales pueden financiar talleres STEAM guiados, kits de cartas impresas y reportes territoriales regionales (sin afirmar ventas, precios ni convenios firmados todavía).
 
 ---
 
-## PARTE 5 · ESTRUCTURA DE LAS 7 SLIDES (EN INGLÉS) Y LINKS DIRECTOS
+## PARTE 5 · NOVEDADES DE LA DEMO EN LA RAMA `dani` (`commits 375bf7e` y `69b64f7`)
 
-1. **Slide 1 — Cover & Value Proposition:** *Ckepi* (*Lattices Team*, Antofagasta), Challenge (*Identify Earth Locations that Analog the Permanent Moon Base Locations and Mars*), Innovation Thesis & $\mathbf{X} \to \mathbf{Y} \parallel \mathbf{B}$.
-2. **Slide 2 — Real Problem, Human Importance & Value Proposition:** Why NASA seeks new characterized analogs, how it helps researchers/engineers AND students/citizens, and our innovation statement.
-3. **Slide 3 — Interactive Prototype Walkthrough (Dual-Mode Mobile-First UI):** Mission Mode (2D/3D NASA Trek Globes + H3 + 30 m Distribution Panel) & Explorer Mode (*"Three Worlds in Your Hand"* with voice readout).
-4. **Slide 4 — Official NASA & Partner Open Data Pipeline:** `NASA MRO CTX DEM (20 m)`, `Mars 2020 MEDA`, `MSL REMS/RAD`, `LRO LOLA/Diviner`, `NASA POWER v2.5`, `NASA Trek WMTS`, `NSSDCA Fact Sheet`, `ESA Copernicus GLO-30`, `ERA5-Land`, `SoilGrids`, `Macrostrat`.
-5. **Slide 5 — Real 30 m Scientific Proof (Jezero Crater $\to$ Antofagasta):** $6\times 6\text{ km}$ windows at $30\text{ m/px}$, $W_1$ & $D_{\text{KS}}$ with 2D Block Bootstrap (95% CI) and 30/60/90 m sensitivity: Positive match (`83b224fffffffff`, $W_1 = 0.54^\circ$) vs. Control Yungay ($W_1 = 3.32^\circ$) vs. Negative matches (`83b221fffffffff` $W_1 = 6.92^\circ$ too steep; `83b225fffffffff` $W_1 = 1.71^\circ$ too flat).
-6. **Slide 6 — Irreducible Physical Gap ($\mathbf{B}$) & Caja La Araucana / UN SDGs:** Gravity ($0.38\text{ g}$ / $0.166\text{ g}$), Pressure ($0.6\text{ kPa }\text{CO}_2$ / vacuum), Radiation ($\sim 230\text{ / }380\text{ mSv/yr}$), $\Delta T$, plus the 4 Caja La Araucana axes & SDGs `4.3, 4.4, 8, 9.5, 10, 13, 17.3, 17.16, 17.17`.
-7. **Slide 7 — Legal Open Science Credits, Brand Identity & AI Disclosure:** Full legal citations (`Apache-2.0`, `SIL OFL-1.1`, `Lucide MIT`, `USGS Public Domain`, `Copernicus DEM licence`), AI disclosure (`AI_DISCLOSURE.md`), and zero NASA logos.
+1. **Home Intro (`#/` · `HomePage.tsx` + `HexField.tsx`):**
+   - Pantalla inicial con la palabra **CKEPI** en estilo de capas de papel recortadas (*paper-cut*), siluetas de Antofagasta (La Portada, pampa y volcán andino) y video decorativo con marca de agua visible **`«Video generado con IA» / «AI-generated video»`**.
+   - **4 pasos de presentación interactiva** con botón de lectura por voz (`speechSynthesis`): 1) El problema, 2) Qué hace Ckepi, 3) El hallazgo real (`83b224` $W_1 = 0,54^\circ$ vs. Yungay $3,32^\circ$), y 4) El límite honesto ($0,38\text{ g}$, presión y radiación).
+   - Botón principal **«Explorar los tres mundos»** ($\ge 44\times 44\text{ px}$) que abre el Explorador con transición hexagonal (`HexField.tsx`).
+2. **Globos 3D y Mapa H3 en Vivo (`ExplorerPage.tsx`):**
+   - WebWorker de MapLibre GL v6 empaquetado localmente (sin fallos de CSP), HUD en vivo al pasar el cursor sobre cualquier hexágono H3 e inspector de las 7 celdas hijas.
+   - Paridad trilingüe completa: **842 claves** en `es.json`, `pt.json` y `en.json`.
 
-- Ver detalle completo de slides en [`PPT_7_SLIDES_GLOBAL_EN.md`](PPT_7_SLIDES_GLOBAL_EN.md) y versión interactiva en [`PPT_7_SLIDES_PROTOTYPE.html`](PPT_7_SLIDES_PROTOTYPE.html).
-- Ver guion presencial de 3 minutos y Q&A en [`PITCH_LOCAL_3MIN_ANTOFAGASTA_ES.md`](PITCH_LOCAL_3MIN_ANTOFAGASTA_ES.md).
-- Ver guion de video de 30 segundos en [`GUION_VIDEO_DEMO_30S_EN_ES.md`](GUION_VIDEO_DEMO_30S_EN_ES.md).
+---
+
+## PARTE 6 · ESTRUCTURA DE LAS 7 SLIDES Y CUMPLIMIENTO LEGAL OPEN SCIENCE
+
+1. **Slide 1 — Cover & Value Proposition:** *Ckepi* (*Lattices Team*, Antofagasta), Challenge (*Identify Earth Locations that Analog the Permanent Moon Base Locations and Mars*), Innovation Thesis & $\mathbf{X} \to \mathbf{Y} \parallel \mathbf{B}$, `Apache License 2.0`, captura real 3D de Marte.
+2. **Slide 2 — Real Problem, Human Importance & Value Proposition:** ¿El problema es real? (Sí, reconocido por NASA), ¿Afecta a las personas? (Sí, investigadores/ingenieros + estudiantes y ciudadanos), y nuestra propuesta de valor e innovación + captura real 3D del Polo Sur Lunar (Shackleton).
+3. **Slide 3 — Interactive Prototype Walkthrough (Dual-Mode Mobile-First UI):** Home Intro (`HexField`), Modo Misión (Globos 3D NASA Trek + 12.193 celdas H3 + panel DEM 30 m) y Modo Explorador (*«Tres Mundos en tu Mano»* con voz `Web Speech API`, 842 claves `ES/PT/EN`) + captura real del análisis de Atacama.
+4. **Slide 4 — Causal Decomposition ($\mathbf{X} \to \mathbf{Y} \parallel \mathbf{B}$) & Precision NASA Open Data:** 10 variables $\mathbf{X}$, 6 variables $\mathbf{Y}$, 3 variables $\mathbf{B}$, y datasets exactos (`NASA MRO CTX / USGS Mars 2020 TRN CTX DEM Mosaic 20 m`, `Mars 2020 MEDA`, `MSL REMS/RAD`, `LRO LOLA/Diviner`, `MGS MOLA`, `NASA POWER v2.5`, `NASA Trek WMTS`, `NSSDCA Fact Sheet`, `ESA Copernicus DEM GLO-30` con atribución DLR/Airbus/UE/ESA, `ERA5-Land`, `SoilGrids v2.0`, `Macrostrat`).
+5. **Slide 5 — Real 30 m Scientific Proof (What Matches, What Fails & Why + Gap $\mathbf{B}$):** Ventanas de $6\times 6\text{ km}$ a $30\text{ m/px}$, $W_1$ y $D_{\text{KS}}$ con Bootstrap 2D (IC 95 %) y sensibilidad 30/60/90 m: Caso positivo (`83b224fffffffff`, $W_1 = 0,54^\circ$ [IC 95 % $0,40^\circ\text{–}0,65^\circ$], supera al Control Yungay $W_1 = 3,32^\circ$) vs. Casos negativos (`83b221fffffffff` $W_1 = 6,92^\circ$ muy escarpada; `83b225fffffffff` $W_1 = 1,71^\circ$ muy plana) + tabla completa de la Brecha Física Irreducible $\mathbf{B}$ ($0,38\text{ g}$, $0,6\text{ kPa }\text{CO}_2$, $\sim 230\text{ mSv/año}$, $\Delta T$).
+6. **Slide 6 — Caja La Araucana 4 Strategic Objectives, UN SDGs & Sustainability:** Los 4 ejes oficiales de Caja La Araucana + metas ODS (`4.3, 4.4, 8, 9.5, 10, 13, 17.3, 17.16, 17.17`) + modelo de sostenibilidad (núcleo gratuito `Apache-2.0` + hipótesis institucional por validar).
+7. **Slide 7 — Legal Open Science Credits, Brand Identity & AI Watermark Disclosure:** Atribución legal completa (`Apache License 2.0`, `System UI Stack + JetBrains Mono SIL OFL 1.1`, `Lucide Icons MIT/ISC`, `17 U.S.C. § 105`, licencia `Copernicus DEM GLO-30`, cero logos NASA) y declaración transparente de IA (`AI_DISCLOSURE.md` + marca de agua visible `«AI-generated video»` en el video decorativo de la intro y `«AI-generated · Ckepi»` en los fondos paper-cut).
+
+---
+
+## PARTE 7 · ENLACES RÁPIDOS A TODOS LOS ARCHIVOS DE `docs/nehe/`
+
+- **Presentaciones Editables y PDFs:**
+  - Global (Inglés): [`ckepi-pitch-en.pptx`](ckepi-pitch-en.pptx) · [`ckepi-pitch-en.pdf`](ckepi-pitch-en.pdf) · [`ckepi-pitch-en.html`](ckepi-pitch-en.html) · [`PPT_7_SLIDES_GLOBAL_EN.md`](PPT_7_SLIDES_GLOBAL_EN.md) · [`PPT_7_SLIDES_PROTOTYPE.html`](PPT_7_SLIDES_PROTOTYPE.html)
+  - Local Antofagasta (Español): [`ckepi-pitch-es.pptx`](ckepi-pitch-es.pptx) · [`ckepi-pitch-es.pdf`](ckepi-pitch-es.pdf) · [`ckepi-pitch-es.html`](ckepi-pitch-es.html)
+- **Guiones de Pitch y Video:**
+  - Pitch presencial 3 minutos + Q&A (Español): [`PITCH_LOCAL_3MIN_ANTOFAGASTA_ES.md`](PITCH_LOCAL_3MIN_ANTOFAGASTA_ES.md)
+  - Guion de video de 30 segundos (EN + ES): [`GUION_VIDEO_DEMO_30S_EN_ES.md`](GUION_VIDEO_DEMO_30S_EN_ES.md)
+- **Datos Verificados y Bitácora:**
+  - Resultados reales de terreno a 30 m: [`RESULTADOS_TERRENO_REALES.md`](RESULTADOS_TERRENO_REALES.md) y [`DATOS_VERIFICADOS_PARA_DIAPOSITIVAS.md`](DATOS_VERIFICADOS_PARA_DIAPOSITIVAS.md)
+  - Bitácora en vivo de commits (Claude, GPT, Kevin, Angemon): [`BITACORA_CAMBIOS_CLAUDE_GPT_EQUIPO.md`](BITACORA_CAMBIOS_CLAUDE_GPT_EQUIPO.md)

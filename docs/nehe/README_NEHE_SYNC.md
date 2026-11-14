@@ -1,9 +1,12 @@
 # Centro Maestro de Sincronización (`docs/nehe/`) · Global · Local · Ciencia 30 m · Caja La Araucana
 
 > **Para:** Nehe & Dani (*Lattices Team*, NASA Space Apps Challenge 2026 — Sede Antofagasta)  
-> **Rama Activa:** `dani` (`origin/dani`)  
+> **Rama Activa:** `dani` (`origin/dani`) · **Sincronizado hasta:** `375bf7e` + `b4295e9` (`18:48 CLT`)  
 > **⭐ EMPIEZA AQUÍ (DOCUMENTO TODO-EN-UNO):** **[`DOSSIER_MAESTRO_COMPLETO_NEHE.md`](DOSSIER_MAESTRO_COMPLETO_NEHE.md)** (Reúne en un solo archivo: Problema Real + Propuesta de Valor e Innovación + Tabla Científica a 30 m con DEM Reales + Tabla Tres Mundos y Brecha $\mathbf{B}$ + 4 Ejes y Metas ODS de Caja La Araucana + Resumen de las 7 Slides).  
-> **Propósito:** Tener en una sola carpeta (`docs/nehe/`) **absolutamente todo el material actualizado** de los 4 pilares (**1. Global Inglés y Legal Open Science · 2. Local Antofagasta y Pitch · 3. Ciencia a 30 m con DEM reales · 4. Caja La Araucana y Metas ODS**), sincronizado con los últimos commits de **Claude**, **GPT (`Astra`/`Argon`)** y el equipo.
+> **📊 PRESENTACIONES PPTX Y PDF LISTAS PARA USAR (7 SLIDES CON CAPTURAS REALES):**
+> - **🌍 Global (100 % Inglés):** **[`ckepi-pitch-en.pptx`](ckepi-pitch-en.pptx)** · **[`ckepi-pitch-en.pdf`](ckepi-pitch-en.pdf)** · **[`ckepi-pitch-en.html`](ckepi-pitch-en.html)**
+> - **🇨🇱 Local Antofagasta / Caja La Araucana (Español):** **[`ckepi-pitch-es.pptx`](ckepi-pitch-es.pptx)** · **[`ckepi-pitch-es.pdf`](ckepi-pitch-es.pdf)** · **[`ckepi-pitch-es.html`](ckepi-pitch-es.html)**
+> - **⚙️ Script Generador Editable:** **[`build_deck_nehe.py`](build_deck_nehe.py)** + **[`pitch_verified_metrics.json`](pitch_verified_metrics.json)**
 
 ---
 
@@ -11,6 +14,7 @@
 
 | Archivo en `docs/nehe/` | Descripción y Uso Directo |
 |---|---|
+| [`ckepi-pitch-en.pptx`](ckepi-pitch-en.pptx) · [`ckepi-pitch-en.pdf`](ckepi-pitch-en.pdf) · [`ckepi-pitch-en.html`](ckepi-pitch-en.html) | **Presentación PowerPoint y PDF Oficial en Inglés (7 Slides):** Con capturas reales (`shot_explorer_mars.png`, `shot_explorer_moon.png`, `shot_atacama_analysis.png`), DEM real a 30 m (`83b224fffffffff` $W_1 = 0.54^\circ$ vs. Yungay $3.32^\circ$), Brecha $\mathbf{B}$, 4 ejes Araucana/ODS y créditos legales + marca de agua IA. |
 | [`PPT_7_SLIDES_GLOBAL_EN.md`](PPT_7_SLIDES_GLOBAL_EN.md) | **Las 7 Diapositivas Oficiales en Inglés:** Contenido completo slide por slide ($\le 7$ slides incluyendo portada y créditos legales) con los datos reales de DEM a $30\text{ m}$ y la tesis de innovación. |
 | [`PPT_7_SLIDES_PROTOTYPE.html`](PPT_7_SLIDES_PROTOTYPE.html) | **Presentación Interactiva HTML/CSS (7 Slides):** Lista para abrir en navegador (flechas `←` / `→`) o exportar a PDF con el botón **`Print / PDF`**. |
 | [`SUBMISSION_PACK_EN.md`](SUBMISSION_PACK_EN.md) | **Formulario Oficial de Envío NASA Space Apps (Inglés):** *High-Level Summary*, *How It Addresses the Challenge*, *Official NASA Data Field* listo para copiar/pegar en la plataforma global. |
@@ -26,6 +30,7 @@
 
 | Archivo en `docs/nehe/` | Descripción y Uso Directo |
 |---|---|
+| [`ckepi-pitch-es.pptx`](ckepi-pitch-es.pptx) · [`ckepi-pitch-es.pdf`](ckepi-pitch-es.pdf) · [`ckepi-pitch-es.html`](ckepi-pitch-es.html) | **Presentación PowerPoint y PDF Oficial en Español (7 Slides):** Lista para proyectar en el Demo Day presencial de Antofagasta con capturas reales, tesis de innovación, comparación real a 30 m (`83b224fffffffff` vs. Yungay), Brecha $\mathbf{B}$ y los 4 ejes + metas ODS de Caja La Araucana. |
 | [`PITCH_LOCAL_3MIN_ANTOFAGASTA_ES.md`](PITCH_LOCAL_3MIN_ANTOFAGASTA_ES.md) | **Guion Cronometrado de 3 Minutos + Q&A (20 s):** Estructura exacta para el Demo Day presencial frente a UCN, UA y Caja La Araucana, con respuestas a cada perfil del jurado. |
 | [`CONTEXTO_PARA_PITCH_CKEPI.md`](CONTEXTO_PARA_PITCH_CKEPI.md) · [`.pdf`](CONTEXTO_PARA_PITCH_CKEPI.pdf) | **Briefing de Honestidad y Narrativa para el Exponedor (por Claude):** Qué afirmar, cómo nombrar cada dato sin exagerar y cómo presentar lo que está en vivo. |
 | [`RUBRICA_LOCAL_ARAUCANA_Y_ODS.md`](RUBRICA_LOCAL_ARAUCANA_Y_ODS.md) | **Rúbrica Local + Demo Básica Mobile-First + 4 Ejes y Metas ODS de Caja La Araucana:** Evaluación de *Impact, Creativity, Validity, Relevance, Presentation*, checklist móvil (`320px`, botones $\ge 44\text{ px}$, voz `Web Speech API`) y tabla completa de **Metas ODS `4.3, 4.4, 8, 9.5, 10, 13, 17.3, 17.16, 17.17`**. |

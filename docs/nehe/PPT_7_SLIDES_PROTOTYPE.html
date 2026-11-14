@@ -107,7 +107,7 @@
       margin-bottom: 8px;
     }
     h1 {
-      font-size: clamp(1.75rem, 3vw, 2.6rem);
+      font-size: clamp(1.8rem, 3.2vw, 2.75rem);
       line-height: 1.15;
       margin-bottom: 14px;
     }
@@ -117,38 +117,38 @@
       margin-bottom: 14px;
     }
     p.lead {
-      font-size: 1.02rem;
+      font-size: 1.05rem;
       line-height: 1.6;
       color: var(--text-secondary);
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
     .grid-3 {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 18px;
-      margin: 14px 0;
+      margin: 16px 0;
     }
     .grid-2 {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 20px;
-      margin: 14px 0;
+      margin: 16px 0;
     }
     .card {
       background: rgba(2, 6, 23, 0.72);
       border: 1px solid var(--border-subtle);
       border-radius: 14px;
-      padding: 18px;
+      padding: 20px;
     }
     .card h3 {
-      font-size: 1.02rem;
+      font-size: 1.05rem;
       margin-bottom: 8px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
     .card p, .card li {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       line-height: 1.55;
       color: var(--text-secondary);
     }
@@ -158,7 +158,7 @@
       padding: 3px 10px;
       border-radius: 999px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.74rem;
+      font-size: 0.75rem;
       font-weight: 600;
     }
     .tag-sky { background: rgba(56, 189, 248, 0.16); color: var(--earth-sky); border: 1px solid rgba(56, 189, 248, 0.4); }
@@ -168,12 +168,12 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 10px 0;
-      font-size: 0.85rem;
+      margin: 12px 0;
+      font-size: 0.88rem;
     }
     th, td {
       border: 1px solid var(--border-subtle);
-      padding: 9px 11px;
+      padding: 10px 12px;
       text-align: left;
       vertical-align: top;
     }
@@ -185,14 +185,14 @@
     td { color: var(--text-secondary); }
     .mono { font-family: 'JetBrains Mono', monospace; }
     .slide-footer {
-      margin-top: 20px;
-      padding-top: 12px;
+      margin-top: 22px;
+      padding-top: 14px;
       border-top: 1px solid var(--border-subtle);
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       gap: 12px;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
     }
     @media print {
@@ -220,15 +220,15 @@
     <!-- SLIDE 1 -->
     <section class="slide active" data-slide="1">
       <div>
-        <div class="slide-kicker">Slide 1 of 7 · NASA Space Apps Challenge 2026 · Identify Earth Locations that Analog the Permanent Moon Base Locations and Mars</div>
+        <div class="slide-kicker">Slide 1 of 7 · NASA Space Apps Challenge 2026 · Comparing the Three Worlds: Earth, Moon, and Mars</div>
         <h1>CKEPI: Multi-Planetary Analog Discovery Engine with Causal Decomposition (<span class="mono">X → Y ∥ B</span>)</h1>
         <p class="lead">
-          <em>"We do not seek to prove that Atacama is identical to Mars. We seek to show which characteristics it shares, which differences exist, and which new locations deserve to be studied using scientific evidence."</em>
+          No place on Earth is 100% identical to the Moon or Mars. <strong>Ckepi</strong> replaces black-box similarity scores with explicit causal subspaces over a global <strong>Uber H3 hexagonal grid</strong> and a <strong>30 m common-scale statistical terrain engine</strong>.
         </p>
         <div class="grid-3">
           <div class="card">
             <h3><span class="tag tag-sky">Subspace X</span> Independent Substrate</h3>
-            <p>Slope (°), Local Relief (m), Roughness, Surface Albedo, Thermal Inertia (<span class="mono">J m⁻²K⁻¹s⁻¹/²</span>), Solar Irradiance (<span class="mono">W/m²</span>), and Aridity Index over an <strong>Uber H3 grid</strong>.</p>
+            <p>Slope (°), Roughness (m), Surface Albedo, Thermal Inertia (<span class="mono">J m⁻²K⁻¹s⁻¹/²</span>), Solar Irradiance (<span class="mono">W/m²</span>), and Aridity Index.</p>
           </div>
           <div class="card">
             <h3><span class="tag tag-emerald">Subspace Y = f(X)</span> Environmental Response</h3>
@@ -236,41 +236,41 @@
           </div>
           <div class="card">
             <h3><span class="tag tag-rose">Subspace B</span> Irreducible Physical Gap</h3>
-            <p>Gravity (<span class="mono">0.38 g</span> Mars / <span class="mono">0.166 g</span> Moon), Pressure (<span class="mono">~0.6 kPa CO₂</span> / <span class="mono">0 kPa</span>), and Ionizing Radiation (<span class="mono">~230–380 mSv/yr</span>) quantified via <span class="mono">R_break</span>.</p>
+            <p>Gravity (<span class="mono">0.38 g</span> Mars / <span class="mono">0.166 g</span> Moon), Pressure (<span class="mono">0.6 kPa CO₂</span> / <span class="mono">0 kPa</span>), and Ionizing Radiation (<span class="mono">~230–380 mSv/yr</span>) quantified via <span class="mono">R_break</span>.</p>
           </div>
         </div>
       </div>
       <div class="slide-footer">
-        <span>Team: Lattices Team · Antofagasta, Chile (Caja La Araucana &amp; UCN Hub)</span>
-        <span>Open Source Apache-2.0 License · 100% Public NASA &amp; Partner Data</span>
+        <span>Team: Lattices Team · Antofagasta, Chile (Caja La Araucana Hub)</span>
+        <span>Open Source · Apache License 2.0 · Public NASA & Partner Data</span>
       </div>
     </section>
 
     <!-- SLIDE 2 -->
     <section class="slide" data-slide="2">
       <div>
-        <div class="slide-kicker">Slide 2 of 7 · Real Problem, Human Importance, Value Proposition &amp; Innovation Thesis</div>
-        <h2>"We Do Not Seek to Prove That Atacama Is Identical to Mars"</h2>
+        <div class="slide-kicker">Slide 2 of 7 · Problem Statement & Status Quo Failure</div>
+        <h2>Why "Atacama Looks Like Mars" Is Scientifically Insufficient</h2>
         <p class="lead">
-          <strong>Our Innovation Proposal:</strong> <em>"We do not seek to prove that Atacama is identical to Mars. We seek to show which characteristics it shares, which differences exist, and which new locations deserve to be studied using scientific evidence."</em>
+          Selecting terrestrial testbeds by visual resemblance or regional reputation introduces three severe scientific and engineering failures:
         </p>
         <div class="grid-3">
           <div class="card">
-            <h3><span class="tag tag-sky">1. Is the Problem Real?</span></h3>
-            <p><strong>Yes.</strong> NASA recognizes that terrestrial analogs are not yet fully characterized and that real opportunities exist to identify new sites for Moon and Mars exploration by integrating multi-instrument scientific data and understanding each terrain's physical limitations.</p>
+            <h3><span class="tag tag-amber">Failure 1</span> Scale & Resolution Blindness</h3>
+            <p>Comparing kilometric global orbital grids directly against meter-scale rover testbeds, or summarizing an entire crater into a single mean slope without confidence intervals.</p>
           </div>
           <div class="card">
-            <h3><span class="tag tag-emerald">2. Does It Affect People?</span></h3>
-            <p><strong>Yes.</strong> It directly affects <strong>researchers and engineers</strong> who need transparent preliminary evidence to prepare field trials, while opening an <strong>educational opportunity</strong> to bring space science to students and citizens without scientific backgrounds through accessible tools.</p>
+            <h3><span class="tag tag-amber">Failure 2</span> Confusing Biology with Mechanics</h3>
+            <p>Using flat hyperarid plains (like classic <strong>Yungay</strong>) to test rover traction intended for steep crater-margin scarps (like <strong>Jezero Crater</strong>), resulting in false mechanical confidence.</p>
           </div>
           <div class="card">
-            <h3><span class="tag tag-amber">3. Value Proposition</span></h3>
-            <p><strong>Ckepi</strong> facilitates transparent scientific comparisons, guides preliminary research (pre-selecting sites rather than certifying operational safety), enables accessible learning with real space data, and studies <strong>under-characterized sectors of Antofagasta and other regions</strong>.</p>
+            <h3><span class="tag tag-rose">Failure 3</span> Ignoring Physical Rupture (B)</h3>
+            <p>Testing hardware in open air on Earth (<span class="mono">1.0 g, 101.3 kPa, 2.4 mSv/yr</span>) without flagging which subsystems will fail under <span class="mono">0.38 g</span>, <span class="mono">0.6 kPa CO₂</span>, or <span class="mono">230 mSv/yr</span> GCR radiation.</p>
           </div>
         </div>
       </div>
       <div class="slide-footer">
-        <span>Transparent Preliminary Screening + Accessible STEAM Literacy · Zero Hype</span>
+        <span>Status Quo Gap: Visual Analogs vs. Multi-Scale Causal Validation</span>
         <span>Slide 2 / 7</span>
       </div>
     </section>
@@ -285,25 +285,25 @@
         </p>
         <div class="grid-2">
           <div class="card">
-            <h3><span class="tag tag-sky">Mode A · Mission Telemetry</span> For Scientists &amp; Engineers</h3>
+            <h3><span class="tag tag-sky">Mode A · Mission Telemetry</span> For Scientists & Engineers</h3>
             <ul>
-              <li><strong>Dual 2D/3D Planetary Canvas:</strong> Synchronized Earth H3 grid + <strong>NASA Moon Trek &amp; Mars Trek WMTS 3D Globes</strong>.</li>
-              <li><strong>5 Mission Presets + Live Coordinate Probe:</strong> Click anywhere on Earth to query real-time ETL (<span class="mono">Copernicus DEM</span>, <span class="mono">NASA POWER</span>, <span class="mono">Open-Meteo</span>, <span class="mono">SoilGrids</span>, <span class="mono">Macrostrat</span>).</li>
-              <li><strong>Real 30 m Terrain Distribution Panel:</strong> Interactive histograms, empirical CDFs, <span class="mono">W₁</span> &amp; <span class="mono">D_KS</span> metrics, 95% block-bootstrap CIs, 30/60/90 m sensitivity, and 1-click export (<span class="mono">.md / .csv / .geojson</span>).</li>
+              <li><strong>Dual 2D/3D Planetary Canvas:</strong> Synchronized Earth H3 grid + <strong>NASA Moon Trek & Mars Trek WMTS 3D Globes</strong>.</li>
+              <li><strong>5 Mission Presets + Live Coordinate Probe:</strong> Click anywhere on Earth to query real-time ETL (<span class="mono">Copernicus DEM</span>, <span class="mono">NASA POWER</span>, <span class="mono">Open-Meteo</span>, <span class="mono">Macrostrat</span>).</li>
+              <li><strong>30 m Terrain Distribution Panel:</strong> Interactive histograms, empirical CDFs, <span class="mono">W₁</span> & <span class="mono">D_KS</span> metrics, 95% block-bootstrap CIs, and 1-click export (<span class="mono">.md / .csv / .geojson</span>).</li>
             </ul>
           </div>
           <div class="card">
             <h3><span class="tag tag-emerald">Mode B · Explorer ("Three Worlds in Your Hand")</span> For All Ages</h3>
             <ul>
-              <li><strong>Verified NASA NSSDCA Table:</strong> Compares Earth, Moon, and Mars in 3 progressive levels (<em>Look → Compare → Investigate</em>) using everyday analogies (<em>"A 10 kg backpack feels like 1.7 kg on the Moon and 3.8 kg on Mars"</em>).</li>
-              <li><strong>Web Speech API Voice Narration:</strong> Full spoken readout in <strong>English, Spanish, and Portuguese</strong> for low digital literacy, classrooms, and older adults.</li>
-              <li><strong>Mobile-First Ergonomics:</strong> Touch targets <span class="mono">≥ 44×44 px</span>, WCAG AA/AAA contrast, printable cards, and 15-second STEAM challenges.</li>
+              <li><strong>Verified NASA NSSDCA Table:</strong> Compares Earth, Moon, and Mars using everyday physical intuition (<em>"A 10 kg backpack weighs 1.7 kg on the Moon and 3.8 kg on Mars"</em>).</li>
+              <li><strong>Web Speech API Voice Narration:</strong> Full spoken readout in <strong>English, Spanish, and Portuguese</strong> for classrooms, older adults, and low-vision users.</li>
+              <li><strong>Mobile-First Ergonomics:</strong> Touch targets <span class="mono">≥ 44×44 px</span>, WCAG AAA contrast, and 15-second interactive STEAM retrieval challenges.</li>
             </ul>
           </div>
         </div>
       </div>
       <div class="slide-footer">
-        <span>Prototype Verified: tsc &amp;&amp; vite build (0 errors) · 471/471 i18n keys (EN/ES/PT)</span>
+        <span>Prototype Verified: tsc && vite build (0 errors) · 471/471 i18n keys (EN/ES/PT)</span>
         <span>Slide 3 / 7</span>
       </div>
     </section>
@@ -311,50 +311,51 @@
     <!-- SLIDE 4 -->
     <section class="slide" data-slide="4">
       <div>
-        <div class="slide-kicker">Slide 4 of 7 · Official NASA &amp; Partner Open Data Pipeline (Gate G8)</div>
+        <div class="slide-kicker">Slide 4 of 7 · Official NASA & Partner Open Data Pipeline (Gate G8)</div>
         <h2>Precision Instrumental Provenance Across Three Worlds</h2>
         <table>
           <thead>
             <tr>
               <th>World</th>
-              <th>Official NASA &amp; Partner Datasets Integrated</th>
-              <th>Resolution &amp; Physical Role in Ckepi</th>
+              <th>Official NASA & Partner Datasets Integrated</th>
+              <th>Resolution & Physical Role in Ckepi</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><strong>Mars</strong></td>
               <td>
-                • <strong>NASA MRO CTX / USGS Mars 2020 TRN CTX DEM Mosaic, Jezero Crater (20 m/px)</strong> <em>(core input of the 30 m terrain comparison, public domain)</em><br/>
+                • <strong>NASA MGS MOLA MEGDR</strong> (<span class="mono">10.1029/2000JE001426</span>) & TES Thermal Inertia<br/>
+                • <strong>NASA MRO / USGS Mars 2020 CTX DEM</strong> (Jezero Crater, <span class="mono">20 m/px → 30 m</span>)<br/>
                 • <strong>NASA Mars 2020 Perseverance MEDA</strong> (<span class="mono">10.1007/s11214-021-00804-9</span>)<br/>
-                • <strong>NASA MSL Curiosity REMS &amp; RAD</strong> (Hassler et al., 2014, <span class="mono">10.1126/science.1244797</span>)<br/>
-                • <strong>NASA MGS MOLA MEGDR</strong> (<span class="mono">10.1029/2000JE001426</span>) &amp; <strong>NASA Mars Trek WMTS</strong>
+                • <strong>NASA MSL Curiosity REMS & RAD</strong> (Hassler et al., 2014, <span class="mono">10.1126/science.1244797</span>)<br/>
+                • <strong>NASA Mars Trek WMTS</strong> (Global 3D planetary tiles)
               </td>
-              <td>Jezero CTX DEM in Equirectangular projection (true scale at <span class="mono">18.47° N</span>), area-averaged to <strong>30 m/px</strong> (<span class="mono">6×6 km = 200×200 px</span>). Supplies <span class="mono">X, Y (ΔT)</span>, and <span class="mono">B (0.38 g, 0.6 kPa CO₂, 230 mSv/yr)</span>.</td>
+              <td>Provides Martian substrate <span class="mono">X</span>, diurnal thermal swing <span class="mono">Y (ΔT ≈ 80–100 K)</span>, 30 m Jezero Crater slopes, and <span class="mono">B (0.38 g, 0.6 kPa CO₂, 230 mSv/yr)</span>.</td>
             </tr>
             <tr>
               <td><strong>Moon</strong></td>
               <td>
                 • <strong>NASA LRO LOLA GDR</strong> (<span class="mono">10.1007/s11214-010-9634-2</span>)<br/>
                 • <strong>NASA LRO Diviner Lunar Radiometer GDR</strong> (<span class="mono">10.1007/s11214-010-9635-1</span>)<br/>
-                • <strong>NASA Moon Trek WMTS</strong> &amp; <strong>NSSDCA Planetary Fact Sheet</strong>
+                • <strong>NASA Moon Trek WMTS</strong> & <strong>NSSDCA Planetary Fact Sheet</strong>
               </td>
               <td>Maps South Pole anorthositic highlands (<em>Shackleton Crater</em>, <span class="mono">89.9° S</span>), grazing solar lighting, <span class="mono">ΔT ≈ 290 K</span>, and <span class="mono">B (0.166 g, 0 kPa vacuum, 380 mSv/yr)</span>.</td>
             </tr>
             <tr>
               <td><strong>Earth</strong></td>
               <td>
-                • <strong>ESA Copernicus DEM GLO-30</strong> (1″ DSM, AWS Open Data, reprojected to <strong>UTM Zone 19S <span class="mono">EPSG:32719</span> at 30 m/px</strong>)<br/>
-                • <strong>NASA LaRC POWER API v2.5</strong> (20+ yr Climatology Solar &amp; UV Flux)<br/>
-                • <strong>Open-Meteo ERA5-Land</strong>, <strong>ISRIC SoilGrids v2.0</strong> &amp; <strong>Macrostrat API v2</strong>
+                • <strong>ESA Copernicus DEM GLO-30</strong> (<span class="mono">30 m</span> DSM, Copernicus DEM licence) — real Earth terrain<br/>
+                • <strong>NASA LaRC POWER API v2.5</strong> (CERES/MERRA-2 Solar & UV Flux)<br/>
+                • <strong>Open-Meteo ERA5-Land Archive</strong> & <strong>UW–Madison Macrostrat API v2</strong>
               </td>
-              <td>Real <span class="mono">6×6 km</span> metric windows in Antofagasta recorded with SHA-256 hashes in <span class="mono">terrain_windows_30m.json</span>. Unmeasured pairs are explicitly labelled <span class="mono">SYNTHETIC — not a measurement</span>.</td>
+              <td>Projected at <span class="mono">30 m/px</span> (UTM Zone 19S <span class="mono">EPSG:32719</span>) across Antofagasta and 26 global reference analogs for H3 & distribution matching.</td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="slide-footer">
-        <span>Zero Unauthorized Sources · Reproducible via backend/scripts/precompute_real_terrain.py</span>
+        <span>Zero Unauthorized Sources · 100% Open Science Public Domain & CC BY 4.0</span>
         <span>Slide 4 / 7</span>
       </div>
     </section>
@@ -362,74 +363,65 @@
     <!-- SLIDE 5 -->
     <section class="slide" data-slide="5">
       <div>
-        <div class="slide-kicker">Slide 5 of 7 · Real 30 m DEM Comparison: Jezero Crater → Antofagasta</div>
-        <h2>Common-Scale (30 m) Distribution Matching: What Matches, What Fails &amp; Why</h2>
+        <div class="slide-kicker">Slide 5 of 7 · Real 30 m Scientific Comparison: Jezero Crater → Atacama</div>
+        <h2>Common-Scale (30 m) Distribution Matching: What Matches, What Fails & Why</h2>
         <p class="lead">
-          Evaluated on real <span class="mono">6 × 6 km</span> (<span class="mono">200 × 200 px</span>) DEM windows at <strong>30 m/px</strong> (with <strong>30 m, 60 m, 90 m</strong> multiscale sensitivity) using <strong>Wasserstein-1 (<span class="mono">W₁</span>)</strong>, <strong>Kolmogorov–Smirnov (<span class="mono">D_KS</span>)</strong>, and <strong>2D Spatial Block Bootstrap</strong> (<span class="mono">10×10 px = 300×300 m</span> blocks, 95% CI):
+          Evaluated on a <span class="mono">3.6 × 3.6 km</span> metric grid at <strong>30 m/px</strong> (with <strong>30 m, 60 m, 90 m</strong> multiscale sensitivity) using <strong>Wasserstein-1 (<span class="mono">W₁</span>)</strong>, <strong>Kolmogorov–Smirnov (<span class="mono">D_KS</span>)</strong>, and <strong>2D Spatial Block Bootstrap</strong> (<span class="mono">10×10 px = 300×300 m</span> blocks, <span class="mono">B = 200</span> replicates):
         </p>
         <table>
           <thead>
             <tr>
               <th>Case Type</th>
-              <th>Window / H3 Cell (<span class="mono">res=3</span>) &amp; Center</th>
-              <th>Elevation (m) &amp; Slope <span class="mono">P₅₀</span></th>
+              <th>Site & H3 Cell (<span class="mono">res=3</span>)</th>
+              <th>30 m Slope Median (<span class="mono">P₅₀</span>)</th>
               <th>Slope <span class="mono">W₁ (°)</span> [95% CI]</th>
-              <th>Slope <span class="mono">D_KS</span></th>
-              <th>Relief <span class="mono">W₁ (m)</span></th>
+              <th>Slope <span class="mono">D_KS</span> [95% CI]</th>
+              <th>Relief <span class="mono">W₁ (m)</span> [95% CI]</th>
               <th>Physical Explanation (Why It Matches or Fails)</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><span class="tag tag-amber">Planetary Target</span></td>
-              <td><strong>Jezero Crater, Mars</strong> (<span class="mono">18.38° N, 77.58° E</span>, NASA MRO CTX DEM)</td>
-              <td class="mono">−2,674 to −2,599 m<br/>P₅₀ = 1.70° (P₉₀ = 4.0°)</td>
-              <td class="mono">0.00° (Ref)</td>
-              <td class="mono">0.00 (Ref)</td>
-              <td class="mono">Ref</td>
-              <td>Real 20 m CTX DEM area-averaged to <strong>30 m/px</strong>.</td>
+              <td><strong>Jezero Crater, Mars</strong> (<span class="mono">18.38° N, 77.58° E</span>; NASA MRO CTX DEM)</td>
+              <td class="mono">1.70° (p90 4.01°)</td>
+              <td class="mono">—</td>
+              <td class="mono">—</td>
+              <td class="mono">—</td>
+              <td>6 km crater-floor window, 30 m.</td>
             </tr>
             <tr>
-              <td><span class="tag tag-emerald">✅ Positive Match</span></td>
-              <td><strong>Antofagasta Cell <span class="mono">83b224fffffffff</span></strong> (<span class="mono">−23.052° S, −69.497° W</span>)</td>
-              <td class="mono">1,408 to 1,538 m<br/>P₅₀ = 1.37°</td>
-              <td class="mono"><strong>0.54°</strong> [0.40°–0.65°]<br/>(Holds at 60m &amp; 90m)</td>
+              <td><span class="tag tag-emerald">✅ What matches</span></td>
+              <td><strong>H3 cell 83b224, Antofagasta</strong> (<span class="mono">23.05° S, 69.50° W</span>)</td>
+              <td class="mono">1.37° (p90 2.85°)</td>
+              <td class="mono"><strong>0.54°</strong> [0.40°–0.65°]<br/>(60 m: 0.40°, 90 m: 0.27°)</td>
               <td class="mono"><strong>0.15</strong></td>
               <td class="mono"><strong>1.8 m</strong></td>
-              <td><strong>CLOSEST REAL 30 m MATCH:</strong> Closely matches Jezero's slope &amp; local relief distribution—pre-selected for preliminary rover mobility field study.</td>
+              <td><strong>Closest slope distribution</strong>, stable across scales: a candidate for rover-mobility field study, not a certified site.</td>
             </tr>
             <tr>
-              <td><span class="tag tag-sky">⚠️ Benchmark</span></td>
-              <td><strong>Control Yungay</strong> (<span class="mono">−24.08° S, −69.91° W</span>)</td>
-              <td class="mono">957 to 1,280 m<br/>(P₉₀ = 15.1°)</td>
-              <td class="mono"><strong>3.32°</strong></td>
-              <td class="mono">—</td>
-              <td class="mono">—</td>
-              <td><strong>HEAVIER STEEP TAIL:</strong> Classic astrobiology site (Navarro-González et al., 2003), but its 6 km window has a steeper tail (<span class="mono">P₉₀ = 15.1° vs. 4.0°</span>).</td>
+              <td><span class="tag tag-amber">⚠️ Classic control</span></td>
+              <td><strong>Yungay, Antofagasta</strong> (<span class="mono">24.08° S, 69.91° W</span>)</td>
+              <td class="mono">2.56° (p90 15.11°)</td>
+              <td class="mono">3.32°</td>
+              <td class="mono">0.31</td>
+              <td class="mono">20.8 m</td>
+              <td>Further than cell 83b224 because of a heavy tail of steep hillsides. Still the reference for <strong>hyper-arid astrobiology</strong> (Navarro-González et al., 2003).</td>
             </tr>
             <tr>
-              <td><span class="tag tag-rose">❌ Negative #1</span></td>
-              <td><strong>Andean Cell <span class="mono">83b221fffffffff</span></strong> (<span class="mono">−24.683° S, −68.604° W</span>)</td>
-              <td class="mono">4,195 to 5,270 m<br/>P₅₀ = 7.89°</td>
+              <td><span class="tag tag-rose">❌ What does not match</span></td>
+              <td><strong>H3 cell 83b221, Antofagasta</strong> (<span class="mono">24.68° S, 68.60° W; 4,200–5,270 m</span>)</td>
+              <td class="mono">7.89° (p90 15.51°)</td>
               <td class="mono"><strong>6.92°</strong> [6.17°–7.31°]</td>
-              <td class="mono"><strong>0.74</strong></td>
-              <td class="mono"><strong>42.8 m</strong></td>
-              <td><strong>FAILS AT 30 m (TOO STEEP):</strong> High-Andean volcanic relief is far too steep and rugged compared to the Jezero window.</td>
-            </tr>
-            <tr>
-              <td><span class="tag tag-rose">❌ Negative #2</span></td>
-              <td><strong>Salar Cell <span class="mono">83b225fffffffff</span></strong> (<span class="mono">−23.606° S, −68.524° W</span>)</td>
-              <td class="mono">2,301 to 2,342 m<br/>P₅₀ = 0.19°</td>
-              <td class="mono"><strong>1.71°</strong> [1.65°–1.86°]</td>
-              <td class="mono"><strong>0.82</strong></td>
-              <td class="mono"><strong>8.2 m</strong></td>
-              <td><strong>FAILS AT 30 m (TOO FLAT):</strong> Evaporitic salar crust is nearly flat (<span class="mono">P₅₀ = 0.19°</span>), missing Jezero's undulations.</td>
+              <td class="mono">0.74</td>
+              <td class="mono">42.8 m</td>
+              <td><strong>Far too steep</strong> (high Andes).</td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="slide-footer">
-        <span>Real DEM Provenance: terrain_windows_30m.npz / .json (pytest tests/test_terrain_real_dem.py) · Pre-selection, not certification</span>
+        <span>Real DEMs: NASA MRO CTX (USGS) vs. ESA Copernicus GLO-30 · 6 km windows at 30 m · reproducible script + SHA-256</span>
         <span>Slide 5 / 7</span>
       </div>
     </section>
@@ -437,24 +429,24 @@
     <!-- SLIDE 6 -->
     <section class="slide" data-slide="6">
       <div>
-        <div class="slide-kicker">Slide 6 of 7 · Irreducible Physical Gap (B) &amp; Local Impact (Caja La Araucana)</div>
-        <h2>Where Earth Analogs Always Break Down &amp; Territorial Value in Antofagasta</h2>
+        <div class="slide-kicker">Slide 6 of 7 · Irreducible Physical Gap (B) & Local Impact (Caja La Araucana)</div>
+        <h2>Where Earth Analogs Always Break Down & Territorial Value in Antofagasta</h2>
         <div class="grid-2">
           <div class="card">
             <h3><span class="tag tag-rose">Irreducible Gap (B)</span> Why Earth Never Matches</h3>
             <ul>
-              <li><strong>Gravity (<span class="mono">g</span>):</strong> Mars <span class="mono">0.38 g (3.7 m/s²)</span> &amp; Moon <span class="mono">0.166 g (1.6 m/s²)</span> vs. Earth <span class="mono">1.00 g (9.8 m/s²)</span> → Over-stresses rover suspension and alters regolith sinkage.</li>
-              <li><strong>Atmosphere (<span class="mono">P_atm</span>):</strong> Mars <span class="mono">~0.6 kPa (6.1 mbar, 95% CO₂)</span> &amp; Moon <span class="mono">0 kPa (vacuum)</span> vs. Earth <span class="mono">101.3 kPa</span> → Invalidates open-air thermal convection and rotor lift.</li>
-              <li><strong>Ionizing Radiation:</strong> Mars <span class="mono">~230 mSv/yr</span> (<em>Curiosity/RAD</em>, <span class="mono">0.64 mSv/day</span>) &amp; Moon <span class="mono">~380 mSv/yr</span> vs. Earth <span class="mono">~2.4 mSv/yr</span> → Protected by Earth's magnetosphere + atmosphere.</li>
-              <li><strong>Thermal Swing (<span class="mono">ΔT</span>):</strong> Moon <span class="mono">~290 K (95–390 K)</span> &amp; Mars <span class="mono">mean −59 to −65 °C</span> vs. Earth <span class="mono">mean 15 °C</span>.</li>
+              <li><strong>Gravity (<span class="mono">g</span>):</strong> Mars <span class="mono">0.38 g (3.72 m/s²)</span> & Moon <span class="mono">0.166 g (1.62 m/s²)</span> vs. Earth <span class="mono">1.00 g (9.81 m/s²)</span> → Over-stresses rover suspension and alters regolith sinkage.</li>
+              <li><strong>Atmosphere (<span class="mono">P_atm</span>):</strong> Mars <span class="mono">~0.6 kPa (6.1 mbar CO₂)</span> & Moon <span class="mono">0 kPa (vacuum)</span> vs. Earth <span class="mono">101.3 kPa</span> → Invalidates open-air thermal convection and rotor lift.</li>
+              <li><strong>Ionizing Radiation:</strong> Mars <span class="mono">~230 mSv/yr</span> (<em>Curiosity/RAD</em>) & Moon <span class="mono">~380 mSv/yr</span> vs. Earth <span class="mono">~2.4 mSv/yr</span> → Requires particle accelerators for avionics SEU testing.</li>
+              <li><strong>Thermal Swing (<span class="mono">ΔT</span>):</strong> Moon <span class="mono">~290 K</span> & Mars <span class="mono">80–100 K</span> vs. Atacama <span class="mono">35–40 K</span>.</li>
             </ul>
           </div>
           <div class="card">
-            <h3><span class="tag tag-emerald">Caja La Araucana &amp; Official UN SDGs</span> 4 Strategic Axes</h3>
+            <h3><span class="tag tag-emerald">Caja La Araucana & Official UN SDGs</span> 4 Strategic Axes</h3>
             <ul>
               <li><strong>1. Frontier Science for All (<span class="mono">SDG 4.3</span>):</strong> Free, voice-guided (<span class="mono">Web Speech API</span>), trilingual (<span class="mono">EN/ES/PT</span>) platform accessible to any school, technical high school, or family without digital barriers.</li>
-              <li><strong>2. STEAM &amp; Employability (<span class="mono">SDG 4.4 · SDG 8</span>):</strong> Builds Antofagasta capabilities in <span class="mono">H3/DuckDB</span> geospatial science, autonomous mining/rover terrain analysis, and community astro-geotourism.</li>
-              <li><strong>3. Local Application (<span class="mono">SDG 9.5 · SDG 10 · SDG 13</span>):</strong> Highlights under-studied Antofagasta cell <span class="mono">83b224fffffffff</span> for preliminary field study while reducing logistics emissions.</li>
+              <li><strong>2. STEAM & Employability (<span class="mono">SDG 4.4 · SDG 8</span>):</strong> Builds Antofagasta capabilities in <span class="mono">H3/DuckDB</span> geospatial science, autonomous mining/rover terrain analysis, and community astro-geotourism.</li>
+              <li><strong>3. Local Application (<span class="mono">SDG 9.5 · SDG 10 · SDG 13</span>):</strong> Flags under-studied Antofagasta locations (e.g. H3 cell 83b224, the closest slope match to Jezero) as candidates for field study — pre-selection, not validation.</li>
               <li><strong>4. Interregional Network — <em>Lattices</em> (<span class="mono">SDG 17.3 · 17.16 · 17.17</span>):</strong> Multi-stakeholder alliance linking Caja La Araucana, UCN, and UA with Chilean regions and global open-science catalogs.</li>
             </ul>
           </div>
@@ -469,22 +461,22 @@
     <!-- SLIDE 7 -->
     <section class="slide" data-slide="7">
       <div>
-        <div class="slide-kicker">Slide 7 of 7 · Legal Open Science Credits, Brand Identity &amp; AI Disclosure (Gates G8, G9, G11, G12)</div>
-        <h2>Open Science Legal Attribution &amp; Reproducibility</h2>
+        <div class="slide-kicker">Slide 7 of 7 · Legal Open Science Credits, Brand Identity & AI Disclosure (Gates G8, G9, G11, G12)</div>
+        <h2>Open Science Legal Attribution & Reproducibility</h2>
         <div class="grid-2">
           <div class="card">
-            <h3><span class="tag tag-sky">Data &amp; Code Licenses</span> NASA SPD-41a / FAIR</h3>
+            <h3><span class="tag tag-sky">Data & Code Licenses</span> NASA SPD-41a / FAIR</h3>
             <ul>
-              <li><strong>NASA Open Data (U.S. Public Domain, <span class="mono">17 U.S.C. § 105</span>):</strong> <span class="mono">MRO/USGS Mars 2020 TRN CTX DEM Mosaic (20 m)</span>, <span class="mono">LRO LOLA &amp; Diviner GDR</span>, <span class="mono">MGS MOLA MEGDR</span>, <span class="mono">Mars 2020 MEDA</span>, <span class="mono">MSL REMS/RAD</span> (Hassler et al., 2014), <span class="mono">NASA POWER v2.5</span>, <span class="mono">NASA Solar System Treks WMTS</span>, <span class="mono">NSSDCA Fact Sheet</span>.</li>
-              <li><strong>Partner Open Data:</strong> <span class="mono">ESA Copernicus DEM GLO-30</span> (© DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH 2014–2018 provided under COPERNICUS by the EU and ESA), <span class="mono">Open-Meteo ERA5-Land</span> (<span class="mono">CC BY 4.0</span>), <span class="mono">ISRIC SoilGrids v2.0</span> (<span class="mono">CC BY 4.0</span>), <span class="mono">Macrostrat API v2</span> (<span class="mono">CC BY 4.0</span>).</li>
-              <li><strong>Source Code License:</strong> Released under <strong>Apache License 2.0</strong> (<span class="mono">FastAPI, DuckDB, Uber H3, SciPy, scikit-learn, React 18, Tailwind CSS, MapLibre GL JS</span>).</li>
+              <li><strong>NASA Open Data (U.S. Public Domain, <span class="mono">17 U.S.C. § 105</span>):</strong> <span class="mono">MRO CTX / USGS Mars 2020 TRN CTX DEM (Jezero, core terrain input)</span>, <span class="mono">LRO LOLA & Diviner GDR</span>, <span class="mono">MGS MOLA MEGDR</span>, <span class="mono">MRO/USGS Mars 2020 CTX DEM</span>, <span class="mono">Mars 2020 MEDA</span>, <span class="mono">MSL REMS/RAD</span> (Hassler et al., 2014), <span class="mono">NASA POWER v2.5</span>, <span class="mono">NASA Solar System Treks WMTS</span>, <span class="mono">NSSDCA Fact Sheet</span>.</li>
+              <li><strong>Partner Open Data (<span class="mono">CC BY 4.0</span>):</strong> <span class="mono">ESA Copernicus DEM GLO-30</span> (2023), <span class="mono">Open-Meteo ERA5-Land</span>, <span class="mono">Macrostrat API v2</span>.</li>
+              <li><strong>Source Code License:</strong> Released under the <strong>Apache License 2.0</strong> (<span class="mono">FastAPI, DuckDB, Uber H3, SciPy, scikit-learn, React 18, Tailwind CSS, MapLibre GL JS</span>).</li>
             </ul>
           </div>
           <div class="card">
-            <h3><span class="tag tag-emerald">Brand, Typography &amp; AI Disclosure</span> Gate G11</h3>
+            <h3><span class="tag tag-emerald">Brand, Typography & AI Disclosure</span> Gate G11</h3>
             <ul>
-              <li><strong>Typography &amp; Icons:</strong> System UI font stack (no web fonts are loaded or redistributed); <span class="mono">Lucide Icons</span> under <strong>ISC/MIT License</strong>.</li>
-              <li><strong>Basemap Attribution:</strong> © OpenStreetMap contributors (<span class="mono">ODbL</span>) &amp; © CARTO (<span class="mono">CC BY 4.0</span>); Planetary tiles courtesy of NASA/JPL-Caltech/ASU.</li>
+              <li><strong>Typography & Icons:</strong> System UI font stack (no web fonts are loaded or redistributed); <span class="mono">Lucide Icons</span> under <strong>ISC/MIT License</strong>.</li>
+              <li><strong>Basemap Attribution:</strong> © OpenStreetMap contributors (<span class="mono">ODbL</span>) & © CARTO (<span class="mono">CC BY 4.0</span>); Planetary tiles courtesy of NASA/JPL-Caltech/ASU.</li>
               <li><strong>AI Disclosure (<span class="mono">AI_DISCLOSURE.md</span>):</strong> Scientific hypothesis (<span class="mono">X → Y ∥ B</span>) and statistical methods are <strong>100% human-conceived by Lattices Team</strong>. AI tools assisted in code scaffolding, translation parity, and audit checks. <strong>Zero AI-generated images/videos and zero NASA logos are used.</strong></li>
               <li><strong>Public Repository (No Login):</strong> <span class="mono">https://github.com/AnGeMoNs/Ckepi</span></li>
             </ul>
@@ -492,7 +484,7 @@
         </div>
       </div>
       <div class="slide-footer">
-        <span>Ckepi · Lattices Team (Antofagasta, Chile) · Ready for Global &amp; Local Evaluation</span>
+        <span>Ckepi · Lattices Team (Antofagasta, Chile) · Ready for Global & Local Evaluation</span>
         <span>Slide 7 / 7</span>
       </div>
     </section>
