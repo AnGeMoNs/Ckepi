@@ -27,11 +27,11 @@
 
 ---
 
-### Bloque 3 · `1:45 – 2:30` (45 s) · Demo Mobile-First «Tres Mundos en tu Mano» + 4 Ejes Caja La Araucana y ODS
-- **[En pantalla: Vista móvil `320px` — Panel «Tres Mundos en tu Mano» con botón de Voz `Web Speech API` y tarjetas Caja La Araucana]**
+### Bloque 3 · `1:45 – 2:30` (45 s) · Demo Mobile-First «Modo Explorar» (3 Mundos de Cartón) + 4 Ejes Caja La Araucana, Empleos Locales y ODS
+- **[En pantalla: Vista `?view=explore` — 3 Mundos de Cartón flotando (Luna · Antofagasta · Marte) + Lección con Pictogramas, Mochila de 10 kg y Voz `Web Speech API`]**
 - **Voz:**
-  > *«Los mismos datos alimentan nuestro modo **Mobile-First "Tres Mundos en tu Mano"**, diseñado para personas con baja alfabetización digital, niños y adultos mayores: sin cuenta, con botones grandes $\ge 44\text{ px}$, lectura en voz alta en tres idiomas y analogías cotidianas verificadas con las fichas oficiales de NASA —como sentir que una mochila de 10 kilos pesa 1,7 kilos en la Luna y 3,8 kilos en Marte.*
-  > *Así cumplimos los **4 objetivos oficiales de Caja La Araucana** y sus **Metas ODS declaradas (`4.3, 4.4, 8, 9.5, 10, 13, 17.3, 17.16, 17.17`)**: democratizamos ciencia de frontera, formamos competencias STEAM y empleabilidad regional, aplicamos la ciencia al territorio de Antofagasta y articulamos una red interregional abierta.»*
+  > *«Y tras el feedback de los mentores, simplificamos la entrada para toda la comunidad con nuestro **Modo Explorar (`?view=explore`)**, que funciona incluso 100 % estático sin depender de servidor: en pantalla hay una sola pregunta y **tres mundos de cartón flotando —Luna, Antofagasta y Marte—**. Al tocar uno, cualquier niño, familia o persona mayor aprende paso a paso con **pictogramas propios, lectura en voz alta en tres idiomas (`ES/PT/EN`) y simuladores cotidianos**, como ver que una mochila de 10 kilos pesa 1,7 kilos en la Luna y 3,8 kilos en Marte, o explorar el ranking de las **4 zonas medidas de Antofagasta**.*
+  > *Así cumplimos de forma concreta los **4 objetivos oficiales de Caja La Araucana** y sus **Metas ODS (`4.3, 4.4, 8, 9.5, 10, 13, 17.3, 17.16, 17.17`)**: 1) democratizamos ciencia de frontera, 2) formamos habilidades STEAM en geomática, estadística y datos NASA conectadas con **empleos reales de Antofagasta —robótica y automatización minera, observatorios astronómicos y energía solar del desierto—**, 3) ponemos en valor nuevos sectores de nuestra región y 4) articulamos una red interregional abierta.»*
 
 ---
 
