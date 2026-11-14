@@ -821,5 +821,112 @@
         "moonIceNote": "Ice electrolysis or regolith reduction"
       }
     }
+  },
+  "telemetryAndRover": {
+    "lagTitle": "Data Lag Period & Telemetry Synchronization (NASA / ESA)",
+    "lagSubtitle": "Real engine update timestamps, sensor observation windows, and physical transmission latency.",
+    "lastSyncLabel": "Last API sync",
+    "elapsedJustNow": "Just now (< 1 min)",
+    "elapsedMinutes": "{{count}} min ago",
+    "elapsedHours": "{{count}} h {{mins}} min ago",
+    "elapsedDays": "{{count}} days ago",
+    "planetaryFeedTitle": "Planetary Telemetry ({{body}})",
+    "earthFeedTitle": "Earth H3 Grid ({{cell}})",
+    "obsWindowLabel": "Observation window",
+    "signalLatencyLabel": "Physical signal / archive lag",
+    "marsLatencyDesc": "Radio one-way light time (OWLT): 4–22 min (avg ~12.5 min) · NASA DSN downlink lag (REMS/MEDA): 24–72 h (1–3 sols).",
+    "moonLatencyDesc": "Radio one-way light time (OWLT): 1.28 s real-time · NASA PDS LRO orbital calibration cycle (Diviner/LOLA): campaign-consolidated.",
+    "earthLatencyDesc": "ERA5 / Open-Meteo reanalysis: < 1 h live probe · NASA POWER radiative flux (CERES/MERRA-2): 2–5 days NRT lag.",
+    "freshnessLive": "Live synced",
+    "freshnessCached": "Validated cache",
+    "roverTitle": "Deployment Success Simulator & Optimal Location Finder",
+    "roverSubtitle": "Calculates operational success probability from slope, roughness, solar/thermal energy, dust, and atmosphere to identify the optimal site.",
+    "systemTypeLabel": "System to deploy",
+    "systems": {
+      "rover": "Surface Rover (e.g. Perseverance / VIPER)",
+      "lander": "Landing Module (Lander)",
+      "isru_drill": "Cryogenic ISRU Drill (Ice / O₂)",
+      "rotorcraft": "Coaxial Rotorcraft / Drone (e.g. Ingenuity)"
+    },
+    "planetarySectionTitle": "Where to deploy on {{body}}? (Target Operational Success)",
+    "earthSectionTitle": "Where to test on Earth? (Field Trial Success)",
+    "currentTargetSuccess": "Estimated success at {{site}}",
+    "currentEarthSuccess": "Field trial fidelity at {{site}}",
+    "optimalBadge": "★ Most Optimal Site",
+    "selectSiteBtn": "Select",
+    "activeBadge": "Active",
+    "factors": {
+      "traction": "Traction & Slope",
+      "thermalSolar": "Solar & Thermal Survival",
+      "dustWind": "Dust, Wind & Atmosphere",
+      "instrumentConf": "Instrumental Coverage"
+    },
+    "moonRotorcraftZero": "0% on the Moon: Hard vacuum (~10⁻¹² mbar) prevents aerodynamic rotor lift; requires chemical thrusters.",
+    "verdictHigh": "Highly Favorable Deployment (Low Risk)",
+    "verdictMed": "Viable Deployment with Operational Caution",
+    "verdictLow": "Critical Deployment / High Mechanical or Environmental Risk",
+    "duration": {
+      "label": "Mission duration (climate & seasonal shift)",
+      "months": "{{count}} month(s) ({{days}} days)",
+      "presets": {
+        "short": "15 days (1 lunar day)",
+        "twoMonths": "2 months (60 days)",
+        "sixMonths": "6 months (Seasonal)",
+        "oneYear": "12 months (Earth year)",
+        "marsYear": "23 months (1 Mars year)"
+      },
+      "climateImpactTitle": "Climate Drift Over Mission Duration ({{months}} months)",
+      "marsClimateNote": "Over {{days}} days (~{{sols}} Martian sols), seasonal shift alters temperature by ±{{tempSwing}} K, accumulates ~{{dustLoss}}% solar panel dust, and raises regional dust storm probability to {{stormRisk}}%.",
+      "moonClimateNote": "Over {{days}} days the rover faces {{lunarNights}} continuous 14-day lunar night(s) at −170 °C (100 K) without sunlight; requires radioisotope heaters (RHU/RTG) or cryogenic hibernation.",
+      "survivalAfterDuration": "Survival after {{months}} mo"
+    },
+    "researchGoals": {
+      "label": "Rover Mission & Research Focus",
+      "rover_new_worlds": "Rover Exploration: Discover New Unseen Places (Traction + Firm Soil)",
+      "landing_viability": "Viable Landing Terrain (Slope < 8° + LiDAR Hazard Safety)",
+      "crop_agriculture": "Crop & Greenhouse Viability (Sunlight + Water/Ice + Thermal Stability)",
+      "isru_water": "Water Ice Mining & ISRU Resource Extraction",
+      "astrobiology": "Astrobiology, Biosignatures & Lava Tubes"
+    },
+    "cropScoreLabel": "Crop / Greenhouse Suitability",
+    "landingScoreLabel": "Landing Viability",
+    "agencies": {
+      "title": "Landing Zones & Rovers: NASA Proposals vs. Other Countries",
+      "subtitle": "Compare landing and rover sites from NASA (USA), CNSA (China), ISRO (India), ESA (Europe), and JAXA (Japan). Click any site to probe it live.",
+      "filterAll": "All agencies",
+      "probeLiveBtn": "Probe in 3D",
+      "activeSiteBadge": "Active site",
+      "sites": {
+        "nasa_jezero": "Mars — Jezero Crater (Perseverance Rover · Paleolake)",
+        "nasa_gale": "Mars — Gale Crater (Curiosity Rover · Aeolis Mons)",
+        "nasa_arcadia": "Mars — Arcadia Planitia (NASA/Starship Proposal · Shallow Ice)",
+        "nasa_shackleton": "Moon — Shackleton South Pole (NASA Artemis III / VIPER Rover)",
+        "cnsa_utopia": "Mars — Utopia Planitia (Zhurong Rover · CNSA China)",
+        "cnsa_von_karman": "Moon — Von Kármán Far Side (Yutu-2 Rover · CNSA China)",
+        "isro_shiv_shakti": "Moon — Shiv Shakti South Pole (Pragyan Chandrayaan-3 · ISRO India)",
+        "esa_oxia_planum": "Mars — Oxia Planum (Rosalind Franklin Rover · ESA Europe)",
+        "jaxa_shioli": "Moon — Shioli Crater (SLIM Lander + LEV Rovers · JAXA Japan)"
+      }
+    },
+    "pointZero": {
+      "title": "Rover Point Zero (Baseline Parameter = 0) & First Filter for Unseen Sections",
+      "subtitle": "Lock the current rover position as baseline (Δ = 0 for density/inertia, humidity, temperature, and slope) and apply a primary environmental filter to compare new unseen sections.",
+      "setBaselineBtn": "Lock current Rover as Point 0",
+      "baselineActive": "Point 0 active: {{name}} (Baseline = 0)",
+      "unseenOnly": "Unseen Data Only (Hide classic benchmarks)",
+      "firstFiltersTitle": "Primary Environmental Filter (Humidity · Temperature · Density · Slope)",
+      "maxHumidity": "Max humidity (%)",
+      "maxTempC": "Max temp. (°C)",
+      "minDensityTiu": "Min density / inertia (TIU)",
+      "maxSlopeDeg": "Max slope (°)",
+      "resetFirstFilters": "Reset primary filter",
+      "newSectionsCount": "{{count}} new sections match primary filter",
+      "deltaLabel": "Δ vs Point 0",
+      "densityParam": "Density/Inertia",
+      "humidityParam": "Humidity",
+      "tempParam": "Temp.",
+      "slopeParam": "Slope",
+      "cropSuitability": "Crops"
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Check, RefreshCw, Share2, SlidersHorizontal } from "lucide-react";
+import { Check, Clock, RefreshCw, Share2, SlidersHorizontal } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { formatTimestamp } from "../../i18n";
@@ -30,6 +30,20 @@ export function ActionBar({
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
 
+  const syncedDate = activeSite?.provenance?.fetched_at
+    ? new Date(activeSite.provenance.fetched_at)
+    : lastUpdated;
+
+  const elapsedLabel = (() => {
+    if (!syncedDate || Number.isNaN(syncedDate.getTime())) return null;
+    const mins = Math.max(0, Math.floor((Date.now() - syncedDate.getTime()) / 60000));
+    if (mins < 1) return t("telemetryAndRover.elapsedJustNow");
+    if (mins < 60) return t("telemetryAndRover.elapsedMinutes", { count: mins });
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return t("telemetryAndRover.elapsedHours", { count: hrs, mins: mins % 60 });
+    return t("telemetryAndRover.elapsedDays", { count: Math.floor(hrs / 24) });
+  })();
+
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-border-subtle/90 bg-surface-elevated/95 p-3.5 shadow-sm backdrop-blur-sm sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:px-5 sm:py-3.5">
       {/* Left: Metadata & Context */}
@@ -48,9 +62,17 @@ export function ActionBar({
             </div>
           </div>
         )}
-        {lastUpdated && (
-          <span className="text-[11px] sm:text-xs">
-            · {t("controls.lastUpdated")}: {formatTimestamp(lastUpdated, lang)}
+        {syncedDate && !Number.isNaN(syncedDate.getTime()) && (
+          <span className="inline-flex flex-wrap items-center gap-1.5 text-[11px] sm:text-xs">
+            <span>
+              · {t("controls.lastUpdated")}: {formatTimestamp(syncedDate, lang)}
+            </span>
+            {elapsedLabel && (
+              <Badge variant="accent">
+                <Clock className="h-3 w-3" aria-hidden="true" />
+                <span>{elapsedLabel}</span>
+              </Badge>
+            )}
           </span>
         )}
         {isUpdating && (

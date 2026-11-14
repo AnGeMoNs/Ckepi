@@ -7,6 +7,7 @@ import { SectionNav } from "../components/layout/SectionNav";
 import { ActionBar } from "../components/mission/ActionBar";
 import { ControlPanel } from "../components/mission/ControlPanel";
 import { DataConfidenceBanner } from "../components/mission/DataConfidenceBanner";
+import { TelemetryAndDeploymentPanel } from "../components/mission/TelemetryAndDeploymentPanel";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
 import { Drawer } from "../components/ui/Drawer";
@@ -398,6 +399,31 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
               </div>
             )}
           </section>
+
+          {activeSite && (
+            <TelemetryAndDeploymentPanel
+              activeSite={activeSite}
+              sites={analysis.sites}
+              matches={analysis.searchResult?.matches ?? []}
+              selectedMatch={analysis.comparison?.match ?? null}
+              lastUpdated={analysis.lastUpdated}
+              onSelectSite={(nextId, body) => {
+                setHasConfigured(true);
+                params.setCustomProbedSite(null);
+                params.setSelectedSiteId(nextId);
+                if (body) params.setSelectedBody(body);
+              }}
+              onSelectCell={(h3Index) => {
+                setHasExploredMap(true);
+                analysis.setSelectedH3(h3Index);
+              }}
+              onProbePlanet={(body, lat, lon) => {
+                setHasExploredMap(true);
+                params.setSelectedBody(body);
+                void analysis.handleProbePlanet(body, lat, lon);
+              }}
+            />
+          )}
 
           {activeSite && <DataConfidenceBanner site={activeSite} />}
 

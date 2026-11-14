@@ -821,5 +821,112 @@
         "moonIceNote": "Eletrólise de gelo ou redução de regolito"
       }
     }
+  },
+  "telemetryAndRover": {
+    "lagTitle": "Período de Defasagem e Sincronização de Dados (NASA / ESA)",
+    "lagSubtitle": "Tempos reais de atualização do motor, janela observacional de sensores e latência física de transmissão.",
+    "lastSyncLabel": "Última sincronização API",
+    "elapsedJustNow": "Agora mesmo (< 1 min)",
+    "elapsedMinutes": "Há {{count}} min",
+    "elapsedHours": "Há {{count}} h {{mins}} min",
+    "elapsedDays": "Há {{count}} dias",
+    "planetaryFeedTitle": "Telemetria Planetária ({{body}})",
+    "earthFeedTitle": "Malha Terrestre H3 ({{cell}})",
+    "obsWindowLabel": "Janela observacional",
+    "signalLatencyLabel": "Defasagem física de sinal / arquivo",
+    "marsLatencyDesc": "Sinal de rádio (OWLT): 4 a 22 min (média ~12.5 min) · Defasagem de downlink NASA DSN (REMS/MEDA): 24–72 h (1–3 sóis).",
+    "moonLatencyDesc": "Sinal de rádio (OWLT): 1.28 s em tempo real · Ciclo de calibração orbital NASA PDS LRO (Diviner/LOLA): consolidado por campanha.",
+    "earthLatencyDesc": "Reanálise ERA5 / Open-Meteo: < 1 h em sondagem ao vivo · Fluxo radiativo NASA POWER (CERES/MERRA-2): defasagem NRT de 2 a 5 dias.",
+    "freshnessLive": "Sincronizado ao vivo",
+    "freshnessCached": "Cache validado",
+    "roverTitle": "Simulador de Sucesso de Implantação e Local Mais Ideal",
+    "roverSubtitle": "Calcula a probabilidade de sucesso operacional conforme inclinação, rugosidade, energia solar/térmica, poeira e atmosfera para escolher o melhor local.",
+    "systemTypeLabel": "Sistema a implantar",
+    "systems": {
+      "rover": "Rover Explorador (ex.: Perseverance / VIPER)",
+      "lander": "Módulo de Pouso (Lander)",
+      "isru_drill": "Perfuradora Criogênica ISRU (Gelo / O₂)",
+      "rotorcraft": "Drone / Helicóptero Coaxial (ex.: Ingenuity)"
+    },
+    "planetarySectionTitle": "Onde implantar em {{body}}? (Sucesso Operacional no Destino)",
+    "earthSectionTitle": "Onde testar na Terra? (Sucesso de Teste de Campo)",
+    "currentTargetSuccess": "Sucesso estimado em {{site}}",
+    "currentEarthSuccess": "Fidelidade de teste em {{site}}",
+    "optimalBadge": "★ Local Mais Ideal",
+    "selectSiteBtn": "Selecionar",
+    "activeBadge": "Ativo",
+    "factors": {
+      "traction": "Tração e Inclinação",
+      "thermalSolar": "Energia e Clima Térmico",
+      "dustWind": "Poeira, Vento e Atmosfera",
+      "instrumentConf": "Cobertura Instrumental"
+    },
+    "moonRotorcraftZero": "0% na Lua: O vácuo (~10⁻¹² mbar) impede sustentação aerodinâmica por hélices; requer propulsores químicos.",
+    "verdictHigh": "Implantação Altamente Favorável (Baixo Risco)",
+    "verdictMed": "Implantação Viável com Precaução Operacional",
+    "verdictLow": "Implantação Crítica / Alto Risco Mecânico ou Ambiental",
+    "duration": {
+      "label": "Duração da missão (mudança climática / sazonal)",
+      "months": "{{count}} mês(es) ({{days}} dias)",
+      "presets": {
+        "short": "15 dias (1 dia lunar)",
+        "twoMonths": "2 meses (60 dias)",
+        "sixMonths": "6 meses (Sazonal)",
+        "oneYear": "12 meses (Ano terrestre)",
+        "marsYear": "23 meses (1 ano marciano)"
+      },
+      "climateImpactTitle": "Impacto do Clima conforme Duração ({{months}} meses)",
+      "marsClimateNote": "Em {{days}} dias (~{{sols}} sóis marcianos), a mudança sazonal altera a temperatura em ±{{tempSwing}} K, acumula ~{{dustLoss}}% de poeira nos painéis solares e eleva o risco de tempestade regional para {{stormRisk}}%.",
+      "moonClimateNote": "Em {{days}} dias o rover enfrentará {{lunarNights}} noite(s) lunar(es) contínua(s) de 14 dias a −170 °C (100 K) sem sol; requer aquecedores de radioisótopos (RHU/RTG) ou hibernação criogênica.",
+      "survivalAfterDuration": "Sobrevivência após {{months}} mês(es)"
+    },
+    "researchGoals": {
+      "label": "Foco de Missão e Pesquisa do Rover",
+      "rover_new_worlds": "Exploração com Rover: Conhecer Lugares Novos (Tração + Solo Firme)",
+      "landing_viability": "Terreno Viável para Pouso (Inclinação < 8° + Segurança LiDAR)",
+      "crop_agriculture": "Parâmetros Aptos para Cultivos / Estufa (Luz Solar + Água/Gelo + Clima)",
+      "isru_water": "Mineração de Água, Gelo Subsuperficial e Recursos ISRU",
+      "astrobiology": "Astrobiologia, Bioassinaturas e Tubos de Lava"
+    },
+    "cropScoreLabel": "Aptidão Agrícola / Estufa",
+    "landingScoreLabel": "Viabilidade de Pouso",
+    "agencies": {
+      "title": "Zonas de Pouso e Rovers: Propostas NASA vs. Outros Países",
+      "subtitle": "Compare onde pousaram ou propõem explorar NASA (EUA), CNSA (China), ISRO (Índia), ESA (Europa) e JAXA (Japão). Clique em qualquer local para sondá-lo ao vivo.",
+      "filterAll": "Todas as agências",
+      "probeLiveBtn": "Sondar em 3D",
+      "activeSiteBadge": "Local ativo",
+      "sites": {
+        "nasa_jezero": "Marte — Cratera Jezero (Rover Perseverance · Paleolago)",
+        "nasa_gale": "Marte — Cratera Gale (Rover Curiosity · Aeolis Mons)",
+        "nasa_arcadia": "Marte — Arcadia Planitia (Proposta NASA/Starship · Gelo raso)",
+        "nasa_shackleton": "Lua — Polo Sul Shackleton (NASA Artemis III / Rover VIPER)",
+        "cnsa_utopia": "Marte — Utopia Planitia (Rover Zhurong · CNSA China)",
+        "cnsa_von_karman": "Lua — Cratera Von Kármán Lado Oculto (Rover Yutu-2 · CNSA China)",
+        "isro_shiv_shakti": "Lua — Polo Sul Shiv Shakti (Rover Pragyan Chandrayaan-3 · ISRO Índia)",
+        "esa_oxia_planum": "Marte — Oxia Planum (Rover Rosalind Franklin · ESA Europa)",
+        "jaxa_shioli": "Lua — Cratera Shioli (Lander SLIM + Rovers LEV · JAXA Japão)"
+      }
+    },
+    "pointZero": {
+      "title": "Rover Ponto Zero (Parâmetro Base = 0) e Primeiro Filtro de Seções Novas",
+      "subtitle": "Fixe a posição atual do rover como referência (Δ = 0 em densidade/inércia, umidade, temperatura e inclinação) e aplique um primeiro filtro ambiental para descobrir seções novas e dados não vistos.",
+      "setBaselineBtn": "Fixar Rover atual como Ponto 0",
+      "baselineActive": "Ponto 0 ativo: {{name}} (Parâmetros Base = 0)",
+      "unseenOnly": "Apenas Dados Não Vistos (Ocultar benchmarks clássicos)",
+      "firstFiltersTitle": "Primeiro Filtro Ambiental (Umidade · Temperatura · Densidade · Inclinação)",
+      "maxHumidity": "Umidade máx. (%)",
+      "maxTempC": "Temp. máx. (°C)",
+      "minDensityTiu": "Densidade / Inércia mín. (TIU)",
+      "maxSlopeDeg": "Inclinação máx. (°)",
+      "resetFirstFilters": "Redefinir primeiro filtro",
+      "newSectionsCount": "{{count}} seções novas atendem ao primeiro filtro",
+      "deltaLabel": "Δ vs Ponto 0",
+      "densityParam": "Densidade/Inércia",
+      "humidityParam": "Umidade",
+      "tempParam": "Temp.",
+      "slopeParam": "Inclinação",
+      "cropSuitability": "Cultivos"
+    }
   }
 }
