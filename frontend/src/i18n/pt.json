@@ -116,7 +116,10 @@
     "independentGroup": "Variáveis Independentes / Substrato (X)",
     "dependentGroup": "Variáveis Dependentes / Resposta Ambiental (Y)",
     "globalFilterActive": "Filtros globais ativos em Configurações avançadas: S_ind ≥ {{sInd}}, S_dep ≥ {{sDep}}",
-    "clearGlobalFilters": "Limpar filtros globais (0%)"
+    "clearGlobalFilters": "Limpar filtros globais (0%)",
+    "collapse": "Ocultar variáveis",
+    "expand": "Ajustar pesos e filtros",
+    "activeSummary": "{{weights}} variáveis com peso ativo · {{filters}} com similaridade mínima"
   },
   "comparisonMatrix": {
     "title": "Comparação Lado a Lado de Candidatos (Top 4)",

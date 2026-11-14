@@ -250,6 +250,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
 
   const controlPanelNode = (
     <ControlPanel
+      layout={isDesktop ? "horizontal" : "vertical"}
       sites={analysis.sites}
       selectedSiteId={params.selectedSiteId}
       customProbedSite={params.customProbedSite}
@@ -378,17 +379,17 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
       >
       <GuidedStepsBanner activeStep={activeStep} />
 
-      <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[22.5rem_minmax(0,1fr)]">
+      <div className="space-y-6">
         {/* Render a single ControlPanel instance to avoid duplicate IDs and draft divergence */}
         {isDesktop ? (
-          <aside className="xl:sticky xl:top-20 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto">
+          <section aria-label={t("controls.drawerTitle")}>
             <Card>
               <CardHeader>
                 <CardTitle>{t("controls.drawerTitle")}</CardTitle>
               </CardHeader>
               <CardContent>{controlPanelNode}</CardContent>
             </Card>
-          </aside>
+          </section>
         ) : (
           <Drawer
             open={mobileDrawerOpen}

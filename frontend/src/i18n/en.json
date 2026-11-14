@@ -116,7 +116,10 @@
     "independentGroup": "Independent Variables / Substrate (X)",
     "dependentGroup": "Dependent Variables / Environmental Response (Y)",
     "globalFilterActive": "Global filters active in Advanced Settings: S_ind ≥ {{sInd}}, S_dep ≥ {{sDep}}",
-    "clearGlobalFilters": "Clear global filters (0%)"
+    "clearGlobalFilters": "Clear global filters (0%)",
+    "collapse": "Hide variables",
+    "expand": "Adjust weights & filters",
+    "activeSummary": "{{weights}} variables with active weight · {{filters}} with min. similarity"
   },
   "comparisonMatrix": {
     "title": "Side-by-Side Candidate Comparison (Top 4)",
