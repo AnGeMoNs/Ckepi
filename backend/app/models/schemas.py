@@ -300,12 +300,71 @@ class VariableDelta(BaseModel):
     is_breakage: bool
 
 
+class ScaleSensitivityPoint(BaseModel):
+    """Distribution distance and percentiles evaluated at a specific spatial resolution (30m, 60m, 90m)."""
+
+    resolution_m: int
+    slope_wasserstein_deg: float
+    slope_w1_ci_low: float
+    slope_w1_ci_high: float
+    slope_ks_stat: float
+    slope_ks_ci_low: float
+    slope_ks_ci_high: float
+    relief_wasserstein_m: float
+    relief_w1_ci_low: float
+    relief_w1_ci_high: float
+    relief_ks_stat: float
+    planetary_slope_median_deg: float
+    earth_slope_median_deg: float
+    planetary_slope_p90_deg: float
+    earth_slope_p90_deg: float
+
+
+class DistributionHistogram(BaseModel):
+    """Overlapping histogram density and formal statistical distances (Wasserstein-1 & KS with block bootstrap)."""
+
+    metric: Literal["slope_deg", "local_relief_m"]
+    unit: str
+    bin_centers: list[float]
+    planetary_density: list[float]
+    earth_density: list[float]
+    control_yungay_density: list[float]
+    wasserstein_distance: float
+    w1_ci_95: tuple[float, float]
+    ks_statistic: float
+    ks_ci_95: tuple[float, float]
+    control_yungay_w1: float
+    control_yungay_ks: float
+
+
+class TerrainDistributionComparison(BaseModel):
+    """Complete statistical terrain comparison at common metric scale with block-bootstrap uncertainty."""
+
+    common_resolution_m: int = 30
+    window_size_km: float = 3.6
+    block_bootstrap_size_px: int = 10
+    bootstrap_iterations: int = 120
+    earth_projection: str
+    planetary_projection: str
+    planetary_dem_source: str
+    earth_dem_source: str
+    control_benchmark_name: str
+    slope_distribution: DistributionHistogram
+    relief_distribution: DistributionHistogram
+    scale_sensitivity: list[ScaleSensitivityPoint]
+    profile_distance_m: list[float]
+    planetary_profile_elev_m: list[float]
+    earth_profile_elev_m: list[float]
+    control_yungay_profile_elev_m: list[float]
+
+
 class SiteComparisonResponse(BaseModel):
     """Detailed comparison between a planetary site and an Earth H3 cell."""
 
     site: PlanetarySite
     match: AnalogMatchItem
     variable_deltas: list[VariableDelta]
+    statistical_distribution: TerrainDistributionComparison | None = None
 
 
 class PlanetaryProbeResponse(BaseModel):

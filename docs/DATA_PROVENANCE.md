@@ -31,3 +31,24 @@ Este documento detalla con total transparencia qué variables provienen de **med
 - **Refinamiento Espacial H3 en Dos Etapas (`POST /api/v1/analogs/refine`)**: Permite subdividir cualquier celda H3 ganadora en sus 7 sub-celdas hijas (`h3.cell_to_children`) e hidratarlas en vivo con Copernicus DEM + NASA POWER Climatology + SoilGrids.
 - **Marte (Perseverance MEDA + PDS ODE Multi-Instrumento)**: Las coordenadas cercanas a Jezero Crater consumen telemetría real de `NASA Mars2020 Perseverance MEDA` (con fallback automático a `MSL Curiosity REMS`), y el sondeo planetario consulta cobertura real de **LRO LOLA**, **LRO Mini-RF** (Luna) y **MRO CRISM**, **MRO SHARAD** (Marte) vía `NASA PDS ODE`.
 - **Variables Climáticas y Suelo Extendidas**: `NASA POWER Climatology` incluye `CLOUD_AMT`, `PRECTOTCORR` y `FROST_DAYS`, y `ISRIC SoilGrids v2.0` aporta `sand`, `clay` y `bdod` para modular erodibilidad eólica e inercia térmica del sustrato.
+
+## 3. Comparación Estadística de Distribuciones Topográficas a Escala Común (30 m)
+
+Para comparar distribuciones topográficas entre objetivos planetarios (p. ej., **Cráter Jezero**) y sectores de la **Región de Antofagasta** (`Salar de Pajonales 83b221fffffffff`, `Cordillera de la Sal 83b225fffffffff`, `Pampa Central 83b224fffffffff`) junto al control clásico de **Yungay (`83b220fffffffff`)**, el módulo `backend/app/engine/terrain_statistics.py` implementa el protocolo estadístico multiescala del equipo:
+
+> **Estado de implementación actual (Transparencia Científica — Plan Maestro §1.1):**
+> - **Modo actual en código (`_synthesize_calibrated_metric_dem`):** Genera una **superficie DEM métrica sintética calibrada** a paso uniforme de `30.0 m` ($120\times 120\text{ px} = 3{,}6\times 3{,}6\text{ km}$) parametrizada de forma determinística por la pendiente media (`slope_deg`) y rugosidad (`topographic_roughness`) reales medidas en cada celda H3 (`Copernicus DEM 90m` / `ASTER 30m` en Tierra y constantes publicadas `LOLA`/`MOLA`/`CTX` en Luna/Marte). **Mientras opere sobre el generador sintético calibrado, sus histogramas y distancias $W_1$/$D_{\text{KS}}$ deben presentarse como demostración metodológica calibrada y no como medición directa sobre los GeoTIFF crudos.**
+> - **Modo objetivo de ingesta raster directa (Fase 2 del Plan Maestro):** Lectura directa de recortes GeoTIFF reproyectados a metros (**NASADEM_HGT v001** `s23w069`/`s25w070` o **Copernicus GLO-30** en UTM Zona 19S `EPSG:32719`, contra **USGS Mars 2020 CTX DEM 20 m** remuestreado a `30 m/px`).
+
+1. **Escala Métrica Común (`30 m/px`, ventana $3{,}6\times 3{,}6\text{ km} = 120\times 120\text{ px}$):**
+   - **Tierra (Referencia y Calibración):** Pendiente y rugosidad base medidas vía **Open-Meteo Copernicus DEM** (`90 m`) / **ASTER 30 m**; mosaicos de referencia **NASA/JPL NASADEM_HGT v001** (DOI: `10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001`) y **ESA Copernicus DEM GLO-30** en **UTM Zona 19S (`EPSG:32719`)**.
+   - **Marte / Luna (Referencia y Calibración):** Parámetros topográficos de referencia y mosaico objetivo **USGS Mars 2020 Terrain Relative Navigation CTX DEM Mosaic** (`20 m/px` remuestreado a `30 m/px` con corrección $\cos\phi$) y **NASA LRO LOLA / SLDEM2015**.
+2. **Variables Topográficas Derivadas sin Efecto de Borde:**
+   - **Pendiente (`slope_deg`, °):** Diferencias finitas centrales a `30 m` con recorte de borde de 1 píxel:
+     $$\text{slope} = \arctan\left(\sqrt{(\partial z/\partial x)^2 + (\partial z/\partial y)^2}\right)\cdot \frac{180}{\pi}$$
+   - **Relieve Local (`local_relief_m`, m):** $Z_{\max} - Z_{\min}$ en ventana móvil de $300\times 300\text{ m}$ ($10\times 10\text{ px}$).
+3. **Distancias entre Distribuciones e Intervalos de Confianza Espaciales (IC 95 %):**
+   - **Wasserstein-1 ($W_1$, `scipy.stats.wasserstein_distance`)** en unidades físicas (° para pendiente, m para relieve local).
+   - **Kolmogorov–Smirnov de 2 muestras ($D_{\text{KS}}$, `scipy.stats.ks_2samp`)** en $[0, 1]$.
+   - **Bootstrap por bloques 2D (`10×10 px`, 120 iteraciones):** Preserva la autocorrelación espacial de píxeles vecinos de un DEM al estimar los intervalos de confianza al 95 %.
+   - **Análisis de sensibilidad multiescala (`30 m`, `60 m`, `90 m`):** Evalúa la estabilidad de $W_1$, $D_{\text{KS}}$, $P_{50}$ y $P_{90}$ bajo agregación espacial por bloques.

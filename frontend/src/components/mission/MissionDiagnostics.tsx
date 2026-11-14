@@ -28,6 +28,7 @@ import { Button } from "../ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 import { InfoTooltip } from "../ui/InfoTooltip";
 import { ProgressBar } from "../ui/ProgressBar";
+import { TerrainDistributionPanel } from "./TerrainDistributionPanel";
 
 interface MissionDiagnosticsProps {
   comparison: SiteComparisonResponse;
@@ -88,7 +89,14 @@ export function MissionDiagnostics({
           <Button
             variant="secondary"
             onClick={() => {
-              exportReportMarkdown(comparison.site, [match], (k, p) => t(k, p), match, lang);
+              exportReportMarkdown(
+                comparison.site,
+                [match],
+                (k, p) => t(k, p),
+                match,
+                lang,
+                comparison.statistical_distribution
+              );
               onExported?.();
             }}
           >
@@ -137,6 +145,9 @@ export function MissionDiagnostics({
               : t("mission.quickVerdictBody", {
                   earthSite: t(match.region_key),
                   score: formatPercent(match.combined_score, lang),
+                  uncertainty: formatPercent(match.score_uncertainty ?? 0.05, lang),
+                  sInd: formatPercent(match.s_ind, lang),
+                  sDep: formatPercent(match.s_dep, lang),
                   targetSite: t(comparison.site.name_key),
                   validCount: String(recs.valid_tests.length),
                   brokenVars:
@@ -345,6 +356,16 @@ export function MissionDiagnostics({
             </p>
           </div>
         </div>
+
+        {/* Common-Scale (30 m) Statistical Distribution Comparison (Wasserstein-1 & KS) */}
+        {comparison.statistical_distribution && (
+          <TerrainDistributionPanel
+            distribution={comparison.statistical_distribution}
+            body={comparison.site.body}
+            targetName={t(comparison.site.name_key)}
+            earthName={match.known_analog_name ?? t(match.region_key)}
+          />
+        )}
 
         {/* Variable-by-Variable Comparison: Cards on mobile (<640px), Table on sm+ */}
         <div className="space-y-3">

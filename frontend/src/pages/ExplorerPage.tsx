@@ -18,6 +18,7 @@ import { SectionNav } from "../components/layout/SectionNav";
 import { ActionBar } from "../components/mission/ActionBar";
 import { ControlPanel } from "../components/mission/ControlPanel";
 import { DataConfidenceBanner } from "../components/mission/DataConfidenceBanner";
+import { LaAraucanaImpactPanel } from "../components/mission/LaAraucanaImpactPanel";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
 import { Drawer } from "../components/ui/Drawer";
@@ -596,6 +597,18 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
               </Suspense>
             </section>
           )}
+
+          <LaAraucanaImpactPanel
+            comparison={analysis.comparison}
+            selectedH3={analysis.selectedH3}
+            onSelectAntofagastaCell={(h3Index, siteId) => {
+              if (siteId && siteId !== params.selectedSiteId) {
+                params.setCustomProbedSite(null);
+                params.setSelectedSiteId(siteId);
+              }
+              analysis.setSelectedH3(h3Index);
+            }}
+          />
 
           {analysis.searchResult && analysis.searchResult.matches.length > 0 && (
             <section

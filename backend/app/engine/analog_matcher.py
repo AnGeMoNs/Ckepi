@@ -46,14 +46,38 @@ def _compute_variable_similarity(p_val: float, e_val: float, scale: float) -> fl
     return float(np.exp(-diff))
 
 
+CURATED_CELL_METADATA: dict[str, tuple[str, str, str, bool]] = {
+    "83b220fffffffff": ("regions.atacama_yungay", "CL", "biomes.hyperarid_desert", True),
+    "832985fffffffff": ("regions.mojave_death_valley", "US", "biomes.hyperarid_desert", True),
+    "83b22afffffffff": ("regions.puna_ojos_salado", "CL", "biomes.high_altitude_volcanic", False),
+    "83b225fffffffff": ("regions.antofagasta_cordillera_sal", "CL", "biomes.evaporite_playa", False),
+    "83b221fffffffff": ("regions.antofagasta_salar_pajonales", "CL", "biomes.high_altitude_volcanic", False),
+    "83b224fffffffff": ("regions.antofagasta_pampa_central", "CL", "biomes.hyperarid_desert", False),
+}
+
+
+def normalize_earth_grid_metadata(df: pd.DataFrame) -> pd.DataFrame:
+    """Ensure curated regional anchors and Antofagasta sectors retain accurate labels in memory."""
+    if df.empty or "earth_cell_h3" not in df.columns:
+        return df
+    out = df.copy()
+    for cell_id, (reg_key, country, biome, is_bench) in CURATED_CELL_METADATA.items():
+        mask = out["earth_cell_h3"] == cell_id
+        if mask.any():
+            out.loc[mask, "region_key"] = reg_key
+            out.loc[mask, "country_code"] = country
+            out.loc[mask, "biome_key"] = biome
+            out.loc[mask, "is_benchmark"] = is_bench
+    return out
+
+
 def load_earth_grid(duckdb_path: Path, exclude_benchmarks: bool = False) -> pd.DataFrame:
     """Query Earth H3 grid from DuckDB using parameterized filtering."""
     conn = duckdb.connect(str(duckdb_path), read_only=True)
     try:
+        df = normalize_earth_grid_metadata(conn.execute("SELECT * FROM earth_h3_grid").df())
         if exclude_benchmarks:
-            df = conn.execute(
-                "SELECT * FROM earth_h3_grid WHERE is_benchmark = ?", [False]
-            ).df()
+            df = df[~df["is_benchmark"]].reset_index(drop=True)
             if not df.empty:
                 mask = df.apply(
                     lambda r: match_known_analog(float(r["lat"]), float(r["lon"])) is None,
@@ -61,7 +85,7 @@ def load_earth_grid(duckdb_path: Path, exclude_benchmarks: bool = False) -> pd.D
                 )
                 return df[mask].reset_index(drop=True)
             return df
-        return conn.execute("SELECT * FROM earth_h3_grid").df()
+        return df
     finally:
         conn.close()
 

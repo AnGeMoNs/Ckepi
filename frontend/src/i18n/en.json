@@ -375,8 +375,8 @@
   },
   "mission": {
     "title": "Mission Diagnostics & Physical Comparison",
-    "quickVerdictTitle": "Plain-Language Verdict",
-    "quickVerdictBody": "{{earthSite}} replicates {{score}} of the physical conditions of {{targetSite}} ({{validCount}} validated mission test(s)). The analogy breaks down on: {{brokenVars}}.",
+    "quickVerdictTitle": "Decoupled Physical Verdict",
+    "quickVerdictBody": "{{earthSite}} exhibits decoupled similarity S_ind={{sInd}} and S_dep={{sDep}} (combined score {{score}} ±{{uncertainty}}) relative to {{targetSite}}, enabling {{validCount}} validated field trial(s). Irreducible physical gap (B) on Earth: {{brokenVars}}.",
     "explorerSummaryTitle": "What can we test here—and what does NOT match?",
     "explorerSummaryBody": "At {{earthSite}}, terrain similarity is {{score}} (±{{uncertainty}}) at ~{{scaleKm}} km H3 scale. What Earth CANNOT replicate here: {{brokenVars}}.",
     "nasaAttribution": "Sources: NASA PDS · LRO LOLA · MRO/MSL · NASA POWER · ESA Copernicus",
@@ -444,7 +444,7 @@
     }
   },
   "regions": {
-    "atacama_yungay": "Atacama Desert — Yungay, Chile",
+    "atacama_yungay": "Atacama Desert — Yungay, Antofagasta, Chile",
     "mcmurdo_dry_valleys": "McMurdo Dry Valleys, Antarctica",
     "haughton_crater": "Haughton Impact Crater, Devon Island, Canada",
     "krafla_iceland": "Krafla / Askja Volcanic Field, Iceland",
@@ -469,7 +469,10 @@
     "amazon_central_basin": "Central Amazon Basin (Negative Control), Brazil",
     "pantanal_wetland": "Pantanal Wetland (Negative Control), Brazil",
     "custom_probed_cell": "Live Probed Point (H3 Grid)",
-    "global_h3_cell": "Global Terrestrial Cell (H3)"
+    "global_h3_cell": "Global Terrestrial Cell (H3)",
+    "antofagasta_salar_pajonales": "Salar de Pajonales / Llano de la Paciencia, Antofagasta, Chile",
+    "antofagasta_cordillera_sal": "Cordillera de la Sal (Valle de la Luna), Antofagasta, Chile",
+    "antofagasta_pampa_central": "Pampa Central — Sierra Gorda, Antofagasta, Chile"
   },
   "biomes": {
     "hyperarid_desert": "Hyper-Arid Desert",
@@ -994,5 +997,116 @@
     "optC": "Its maximum ground friction increases",
     "tryAgain": "Almost — remember the difference between mass (kg) and weight (N).",
     "explanation": "On {{body}} gravity is ~{{pct}}% of Earth: mass stays {{mass}} kg, while weight drops from {{earthN}} N to {{bodyN}} N."
+  },
+  "distribution": {
+    "title": "Common-Scale (30 m) Statistical Terrain Distribution Comparison",
+    "subtitle": "Formal Wasserstein-1 (W₁) and Kolmogorov–Smirnov (D_KS) distances across {{samples}} pixels resampled to {{spacing}} m/px (UTM 19S / planetocentric cos φ correction).",
+    "commonScaleBadge": "Common scale {{spacing}} m/px",
+    "bootstrapBadge": "2D Block Bootstrap: {{iterations}} iter ({{blockSize}}×{{blockSize}} px)",
+    "targetDemLabel": "Target DEM",
+    "earthDemLabel": "Earth Sector DEM",
+    "controlDemLabel": "Classic Control",
+    "slopeCardTitle": "Slope Distribution (30 m · Central Finite Differences)",
+    "slopeStatement": "The slope distribution of {{earthSite}} differs from {{targetSite}} by W₁ = {{w1}}° (95% CI: {{ciLow}}°–{{ciHigh}}°, KS D = {{ks}}), compared to W₁ = {{controlW1}}° at the classic Yungay control site.",
+    "reliefCardTitle": "Local Relief Distribution (300×300 m Moving Window)",
+    "reliefStatement": "The local relief distribution (Z_max − Z_min in 300×300 m) of {{earthSite}} differs from {{targetSite}} by W₁ = {{w1}} m (95% CI: {{ciLow}}–{{ciHigh}} m, KS D = {{ks}}), compared to W₁ = {{controlW1}} m at Yungay.",
+    "histogramTitle": "Overlapping Empirical Density Histograms (Target vs. Selected Earth Sector vs. Yungay Control)",
+    "toggleSlope": "Slope (° at 30 m)",
+    "toggleRelief": "Local Relief (m, 300×300 m)",
+    "controlYungayLabel": "Classic Control: Yungay (24.1°S)",
+    "transectTitle": "Comparative Relative Elevation Transect Profile (3.6 km at 30 m/px)",
+    "transectSubtitle": "Compares geomorphological amplitude and metric roughness without cross-scale extrapolation.",
+    "scaleTableTitle": "Multi-Scale Sensitivity Analysis (30 m · 60 m · 90 m)",
+    "scaleTableHint": "Verifies statistical stability under spatial aggregation (prevents resolution artifacts).",
+    "colScale": "Spatial scale",
+    "colSlopeW1": "W₁ Slope (°)",
+    "colSlopeKs": "KS D (Slope)",
+    "colReliefW1": "W₁ Relief (m)",
+    "colSlopeP50": "P50 (Earth vs. Target)",
+    "colSlopeP90": "P90 (Earth vs. Target)",
+    "noteStatTitle": "Statistical Rigor (2D Spatial Autocorrelation)",
+    "noteStatBody": "Neighboring DEM pixels exhibit spatial autocorrelation. Thus 95% CIs are computed via 2D block bootstrap (10×10 px = 300×300 m) rather than naive i.i.d. pixel resampling.",
+    "noteRadTitle": "Radiation Physics (Curiosity/RAD)",
+    "noteRadBody": "On Mars, Curiosity/RAD measured ~0.64 mSv/day (~230 mSv/yr GCR+SEP; Hassler et al., 2014, Science). Atacama (~2.4 mSv/yr) validates UV optics and terrain, not nuclear GCR shielding.",
+    "noteBioTitle": "Robotics vs. Astrobiology Boundary",
+    "noteBioBody": "This comparison quantifies geomorphological and thermo-radiative fidelity for rover traction, LiDAR navigation, and ISRU drills; it does not claim surface biological habitability."
+  },
+  "threeWorlds": {
+    "title": "Three Worlds in Your Hand: Earth · Moon · Mars (STEAM Literacy)",
+    "subtitle": "Explore with verified NASA NSSDCA facts what changes across worlds and why Antofagasta trains real space missions.",
+    "listenVoice": "Listen aloud",
+    "stopVoice": "Stop audio",
+    "speechScript": "Welcome to Ckepi, Three Worlds in Your Hand. If a backpack weighs 10 kilograms in Antofagasta, on the Moon it weighs only 1.7 kilograms and on Mars 3.8 kilograms. Today we compare {{earthSite}} with {{targetSite}}: the statistical slope difference at 30 meters scale is {{w1Slope}} degrees. In Antofagasta we can field-test rover wheels, LiDAR cameras, and drills, while reduced gravity, thin air, and cosmic radiation require specialized simulation chambers.",
+    "levels": {
+      "level1": "Level 1: Look (Everyday)",
+      "level2": "Level 2: Compare (Physics)",
+      "level3": "Level 3: Investigate (Gap B)"
+    },
+    "earth": {
+      "name": "Earth (Antofagasta)",
+      "summary": "Our hyper-arid natural laboratory protected by a dense atmosphere and global magnetosphere.",
+      "backpack": "A 10 kg backpack feels like 10.0 kg (1.00 g).",
+      "air": "Breathable air at 1013 mbar (N₂/O₂); supports standard drones and convective cooling.",
+      "dayAndTemp": "Solar day: 24 h 00 min · Global mean temp.: ~15 °C (288 K).",
+      "radiation": "Natural background radiation: ~2.4 mSv/yr (shielded by magnetosphere and atmosphere)."
+    },
+    "moon": {
+      "name": "Moon (South Pole / Maria)",
+      "summary": "Airless world with permanently shadowed polar craters and electrostatically charged dust.",
+      "backpack": "A 10 kg backpack feels like 1.7 kg (0.166 g).",
+      "air": "Hard vacuum (0 mbar): no sound, no wind, and no aerodynamic parachutes.",
+      "dayAndTemp": "Solar day: ~29.5 Earth days · Extreme thermal swings (>260 K).",
+      "radiation": "Unshielded surface radiation: ~380 mSv/yr without magnetosphere."
+    },
+    "mars": {
+      "name": "Mars (Jezero / Gale Crater)",
+      "summary": "Cold desert world with a thin CO₂ atmosphere, ancient lake deltas, and active dust storms.",
+      "backpack": "A 10 kg backpack feels like 3.8 kg (0.38 g).",
+      "air": "Thin CO₂ atmosphere (~6.1 mbar, <1% of Earth): requires high-RPM rotorcraft.",
+      "dayAndTemp": "Solar day (Sol): 24 h 39 min · Mean surface temp.: −63 °C (210 K).",
+      "radiation": "Surface radiation measured by Curiosity/RAD: ~230 mSv/yr (~0.64 mSv/day, Hassler et al. 2014)."
+    },
+    "quiz": {
+      "question": "STEAM Micro-Challenge: To field-test rover suspension and LiDAR hazard avoidance for Jezero Crater (mean slope ~6.4°), which sector would you pick?",
+      "sourceNote": "Real DEM data: NASADEM 30 m vs. MRO CTX DEM 30 m",
+      "options": {
+        "pajonales": "A) Salar de Pajonales, Antofagasta (Slope ~5.6° · Hyper-arid)",
+        "yungay": "B) Yungay Plain, Antofagasta (Slope ~2.3° · Hyper-arid)",
+        "amazon": "C) Central Amazon Basin (Humid soil & dense canopy)"
+      },
+      "feedback": {
+        "pajonales": "Correct! Salar de Pajonales / Llano de la Paciencia (H3 83b221fffffffff) has a 30 m slope distribution differing from Jezero by only W₁ = 0.77° (95% CI: 0.37°–1.03°), outperforming the flat Yungay plain for mechanical traction trials.",
+        "yungay": "Great astrobiological control, but too flat for Jezero rover climbing! Yungay (W₁ = 4.13° slope distance vs. Jezero) excels at UV/hyper-aridity calibration, whereas Salar de Pajonales or Cordillera de la Sal better match Jezero's delta slopes.",
+        "amazon": "Unsuitable for planetary field trials: high soil moisture and dense vegetation (LAI > 4) completely alter regolith cohesion and LiDAR optics."
+      }
+    }
+  },
+  "araucana": {
+    "title": "Antofagasta Territorial Impact & Caja La Araucana Strategic Alignment",
+    "badgeLocal": "Antofagasta Hub 2026",
+    "badgeOds": "Verified UN SDG Targets",
+    "antofagastaLabTitle": "Antofagasta Region Natural Laboratory (1-Click Selection)",
+    "antofagastaLabSubtitle": "Click any regional node to load its 30 m statistical comparison (NASADEM vs. NASA PDS) and mission diagnostics:",
+    "utmScaleBadge": "UTM Zone 19S (EPSG:32719) · 30 m",
+    "nodes": {
+      "pajonalesRole": "Closest 30 m slope distribution to Jezero Crater (W₁ = 0.77°). Ideal for rover wheel traction.",
+      "cordilleraRole": "Evaporite scarps and rugged ridges (~6.9°). Ideal for LiDAR hazard avoidance.",
+      "pampaRole": "High-irradiance hyper-arid plain for thermo-optical and dust sensor trials.",
+      "yungayRole": "Classic literature benchmark (2.25°). Control site for extreme hyper-aridity and UV."
+    },
+    "pillarsTitle": "Alignment with Caja La Araucana's 4 Official Objectives & UN SDGs",
+    "pillarsSubtitle": "Direct traceability to the Integrated Sustainability Report and regional development:",
+    "pillars": {
+      "p1Title": "1. Democratize Frontier Science",
+      "p1Body": "Transforms raw NASA PDS and ESA Copernicus telemetry into a zero-cost browser laboratory with voice readout for schools, workers, and families.",
+      "p2Title": "2. STEAM Skills & Employability",
+      "p2Body": "Builds high-demand regional skills in Antofagasta: Python, DuckDB, GeoParquet, H3 spatial grids, and non-parametric statistics (Wasserstein/KS).",
+      "p3Title": "3. Local Application in Antofagasta",
+      "p3Body": "Highlights under-studied regional sectors (Salar de Pajonales, Cordillera de la Sal, Pampa Central) for mining/space robotics, solar testing, and scientific astro-tourism.",
+      "p4Title": "4. Interregional Innovation Network (Lattice)",
+      "p4Body": "Scalable H3 architecture connecting Antofagasta with Atacama, Coquimbo, Biobío, and Magallanes alongside regional universities (UCN, UA)."
+    },
+    "sustainabilityTitle": "Institutional Sustainability Model:",
+    "sustainabilityBody": "100% Open Source core (MIT License) for public STEAM education + B2B/B2G quantitative site-characterization services."
   }
 }

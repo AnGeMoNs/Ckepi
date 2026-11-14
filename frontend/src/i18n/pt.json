@@ -375,8 +375,8 @@
   },
   "mission": {
     "title": "Diagnóstico de Missão e Comparação Física",
-    "quickVerdictTitle": "Veredicto Rápido",
-    "quickVerdictBody": "{{earthSite}} replica {{score}} das condições físicas de {{targetSite}} ({{validCount}} teste(s) de missão validado(s)). A analogia falha em: {{brokenVars}}.",
+    "quickVerdictTitle": "Veredicto Físico Desacoplado",
+    "quickVerdictBody": "{{earthSite}} apresenta similaridade desacoplada S_ind={{sInd}} e S_dep={{sDep}} (pontuação combinada {{score}} ±{{uncertainty}}) frente a {{targetSite}}, habilitando {{validCount}} ensaio(s) de campo. Lacuna física irredutível (B) na Terra: {{brokenVars}}.",
     "explorerSummaryTitle": "O que podemos testar aqui e o que NÃO se parece?",
     "explorerSummaryBody": "Em {{earthSite}}, o terreno tem {{score}} de similaridade (±{{uncertainty}}) na escala de ~{{scaleKm}} km. O que a Terra NÃO consegue imitar aqui: {{brokenVars}}.",
     "nasaAttribution": "Fontes: NASA PDS · LRO LOLA · MRO/MSL · NASA POWER · ESA Copernicus",
@@ -444,7 +444,7 @@
     }
   },
   "regions": {
-    "atacama_yungay": "Deserto do Atacama — Yungay, Chile",
+    "atacama_yungay": "Deserto do Atacama — Yungay, Antofagasta, Chile",
     "mcmurdo_dry_valleys": "Vales Secos de McMurdo, Antártida",
     "haughton_crater": "Cratera de Impacto Haughton, Ilha Devon, Canadá",
     "krafla_iceland": "Campo Vulcânico Krafla / Askja, Islândia",
@@ -469,7 +469,10 @@
     "amazon_central_basin": "Bacia Amazônica Central (Controle Negativo), Brasil",
     "pantanal_wetland": "Pantanal (Controle Negativo), Brasil",
     "custom_probed_cell": "Ponto Sondado ao Vivo (Malha H3)",
-    "global_h3_cell": "Célula Global Terrestre (H3)"
+    "global_h3_cell": "Célula Global Terrestre (H3)",
+    "antofagasta_salar_pajonales": "Salar de Pajonales / Llano de la Paciencia, Antofagasta, Chile",
+    "antofagasta_cordillera_sal": "Cordillera de la Sal (Valle de la Luna), Antofagasta, Chile",
+    "antofagasta_pampa_central": "Pampa Central — Sierra Gorda, Antofagasta, Chile"
   },
   "biomes": {
     "hyperarid_desert": "Deserto Hiperárido",
@@ -994,5 +997,116 @@
     "optC": "Aumenta seu atrito máximo com o solo",
     "tryAgain": "Quase — lembre a diferença entre massa (kg) e peso (N).",
     "explanation": "Em {{body}} a gravidade é ~{{pct}}% da terrestre: a massa segue 100 kg ({{mass}} kg), mas o peso cai de {{earthN}} N para {{bodyN}} N."
+  },
+  "distribution": {
+    "title": "Comparação Estatística de Distribuições Topográficas (Escala Comum 30 m)",
+    "subtitle": "Distâncias formais Wasserstein-1 (W₁) e Kolmogorov–Smirnov (D_KS) em {{samples}} pixels reamostrados a {{spacing}} m/px (UTM 19S / correção planetocêntrica cos φ).",
+    "commonScaleBadge": "Escala comum {{spacing}} m/px",
+    "bootstrapBadge": "Bootstrap 2D: {{iterations}} iter ({{blockSize}}×{{blockSize}} px)",
+    "targetDemLabel": "DEM Alvo",
+    "earthDemLabel": "DEM Setor Terrestre",
+    "controlDemLabel": "Controle Clássico",
+    "slopeCardTitle": "Distribuição de Declividade (30 m · Diferenças Finitas Centrais)",
+    "slopeStatement": "A distribuição de declividades de {{earthSite}} difere da de {{targetSite}} em W₁ = {{w1}}° (IC 95 %: {{ciLow}}°–{{ciHigh}}°, KS D = {{ks}}), frente a W₁ = {{controlW1}}° no controle clássico de Yungay.",
+    "reliefCardTitle": "Distribuição de Relevo Local (Janela móvel 300×300 m)",
+    "reliefStatement": "A distribuição de relevo local (Z_max − Z_min em 300×300 m) de {{earthSite}} difere de {{targetSite}} em W₁ = {{w1}} m (IC 95 %: {{ciLow}}–{{ciHigh}} m, KS D = {{ks}}), frente a W₁ = {{controlW1}} m em Yungay.",
+    "histogramTitle": "Histogramas Sobrepostos de Densidade Empírica (Alvo vs. Setor Selecionado vs. Controle Yungay)",
+    "toggleSlope": "Declividade (° a 30 m)",
+    "toggleRelief": "Relevo Local (m, 300×300 m)",
+    "controlYungayLabel": "Controle Clássico: Yungay (24,1°S)",
+    "transectTitle": "Perfil Longitudinal Comparado de Elevação Relativa (Transecto de 3,6 km a 30 m/px)",
+    "transectSubtitle": "Compara amplitude geomorfológica e rugosidade métrica sem extrapolar escalas incompatíveis.",
+    "scaleTableTitle": "Análise de Sensibilidade Multiescala (30 m · 60 m · 90 m)",
+    "scaleTableHint": "Verifica a estabilidade estatística sob agregação espacial (evita artefatos de resolução).",
+    "colScale": "Escala espacial",
+    "colSlopeW1": "W₁ Declividade (°)",
+    "colSlopeKs": "KS D (Declividade)",
+    "colReliefW1": "W₁ Relevo (m)",
+    "colSlopeP50": "P50 (Terra vs. Alvo)",
+    "colSlopeP90": "P90 (Terra vs. Alvo)",
+    "noteStatTitle": "Rigor Estatístico (Autocorrelação 2D)",
+    "noteStatBody": "Pixels vizinhos de um DEM possuem autocorrelação espacial. Por isso, os IC 95 % são estimados via bootstrap por blocos 2D (10×10 px = 300×300 m) e não por amostragem i.i.d. ingênua.",
+    "noteRadTitle": "Física de Radiação (Curiosity/RAD)",
+    "noteRadBody": "Em Marte, o Curiosity/RAD mediu ~0,64 mSv/dia (~230 mSv/ano GCR+SEP; Hassler et al., 2014, Science). O Atacama (~2,4 mSv/ano) valida óptica UV e terreno, mas não blindagem nuclear.",
+    "noteBioTitle": "Fronteira Robótica vs. Astrobiologia",
+    "noteBioBody": "Esta comparação certifica fidelidade geomorfológica e termo-radiativa para tração de rovers, navegação LiDAR e perfuração ISRU; não afirma habitabilidade biológica superficial."
+  },
+  "threeWorlds": {
+    "title": "Três Mundos na sua Mão: Terra · Lua · Marte (Alfabetização STEAM)",
+    "subtitle": "Explore com dados oficiais da NASA NSSDCA o que muda entre mundos e por que Antofagasta serve para treinar missões reais.",
+    "listenVoice": "Ouvir explicação",
+    "stopVoice": "Parar voz",
+    "speechScript": "Bem-vindo ao Ckepi, Três Mundos na sua Mão. Se uma mochila pesa 10 quilos em Antofagasta, na Lua pesa apenas 1,7 quilos e em Marte 3,8 quilos. Hoje comparamos {{earthSite}} com {{targetSite}}: a diferença estatística de declividade a 30 metros é de {{w1Slope}} graus. Em Antofagasta podemos testar rodas, câmeras e brocas de um rover, mas a baixa gravidade, a falta de ar e a radiação espacial só podem ser simuladas em câmaras especiais.",
+    "levels": {
+      "level1": "Nível 1: Olhar (Cotidiano)",
+      "level2": "Nível 2: Comparar (Física)",
+      "level3": "Nível 3: Investigar (Ruptura B)"
+    },
+    "earth": {
+      "name": "Terra (Antofagasta)",
+      "summary": "Nosso laboratório natural hiperárido com atmosfera densa e escudo magnético protetor.",
+      "backpack": "Mochila de 10 kg parece pesar 10,0 kg (1,00 g).",
+      "air": "Ar respirável a 1013 mbar (N₂/O₂); permite voar drones e resfriar equipamentos por convecção.",
+      "dayAndTemp": "Dia solar: 24 h 00 min · Temp. média global: ~15 °C (288 K).",
+      "radiation": "Radiação natural: ~2,4 mSv/ano (protegida por magnetosfera e atmosfera)."
+    },
+    "moon": {
+      "name": "Lua (Polo Sul / Mares)",
+      "summary": "Mundo sem ar com sombras permanentes nos polos e poeira abrasiva carregada eletricamente.",
+      "backpack": "Mochila de 10 kg parece pesar 1,7 kg (0,166 g).",
+      "air": "Vácuo extremo (0 mbar): sem som, sem vento e sem paraquedas possíveis.",
+      "dayAndTemp": "Dia solar: ~29,5 dias terrestres · Amplitude térmica extrema (>260 K).",
+      "radiation": "Radiação superficial: ~380 mSv/ano sem escudo magnético."
+    },
+    "mars": {
+      "name": "Marte (Cratera Jezero / Gale)",
+      "summary": "Deserto frio com atmosfera muito rarefeita de CO₂, antigos deltas lacustres e tempestades de poeira.",
+      "backpack": "Mochila de 10 kg parece pesar 3,8 kg (0,38 g).",
+      "air": "Atmosfera tênue de CO₂ (~6,1 mbar, <1 % da Terra): exige rotores de alta velocidade.",
+      "dayAndTemp": "Dia solar (Sol): 24 h 39 min · Temp. média: −63 °C (210 K).",
+      "radiation": "Radiação medida pelo Curiosity/RAD: ~230 mSv/ano (~0,64 mSv/dia, Hassler et al. 2014)."
+    },
+    "quiz": {
+      "question": "Micro-Desafio STEAM: Se você precisa testar a suspensão e o LiDAR de um rover para a Cratera Jezero (declividade média ~6,4°), qual setor escolheria?",
+      "sourceNote": "Dados reais: NASADEM 30 m vs. MRO CTX DEM 30 m",
+      "options": {
+        "pajonales": "A) Salar de Pajonales, Antofagasta (Declividade ~5,6° · Hiperárido)",
+        "yungay": "B) Planície de Yungay, Antofagasta (Declividade ~2,3° · Hiperárido)",
+        "amazon": "C) Bacia Amazônica (Solo úmido e vegetação densa)"
+      },
+      "feedback": {
+        "pajonales": "Correto! Salar de Pajonales / Llano de la Paciencia (H3 83b221fffffffff) tem uma distribuição de declividades a 30 m que difere de Jezero em apenas W₁ = 0,77° (IC 95 %: 0,37°–1,03°), superando a planície de Yungay para ensaios mecânicos de tração.",
+        "yungay": "Bom controle astrobiológico, mas plano demais para tração em Jezero! Yungay (W₁ = 4,13° em declividade vs. Jezero) é ideal para calibrar espectrômetros UV/hiperaridez, mas Salar de Pajonales reproduz melhor as encostas do delta de Jezero.",
+        "amazon": "Incorreto para ensaio planetário: a umidade e cobertura vegetal (LAI > 4) alteram completamente a coesão do solo e os sensores ópticos LiDAR."
+      }
+    }
+  },
+  "araucana": {
+    "title": "Impacto Territorial Região de Antofagasta e Aliança Caja La Araucana",
+    "badgeLocal": "Sede Antofagasta 2026",
+    "badgeOds": "Metas ODS Verificadas",
+    "antofagastaLabTitle": "Laboratório Natural Região de Antofagasta (Seleção em 1 Clique)",
+    "antofagastaLabSubtitle": "Clique em qualquer nó regional para carregar sua comparação estatística a 30 m (NASADEM vs. NASA PDS) e seu diagnóstico de missão:",
+    "utmScaleBadge": "UTM Zona 19S (EPSG:32719) · 30 m",
+    "nodes": {
+      "pajonalesRole": "Melhor ajuste de declividade com a Cratera Jezero (W₁ = 0,77° a 30 m). Ideal para tração de rovers.",
+      "cordilleraRole": "Escarpas evaporíticas e cristas rugosas (~6,9°). Ideal para desvio de obstáculos LiDAR.",
+      "pampaRole": "Planície hiperárida de alta irradiância solar e baixa umidade para testes termo-ópticos.",
+      "yungayRole": "Local de controle clássico da literatura (2,25°). Benchmark de hiperaridez extrema e UV."
+    },
+    "pillarsTitle": "Alinhamento com os 4 Objetivos Estratégicos da Caja La Araucana e Metas ODS",
+    "pillarsSubtitle": "Rastreabilidade direta com o Relatório Integrado de Sustentabilidade e desenvolvimento territorial:",
+    "pillars": {
+      "p1Title": "1. Democratizar Ciência de Fronteira",
+      "p1Body": "Converte telemetria bruta da NASA PDS e ESA Copernicus em um laboratório aberto no navegador, gratuito e com leitura por voz para escolas e famílias.",
+      "p2Title": "2. Competências STEAM e Empregabilidade",
+      "p2Body": "Treina habilidades reais de alta demanda em Antofagasta: Python, DuckDB, GeoParquet, malhas espaciais H3 e estatística não paramétrica (Wasserstein/KS).",
+      "p3Title": "3. Aplicação Local em Antofagasta",
+      "p3Body": "Valoriza setores subexplorados da região (Salar de Pajonales, Cordillera de la Sal, Pampa Central) para robótica de mineração/espacial, energia solar e astroturismo científico.",
+      "p4Title": "4. Rede Inter-regional de Inovação (Lattice)",
+      "p4Body": "Arquitetura H3 escalável que conecta o nó Antofagasta com Atacama, Coquimbo, Biobío e Magalhães junto às universidades regionais (UCN, UA)."
+    },
+    "sustainabilityTitle": "Modelo de Sustentabilidade Institucional:",
+    "sustainabilityBody": "Núcleo 100 % Open Source (Licença MIT) para educação pública + serviços B2B/B2G de caracterização quantitativa de campos de teste."
   }
 }

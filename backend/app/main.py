@@ -26,9 +26,14 @@ from app.config import (
     INDEPENDENT_VARIABLES,
     settings,
 )
-from app.engine.analog_matcher import load_earth_grid, match_terrestrial_analogs
+from app.engine.analog_matcher import (
+    load_earth_grid,
+    match_terrestrial_analogs,
+    normalize_earth_grid_metadata,
+)
 from app.engine.causal_decomposer import compute_breakage_index, decompose_planetary_site
 from app.engine.mission_advisor import resolve_profile_weights
+from app.engine.terrain_statistics import compute_terrain_distribution_comparison
 from app.etl.earth_api import probe_earth_location
 from app.etl.http_utils import create_async_http_client, create_http_client
 from app.etl.geology_and_habitability import (
@@ -265,7 +270,13 @@ def _build_comparison_response(
             )
         )
 
-    return SiteComparisonResponse(site=site, match=match, variable_deltas=deltas)
+    stat_dist = compute_terrain_distribution_comparison(site, match)
+    return SiteComparisonResponse(
+        site=site,
+        match=match,
+        variable_deltas=deltas,
+        statistical_distribution=stat_dist,
+    )
 
 
 @app.get("/api/v1/health")
@@ -559,10 +570,12 @@ def probe_earth_coordinate(payload: EarthProbeRequest) -> SiteComparisonResponse
 
     conn = duckdb.connect(str(db_path), read_only=True)
     try:
-        df_cell = conn.execute(
-            "SELECT * FROM earth_h3_grid WHERE earth_cell_h3 = ?",
-            [str(cell_record["earth_cell_h3"])],
-        ).df()
+        df_cell = normalize_earth_grid_metadata(
+            conn.execute(
+                "SELECT * FROM earth_h3_grid WHERE earth_cell_h3 = ?",
+                [str(cell_record["earth_cell_h3"])],
+            ).df()
+        )
     finally:
         conn.close()
 
@@ -588,9 +601,11 @@ def compare_cell_with_site(
 
     conn = duckdb.connect(str(db_path), read_only=True)
     try:
-        df_cell = conn.execute(
-            "SELECT * FROM earth_h3_grid WHERE earth_cell_h3 = ?", [h3_index]
-        ).df()
+        df_cell = normalize_earth_grid_metadata(
+            conn.execute(
+                "SELECT * FROM earth_h3_grid WHERE earth_cell_h3 = ?", [h3_index]
+            ).df()
+        )
     finally:
         conn.close()
 
