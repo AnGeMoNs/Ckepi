@@ -7,10 +7,13 @@ export default defineConfig({
     exclude: ["maplibre-gl"],
   },
   build: {
+    target: "es2020",
+    chunkSizeWarningLimit: 1100,
     rollupOptions: {
       output: {
         manualChunks: {
           "react-vendor": ["react", "react-dom"],
+          icons: ["lucide-react"],
           "maplibre-vendor": ["maplibre-gl"],
           "three-vendor": ["three"],
           "i18n-vendor": ["i18next", "react-i18next"],
@@ -18,11 +21,23 @@ export default defineConfig({
       },
     },
   },
+  esbuild: {
+    legalComments: "none",
+  },
   server: {
-    port: 5173,
+    port: 4173,
     proxy: {
       "/api": {
-        target: "http://127.0.0.1:8000",
+        target: "http://127.0.0.1:8001",
+        changeOrigin: true,
+      },
+    },
+  },
+  preview: {
+    port: 4173,
+    proxy: {
+      "/api": {
+        target: "http://127.0.0.1:8001",
         changeOrigin: true,
       },
     },

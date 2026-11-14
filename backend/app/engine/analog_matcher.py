@@ -12,7 +12,7 @@ from app.config import (
     FEATURE_SCALES,
     INDEPENDENT_VARIABLES,
 )
-from app.engine.causal_decomposer import build_breakage_profile
+from app.engine.causal_decomposer import build_breakage_profile, compute_breakage_index
 from app.engine.known_analogs import match_known_analog
 from app.engine.mission_advisor import evaluate_mission_recommendations
 from app.models.schemas import (
@@ -55,6 +55,8 @@ CURATED_CELL_METADATA: dict[str, tuple[str, str, str, bool]] = {
     "83b224fffffffff": ("regions.antofagasta_pampa_central", "CL", "biomes.hyperarid_desert", False),
 }
 
+_EARTH_GRID_CACHE: dict[tuple[str, int, bool], pd.DataFrame] = {}
+
 
 def normalize_earth_grid_metadata(df: pd.DataFrame) -> pd.DataFrame:
     """Ensure curated regional anchors and Antofagasta sectors retain accurate labels in memory."""
@@ -72,7 +74,14 @@ def normalize_earth_grid_metadata(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def load_earth_grid(duckdb_path: Path, exclude_benchmarks: bool = False) -> pd.DataFrame:
-    """Query Earth H3 grid from DuckDB using parameterized filtering."""
+    """Query Earth H3 grid from DuckDB using parameterized filtering with mtime cache."""
+    resolved = duckdb_path.resolve()
+    mtime_ns = resolved.stat().st_mtime_ns if resolved.exists() else 0
+    cache_key = (str(resolved), mtime_ns, exclude_benchmarks)
+    cached = _EARTH_GRID_CACHE.get(cache_key)
+    if cached is not None:
+        return cached
+
     conn = duckdb.connect(str(duckdb_path), read_only=True)
     try:
         df = normalize_earth_grid_metadata(conn.execute("SELECT * FROM earth_h3_grid").df())
@@ -83,8 +92,10 @@ def load_earth_grid(duckdb_path: Path, exclude_benchmarks: bool = False) -> pd.D
                     lambda r: match_known_analog(float(r["lat"]), float(r["lon"])) is None,
                     axis=1,
                 )
-                return df[mask].reset_index(drop=True)
-            return df
+                df = df[mask].reset_index(drop=True)
+        if len(_EARTH_GRID_CACHE) >= 8:
+            _EARTH_GRID_CACHE.clear()
+        _EARTH_GRID_CACHE[cache_key] = df
         return df
     finally:
         conn.close()
@@ -171,10 +182,12 @@ def match_terrestrial_analogs(
         if distance_metric == "mahalanobis"
         else None
     )
-    sqrt_w_iv = np.array([ np.sqrt(norm_w[col]) for col in INDEPENDENT_VARIABLES], dtype=float)
+    sqrt_w_iv = np.array([np.sqrt(norm_w[col]) for col in INDEPENDENT_VARIABLES], dtype=float)
     sqrt_w_dv = np.array([np.sqrt(norm_dv_w[col]) for col in DEPENDENT_VARIABLES], dtype=float)
+    conf_score = site.confidence.score if site.confidence else 0.70
+    scale_map = {0: 1107.7, 1: 418.7, 2: 158.2, 3: 59.8, 4: 22.6, 5: 8.5, 6: 3.2}
 
-    matches: list[AnalogMatchItem] = []
+    candidates: list[dict[str, object]] = []
 
     for row in df_earth.itertuples(index=False):
         row_dict = row._asdict()
@@ -237,12 +250,77 @@ def match_terrestrial_analogs(
             if fails_var_threshold:
                 continue
 
-        # 3. Physical Breakage R_break
         earth_breakage = {col: float(row_dict[col]) for col in BREAKAGE_VARIABLES}
-        breakage_alerts = build_breakage_profile(site.variables.breakage, earth_breakage)
-        r_break_overall = float(np.mean([b.breakage_index for b in breakage_alerts]))
+        r_break_overall = float(
+            np.mean(
+                [
+                    compute_breakage_index(site.variables.breakage[col], earth_breakage[col])
+                    for col in BREAKAGE_VARIABLES
+                ]
+            )
+        )
 
-        # 4. Engineering Mission Recommendations
+        if ignore_ind and not ignore_dv:
+            combined_score = s_dep
+        elif ignore_dv and not ignore_ind:
+            combined_score = s_ind
+        else:
+            combined_score = 0.60 * s_ind + 0.40 * s_dep
+        confidence_adjusted_score = combined_score * (0.75 + 0.25 * conf_score)
+
+        candidates.append(
+            {
+                "row_dict": row_dict,
+                "s_ind": s_ind,
+                "s_dep": s_dep,
+                "r_break_overall": r_break_overall,
+                "combined_score": round(combined_score, 4),
+                "confidence_adjusted_score": round(confidence_adjusted_score, 4),
+                "iv_sim_breakdown": iv_sim_breakdown,
+                "dv_sim_breakdown": dv_sim_breakdown,
+                "earth_iv": earth_iv,
+                "earth_dv": earth_dv,
+                "earth_breakage": earth_breakage,
+            }
+        )
+
+    candidates.sort(
+        key=lambda c: float(c["confidence_adjusted_score"] if penalize_estimated else c["combined_score"]),
+        reverse=True,
+    )
+    top_candidates = candidates[:limit]
+
+    all_objs = (
+        np.array(
+            [
+                [
+                    round(float(c["s_ind"]), 4),
+                    round(float(c["s_dep"]), 4),
+                    round(1.0 - round(float(c["r_break_overall"]), 4), 4),
+                ]
+                for c in candidates
+            ],
+            dtype=float,
+        )
+        if candidates
+        else np.empty((0, 3), dtype=float)
+    )
+
+    limited: list[AnalogMatchItem] = []
+    for idx, cand in enumerate(top_candidates):
+        row_dict = cand["row_dict"]  # type: ignore[assignment]
+        s_ind = float(cand["s_ind"])
+        s_dep = float(cand["s_dep"])
+        r_break_overall = float(cand["r_break_overall"])
+        combined_score = float(cand["combined_score"])
+        confidence_adjusted_score = float(cand["confidence_adjusted_score"])
+        iv_sim_breakdown = cand["iv_sim_breakdown"]  # type: ignore[assignment]
+        dv_sim_breakdown = cand["dv_sim_breakdown"]  # type: ignore[assignment]
+        earth_iv = cand["earth_iv"]  # type: ignore[assignment]
+        earth_dv = cand["earth_dv"]  # type: ignore[assignment]
+        earth_breakage = cand["earth_breakage"]  # type: ignore[assignment]
+
+        breakage_alerts = build_breakage_profile(site.variables.breakage, earth_breakage)
         recommendations = evaluate_mission_recommendations(
             site=site,
             s_ind=s_ind,
@@ -261,28 +339,30 @@ def match_terrestrial_analogs(
         src_raw = row_dict.get("source_apis_json", "[]")
         source_apis = json.loads(src_raw) if isinstance(src_raw, str) else list(src_raw)
 
-        if ignore_ind and not ignore_dv:
-            combined_score = s_dep
-        elif ignore_dv and not ignore_ind:
-            combined_score = s_ind
-        else:
-            combined_score = 0.60 * s_ind + 0.40 * s_dep
-        conf_score = site.confidence.score if site.confidence else 0.70
-        confidence_adjusted_score = combined_score * (0.75 + 0.25 * conf_score)
-        # Cell-specific empirical uncertainty combining instrumental confidence + cross-variable jackknife dispersion
-        sim_vals = np.array(list(iv_sim_breakdown.values()) + list(dv_sim_breakdown.values()), dtype=float)
+        sim_vals = np.array(
+            list(iv_sim_breakdown.values()) + list(dv_sim_breakdown.values()),
+            dtype=float,
+        )
         jackknife_spread = float(np.std(sim_vals)) / np.sqrt(len(sim_vals))
-        score_uncertainty = float(np.clip((1.0 - conf_score) * 0.14 + jackknife_spread * 0.45, 0.015, 0.25))
+        score_uncertainty = float(
+            np.clip((1.0 - conf_score) * 0.14 + jackknife_spread * 0.45, 0.015, 0.25)
+        )
         ci_low = round(max(0.0, combined_score - score_uncertainty), 4)
         ci_high = round(min(1.0, combined_score + score_uncertainty), 4)
         h3_res = int(row_dict["h3_resolution"])
-        scale_map = {0: 1107.7, 1: 418.7, 2: 158.2, 3: 59.8, 4: 22.6, 5: 8.5, 6: 3.2}
-        effective_scale_km = scale_map.get(h3_res, round(158.2 / (2.64 ** max(0, h3_res - 2)), 1))
+        effective_scale_km = scale_map.get(
+            h3_res, round(158.2 / (2.64 ** max(0, h3_res - 2)), 1)
+        )
 
         known_name = match_known_analog(float(row_dict["lat"]), float(row_dict["lon"]))
         effective_is_benchmark = bool(row_dict["is_benchmark"]) or (known_name is not None)
 
-        matches.append(
+        ge_all = np.all(all_objs >= all_objs[idx] - 1e-6, axis=1)
+        gt_any = np.any(all_objs > all_objs[idx] + 0.002, axis=1)
+        ge_all[idx] = False
+        is_pareto = not bool(np.any(ge_all & gt_any))
+
+        limited.append(
             AnalogMatchItem(
                 earth_cell_h3=str(row_dict["earth_cell_h3"]),
                 h3_resolution=h3_res,
@@ -292,11 +372,12 @@ def match_terrestrial_analogs(
                 country_code=str(row_dict["country_code"]),
                 biome_key=str(row_dict["biome_key"]),
                 is_benchmark=effective_is_benchmark,
+                is_pareto_optimal=is_pareto,
                 known_analog_name=known_name,
                 s_ind=round(s_ind, 4),
                 s_dep=round(s_dep, 4),
-                combined_score=round(combined_score, 4),
-                confidence_adjusted_score=round(confidence_adjusted_score, 4),
+                combined_score=combined_score,
+                confidence_adjusted_score=confidence_adjusted_score,
                 score_uncertainty=round(score_uncertainty, 4),
                 confidence_interval=(ci_low, ci_high),
                 effective_scale_km=effective_scale_km,
@@ -318,13 +399,6 @@ def match_terrestrial_analogs(
                 ),
             )
         )
-
-    _mark_pareto_frontier(matches)
-    matches.sort(
-        key=lambda item: item.confidence_adjusted_score if penalize_estimated else item.combined_score,
-        reverse=True,
-    )
-    limited = matches[:limit]
 
     return AnalogSearchResponse(
         site_id=site.site_id,

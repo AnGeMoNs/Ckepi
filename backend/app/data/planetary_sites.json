@@ -42,13 +42,15 @@
     },
     "provenance": {
       "source_apis": [
-        "NASA PDS ODE (LRO DLRE PRP)",
+        "NASA PDS ODE (LRO DLRE PRP) + Stefan-Boltzmann Radiative Model",
         "NASA PDS ODE LRO DLRE"
       ],
       "observation_window": "NASA PDS ODE LRO DLRE PRP (0 products)",
-      "fetched_at": "2026-11-13T17:57:32.752609+00:00",
+      "fetched_at": "2026-11-14T20:29:51.504422+00:00",
       "is_live_probed": false
-    }
+    },
+    "confidence": null,
+    "planetary_feature": null
   },
   {
     "site_id": "moon_tranquillitatis_lava",
@@ -93,13 +95,15 @@
     },
     "provenance": {
       "source_apis": [
-        "NASA PDS ODE (LRO DLRE GDR_L3)",
+        "NASA PDS ODE (LRO DLRE GDR_L3) + Stefan-Boltzmann Radiative Model",
         "NASA PDS ODE LRO DLRE"
       ],
       "observation_window": "2009-07-05 \u2014 2009-12-24 (12 PDS LRO GDR_L3)",
-      "fetched_at": "2026-11-13T17:57:34.309868+00:00",
+      "fetched_at": "2026-11-14T20:29:53.417202+00:00",
       "is_live_probed": false
-    }
+    },
+    "confidence": null,
+    "planetary_feature": null
   },
   {
     "site_id": "mars_jezero_crater",
@@ -125,7 +129,7 @@
         "subsurface_ice_frac": 0.03,
         "aridity_index": 0.98,
         "relative_humidity_pct": 0.5,
-        "uv_irradiance_index": 7.5083,
+        "uv_irradiance_index": 7.5604,
         "vegetation_lai_proxy": 0.0
       },
       "dependent": {
@@ -148,9 +152,11 @@
         "Perseverance MEDA"
       ],
       "observation_window": "2025-12-14 \u2014 2026-08-25 (240 sols)",
-      "fetched_at": "2026-11-13T17:57:31.561007+00:00",
+      "fetched_at": "2026-11-14T20:29:50.488712+00:00",
       "is_live_probed": false
-    }
+    },
+    "confidence": null,
+    "planetary_feature": null
   },
   {
     "site_id": "mars_gale_crater",
@@ -176,7 +182,7 @@
         "subsurface_ice_frac": 0.02,
         "aridity_index": 0.98,
         "relative_humidity_pct": 0.5,
-        "uv_irradiance_index": 7.5055,
+        "uv_irradiance_index": 7.5473,
         "vegetation_lai_proxy": 0.0
       },
       "dependent": {
@@ -199,9 +205,11 @@
         "Curiosity REMS API"
       ],
       "observation_window": "2025-08-08 \u2014 2026-08-25 (365 sols)",
-      "fetched_at": "2026-11-13T17:57:31.180400+00:00",
+      "fetched_at": "2026-11-14T20:29:50.141016+00:00",
       "is_live_probed": false
-    }
+    },
+    "confidence": null,
+    "planetary_feature": null
   },
   {
     "site_id": "mars_arcadia_planitia",
@@ -250,8 +258,10 @@
         "MRO SHARAD"
       ],
       "observation_window": "2026-02-01 \u2014 2026-08-25 (200 sols)",
-      "fetched_at": "2026-11-13T17:57:31.739560+00:00",
+      "fetched_at": "2026-11-14T20:29:50.701321+00:00",
       "is_live_probed": false
-    }
+    },
+    "confidence": null,
+    "planetary_feature": null
   }
 ]

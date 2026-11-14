@@ -96,7 +96,7 @@ export function Header({
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-30 border-b border-border-subtle bg-surface-elevated/95 backdrop-blur"
+      className="sticky top-0 z-30 border-b border-border-subtle/80 bg-surface-elevated/90 backdrop-blur-md shadow-sm"
     >
       <div className="mx-auto flex max-w-screen-2xl items-center justify-between gap-3 px-3 py-2.5 sm:px-6">
         <div className="flex min-w-0 items-center gap-3">

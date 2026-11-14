@@ -32,6 +32,30 @@ interface FastApiErrorPayload {
   detail?: ApiErrorDetail | string;
 }
 
+const MAX_CACHE_ENTRIES = 64;
+const responseCache = new Map<string, unknown>();
+
+function getCached<T>(key: string): T | undefined {
+  if (!responseCache.has(key)) return undefined;
+  const val = responseCache.get(key) as T;
+  responseCache.delete(key);
+  responseCache.set(key, val);
+  return val;
+}
+
+function setCached<T>(key: string, val: T): T {
+  if (responseCache.size >= MAX_CACHE_ENTRIES) {
+    const oldestKey = responseCache.keys().next().value;
+    if (oldestKey !== undefined) responseCache.delete(oldestKey);
+  }
+  responseCache.set(key, val);
+  return val;
+}
+
+export function clearApiCache(): void {
+  responseCache.clear();
+}
+
 async function fetchApiResponse(url: string, init?: RequestInit): Promise<Response> {
   let response: Response;
   try {
@@ -63,10 +87,18 @@ async function fetchApiResponse(url: string, init?: RequestInit): Promise<Respon
   return response;
 }
 
-async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
+async function requestJson<T>(url: string, init?: RequestInit, cacheKey?: string): Promise<T> {
+  if (cacheKey) {
+    const hit = getCached<T>(cacheKey);
+    if (hit !== undefined) return hit;
+  }
   const response = await fetchApiResponse(url, init);
   try {
-    return (await response.json()) as T;
+    const data = (await response.json()) as T;
+    if (cacheKey) {
+      setCached(cacheKey, data);
+    }
+    return data;
   } catch (error) {
     if (init?.signal?.aborted) throw error;
     throw new ApiClientError("errors.invalid_response");
@@ -74,7 +106,7 @@ async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
 }
 
 export function fetchPlanetarySites(signal?: AbortSignal): Promise<PlanetarySite[]> {
-  return requestJson<PlanetarySite[]>("/api/v1/planetary-sites", { signal });
+  return requestJson<PlanetarySite[]>("/api/v1/planetary-sites", { signal }, "sites");
 }
 
 export function runDecomposition(
@@ -82,14 +114,19 @@ export function runDecomposition(
   modelType: DecompositionModelType,
   signal?: AbortSignal
 ): Promise<DecompositionResponse> {
-  return requestJson<DecompositionResponse>("/api/v1/decompose", {
-    method: "POST",
-    signal,
-    body: JSON.stringify({
-      site_id: siteId,
-      model_type: modelType,
-    }),
+  const body = JSON.stringify({
+    site_id: siteId,
+    model_type: modelType,
   });
+  return requestJson<DecompositionResponse>(
+    "/api/v1/decompose",
+    {
+      method: "POST",
+      signal,
+      body,
+    },
+    `decomp:${body}`
+  );
 }
 
 export interface SearchAnalogsParams {
@@ -109,24 +146,29 @@ export interface SearchAnalogsParams {
 }
 
 export function searchAnalogs(params: SearchAnalogsParams): Promise<AnalogSearchResponse> {
-  return requestJson<AnalogSearchResponse>("/api/v1/analogs/search", {
-    method: "POST",
-    signal: params.signal,
-    body: JSON.stringify({
-      site_id: params.siteId,
-      model_type: params.modelType,
-      distance_metric: params.distanceMetric ?? "euclidean",
-      test_profile: params.testProfile,
-      min_s_ind: params.minSInd,
-      min_s_dep: params.minSDep,
-      exclude_benchmarks: params.excludeBenchmarks,
-      penalize_estimated: params.penalizeEstimated ?? false,
-      limit: params.limit,
-      custom_iv_weights: params.customIvWeights,
-      custom_dv_weights: params.customDvWeights,
-      custom_min_similarity: params.customMinSimilarity,
-    }),
+  const body = JSON.stringify({
+    site_id: params.siteId,
+    model_type: params.modelType,
+    distance_metric: params.distanceMetric ?? "euclidean",
+    test_profile: params.testProfile,
+    min_s_ind: params.minSInd,
+    min_s_dep: params.minSDep,
+    exclude_benchmarks: params.excludeBenchmarks,
+    penalize_estimated: params.penalizeEstimated ?? false,
+    limit: params.limit,
+    custom_iv_weights: params.customIvWeights,
+    custom_dv_weights: params.customDvWeights,
+    custom_min_similarity: params.customMinSimilarity,
   });
+  return requestJson<AnalogSearchResponse>(
+    "/api/v1/analogs/search",
+    {
+      method: "POST",
+      signal: params.signal,
+      body,
+    },
+    `search:${body}`
+  );
 }
 
 export interface CompareCellOptions {
@@ -180,19 +222,18 @@ export function compareCellWithSite(
 
   const query = new URLSearchParams({ model_type: modelType });
   appendWeightParams(query, options);
-  return requestJson<SiteComparisonResponse>(
-    `/api/v1/analogs/${encodeURIComponent(h3Index)}/compare/${encodeURIComponent(siteId)}?${query.toString()}`,
-    { signal: options.signal }
-  );
+  const url = `/api/v1/analogs/${encodeURIComponent(h3Index)}/compare/${encodeURIComponent(siteId)}?${query.toString()}`;
+  return requestJson<SiteComparisonResponse>(url, { signal: options.signal }, `cmp:${url}`);
 }
 
-export function probeEarthCoordinate(
+export async function probeEarthCoordinate(
   lat: number,
   lon: number,
   siteId: string,
   modelType: DecompositionModelType,
   options?: Omit<CompareCellOptions, "signal">
 ): Promise<SiteComparisonResponse> {
+  clearApiCache();
   return requestJson<SiteComparisonResponse>("/api/v1/earth/probe", {
     method: "POST",
     body: JSON.stringify({
@@ -210,7 +251,8 @@ export function probeEarthCoordinate(
   });
 }
 
-export function refreshDatasets(): Promise<{ status: string }> {
+export async function refreshDatasets(): Promise<{ status: string }> {
+  clearApiCache();
   return requestJson<{ status: string }>("/api/v1/datasets/refresh", {
     method: "POST",
   });
@@ -233,9 +275,10 @@ export interface ProbePlanetaryParams {
   customMinSimilarity?: Record<string, number>;
 }
 
-export function probePlanetaryLocation(
+export async function probePlanetaryLocation(
   params: ProbePlanetaryParams
 ): Promise<PlanetaryProbeResponse> {
+  clearApiCache();
   return requestJson<PlanetaryProbeResponse>("/api/v1/planetary/probe", {
     method: "POST",
     body: JSON.stringify({
@@ -258,12 +301,11 @@ export function probePlanetaryLocation(
 }
 
 export function fetchMultiAgencyDatasets(h3Index: string): Promise<MultiAgencyCatalogResponse> {
-  return requestJson<MultiAgencyCatalogResponse>(
-    `/api/v1/earth/${encodeURIComponent(h3Index)}/datasets`
-  );
+  const url = `/api/v1/earth/${encodeURIComponent(h3Index)}/datasets`;
+  return requestJson<MultiAgencyCatalogResponse>(url, undefined, `datasets:${h3Index}`);
 }
 
-export function refineAnalogCell(
+export async function refineAnalogCell(
   h3Index: string,
   siteId: string,
   modelType: DecompositionModelType,
@@ -272,6 +314,7 @@ export function refineAnalogCell(
   customIvWeights?: Record<string, number>,
   customDvWeights?: Record<string, number>
 ): Promise<AnalogRefineResponse> {
+  clearApiCache();
   return requestJson<AnalogRefineResponse>("/api/v1/analogs/refine", {
     method: "POST",
     body: JSON.stringify({

@@ -63,6 +63,11 @@ const PlanetaryPhysicsLab = lazy(() =>
     default: m.PlanetaryPhysicsLab,
   }))
 );
+const EducationPhysicsLab = lazy(() =>
+  import("../components/education/PlanetaryPhysicsLab").then((m) => ({
+    default: m.PlanetaryPhysicsLab,
+  }))
+);
 const FieldTrialPlanner = lazy(() =>
   import("../components/planning/FieldTrialPlanner").then((m) => ({
     default: m.FieldTrialPlanner,
@@ -422,6 +427,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
               "section-ranking": Boolean(
                 analysis.searchResult && analysis.searchResult.matches.length > 0
               ),
+              "section-physics-lab": true,
             }}
           />
 
@@ -586,6 +592,19 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             </div>
           )}
 
+          {readingMode === "explorer" && (
+            <section id="section-physics-lab" className="scroll-mt-32">
+              <Suspense fallback={<PanelSkeleton heightClass="h-72" />}>
+                <EducationPhysicsLab
+                  activeBody={activeSite?.body}
+                  activeSite={activeSite}
+                  selectedMatch={analysis.comparison?.match}
+                  readingMode={readingMode}
+                />
+              </Suspense>
+            </section>
+          )}
+
           {analysis.decomposition && (
             <section
               id="section-decomposition"
@@ -656,6 +675,19 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                     analysis.setSelectedH3(h3Index);
                   }}
                   onExported={handleExported}
+                />
+              </Suspense>
+            </section>
+          )}
+
+          {readingMode !== "explorer" && (
+            <section id="section-physics-lab" className="scroll-mt-32">
+              <Suspense fallback={<PanelSkeleton heightClass="h-72" />}>
+                <EducationPhysicsLab
+                  activeBody={activeSite?.body}
+                  activeSite={activeSite}
+                  selectedMatch={analysis.comparison?.match}
+                  readingMode={readingMode}
                 />
               </Suspense>
             </section>

@@ -130,7 +130,10 @@
     "exportReport": "Informe (.md)",
     "sIndTooltip": "Similitud en variables ambientales independientes (ej. gravedad, temperatura, radiación).",
     "sDepTooltip": "Similitud en respuesta operativa y condiciones dependientes del terreno.",
-    "rBreakTooltip": "Riesgo agregado de ruptura de la analogía en la Tierra respecto al sitio objetivo."
+    "rBreakTooltip": "Riesgo agregado de ruptura de la analogía en la Tierra respecto al sitio objetivo.",
+    "combinedCol": "% Similitud",
+    "showRows": "Mostrar",
+    "topCount": "Top {{count}}"
   },
   "layers": {
     "independent": "Independiente (X)",
@@ -395,7 +398,49 @@
     "cellSlopeLabel": "Pendiente",
     "cellRadiationLabel": "Radiación GCR",
     "validTestsBadge": "{{count}} ensayo(s) viable(s)",
-    "jumpToDiagnostics": "Ver diagnóstico completo"
+    "jumpToDiagnostics": "Ver diagnóstico completo",
+    "filters": {
+      "searchPlaceholder": "Buscar región, análogo, bioma o celda H3...",
+      "sortByLabel": "Ordenar por",
+      "sort": {
+        "combined_desc": "Mayor % Similitud Global (↓)",
+        "combined_asc": "Menor % Similitud Global (↑)",
+        "s_ind_desc": "Mayor % Sustrato S_ind (↓)",
+        "s_dep_desc": "Mayor % Respuesta S_dep (↓)",
+        "r_break_asc": "Menor Riesgo Ruptura R_break (↑ Más seguro)",
+        "r_break_desc": "Mayor Riesgo Ruptura R_break (↓)",
+        "lat_desc": "Latitud (Norte → Sur)"
+      },
+      "category": {
+        "all": "Todas",
+        "discovery": "Descubrimientos",
+        "benchmark": "Benchmarks",
+        "pareto": "Óptimos Pareto",
+        "pinned": "Fijadas ★"
+      },
+      "scoreBandLabel": "Nivel de %",
+      "scoreBand": {
+        "all": "Todos los %",
+        "high": "Alta (≥ 75%)",
+        "mid": "Media (55–74%)",
+        "low": "Parcial (< 55%)"
+      },
+      "biomeAll": "Todos los biomas",
+      "perPage": "{{count}} / pág.",
+      "clearFilters": "Limpiar filtros",
+      "pinCell": "Fijar celda para no perderla",
+      "unpinCell": "Quitar de fijadas"
+    },
+    "nav": {
+      "returnToPrevPage": "↩ Volver a pág. {{page}}",
+      "goToSelectedCellPage": "📍 Ir a celda activa (Pág. {{page}})",
+      "recentPagesLabel": "Vistas recién:",
+      "jumpToPageLabel": "Ir a pág.",
+      "jumpButton": "Ir",
+      "pageOption": "Pág. {{page}} (#{{start}}–{{end}} · {{score}})",
+      "back10": "−10 págs.",
+      "forward10": "+10 págs."
+    }
   },
   "agencies": {
     "title": "Catálogo Multi-Agencia (NASA · ESA · CSA · JAXA)",
@@ -611,7 +656,8 @@
     "focusAtacama": "📍 Comparar con Atacama",
     "globalLabel": "Alcance global",
     "locationLabel": "Ubicación específica",
-    "skipToContent": "Saltar al contenido principal"
+    "skipToContent": "Saltar al contenido principal",
+    "physicsLab": "Laboratorio Físico"
   },
   "export": {
     "reportTitle": "Reporte Ckepi",
@@ -1216,6 +1262,290 @@
     "limits": {
       "title": "Lo que la Tierra no puede imitar",
       "body": "En Marte la gravedad es 0,38 veces la de la Tierra, el aire es unas 160 veces más delgado y la radiación es mucho mayor. Ningún desierto reproduce eso. Por eso CKEPI preselecciona lugares para estudiar en terreno; no los certifica."
+    }
+  },
+  "physicsLab": {
+    "title": "Laboratorio Interactivo de Gravedad y Física Planetaria",
+    "badge": "Educativo · STEAM",
+    "subtitle": "Explora cómo cambia la física cotidiana entre la Tierra, Marte y la Luna usando las mismas leyes físicas.",
+    "toggleTitan": "+ Titán (1.35 m/s²)",
+    "bodies": {
+      "earth": "Tierra",
+      "mars": "Marte",
+      "moon": "Luna",
+      "titan": "Titán",
+      "custom": "Personalizado"
+    },
+    "telemetry": {
+      "activeTarget": "Destino activo",
+      "surfaceTemp": "Temp. superficial",
+      "pressure": "Presión atm.",
+      "earthAnalog": "Análogo terrestre"
+    },
+    "controls": {
+      "play": "Reproducir",
+      "pause": "Pausar",
+      "reset": "Reiniciar"
+    },
+    "weight": {
+      "title": "Calculadora de peso físico (Newtons)",
+      "description": "La masa (kg) no cambia al viajar por el espacio, pero la fuerza gravitatoria (Newtons) sí.",
+      "massLabel": "Masa del objeto, persona o rover",
+      "feelsLike": "equivale a {{kg}} kg en la Tierra",
+      "inertiaTip": "Nota de ingeniería: Aunque el peso baja en la Luna o Marte, la inercia horizontal sigue siendo de {{kg}} kg (F = m · a), por lo que frenar o girar un rover requiere cuidado.",
+      "presets": {
+        "backpack": "Mochila",
+        "astronaut": "Astronauta",
+        "suit": "Traje EVA",
+        "viper": "Rover VIPER",
+        "perseverance": "Perseverance"
+      }
+    },
+    "jump": {
+      "title": "Simulación de saltos según la gravedad",
+      "description": "Con el mismo impulso inicial, la menor gravedad permite alcanzar mayor altura y permanecer más tiempo en el aire.",
+      "velocityLabel": "Velocidad inicial de salto",
+      "jumpAction": "Saltar",
+      "airTime": "Vuelo"
+    },
+    "trajectory": {
+      "title": "Comparación de trayectorias de lanzamiento",
+      "description": "Un proyectil lanzado con la misma velocidad y ángulo recorre distancias muy distintas en cada cuerpo.",
+      "speedLabel": "Velocidad de lanzamiento",
+      "angleLabel": "Ángulo",
+      "dragToggle": "Simular arrastre atmosférico real",
+      "launchAction": "Lanzar",
+      "chartAria": "Gráfico comparativo de trayectorias parabólicas en Tierra, Marte y Luna",
+      "range": "Alcance",
+      "height": "Altura máx.",
+      "time": "Vuelo"
+    },
+    "waves": {
+      "title": "Velocidad de olas en agua somera",
+      "description": "En aguas poco profundas, la velocidad de propagación de una ola depende directamente de la gravedad y la profundidad.",
+      "depthLabel": "Profundidad del fluido (h)",
+      "wavelengthLabel": "Longitud de onda (λ)",
+      "presets": {
+        "hydroponics": "Canal hidropónico",
+        "jezeroDelta": "Paleo-delta Jezero",
+        "subglacialLake": "Lago profundo"
+      }
+    },
+    "quiz": {
+      "title": "Mini-Desafío STEAM: Poné a prueba tu intuición espacial",
+      "subtitleBadge": "Autoevaluación interactiva",
+      "description": "Usá los simuladores de arriba para comprobar cada respuesta experimentalmente.",
+      "q1": {
+        "question": "¿Qué ocurre con la masa (kg) y el peso (N) del rover Perseverance (1025 kg) al aterrizar en Marte?",
+        "optA": "Tanto su masa como su peso se reducen al 38%",
+        "optB": "Su masa sigue siendo 1025 kg, pero su peso en Newtons baja al 38%",
+        "optC": "Su peso en Newtons no cambia porque tiene ruedas metálicas",
+        "explanation": "¡Exacto! La masa es una propiedad intrínseca (1025 kg en cualquier lugar), mientras que el peso depende de la gravedad local (W = m · g)."
+      },
+      "q2": {
+        "question": "En vacío (sin atmósfera), ¿con qué ángulo se logra el alcance horizontal máximo en cualquier planeta?",
+        "optA": "Depende de la gravedad del planeta",
+        "optB": "75° en la Luna y 30° en la Tierra",
+        "optC": "45° en todos los cuerpos planetarios",
+        "explanation": "En ausencia de arrastre atmosférico, sin(2θ) alcanza su máximo en θ = 45° sin importar el valor de g."
+      },
+      "q3": {
+        "question": "Si comparás una ola en un estanque de 5 m de profundidad en la Luna frente a la Tierra, la ola lunar viaja...",
+        "optA": "Más lento, porque c = √(g · h) y la gravedad lunar es menor",
+        "optB": "Más rápido, porque el agua pesa menos",
+        "optC": "A la misma velocidad en ambos mundos",
+        "explanation": "La gravedad es la fuerza restauradora de las olas superficiales: menor gravedad implica una propagación más lenta (2.85 m/s en la Luna vs. 7.00 m/s en la Tierra)."
+      }
+    },
+    "toggleCustom": "+ Gravedad libre",
+    "customGravityLabel": "Gravedad personalizada (m/s²)",
+    "categories": {
+      "all": "Todos los módulos (9)",
+      "mechanics": "Mecánica y Gravedad",
+      "wavesEnergy": "Olas, Péndulo y Energía Solar",
+      "atmosphere": "Química del Aire y Habitabilidad",
+      "quiz": "Mini-Desafío STEAM"
+    },
+    "pendulum": {
+      "title": "Péndulo planetario y reloj gravitacional",
+      "description": "El período de un péndulo depende únicamente de la longitud del hilo y de la gravedad local, sin importar su masa.",
+      "lengthLabel": "Longitud del péndulo (L)",
+      "oscPerMin": "osc/min"
+    },
+    "escape": {
+      "title": "Velocidad de escape y energía orbital",
+      "description": "Cuánta velocidad y energía cinética necesita una nave para vencer el pozo gravitatorio de cada mundo.",
+      "massLabel": "Masa de la nave o módulo de ascenso",
+      "orbital": "Órbita baja"
+    },
+    "solar": {
+      "title": "Generación solar fotovoltaica y atenuación por polvo",
+      "description": "Simula cuánta potencia eléctrica producen paneles espaciales (η = 30%) según la irradiancia solar de cada mundo y la opacidad atmosférica (τ).",
+      "areaLabel": "Área de paneles solares (A)",
+      "dustLabel": "Opacidad atmosférica / tormenta de polvo (τ)",
+      "roversPowered": "Equivale a ~{{count}} rovers de 250 W"
+    },
+    "atmosphere": {
+      "title": "Composición química del aire y habitabilidad respiratoria (Tierra · Marte · Luna)",
+      "description": "Compara los compuestos químicos atmosféricos de cada mundo y por qué la mezcla terrestre es óptima para la fisiología humana frente a los desafíos de soporte vital (ECLSS / ISRU) en Marte y la Luna.",
+      "totalPressure": "Presión total",
+      "partialO2": "Presión parcial pO₂",
+      "armstrongLimit": "Límite de Armstrong (63 mbar)",
+      "armstrongSafe": "Seguro (líquidos estables a 37 °C)",
+      "armstrongBoil": "Peligro (ebullición a 37 °C sin traje)",
+      "earth": {
+        "status": "Óptimo para vivir",
+        "summary": "Equilibrio ideal: 21% de O₂ para energía celular y 78% de N₂ como amortiguador inerte que mantiene abiertos los alvéolos pulmonares y frena incendios."
+      },
+      "mars": {
+        "status": "Irrespirable · Letal",
+        "summary": "Atmósfera ultradelgada con 95.3% de CO₂ (tóxico por hipercapnia) y casi nulo O₂. Sin embargo, el CO₂ permite fabricar O₂ in situ con tecnología MOXIE."
+      },
+      "moon": {
+        "status": "Vacío · Sin aire",
+        "summary": "No posee atmósfera gaseosa respirable, pero el 43% de su suelo (regolito) es oxígeno ligado en minerales y posee hielo de agua en cráteres polares."
+      },
+      "roles": {
+        "n2Earth": "Nitrógeno: Gas amortiguador que aporta presión alveolar sin toxicidad y nutre el ciclo biológico.",
+        "o2Earth": "Oxígeno: Combustible esencial para la respiración celular aeróbica (ATP).",
+        "ar": "Argón: Gas noble químicamente inerte.",
+        "co2Earth": "Dióxido de carbono: Regula el impulso respiratorio en baja dosis y mantiene el efecto invernadero suave.",
+        "co2Mars": "Dióxido de carbono: Causa acidosis e hipercapnia inmediata en humanos, pero es materia prima para producir O₂.",
+        "n2Mars": "Nitrógeno: Presente pero en baja fracción; debe concentrarse para inflar hábitats.",
+        "o2CoMars": "Trazas de O₂ (0.13%) y monóxido de carbono tóxico (CO, 0.08%).",
+        "regolithO2": "Oxígeno mineral en regolito: Extraíble calentando óxidos de silicio, hierro y titanio (>900 °C).",
+        "polarIce": "Hielo de agua en cráteres permanentemente sombreados (Shackleton): Ideal para electrólisis.",
+        "exosphere": "Exosfera vestigial: Átomos sueltos que no forman aire ni transmiten sonido."
+      },
+      "pillars": {
+        "o2Title": "1. Ventana óptima de Oxígeno (pO₂: 160–250 mbar)",
+        "o2Desc": "Por debajo de 100 mbar sufrimos hipoxia cerebral y pérdida de conciencia; por encima de 500 mbar (O₂ puro a alta presión) el oxígeno oxida los pulmones y vuelve explosivo cualquier material.",
+        "n2Title": "2. Por qué necesitamos Nitrógeno (N₂ al 78%)",
+        "n2Desc": "Respirar solo oxígeno puro colapsa los alvéolos (atelectasia por absorción) y multiplica el riesgo de incendio (como en Apollo 1). El N₂ diluye el O₂ y sostiene la presión total.",
+        "co2Title": "3. Límite crítico de CO₂ (< 5 mbar) y Presión (> 63 mbar)",
+        "co2Desc": "Incluso si hubiera suficiente O₂, más de 1%–2% de CO₂ en el aire impide que la sangre libere dióxido de carbono. En Marte el CO₂ es el 95.3% del aire."
+      },
+      "isru": {
+        "title": "Simulador de Soporte Vital e ISRU (Generación de Aire para Hábitat)",
+        "subtitle": "Calcula cuánto oxígeno necesita una tripulación humana y cuántos recursos locales de Marte o la Luna deben procesarse.",
+        "crewLabel": "Tripulación del hábitat",
+        "astronauts": "astronautas",
+        "daysLabel": "Duración de la misión",
+        "days": "días",
+        "o2Required": "Oxígeno metabólico requerido",
+        "o2RateNote": "Estándar NASA ISS: 0.84 kg de O₂ por persona al día",
+        "marsMoxieTitle": "En Marte: CO₂ atmosférico a procesar (MOXIE)",
+        "marsMoxieNote": "Electrólisis de óxido sólido a 800 °C",
+        "moonIceTitle": "En la Luna: Agua polar o regolito a procesar",
+        "moonIceNote": "Electrólisis de hielo o reducción de regolito"
+      }
+    }
+  },
+  "telemetryAndRover": {
+    "lagTitle": "Período de Desfase y Sincronización de Datos (NASA / ESA)",
+    "lagSubtitle": "Tiempos reales de actualización del motor, ventana observacional de sensores y latencia física de transmisión.",
+    "lastSyncLabel": "Última sincronización API",
+    "elapsedJustNow": "Hace instantes (< 1 min)",
+    "elapsedMinutes": "Hace {{count}} min",
+    "elapsedHours": "Hace {{count}} h {{mins}} min",
+    "elapsedDays": "Hace {{count}} días",
+    "planetaryFeedTitle": "Telemetría Planetaria ({{body}})",
+    "earthFeedTitle": "Malla Terrestre H3 ({{cell}})",
+    "obsWindowLabel": "Ventana observacional",
+    "signalLatencyLabel": "Desfase físico de señal / archivo",
+    "marsLatencyDesc": "Señal de radio (OWLT): 4 a 22 min (media ~12.5 min) · Desfase de downlink NASA DSN (REMS/MEDA): 24–72 h (1–3 soles).",
+    "moonLatencyDesc": "Señal de radio (OWLT): 1.28 s en tiempo real · Ciclo de calibración orbital NASA PDS LRO (Diviner/LOLA): consolidado por campaña.",
+    "earthLatencyDesc": "Reanálisis ERA5 / Open-Meteo: < 1 h en sondeo vivo · Flujo radiativo NASA POWER (CERES/MERRA-2): desfase NRT de 2 a 5 días.",
+    "freshnessLive": "Sincronizado en vivo",
+    "freshnessCached": "Caché validada",
+    "roverTitle": "Simulador de Éxito de Despliegue y Lugar Más Óptimo",
+    "roverSubtitle": "Calcula la probabilidad de éxito operativo según pendiente, rugosidad, energía solar/térmica, polvo y atmósfera para elegir el mejor sitio.",
+    "systemTypeLabel": "Sistema a desplegar",
+    "systems": {
+      "rover": "Rover Explorador (ej. Perseverance / VIPER)",
+      "lander": "Módulo de Aterrizaje (Lander)",
+      "isru_drill": "Perforadora Criogénica ISRU (Hielo / O₂)",
+      "rotorcraft": "Dron / Helicóptero Coaxial (ej. Ingenuity)"
+    },
+    "planetarySectionTitle": "¿Dónde desplegar en {{body}}? (Éxito Operativo en Destino)",
+    "earthSectionTitle": "¿Dónde probar en la Tierra? (Éxito de Ensayo de Campo)",
+    "currentTargetSuccess": "Éxito estimado en {{site}}",
+    "currentEarthSuccess": "Fidelidad de prueba en {{site}}",
+    "optimalBadge": "★ Lugar Más Óptimo",
+    "selectSiteBtn": "Seleccionar",
+    "activeBadge": "Activo",
+    "factors": {
+      "traction": "Tracción y Pendiente",
+      "thermalSolar": "Energía y Clima Térmico",
+      "dustWind": "Polvo, Viento y Atmósfera",
+      "instrumentConf": "Cobertura Instrumental"
+    },
+    "moonRotorcraftZero": "0% en la Luna: El vacío (~10⁻¹² mbar) impide generar sustentación aerodinámica con hélices; requiere propulsión química (thrusters).",
+    "verdictHigh": "Despliegue Altamente Favorable (Riesgo Bajo)",
+    "verdictMed": "Despliegue Viable con Precaución Operativa",
+    "verdictLow": "Despliegue Crítico / Alto Riesgo Mecánico o Ambiental",
+    "duration": {
+      "label": "Duración de la misión (cambio climático / estacional)",
+      "months": "{{count}} mes(es) ({{days}} días)",
+      "presets": {
+        "short": "15 días (1 día lunar)",
+        "twoMonths": "2 meses (60 días)",
+        "sixMonths": "6 meses (Estacional)",
+        "oneYear": "12 meses (Año terrestre)",
+        "marsYear": "23 meses (1 año marciano)"
+      },
+      "climateImpactTitle": "Impacto del Clima según Duración ({{months}} meses)",
+      "marsClimateNote": "En {{days}} días (~{{sols}} soles marcianos), el cambio estacional altera la temperatura en ±{{tempSwing}} K, acumula ~{{dustLoss}}% de polvo sobre paneles solares y eleva el riesgo de tormenta regional a {{stormRisk}}%.",
+      "moonClimateNote": "En {{days}} días el rover enfrentará {{lunarNights}} noche(s) lunar(es) continua(s) de 14 días a −170 °C (100 K) sin sol; requiere calefactores de radioisótopos (RHU/RTG) o hibernación criogénica.",
+      "survivalAfterDuration": "Supervivencia tras {{months}} mes(es)"
+    },
+    "researchGoals": {
+      "label": "Enfoque de Misión e Investigación del Rover",
+      "rover_new_worlds": "Exploración con Rover: Conocer Lugares Nuevos (Tracción + Terreno Firme)",
+      "landing_viability": "Terreno Viable para Aterrizaje (Pendiente < 8° + Seguridad LiDAR)",
+      "crop_agriculture": "Parámetros Aptos para Cultivos / Invernadero (Luz Solar + Agua/Hielo + Clima)",
+      "isru_water": "Minería de Agua, Hielo Subsuperficial y Recursos ISRU",
+      "astrobiology": "Astrobiología, Biofirmas y Tubos de Lava"
+    },
+    "cropScoreLabel": "Aptitud Agrícola / Invernadero",
+    "landingScoreLabel": "Viabilidad de Aterrizaje",
+    "agencies": {
+      "title": "Zonas de Aterrizaje y Rovers: Propuestas NASA vs. Otros Países",
+      "subtitle": "Compara dónde aterrizaron o proponen explorar NASA (EE. UU.), CNSA (China), ISRO (India), ESA (Europa) y JAXA (Japón). Haz clic en cualquiera para sondearlo en vivo.",
+      "filterAll": "Todas las agencias",
+      "probeLiveBtn": "Sondear sitio en 3D",
+      "activeSiteBadge": "Sitio activo",
+      "sites": {
+        "nasa_jezero": "Marte — Cráter Jezero (Rover Perseverance · Paleolago)",
+        "nasa_gale": "Marte — Cráter Gale (Rover Curiosity · Aeolis Mons)",
+        "nasa_arcadia": "Marte — Arcadia Planitia (Propuesta NASA/Starship · Hielo somero)",
+        "nasa_shackleton": "Luna — Polo Sur Shackleton (NASA Artemis III / Rover VIPER)",
+        "cnsa_utopia": "Marte — Utopia Planitia (Rover Zhurong · CNSA China)",
+        "cnsa_von_karman": "Luna — Cráter Von Kármán Cara Oculta (Rover Yutu-2 · CNSA China)",
+        "isro_shiv_shakti": "Luna — Polo Sur Shiv Shakti (Rover Pragyan Chandrayaan-3 · ISRO India)",
+        "esa_oxia_planum": "Marte — Oxia Planum (Rover Rosalind Franklin · ESA Europa)",
+        "jaxa_shioli": "Luna — Cráter Shioli (Aterrizador SLIM + Rovers LEV · JAXA Japón)"
+      }
+    },
+    "pointZero": {
+      "title": "Rover Punto Cero (Parámetro Base = 0) y Primer Filtro de Secciones Nuevas",
+      "subtitle": "Fija la posición actual del rover como referencia (Δ = 0 en densidad/inercia, humedad, temperatura y pendiente) y aplica un primer filtro ambiental para descubrir secciones nuevas y datos no vistos.",
+      "setBaselineBtn": "Fijar Rover actual como Punto 0",
+      "baselineActive": "Punto 0 activo: {{name}} (Parámetros Base = 0)",
+      "unseenOnly": "Solo Datos No Vistos (Ocultar benchmarks conocidos)",
+      "firstFiltersTitle": "Primer Filtro Ambiental (Humedad · Temperatura · Densidad · Pendiente)",
+      "maxHumidity": "Humedad máx. (%)",
+      "maxTempC": "Temp. máx. (°C)",
+      "minDensityTiu": "Densidad / Inercia mín. (TIU)",
+      "maxSlopeDeg": "Pendiente máx. (°)",
+      "resetFirstFilters": "Restablecer primer filtro",
+      "newSectionsCount": "{{count}} secciones nuevas cumplen el primer filtro",
+      "deltaLabel": "Δ vs Punto 0",
+      "densityParam": "Densidad/Inercia",
+      "humidityParam": "Humedad",
+      "tempParam": "Temp.",
+      "slopeParam": "Pendiente",
+      "cropSuitability": "Cultivos"
     }
   }
 }
