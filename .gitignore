@@ -32,3 +32,6 @@ build/
 .idea/
 *.swp
 *.swo
+
+# Large ETL checkpoints (>100 MB GitHub limit; tracked as .gz)
+backend/app/data/era5_res3_checkpoint.jsonl
