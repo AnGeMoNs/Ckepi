@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { Compass, Layers, ListOrdered, Map } from "lucide-react";
+import { Compass, FlaskConical, Layers, ListOrdered, Map } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export type SectionId =
   | "section-maps"
   | "section-decomposition"
   | "section-diagnostics"
-  | "section-ranking";
+  | "section-ranking"
+  | "section-physics-lab";
 
 interface SectionNavProps {
   visibleSections: Record<SectionId, boolean>;
@@ -21,6 +22,7 @@ export function SectionNav({ visibleSections }: SectionNavProps) {
     { id: "section-decomposition", label: t("nav.decomposition"), icon: Layers },
     { id: "section-diagnostics", label: t("nav.diagnostics"), icon: Compass },
     { id: "section-ranking", label: t("nav.ranking"), icon: ListOrdered },
+    { id: "section-physics-lab", label: t("nav.physicsLab"), icon: FlaskConical },
   ];
 
   const availableItems = items.filter((item) => visibleSections[item.id]);

@@ -40,6 +40,11 @@ const AnalogComparisonMatrix = lazy(() =>
     default: m.AnalogComparisonMatrix,
   }))
 );
+const PlanetaryPhysicsLab = lazy(() =>
+  import("../components/education/PlanetaryPhysicsLab").then((m) => ({
+    default: m.PlanetaryPhysicsLab,
+  }))
+);
 
 interface ExplorerPageProps {
   theme: ThemeMode;
@@ -255,6 +260,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
               "section-ranking": Boolean(
                 analysis.searchResult && analysis.searchResult.matches.length > 0
               ),
+              "section-physics-lab": true,
             }}
           />
 
@@ -463,6 +469,12 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
               </Suspense>
             </section>
           )}
+
+          <section id="section-physics-lab" className="scroll-mt-32">
+            <Suspense fallback={<PanelSkeleton heightClass="h-72" />}>
+              <PlanetaryPhysicsLab activeBody={activeSite?.body} />
+            </Suspense>
+          </section>
         </div>
       </div>
 

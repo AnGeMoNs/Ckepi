@@ -537,7 +537,8 @@
     "maps": "Mapas",
     "decomposition": "Decomposición",
     "diagnostics": "Diagnóstico",
-    "ranking": "Ranking"
+    "ranking": "Ranking",
+    "physicsLab": "Laboratorio Físico"
   },
   "export": {
     "reportTitle": "Reporte Ckepi",
@@ -597,6 +598,54 @@
     "jez1": {
       "name": "JEZ-1 (Simulante del Delta de Jezero — Perseverance)",
       "mineralogy": "Carbonatos de Mg, filosilicatos de esmectita y olivino deltaico"
+    }
+  },
+  "physicsLab": {
+    "title": "Laboratorio Interactivo de Gravedad y Física Planetaria",
+    "badge": "Educativo · STEAM",
+    "subtitle": "Explora cómo cambia la física cotidiana entre la Tierra, Marte y la Luna usando las mismas leyes físicas.",
+    "bodies": {
+      "earth": "Tierra",
+      "mars": "Marte",
+      "moon": "Luna"
+    },
+    "controls": {
+      "play": "Reproducir",
+      "pause": "Pausar",
+      "reset": "Reiniciar"
+    },
+    "weight": {
+      "title": "Calculadora de peso físico (Newtons)",
+      "description": "La masa (kg) no cambia al viajar por el espacio, pero la fuerza gravitatoria (Newtons) sí.",
+      "massLabel": "Masa del objeto o persona",
+      "feelsLike": "equivale a {{kg}} kg en la Tierra",
+      "presets": {
+        "backpack": "Mochila",
+        "astronaut": "Astronauta",
+        "suit": "Traje espacial"
+      }
+    },
+    "jump": {
+      "title": "Simulación de saltos según la gravedad",
+      "description": "Con el mismo impulso inicial, la menor gravedad permite alcanzar mayor altura y permanecer más tiempo en el aire.",
+      "velocityLabel": "Velocidad inicial de salto",
+      "jumpAction": "Saltar"
+    },
+    "trajectory": {
+      "title": "Comparación de trayectorias de lanzamiento",
+      "description": "Un proyectil lanzado con la misma velocidad y ángulo recorre distancias muy distintas en cada cuerpo.",
+      "speedLabel": "Velocidad de lanzamiento",
+      "angleLabel": "Ángulo",
+      "launchAction": "Lanzar",
+      "chartAria": "Gráfico comparativo de trayectorias parabólicas en Tierra, Marte y Luna",
+      "range": "Alcance",
+      "height": "Altura máx.",
+      "time": "Vuelo"
+    },
+    "waves": {
+      "title": "Velocidad de olas en agua somera",
+      "description": "En aguas poco profundas, la velocidad de propagación de una ola depende directamente de la gravedad y la profundidad.",
+      "depthLabel": "Profundidad del agua (h)"
     }
   }
 }

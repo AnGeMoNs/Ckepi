@@ -537,7 +537,8 @@
     "maps": "Mapas",
     "decomposition": "Decomposição",
     "diagnostics": "Diagnóstico",
-    "ranking": "Ranking"
+    "ranking": "Ranking",
+    "physicsLab": "Lab. de Física"
   },
   "export": {
     "reportTitle": "Relatório Ckepi",
@@ -597,6 +598,54 @@
     "jez1": {
       "name": "JEZ-1 (Simulante do Delta de Jezero — Perseverance)",
       "mineralogy": "Carbonatos de Mg, filossilicatos de esmectita e olivina deltaica"
+    }
+  },
+  "physicsLab": {
+    "title": "Laboratório Interativo de Gravidade e Física Planetária",
+    "badge": "Educativo · STEAM",
+    "subtitle": "Explore como a física do dia a dia muda entre a Terra, Marte e a Lua usando as mesmas leis físicas.",
+    "bodies": {
+      "earth": "Terra",
+      "mars": "Marte",
+      "moon": "Lua"
+    },
+    "controls": {
+      "play": "Reproduzir",
+      "pause": "Pausar",
+      "reset": "Reiniciar"
+    },
+    "weight": {
+      "title": "Calculadora de peso físico (Newtons)",
+      "description": "A massa (kg) não muda ao viajar pelo espaço, mas a força gravitacional (Newtons) sim.",
+      "massLabel": "Massa do objeto ou pessoa",
+      "feelsLike": "equivale a {{kg}} kg na Terra",
+      "presets": {
+        "backpack": "Mochila",
+        "astronaut": "Astronauta",
+        "suit": "Traje espacial"
+      }
+    },
+    "jump": {
+      "title": "Simulação de saltos conforme a gravidade",
+      "description": "Com o mesmo impulso inicial, a menor gravidade permite alcançar maior altura e permanecer mais tempo no ar.",
+      "velocityLabel": "Velocidade inicial de salto",
+      "jumpAction": "Saltar"
+    },
+    "trajectory": {
+      "title": "Comparação de trajetórias de lançamento",
+      "description": "Um projétil lançado com a mesma velocidade e ângulo percorre distâncias muito diferentes em cada corpo.",
+      "speedLabel": "Velocidade de lançamento",
+      "angleLabel": "Ângulo",
+      "launchAction": "Lançar",
+      "chartAria": "Gráfico comparativo de trajetórias parabólicas na Terra, Marte e Lua",
+      "range": "Alcance",
+      "height": "Altura máx.",
+      "time": "Voo"
+    },
+    "waves": {
+      "title": "Velocidade de ondas em água rasa",
+      "description": "Em águas rasas, a velocidade de propagação de uma onda depende diretamente da gravidade e da profundidade.",
+      "depthLabel": "Profundidade da água (h)"
     }
   }
 }

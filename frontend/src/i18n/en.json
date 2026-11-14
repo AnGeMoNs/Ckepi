@@ -537,7 +537,8 @@
     "maps": "Maps",
     "decomposition": "Decomposition",
     "diagnostics": "Diagnostics",
-    "ranking": "Ranking"
+    "ranking": "Ranking",
+    "physicsLab": "Physics Lab"
   },
   "export": {
     "reportTitle": "Ckepi Report",
@@ -597,6 +598,54 @@
     "jez1": {
       "name": "JEZ-1 (Jezero Delta Simulant — Perseverance)",
       "mineralogy": "Mg-carbonates, Fe/Mg-smectite phyllosilicates & deltaic olivine"
+    }
+  },
+  "physicsLab": {
+    "title": "Interactive Gravity & Planetary Physics Lab",
+    "badge": "Educational · STEAM",
+    "subtitle": "Explore how everyday physics changes across Earth, Mars, and the Moon using the exact same equations.",
+    "bodies": {
+      "earth": "Earth",
+      "mars": "Mars",
+      "moon": "Moon"
+    },
+    "controls": {
+      "play": "Play",
+      "pause": "Pause",
+      "reset": "Reset"
+    },
+    "weight": {
+      "title": "Physical weight calculator (Newtons)",
+      "description": "Mass (kg) stays constant anywhere in space, while gravitational force (Newtons) scales with gravity.",
+      "massLabel": "Object or person mass",
+      "feelsLike": "feels like {{kg}} kg on Earth",
+      "presets": {
+        "backpack": "Backpack",
+        "astronaut": "Astronaut",
+        "suit": "Spacesuit"
+      }
+    },
+    "jump": {
+      "title": "Gravity jump simulator",
+      "description": "With the same take-off impulse, lower gravity lets you jump higher and stay airborne longer.",
+      "velocityLabel": "Take-off velocity",
+      "jumpAction": "Jump"
+    },
+    "trajectory": {
+      "title": "Projectile trajectory comparison",
+      "description": "A projectile launched at the same speed and angle travels dramatically farther under lower gravity.",
+      "speedLabel": "Launch speed",
+      "angleLabel": "Angle",
+      "launchAction": "Launch",
+      "chartAria": "Comparative parabolic trajectory chart for Earth, Mars, and the Moon",
+      "range": "Range",
+      "height": "Max height",
+      "time": "Flight"
+    },
+    "waves": {
+      "title": "Shallow-water wave speed",
+      "description": "In shallow water, wave propagation speed depends directly on local gravity and water depth.",
+      "depthLabel": "Water depth (h)"
     }
   }
 }
