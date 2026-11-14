@@ -44,7 +44,7 @@
   - **University of Wisconsin–Madison `Macrostrat API v2`** (Lithology & Stratigraphy, `CC BY 4.0`).
 - **Code, Typography, Icons, Basemaps & AI Disclosure (`Gate G9` & `Gate G11`):**
   - **Source Code:** Ckepi is released under **Apache License 2.0**. Third-party libraries keep their own licences (`FastAPI`, `DuckDB`, `Uber H3`, `SciPy`, `scikit-learn`, `React 18`, `Tailwind CSS`, `MapLibre GL JS`).
-  - **Typography & Icons:** `Space Grotesk`, `Inter`, and `JetBrains Mono` (`SIL Open Font License 1.1`); `Lucide Icons` (`ISC/MIT License`). Basemaps: `© OpenStreetMap contributors` (`ODbL`) & `© CARTO` (`CC BY 4.0`).
+  - **Typography & Icons:** System UI font stack (no web fonts are loaded or redistributed); `Lucide Icons` (`ISC/MIT License`). Basemaps: `© OpenStreetMap contributors` (`ODbL`) & `© CARTO` (`CC BY 4.0`).
   - **AI Disclosure:** All scientific concepts ($\mathbf{X} \to \mathbf{Y} \parallel \mathbf{B}$), statistical metrics ($W_1, D_{\text{KS}}$, 2D block bootstrap), and analog discoveries are 100% human-conceived by *Lattices Team*. AI coding assistants (`Claude` / `Antigravity`) were used for code scaffolding, translation parity, and documentation audits (`AI_DISCLOSURE.md`). **Zero AI-generated images/videos and zero NASA logos are used.**
 
 ---

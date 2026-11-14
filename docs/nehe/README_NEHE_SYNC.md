@@ -2,6 +2,7 @@
 
 > **Para:** Nehe & Dani (*Lattices Team*, NASA Space Apps Challenge 2026 — Sede Antofagasta)  
 > **Rama Activa:** `dani` (`origin/dani`)  
+> **⭐ EMPIEZA AQUÍ (DOCUMENTO TODO-EN-UNO):** **[`DOSSIER_MAESTRO_COMPLETO_NEHE.md`](DOSSIER_MAESTRO_COMPLETO_NEHE.md)** (Reúne en un solo archivo: Problema Real + Propuesta de Valor e Innovación + Tabla Científica a 30 m con DEM Reales + Tabla Tres Mundos y Brecha $\mathbf{B}$ + 4 Ejes y Metas ODS de Caja La Araucana + Resumen de las 7 Slides).  
 > **Propósito:** Tener en una sola carpeta (`docs/nehe/`) **absolutamente todo el material actualizado** de los 4 pilares (**1. Global Inglés y Legal Open Science · 2. Local Antofagasta y Pitch · 3. Ciencia a 30 m con DEM reales · 4. Caja La Araucana y Metas ODS**), sincronizado con los últimos commits de **Claude**, **GPT (`Astra`/`Argon`)** y el equipo.
 
 ---

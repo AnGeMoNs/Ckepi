@@ -106,7 +106,7 @@ We compute central finite-difference **Slope ($^\circ$)** (1-pixel border trim) 
   - `ECMWF / Open-Meteo ERA5-Land Archive` (`CC BY 4.0`), `ISRIC SoilGrids v2.0` (`CC BY 4.0`), `UW–Madison Macrostrat API v2` (`CC BY 4.0`).
 - **Source Code, Typography, Icons & Basemaps:**
   - **Code:** Released under **Apache License 2.0** ([`LICENSE`](../../LICENSE)). Third-party libraries: `FastAPI`, `DuckDB`, `Uber H3`, `SciPy`, `scikit-learn`, `React 18`, `Tailwind CSS`, `MapLibre GL JS`.
-  - **Typography & Icons:** `Space Grotesk`, `Inter`, and `JetBrains Mono` (`SIL Open Font License 1.1`); `Lucide Icons` (`ISC/MIT License`). Basemaps: `© OpenStreetMap contributors` (`ODbL`) & `© CARTO` (`CC BY 4.0`).
+  - **Typography & Icons:** System UI font stack (no web fonts are loaded or redistributed); `Lucide Icons` (`ISC/MIT License`). Basemaps: `© OpenStreetMap contributors` (`ODbL`) & `© CARTO` (`CC BY 4.0`).
 - **AI Disclosure & Brand Policy ([`AI_DISCLOSURE.md`](../../AI_DISCLOSURE.md) & [`docs/BRAND_IDENTITY.md`](../BRAND_IDENTITY.md)):**
   - Scientific hypothesis ($\mathbf{X} \to \mathbf{Y} \parallel \mathbf{B}$), statistical pipeline, and analog discoveries are **100% human-conceived by Lattices Team**. AI assistants (`Claude` / `Antigravity`) assisted in code scaffolding, translation parity, and documentation audits.
   - **Zero AI-generated images/videos** and **zero NASA logos/insignia** are used anywhere in this project.
