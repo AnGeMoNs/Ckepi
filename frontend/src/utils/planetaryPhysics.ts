@@ -265,3 +265,90 @@ export function computeRoverSlopeComparison(
     moon: calc("moon"),
   };
 }
+
+export interface DynamicWindPressure {
+  body: "earth" | "mars";
+  windSpeedMs: number;
+  airDensityKgM3: number;
+  dynamicPressurePa: number;
+  ratioVsEarth: number;
+}
+
+export function computeDynamicWindPressure(windSpeedMsRaw: number): {
+  earth: DynamicWindPressure;
+  mars: DynamicWindPressure;
+} {
+  const windSpeedMs = clampFinite(windSpeedMsRaw, 0, 120, 25);
+  const rhoEarth = 1.225;
+  const rhoMars = 0.02;
+  const qEarth = 0.5 * rhoEarth * windSpeedMs * windSpeedMs;
+  const qMars = 0.5 * rhoMars * windSpeedMs * windSpeedMs;
+
+  return {
+    earth: {
+      body: "earth",
+      windSpeedMs,
+      airDensityKgM3: rhoEarth,
+      dynamicPressurePa: qEarth,
+      ratioVsEarth: 1,
+    },
+    mars: {
+      body: "mars",
+      windSpeedMs,
+      airDensityKgM3: rhoMars,
+      dynamicPressurePa: qMars,
+      ratioVsEarth: qEarth > 0 ? qMars / qEarth : rhoMars / rhoEarth,
+    },
+  };
+}
+
+export type WaterPhaseRegime = "solid" | "liquid" | "vapor_or_boiling" | "triple_point_unstable";
+
+export interface WaterStabilityComparison {
+  location: "sea_level" | "altiplano" | "mars";
+  pressureKpa: number;
+  temperatureC: number;
+  boilingPointC: number;
+  regime: WaterPhaseRegime;
+}
+
+function estimateBoilingPointC(pressureKpa: number): number {
+  // Antoine-like approximation valid for educational comparison above triple point (0.611657 kPa)
+  if (pressureKpa <= 0.611657) return 0.01;
+  // Clausius-Clapeyron approximation anchored at 101.325 kPa -> 100 C
+  const T0 = 373.15;
+  const dHvap = 40660; // J/mol
+  const R = 8.31446;
+  const invT = 1 / T0 - (R / dHvap) * Math.log(pressureKpa / 101.325);
+  return 1 / invT - 273.15;
+}
+
+export function evaluateWaterStability(temperatureCRaw: number): WaterStabilityComparison[] {
+  const temperatureC = clampFinite(temperatureCRaw, -80, 110, 15);
+  const locations: { location: "sea_level" | "altiplano" | "mars"; pressureKpa: number }[] = [
+    { location: "sea_level", pressureKpa: 101.325 },
+    { location: "altiplano", pressureKpa: 60.0 },
+    { location: "mars", pressureKpa: 0.61 },
+  ];
+
+  return locations.map(({ location, pressureKpa }) => {
+    const boilingPointC = estimateBoilingPointC(pressureKpa);
+    let regime: WaterPhaseRegime;
+    if (pressureKpa <= 0.611657) {
+      regime = temperatureC < 0 ? "solid" : "triple_point_unstable";
+    } else if (temperatureC < 0) {
+      regime = "solid";
+    } else if (temperatureC >= boilingPointC) {
+      regime = "vapor_or_boiling";
+    } else {
+      regime = "liquid";
+    }
+    return {
+      location,
+      pressureKpa,
+      temperatureC,
+      boilingPointC,
+      regime,
+    };
+  });
+}

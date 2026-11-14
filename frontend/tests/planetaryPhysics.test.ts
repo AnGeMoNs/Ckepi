@@ -2,12 +2,14 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  computeDynamicWindPressure,
   computeJumpFromEarthHeight,
   computeProjectileComparison,
   computeRockPushComparison,
   computeRoverSlopeComparison,
   computeShallowWaveComparison,
   computeWeightComparison,
+  evaluateWaterStability,
 } from "../src/utils/planetaryPhysics.ts";
 
 test("computeWeightComparison preserves mass and scales weight in Newtons", () => {
@@ -73,4 +75,25 @@ test("physics helpers clamp invalid or non-finite inputs safely", () => {
   assert.equal(s.earth.roverMassKg, 5);
   assert.equal(s.earth.slopeDeg, 45);
   assert.equal(s.earth.frictionCoeff, 0.1);
+});
+
+test("computeDynamicWindPressure reflects ~1.6% Martian dynamic pressure at equal wind speed", () => {
+  const res = computeDynamicWindPressure(30);
+  assert.ok(Math.abs(res.earth.dynamicPressurePa - 0.5 * 1.225 * 900) < 0.01);
+  assert.ok(Math.abs(res.mars.dynamicPressurePa - 0.5 * 0.02 * 900) < 0.01);
+  assert.ok(res.mars.ratioVsEarth < 0.02);
+});
+
+test("evaluateWaterStability flags Mars ~0.61 kPa as triple-point unstable above 0 C", () => {
+  const warm = evaluateWaterStability(20);
+  const sea = warm.find((x) => x.location === "sea_level");
+  const alt = warm.find((x) => x.location === "altiplano");
+  const mars = warm.find((x) => x.location === "mars");
+  assert.equal(sea?.regime, "liquid");
+  assert.equal(alt?.regime, "liquid");
+  assert.ok((alt?.boilingPointC ?? 100) < 90);
+  assert.equal(mars?.regime, "triple_point_unstable");
+
+  const cold = evaluateWaterStability(-20);
+  assert.equal(cold.find((x) => x.location === "mars")?.regime, "solid");
 });

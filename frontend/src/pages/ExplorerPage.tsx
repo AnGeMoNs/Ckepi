@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import {
   AlertCircle,
   BookOpen,
@@ -27,10 +27,22 @@ import {
   searchAnalogs,
 } from "../api/client";
 import { DecompositionPanel } from "../components/decomposition/DecompositionPanel";
-import { EvidencePanel } from "../components/evidence/EvidencePanel";
 import { GuidedStepsBanner } from "../components/layout/GuidedStepsBanner";
 import { ContextualCuriosityStrip } from "../components/learning/ContextualCuriosityStrip";
-import { PlanetaryPhysicsLab } from "../components/learning/PlanetaryPhysicsLab";
+
+const EvidencePanel = lazy(() =>
+  import("../components/evidence/EvidencePanel").then((m) => ({ default: m.EvidencePanel }))
+);
+const PlanetaryPhysicsLab = lazy(() =>
+  import("../components/learning/PlanetaryPhysicsLab").then((m) => ({
+    default: m.PlanetaryPhysicsLab,
+  }))
+);
+const FieldTrialPlanner = lazy(() =>
+  import("../components/planning/FieldTrialPlanner").then((m) => ({
+    default: m.FieldTrialPlanner,
+  }))
+);
 import { AnalogMap } from "../components/map/AnalogMap";
 import { PlanetaryMap } from "../components/map/PlanetaryMap";
 import { AnalogComparisonMatrix } from "../components/mission/AnalogComparisonMatrix";
@@ -42,7 +54,6 @@ import {
 import { DataConfidenceBanner } from "../components/mission/DataConfidenceBanner";
 import { MissionDiagnostics } from "../components/mission/MissionDiagnostics";
 import { PresetProfileInspector } from "../components/mission/PresetProfileInspector";
-import { FieldTrialPlanner } from "../components/planning/FieldTrialPlanner";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent } from "../components/ui/Card";
@@ -77,6 +88,17 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
       ? initialTab
       : "compare"
   );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    if (activeTab === "compare") {
+      url.searchParams.delete("tab");
+    } else {
+      url.searchParams.set("tab", activeTab);
+    }
+    window.history.replaceState({}, "", url.toString());
+  }, [activeTab]);
   const [sites, setSites] = useState<PlanetarySite[]>([]);
   const [selectedBody, setSelectedBody] = useState<PlanetaryBody>("mars");
   const [selectedSiteId, setSelectedSiteId] = useState<string>(
@@ -492,30 +514,39 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         })}
       </nav>
 
-      {activeTab === "learn" && (
-        <PlanetaryPhysicsLab
-          body={selectedBody}
-          activeSite={activeSite}
-          selectedCell={selectedCell}
-          comparison={comparison}
-          onGoToCompare={() => setActiveTab("compare")}
-          onGoToPlan={() => setActiveTab("plan")}
-        />
-      )}
+      <Suspense
+        fallback={
+          <div className="flex items-center gap-2 rounded-xl border border-border-subtle bg-surface-elevated px-4 py-3 text-sm text-content-muted">
+            <RefreshCw className="h-4 w-4 animate-spin text-accent" aria-hidden="true" />
+            <span>{t("controls.loading")}</span>
+          </div>
+        }
+      >
+        {activeTab === "learn" && (
+          <PlanetaryPhysicsLab
+            body={selectedBody}
+            activeSite={activeSite}
+            selectedCell={selectedCell}
+            comparison={comparison}
+            onGoToCompare={() => setActiveTab("compare")}
+            onGoToPlan={() => setActiveTab("plan")}
+          />
+        )}
 
-      {activeTab === "plan" && (
-        <FieldTrialPlanner
-          activeSite={activeSite}
-          selectedCell={selectedCell}
-          comparison={comparison}
-          onGoToCompare={() => setActiveTab("compare")}
-          onGoToEvidence={() => setActiveTab("evidence")}
-        />
-      )}
+        {activeTab === "plan" && (
+          <FieldTrialPlanner
+            activeSite={activeSite}
+            selectedCell={selectedCell}
+            comparison={comparison}
+            onGoToCompare={() => setActiveTab("compare")}
+            onGoToEvidence={() => setActiveTab("evidence")}
+          />
+        )}
 
-      {activeTab === "evidence" && (
-        <EvidencePanel activeSite={activeSite} comparison={comparison} />
-      )}
+        {activeTab === "evidence" && (
+          <EvidencePanel activeSite={activeSite} comparison={comparison} />
+        )}
+      </Suspense>
 
       {activeTab === "compare" && (
         <>

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "esbuild tests/planetaryPhysics.test.ts --bundle --platform=node --format=esm --outfile=/tmp/ckepi-physics.test.mjs && node --test /tmp/ckepi-physics.test.mjs"
   },
   "dependencies": {
     "@types/three": "^0.187.0",

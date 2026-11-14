@@ -6,11 +6,13 @@ import {
   Award,
   CheckCircle2,
   Compass,
+  Droplets,
   FlaskConical,
   HelpCircle,
   Scale,
   Sparkles,
   Waves,
+  Wind,
   XCircle,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -23,19 +25,29 @@ import type {
   SiteComparisonResponse,
 } from "../../types/analog";
 import {
+  computeDynamicWindPressure,
   computeJumpFromEarthHeight,
   computeProjectileComparison,
   computeRockPushComparison,
   computeRoverSlopeComparison,
   computeShallowWaveComparison,
   computeWeightComparison,
+  evaluateWaterStability,
   type PhysicsBody,
 } from "../../utils/planetaryPhysics";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 
-type ExperimentId = "weight" | "jump" | "projectile" | "waves" | "rocks" | "rover";
+type ExperimentId =
+  | "weight"
+  | "jump"
+  | "projectile"
+  | "waves"
+  | "rocks"
+  | "rover"
+  | "wind"
+  | "water";
 
 interface PlanetaryPhysicsLabProps {
   body: PlanetaryBody;
@@ -70,6 +82,8 @@ export function PlanetaryPhysicsLab({
   const [roverMassKg, setRoverMassKg] = useState<number>(100);
   const [slopeDeg, setSlopeDeg] = useState<number>(15);
   const [frictionCoeff, setFrictionCoeff] = useState<number>(0.55);
+  const [windSpeedMs, setWindSpeedMs] = useState<number>(28);
+  const [waterTempC, setWaterTempC] = useState<number>(15);
 
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
 
@@ -93,6 +107,8 @@ export function PlanetaryPhysicsLab({
     () => computeRoverSlopeComparison(roverMassKg, slopeDeg, frictionCoeff),
     [roverMassKg, slopeDeg, frictionCoeff]
   );
+  const windRes = useMemo(() => computeDynamicWindPressure(windSpeedMs), [windSpeedMs]);
+  const waterRes = useMemo(() => evaluateWaterStability(waterTempC), [waterTempC]);
 
   const experiments: { id: ExperimentId; label: string }[] = [
     { id: "weight", label: t("learn.experiments.weight.tab") },
@@ -101,6 +117,8 @@ export function PlanetaryPhysicsLab({
     { id: "waves", label: t("learn.experiments.waves.tab") },
     { id: "rocks", label: t("learn.experiments.rocks.tab") },
     { id: "rover", label: t("learn.experiments.rover.tab") },
+    { id: "wind", label: t("learn.experiments.wind.tab") },
+    { id: "water", label: t("learn.experiments.water.tab") },
   ];
 
   // Dynamic mini-challenge grounded in real compared slope data when available
@@ -826,6 +844,148 @@ export function PlanetaryPhysicsLab({
                   {t("learn.equationLabel")}: F_∥ = m·g·sin(θ) ; N = m·g·cos(θ) ; F_fric,max ≈ μ·N [N]
                 </p>
                 <p className="mt-1">{t("learn.experiments.rover.limits")}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Experiment G: Wind & Dynamic Pressure */}
+          {experiment === "wind" && (
+            <div className="space-y-4 rounded-xl border border-border-subtle bg-surface p-4">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <h3 className="flex items-center gap-2 text-base font-semibold text-content">
+                    <Wind className="h-4 w-4 text-accent" aria-hidden="true" />
+                    {t("learn.experiments.wind.question")}
+                  </h3>
+                  <p className="mt-1 text-xs text-content-muted">
+                    {t("learn.experiments.wind.intro")}
+                  </p>
+                </div>
+                <Badge variant="warn">{t("learn.idealizedModel")}</Badge>
+              </div>
+
+              <label className="flex flex-col gap-1.5 text-xs font-medium text-content-muted sm:max-w-md">
+                <span>
+                  {t("learn.controls.windSpeedMs")}:{" "}
+                  <strong className="text-content">
+                    {formatNumber(windSpeedMs, lang, 0)} m/s ({formatNumber(windSpeedMs * 3.6, lang, 0)} km/h)
+                  </strong>
+                </span>
+                <input
+                  type="range"
+                  min={2}
+                  max={60}
+                  step={1}
+                  value={windSpeedMs}
+                  onChange={(e) => setWindSpeedMs(Number(e.target.value))}
+                  className="min-h-11 w-full cursor-pointer accent-accent"
+                />
+              </label>
+
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {(["earth", "mars"] as const).map((b) => {
+                  const item = windRes[b];
+                  return (
+                    <div
+                      key={b}
+                      className={`rounded-xl border p-3 ${
+                        b === "mars" && body === "mars"
+                          ? "border-accent bg-accent/5"
+                          : "border-border-subtle bg-surface-elevated"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between text-xs text-content-muted">
+                        <span className="font-semibold uppercase">{t(`bodies.${b}`)}</span>
+                        <span>{formatNumber(item.ratioVsEarth * 100, lang, 1)}%</span>
+                      </div>
+                      <p className="mt-2 text-2xl font-bold tabular-nums text-content">
+                        {formatNumber(item.dynamicPressurePa, lang, 1)} Pa
+                      </p>
+                      <p className="mt-1 text-xs text-content-muted">
+                        {t("learn.experiments.wind.densityLabel")}:{" "}
+                        {formatNumber(item.airDensityKgM3, lang, 3)} kg/m³
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
+                <p className="font-semibold text-content">
+                  {t("learn.equationLabel")}: q = 0.5 · ρ · v² [Pa = N/m²]
+                </p>
+                <p className="mt-1">{t("learn.experiments.wind.limits")}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Experiment H: Water & Pressure */}
+          {experiment === "water" && (
+            <div className="space-y-4 rounded-xl border border-border-subtle bg-surface p-4">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <h3 className="flex items-center gap-2 text-base font-semibold text-content">
+                    <Droplets className="h-4 w-4 text-accent" aria-hidden="true" />
+                    {t("learn.experiments.water.question")}
+                  </h3>
+                  <p className="mt-1 text-xs text-content-muted">
+                    {t("learn.experiments.water.intro")}
+                  </p>
+                </div>
+                <Badge variant="warn">{t("learn.idealizedModel")}</Badge>
+              </div>
+
+              <label className="flex flex-col gap-1.5 text-xs font-medium text-content-muted sm:max-w-md">
+                <span>
+                  {t("learn.controls.waterTempC")}:{" "}
+                  <strong className="text-content">{formatNumber(waterTempC, lang, 0)} °C</strong>
+                </span>
+                <input
+                  type="range"
+                  min={-40}
+                  max={105}
+                  step={1}
+                  value={waterTempC}
+                  onChange={(e) => setWaterTempC(Number(e.target.value))}
+                  className="min-h-11 w-full cursor-pointer accent-accent"
+                />
+              </label>
+
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                {waterRes.map((item) => {
+                  const badgeVariant =
+                    item.regime === "liquid"
+                      ? "valid"
+                      : item.regime === "solid"
+                      ? "accent"
+                      : "break";
+                  return (
+                    <div
+                      key={item.location}
+                      className="rounded-xl border border-border-subtle bg-surface-elevated p-3"
+                    >
+                      <p className="text-xs font-semibold text-content">
+                        {t(`learn.experiments.water.${item.location}`)}
+                      </p>
+                      <div className="mt-2">
+                        <Badge variant={badgeVariant}>
+                          {t(`learn.experiments.water.regimes.${item.regime}`)}
+                        </Badge>
+                      </div>
+                      <p className="mt-2 text-xs text-content-muted">
+                        {t("learn.experiments.water.boilingLabel")}:{" "}
+                        {formatNumber(item.boilingPointC, lang, 1)} °C
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="rounded-lg border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
+                <p className="font-semibold text-content">
+                  {t("learn.equationLabel")}: P_triple ≈ 0.6117 kPa · T_triple = 0.01 °C
+                </p>
+                <p className="mt-1">{t("learn.experiments.water.limits")}</p>
               </div>
             </div>
           )}

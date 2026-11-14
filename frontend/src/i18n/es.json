@@ -544,7 +544,9 @@
       "targetAccel": "Aceleración objetivo (a)",
       "roverMass": "Masa del rover (m)",
       "slopeDeg": "Pendiente del terreno (θ)",
-      "frictionCoeff": "Coeficiente de fricción ideal (μ)"
+      "frictionCoeff": "Coeficiente de fricción ideal (μ)",
+      "windSpeedMs": "Velocidad del viento (v)",
+      "waterTempC": "Temperatura del agua (T)"
     },
     "experiments": {
       "weight": {
@@ -589,6 +591,29 @@
         "slipRisk": "Riesgo de deslizamiento ideal",
         "idealGrip": "Dentro de μ·N ideal",
         "limits": "Modelo rígido ideal (tan θ ≤ μ). En regolito real marciano/lunar o arena suelta de Atacama, el hundimiento de ruedas y cohesión del suelo reducen la tracción antes del límite ideal."
+      },
+      "wind": {
+        "tab": "Polvo y viento",
+        "question": "¿Un viento de 100 km/h en Marte empuja igual que en la Tierra?",
+        "intro": "La presión dinámica depende de la densidad del aire ρ: en Marte la atmósfera es ~60× menos densa.",
+        "densityLabel": "Densidad atmosférica",
+        "limits": "Valores ilustrativos medios de densidad superficial (Tierra ~1,225 kg/m³; Marte ~0,020 kg/m³). La densidad real varía con altitud, temperatura y estación."
+      },
+      "water": {
+        "tab": "Agua y presión",
+        "question": "¿Qué ocurre con el agua líquida al aire libre en Antofagasta vs Marte?",
+        "intro": "La estabilidad del agua líquida depende de presión y temperatura; la presión marciana (~0,61 kPa) bordea el punto triple.",
+        "boilingLabel": "Punto de ebullición aprox.",
+        "sea_level": "Antofagasta / Nivel del mar (101,3 kPa)",
+        "altiplano": "Altiplano / Puna (~60 kPa)",
+        "mars": "Marte superficie (~0,61 kPa)",
+        "regimes": {
+          "solid": "Hielo (sólido)",
+          "liquid": "Agua líquida estable",
+          "vapor_or_boiling": "Ebullición / vapor",
+          "triple_point_unstable": "Inestable (hierve/sublima cerca del punto triple)"
+        },
+        "limits": "Aproximación educativa basada en el punto triple del agua (0,611657 kPa; 0,01 °C) y ecuación de Clausius-Clapeyron. Las salmueras (sales de Atacama o percloratos marcianos) modifican el punto de congelación."
       }
     },
     "curiosities": {

@@ -544,7 +544,9 @@
       "targetAccel": "Target acceleration (a)",
       "roverMass": "Rover mass (m)",
       "slopeDeg": "Terrain slope (θ)",
-      "frictionCoeff": "Ideal friction coeff (μ)"
+      "frictionCoeff": "Ideal friction coeff (μ)",
+      "windSpeedMs": "Wind speed (v)",
+      "waterTempC": "Water temperature (T)"
     },
     "experiments": {
       "weight": {
@@ -589,6 +591,29 @@
         "slipRisk": "Ideal slip risk",
         "idealGrip": "Within ideal μ·N",
         "limits": "Ideal rigid model (tan θ ≤ μ). In real Martian/lunar regolith or loose Atacama sand, wheel sinkage and soil cohesion reduce traction before the ideal limit."
+      },
+      "wind": {
+        "tab": "Dust & wind",
+        "question": "Does a 100 km/h wind on Mars push as hard as on Earth?",
+        "intro": "Dynamic pressure scales with air density ρ: Mars atmosphere is ~60× less dense than Earth.",
+        "densityLabel": "Atmospheric density",
+        "limits": "Illustrative mean surface densities (Earth ~1.225 kg/m³; Mars ~0.020 kg/m³). Real density varies with elevation, temperature, and season."
+      },
+      "water": {
+        "tab": "Water & pressure",
+        "question": "What happens to open-air liquid water in Antofagasta vs Mars?",
+        "intro": "Liquid water stability depends on both pressure and temperature; Martian pressure (~0.61 kPa) sits right near the triple point.",
+        "boilingLabel": "Approx. boiling point",
+        "sea_level": "Antofagasta / Sea level (101.3 kPa)",
+        "altiplano": "Altiplano / Puna (~60 kPa)",
+        "mars": "Mars surface (~0.61 kPa)",
+        "regimes": {
+          "solid": "Ice (solid)",
+          "liquid": "Stable liquid water",
+          "vapor_or_boiling": "Boiling / vapor",
+          "triple_point_unstable": "Unstable (boils/sublimes near triple point)"
+        },
+        "limits": "Educational approximation using water triple point (0.611657 kPa; 0.01 °C) and Clausius-Clapeyron relation. Brines (Atacama salts or Martian perchlorates) shift freezing points."
       }
     },
     "curiosities": {

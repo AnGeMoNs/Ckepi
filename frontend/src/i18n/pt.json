@@ -544,7 +544,9 @@
       "targetAccel": "Aceleração alvo (a)",
       "roverMass": "Massa do rover (m)",
       "slopeDeg": "Inclinação do terreno (θ)",
-      "frictionCoeff": "Coeficiente de atrito ideal (μ)"
+      "frictionCoeff": "Coeficiente de atrito ideal (μ)",
+      "windSpeedMs": "Velocidade do vento (v)",
+      "waterTempC": "Temperatura da água (T)"
     },
     "experiments": {
       "weight": {
@@ -589,6 +591,29 @@
         "slipRisk": "Risco de deslizamento ideal",
         "idealGrip": "Dentro de μ·N ideal",
         "limits": "Modelo rígido ideal (tan θ ≤ μ). Em regolito real ou areia solta do Atacama, o afundamento das rodas reduz a tração antes do limite ideal."
+      },
+      "wind": {
+        "tab": "Poeira e vento",
+        "question": "Um vento de 100 km/h em Marte empurra igual ao da Terra?",
+        "intro": "A pressão dinâmica depende da densidade do ar ρ: em Marte a atmosfera é ~60× menos densa.",
+        "densityLabel": "Densidade atmosférica",
+        "limits": "Valores ilustrativos médios de densidade superficial (Terra ~1,225 kg/m³; Marte ~0,020 kg/m³). A densidade real varia com altitude e estação."
+      },
+      "water": {
+        "tab": "Água e pressão",
+        "question": "O que acontece com a água líquida ao ar livre no Atacama vs Marte?",
+        "intro": "A estabilidade da água líquida depende de pressão e temperatura; a pressão marciana (~0,61 kPa) margeia o ponto triplo.",
+        "boilingLabel": "Ponto de ebulição aprox.",
+        "sea_level": "Antofagasta / Nível do mar (101,3 kPa)",
+        "altiplano": "Altiplano / Puna (~60 kPa)",
+        "mars": "Marte superfície (~0,61 kPa)",
+        "regimes": {
+          "solid": "Gelo (sólido)",
+          "liquid": "Água líquida estável",
+          "vapor_or_boiling": "Ebulição / vapor",
+          "triple_point_unstable": "Instável (ferve/sublima perto do ponto triplo)"
+        },
+        "limits": "Aproximação educativa baseada no ponto triplo da água (0,611657 kPa; 0,01 °C) e Clausius-Clapeyron. Salmouras alteram o ponto de congelamento."
       }
     },
     "curiosities": {
