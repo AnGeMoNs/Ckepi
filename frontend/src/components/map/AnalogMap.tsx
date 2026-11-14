@@ -360,6 +360,18 @@ export function AnalogMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Keep the WebGL canvas in sync with its container (hidden tabs, drawer, rotation)
+  useEffect(() => {
+    const container = containerRef.current;
+    const map = mapRef.current;
+    if (!container || !map || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => {
+      map.resize();
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [mapReady]);
+
   // Update GeoJSON data whenever matches or selectedH3 changes
   useEffect(() => {
     const map = mapRef.current;

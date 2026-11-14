@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   compareCellWithSite,
@@ -76,27 +76,44 @@ export function useAnalogAnalysis({
   } | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const loadSites = useCallback(async () => {
-    try {
-      const list = await fetchPlanetarySites();
-      setSites(list);
-      if (list.length > 0 && !list.some((s) => s.site_id === selectedSiteId)) {
-        setSelectedSiteId(list[0].site_id);
-      }
-    } catch (err) {
-      captureError(err);
-    }
-  }, [selectedSiteId, setSelectedSiteId, captureError]);
+  const selectedSiteIdRef = useRef(selectedSiteId);
+  selectedSiteIdRef.current = selectedSiteId;
 
+  const loadSites = useCallback(async (): Promise<PlanetarySite[]> => {
+    const list = await fetchPlanetarySites();
+    setSites(list);
+    return list;
+  }, []);
+
+  // Load the catalog once on mount. Validating the initial site here (and not on every
+  // selectedSiteId change) keeps custom probed sites from being reverted to the first one.
   useEffect(() => {
-    void loadSites();
-  }, [loadSites]);
+    let cancelled = false;
+    loadSites()
+      .then((list) => {
+        if (cancelled || list.length === 0) return;
+        const found = list.find((s) => s.site_id === selectedSiteIdRef.current);
+        if (found) {
+          setSelectedBody(found.body);
+        } else {
+          setSelectedSiteId(list[0].site_id);
+          setSelectedBody(list[0].body);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) captureError(err);
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const runAnalysis = useCallback(
-    async (signal?: AbortSignal) => {
-      if (!selectedSiteId) return;
+    async (signal?: AbortSignal): Promise<boolean> => {
+      if (!selectedSiteId) return false;
       if (customProbedSite && customProbedSite.site_id === selectedSiteId) {
-        return;
+        return true;
       }
       setIsLoading(true);
       clearError();
@@ -120,7 +137,7 @@ export function useAnalogAnalysis({
           }),
         ]);
 
-        if (signal?.aborted) return;
+        if (signal?.aborted) return false;
         setDecomposition(decompRes);
         setSearchResult(analogsRes);
         setDrilldownState(null);
@@ -135,9 +152,11 @@ export function useAnalogAnalysis({
           setSelectedH3(null);
           setComparison(null);
         }
+        return true;
       } catch (err) {
-        if (signal?.aborted) return;
+        if (signal?.aborted) return false;
         captureError(err);
+        return false;
       } finally {
         if (!signal?.aborted) setIsLoading(false);
       }
@@ -277,8 +296,7 @@ export function useAnalogAnalysis({
     try {
       await refreshDatasets();
       await loadSites();
-      await runAnalysis();
-      return true;
+      return await runAnalysis();
     } catch (err) {
       captureError(err);
       return false;

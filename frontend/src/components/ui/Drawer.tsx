@@ -19,10 +19,12 @@ export function Drawer({ open, title, closeLabel, onClose, children }: DrawerPro
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open, onClose]);
 
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex justify-end xl:hidden">
+    <div
+      hidden={!open}
+      aria-hidden={!open}
+      className={open ? "fixed inset-0 z-50 flex justify-end xl:hidden" : "hidden"}
+    >
       <div
         className="fixed inset-0 bg-surface/75 backdrop-blur-sm"
         aria-hidden="true"

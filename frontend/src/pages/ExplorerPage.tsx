@@ -1,4 +1,4 @@
-import { lazy, Suspense, useDeferredValue, useState } from "react";
+import { lazy, Suspense, useDeferredValue, useEffect, useState } from "react";
 import { AlertCircle, Globe, MapPin, RefreshCw, SearchX } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -16,6 +16,7 @@ import { MapSkeleton, PanelSkeleton } from "../components/ui/Skeleton";
 import { Toast } from "../components/ui/Toast";
 import { useAnalogAnalysis } from "../hooks/useAnalogAnalysis";
 import { useExplorerParams } from "../hooks/useExplorerParams";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 import type { ReadingMode, ThemeMode } from "../types/analog";
 
 const PlanetaryMap = lazy(() =>
@@ -71,10 +72,17 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     customMinSimilarity: params.customMinSimilarity,
   });
 
+  const isDesktop = useMediaQuery("(min-width: 1280px)");
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [mobileMapTab, setMobileMapTab] = useState<MobileMapTab>("earth");
   const [copiedLink, setCopiedLink] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isDesktop) {
+      setMobileDrawerOpen(false);
+    }
+  }, [isDesktop]);
 
   const activeSite =
     params.customProbedSite && params.customProbedSite.site_id === params.selectedSiteId
@@ -153,25 +161,26 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
       <GuidedStepsBanner activeStep={activeStep} />
 
       <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
-        {/* Desktop Sticky Sidebar */}
-        <aside className="hidden xl:sticky xl:top-20 xl:block xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("controls.drawerTitle")}</CardTitle>
-            </CardHeader>
-            <CardContent>{controlPanelNode}</CardContent>
-          </Card>
-        </aside>
-
-        {/* Mobile / Tablet Drawer */}
-        <Drawer
-          open={mobileDrawerOpen}
-          title={t("controls.drawerTitle")}
-          closeLabel={t("controls.closeSettings")}
-          onClose={() => setMobileDrawerOpen(false)}
-        >
-          {controlPanelNode}
-        </Drawer>
+        {/* Render a single ControlPanel instance to avoid duplicate IDs and draft divergence */}
+        {isDesktop ? (
+          <aside className="xl:sticky xl:top-20 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto">
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("controls.drawerTitle")}</CardTitle>
+              </CardHeader>
+              <CardContent>{controlPanelNode}</CardContent>
+            </Card>
+          </aside>
+        ) : (
+          <Drawer
+            open={mobileDrawerOpen}
+            title={t("controls.drawerTitle")}
+            closeLabel={t("controls.closeSettings")}
+            onClose={() => setMobileDrawerOpen(false)}
+          >
+            {controlPanelNode}
+          </Drawer>
+        )}
 
         {/* Main Workspace */}
         <div className="min-w-0 space-y-6">
