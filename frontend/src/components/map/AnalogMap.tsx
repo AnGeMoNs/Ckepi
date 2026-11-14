@@ -1,6 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Globe, MapPin, Mountain, Sparkles, ZoomIn } from "lucide-react";
+import {
+  Activity,
+  ChevronLeft,
+  ChevronRight,
+  Globe,
+  MapPin,
+  Mountain,
+  Sparkles,
+  ZoomIn,
+} from "lucide-react";
 import * as maplibregl from "maplibre-gl";
+import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import { useTranslation } from "react-i18next";
 
 import { formatNumber, formatPercent } from "../../i18n";
@@ -8,6 +18,10 @@ import { getMapColors } from "../../theme/mapColors";
 import type { AnalogMatchItem, EarthOverlayLayer, ThemeMode } from "../../types/analog";
 import { Badge } from "../ui/Badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
+
+// Explicitly register the bundled MapLibre GL v6 WebWorker so GeoJSON H3 polygons
+// tessellate reliably in production builds (Vite/Rollup + Nginx SPA).
+maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
 interface AnalogMapProps {
   matches: AnalogMatchItem[];
@@ -144,8 +158,14 @@ export function AnalogMap({
   const [mapFailed, setMapFailed] = useState(false);
   const [overlayLayer, setOverlayLayer] = useState<EarthOverlayLayer>("satellite_hd");
   const [isGlobe, setIsGlobe] = useState(true);
-  const [isTerrain3d, setIsTerrain3d] = useState(true);
+  const [isTerrain3d, setIsTerrain3d] = useState(false);
+  const [hoveredH3, setHoveredH3] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const hoveredH3Ref = useRef<string | null>(null);
+  const prevStyleKeyRef = useRef<string>(`${theme}:${overlayLayer}`);
+  const prevGlobeRef = useRef<boolean>(isGlobe);
+  const prevTerrainRef = useRef<boolean>(isTerrain3d);
 
   const displayedMatches = useMemo(() => {
     if (!drilldownState) return matches;
@@ -153,16 +173,30 @@ export function AnalogMap({
     return matches.filter((m) => childSet.has(m.earth_cell_h3));
   }, [matches, drilldownState]);
 
-  const selectedMatch = useMemo(
-    () => matches.find((m) => m.earth_cell_h3 === selectedH3) ?? null,
-    [matches, selectedH3]
-  );
+  const matchLookup = useMemo(() => {
+    const map = new Map<string, { match: AnalogMatchItem; rank: number }>();
+    displayedMatches.forEach((m, idx) => {
+      map.set(m.earth_cell_h3, { match: m, rank: idx + 1 });
+    });
+    matches.forEach((m, idx) => {
+      if (!map.has(m.earth_cell_h3)) {
+        map.set(m.earth_cell_h3, { match: m, rank: idx + 1 });
+      }
+    });
+    return map;
+  }, [displayedMatches, matches]);
 
-  const selectedRank = useMemo(() => {
-    if (!selectedH3) return null;
-    const idx = displayedMatches.findIndex((m) => m.earth_cell_h3 === selectedH3);
-    return idx >= 0 ? idx + 1 : null;
-  }, [displayedMatches, selectedH3]);
+  const selectedEntry = useMemo(
+    () => (selectedH3 ? matchLookup.get(selectedH3) ?? null : null),
+    [matchLookup, selectedH3]
+  );
+  const selectedMatch = selectedEntry?.match ?? null;
+  const selectedRank = selectedEntry?.rank ?? null;
+
+  const hoveredEntry = useMemo(
+    () => (hoveredH3 ? matchLookup.get(hoveredH3) ?? null : null),
+    [matchLookup, hoveredH3]
+  );
 
   const pageSize = 9;
   const totalPages = Math.max(1, Math.ceil(displayedMatches.length / pageSize));
@@ -211,16 +245,28 @@ export function AnalogMap({
     return out;
   };
 
-  const geojson = useMemo(
-    () => ({
+  const geojson = useMemo(() => {
+    const visibleList = matches.filter(
+      (m) => !drilldownState || m.earth_cell_h3 !== drilldownState.parentH3
+    );
+    const highCount = Math.max(12, Math.min(45, Math.ceil(visibleList.length * 0.04)));
+    const midCount = Math.max(36, Math.min(200, Math.ceil(visibleList.length * 0.18)));
+
+    return {
       type: "FeatureCollection" as const,
-      features: matches
-        .filter((m) => !drilldownState || m.earth_cell_h3 !== drilldownState.parentH3)
-        .map((m) => ({
+      features: visibleList.map((m, idx) => {
+        const colorTier =
+          m.combined_score >= 0.72 || idx < highCount
+            ? 2
+            : m.combined_score >= 0.55 || idx < midCount
+            ? 1
+            : 0;
+        return {
           type: "Feature" as const,
           properties: {
             earth_cell_h3: m.earth_cell_h3,
             combined_score: m.combined_score,
+            color_tier: colorTier,
             is_selected: m.earth_cell_h3 === selectedH3 ? 1 : 0,
           },
           geometry: {
@@ -233,24 +279,29 @@ export function AnalogMap({
               ),
             ],
           },
-        })),
-    }),
-    [matches, selectedH3, drilldownState]
-  );
+        };
+      }),
+    };
+  }, [matches, selectedH3, drilldownState]);
 
   const latestGeojsonRef = useRef(geojson);
   latestGeojsonRef.current = geojson;
 
-  const attachAnalogLayers = (map: maplibregl.Map) => {
+  const attachAnalogLayers = (map: maplibregl.Map, activeTheme: ThemeMode = theme) => {
+    const mapColors = getMapColors(activeTheme);
+
     if (!map.getSource("h3-analogs")) {
       map.addSource("h3-analogs", {
         type: "geojson",
         data: latestGeojsonRef.current,
         promoteId: "earth_cell_h3",
       });
+    } else {
+      const existing = map.getSource("h3-analogs") as maplibregl.GeoJSONSource | undefined;
+      existing?.setData(latestGeojsonRef.current);
+    }
 
-      const mapColors = getMapColors(theme);
-
+    if (!map.getLayer("h3-analogs-fill")) {
       map.addLayer({
         id: "h3-analogs-fill",
         type: "fill",
@@ -258,21 +309,29 @@ export function AnalogMap({
         paint: {
           "fill-color": [
             "case",
-            [">=", ["get", "combined_score"], 0.75],
+            ["==", ["get", "color_tier"], 2],
             mapColors.matchHigh,
-            [">=", ["get", "combined_score"], 0.55],
+            ["==", ["get", "color_tier"], 1],
             mapColors.matchMid,
             mapColors.matchLow,
           ],
           "fill-opacity": [
             "case",
             ["==", ["get", "is_selected"], 1],
+            0.62,
+            ["boolean", ["feature-state", "hover"], false],
+            0.56,
+            ["==", ["get", "color_tier"], 2],
             0.46,
-            0.28,
+            ["==", ["get", "color_tier"], 1],
+            0.30,
+            0.14,
           ],
         },
       });
+    }
 
+    if (!map.getLayer("h3-analogs-outline")) {
       map.addLayer({
         id: "h3-analogs-outline",
         type: "line",
@@ -282,17 +341,37 @@ export function AnalogMap({
             "case",
             ["==", ["get", "is_selected"], 1],
             mapColors.selectedOutline,
-            [">=", ["get", "combined_score"], 0.75],
+            ["boolean", ["feature-state", "hover"], false],
+            mapColors.selectedOutline,
+            ["==", ["get", "color_tier"], 2],
             mapColors.matchHigh,
-            [">=", ["get", "combined_score"], 0.55],
+            ["==", ["get", "color_tier"], 1],
             mapColors.matchMid,
             mapColors.matchLow,
           ],
           "line-width": [
             "case",
             ["==", ["get", "is_selected"], 1],
-            4.5,
-            2.2,
+            4.2,
+            ["boolean", ["feature-state", "hover"], false],
+            3.2,
+            ["==", ["get", "color_tier"], 2],
+            2.4,
+            ["==", ["get", "color_tier"], 1],
+            1.5,
+            0.8,
+          ],
+          "line-opacity": [
+            "case",
+            ["==", ["get", "is_selected"], 1],
+            1.0,
+            ["boolean", ["feature-state", "hover"], false],
+            0.95,
+            ["==", ["get", "color_tier"], 2],
+            0.92,
+            ["==", ["get", "color_tier"], 1],
+            0.72,
+            0.38,
           ],
         },
       });
@@ -318,10 +397,13 @@ export function AnalogMap({
 
       map.addControl(new maplibregl.NavigationControl({ showCompass: true }), "top-right");
 
-      map.on("style.load", () => {
+      const handleStyleReady = () => {
         attachAnalogLayers(map);
         setMapReady(true);
-      });
+      };
+
+      map.on("style.load", handleStyleReady);
+      map.on("load", handleStyleReady);
 
       map.on("click", (ev: maplibregl.MapMouseEvent) => {
         const hasFill = Boolean(map.getLayer("h3-analogs-fill"));
@@ -336,11 +418,34 @@ export function AnalogMap({
         }
       });
 
-      map.on("mouseenter", "h3-analogs-fill", () => {
+      map.on("mousemove", "h3-analogs-fill", (ev) => {
         map.getCanvas().style.cursor = "pointer";
+        const h3Id = ev.features?.[0]?.properties?.earth_cell_h3;
+        if (typeof h3Id === "string" && h3Id !== hoveredH3Ref.current) {
+          if (hoveredH3Ref.current && map.getSource("h3-analogs")) {
+            map.setFeatureState(
+              { source: "h3-analogs", id: hoveredH3Ref.current },
+              { hover: false }
+            );
+          }
+          hoveredH3Ref.current = h3Id;
+          if (map.getSource("h3-analogs")) {
+            map.setFeatureState({ source: "h3-analogs", id: h3Id }, { hover: true });
+          }
+          setHoveredH3(h3Id);
+        }
       });
+
       map.on("mouseleave", "h3-analogs-fill", () => {
         map.getCanvas().style.cursor = "";
+        if (hoveredH3Ref.current && map.getSource("h3-analogs")) {
+          map.setFeatureState(
+            { source: "h3-analogs", id: hoveredH3Ref.current },
+            { hover: false }
+          );
+        }
+        hoveredH3Ref.current = null;
+        setHoveredH3(null);
       });
 
       map.on("error", () => {
@@ -376,8 +481,8 @@ export function AnalogMap({
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapReady) return;
-    const polySource = map.getSource("h3-analogs") as maplibregl.GeoJSONSource | undefined;
-    polySource?.setData(geojson);
+    attachAnalogLayers(map, theme);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geojson, mapReady]);
 
   // Fly smoothly to selected H3 hexagon
@@ -407,17 +512,25 @@ export function AnalogMap({
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapReady) return;
+    const nextKey = `${theme}:${overlayLayer}`;
+    if (prevStyleKeyRef.current === nextKey) return;
+    prevStyleKeyRef.current = nextKey;
+
     map.once("style.load", () => {
-      attachAnalogLayers(map);
+      attachAnalogLayers(map, theme);
     });
-    map.setStyle(buildRasterMapStyle(theme, overlayLayer, isGlobe, isTerrain3d));
+    map.setStyle(buildRasterMapStyle(theme, overlayLayer, isGlobe, isTerrain3d), {
+      diff: false,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [theme, overlayLayer]);
+  }, [theme, overlayLayer, mapReady]);
 
   // Toggle between 3D Globe and 2D Mercator projection without reloading layers
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapReady) return;
+    if (prevGlobeRef.current === isGlobe) return;
+    prevGlobeRef.current = isGlobe;
     map.setProjection({ type: isGlobe ? "globe" : "mercator" });
   }, [isGlobe, mapReady]);
 
@@ -425,6 +538,8 @@ export function AnalogMap({
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapReady) return;
+    if (prevTerrainRef.current === isTerrain3d) return;
+    prevTerrainRef.current = isTerrain3d;
     map.setTerrain(isTerrain3d ? { source: "terrarium-dem", exaggeration: 1.5 } : null);
   }, [isTerrain3d, mapReady]);
 
@@ -529,46 +644,272 @@ export function AnalogMap({
           <div className="relative">
             <div
               ref={containerRef}
-              className="h-64 w-full overflow-hidden rounded border border-border-subtle bg-surface-muted sm:h-80 lg:h-96"
+              className="h-72 w-full overflow-hidden rounded border border-border-subtle bg-surface-muted sm:h-80 lg:h-96"
             />
-            {selectedMatch && (
-              <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded border border-border-subtle bg-surface/95 p-2.5 shadow-sm sm:absolute sm:bottom-3 sm:left-3 sm:mt-0 sm:max-w-sm sm:backdrop-blur">
-                <div className="min-w-0 space-y-0.5">
+
+            {/* Live Hover Telemetry HUD when moving cursor over any H3 hexagon */}
+            {hoveredEntry && (
+              <div
+                aria-live="polite"
+                className="pointer-events-none absolute left-3 top-3 z-10 w-72 max-w-[calc(100%-3.5rem)] space-y-2 rounded-lg border border-accent/50 bg-surface/95 p-3 shadow-lg backdrop-blur sm:w-80"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
+                  <span className="inline-flex items-center gap-1 rounded bg-accent/15 px-1.5 py-0.5 text-[11px] font-semibold text-accent">
+                    <Activity className="h-3 w-3" aria-hidden="true" />
+                    {t("map.hoverHudBadge")}
+                  </span>
                   <div className="flex items-center gap-1.5">
-                    {selectedRank !== null && (
-                      <span className="rounded bg-accent/20 px-1.5 py-0.5 text-xs font-bold tabular-nums text-accent">
-                        {t("map.rankBadge", { rank: selectedRank })}
-                      </span>
+                    {hoveredEntry.match.is_pareto_optimal && (
+                      <Badge variant="valid">{t("map.paretoBadge")}</Badge>
                     )}
-                    <p className="truncate text-xs font-semibold text-content">
-                      {selectedMatch.known_analog_name ?? t(selectedMatch.region_key)}
-                    </p>
+                    <span className="rounded bg-surface-muted px-1.5 py-0.5 text-[11px] font-bold tabular-nums text-content">
+                      {t("map.rankBadge", { rank: hoveredEntry.rank })}
+                    </span>
                   </div>
-                  <p className="text-xs tabular-nums text-content-muted">
-                    {t("map.resolutionBadge", { res: selectedMatch.h3_resolution })} ·{" "}
-                    {formatPercent(selectedMatch.combined_score, lang)} ·{" "}
-                    {formatNumber(selectedMatch.coordinates.lat, lang, 2)}°,{" "}
-                    {formatNumber(selectedMatch.coordinates.lon, lang, 2)}°
+                </div>
+
+                <div>
+                  <p className="truncate text-xs font-bold text-content">
+                    {hoveredEntry.match.known_analog_name ?? t(hoveredEntry.match.region_key)}
+                  </p>
+                  <p className="truncate font-mono text-[11px] text-content-muted">
+                    {hoveredEntry.match.earth_cell_h3} ·{" "}
+                    {t("map.resolutionBadge", { res: hoveredEntry.match.h3_resolution })} (
+                    {t("map.scaleLabel", {
+                      km: formatNumber(hoveredEntry.match.effective_scale_km ?? 158.2, lang, 1),
+                    })}
+                    )
                   </p>
                 </div>
 
-                {onRefineCell && (
-                  <button
-                    type="button"
-                    disabled={isRefining || selectedMatch.h3_resolution >= 5}
-                    onClick={() => onRefineCell(selectedMatch.earth_cell_h3)}
-                    className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded border border-accent/40 bg-accent/15 px-3 py-1.5 text-xs font-semibold text-accent hover:bg-accent/25 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-accent/40"
-                  >
-                    <ZoomIn className="h-3.5 w-3.5" aria-hidden="true" />
-                    <span>
-                      {selectedMatch.h3_resolution >= 5
-                        ? t("map.maxResReached")
-                        : isRefining
-                        ? t("map.refiningZone")
-                        : t("map.subdivideAction")}
+                <div className="grid grid-cols-4 gap-1 rounded border border-border-subtle bg-surface-elevated p-1.5 text-center">
+                  <div>
+                    <span className="block text-[10px] text-content-muted">
+                      {t("map.metricCombined")}
                     </span>
-                  </button>
-                )}
+                    <span className="text-xs font-bold tabular-nums text-accent">
+                      {formatPercent(hoveredEntry.match.combined_score, lang)}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-content-muted">S_ind</span>
+                    <span className="text-xs font-semibold tabular-nums text-status-valid">
+                      {formatPercent(hoveredEntry.match.s_ind, lang)}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-content-muted">S_dep</span>
+                    <span className="text-xs font-semibold tabular-nums text-status-warn">
+                      {formatPercent(hoveredEntry.match.s_dep, lang)}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-content-muted">R_break</span>
+                    <span className="text-xs font-semibold tabular-nums text-status-break">
+                      {formatPercent(hoveredEntry.match.r_break_overall, lang)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                  <div className="rounded bg-surface-muted/70 px-2 py-1">
+                    <span className="block text-[10px] text-content-muted">
+                      {t("map.cellTempLabel")}
+                    </span>
+                    <span className="font-semibold tabular-nums text-content">
+                      {formatNumber(
+                        (hoveredEntry.match.earth_variables.dependent.mean_surface_temp_k ??
+                          273.15) - 273.15,
+                        lang,
+                        1
+                      )}
+                      °C (
+                      {formatNumber(
+                        hoveredEntry.match.earth_variables.dependent.mean_surface_temp_k ?? 273.15,
+                        lang,
+                        0
+                      )}{" "}
+                      K)
+                    </span>
+                  </div>
+                  <div className="rounded bg-surface-muted/70 px-2 py-1">
+                    <span className="block text-[10px] text-content-muted">
+                      {t("map.cellAridityLabel")}
+                    </span>
+                    <span className="font-semibold tabular-nums text-content">
+                      {formatNumber(
+                        hoveredEntry.match.earth_variables.independent.aridity_index ?? 0,
+                        lang,
+                        3
+                      )}
+                    </span>
+                  </div>
+                  <div className="rounded bg-surface-muted/70 px-2 py-1">
+                    <span className="block text-[10px] text-content-muted">
+                      {t("map.cellSlopeLabel")}
+                    </span>
+                    <span className="font-semibold tabular-nums text-content">
+                      {formatNumber(
+                        hoveredEntry.match.earth_variables.independent.slope_deg ?? 0,
+                        lang,
+                        1
+                      )}
+                      °
+                    </span>
+                  </div>
+                  <div className="rounded bg-surface-muted/70 px-2 py-1">
+                    <span className="block text-[10px] text-content-muted">
+                      {t("map.cellRadiationLabel")}
+                    </span>
+                    <span className="font-semibold tabular-nums text-content">
+                      {formatNumber(
+                        hoveredEntry.match.earth_variables.breakage.radiation_msv_yr ?? 0,
+                        lang,
+                        2
+                      )}{" "}
+                      mSv/yr
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-[11px] font-medium text-accent">{t("map.clickToPinHint")}</p>
+              </div>
+            )}
+
+            {/* Selected H3 Hexagon Inspector Card */}
+            {selectedMatch && (
+              <div className="mt-2 space-y-2.5 rounded-lg border border-border-subtle bg-surface/95 p-3 shadow-sm sm: backdrop-blur">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0 space-y-0.5">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="rounded bg-accent/15 px-1.5 py-0.5 text-[11px] font-semibold text-accent">
+                        {t("map.selectedHudBadge")}
+                      </span>
+                      {selectedRank !== null && (
+                        <span className="rounded bg-accent/20 px-1.5 py-0.5 text-xs font-bold tabular-nums text-accent">
+                          {t("map.rankBadge", { rank: selectedRank })}
+                        </span>
+                      )}
+                      {selectedMatch.is_pareto_optimal && (
+                        <Badge variant="valid">{t("map.paretoBadge")}</Badge>
+                      )}
+                      <Badge variant="default">
+                        {t("map.validTestsBadge", {
+                          count: selectedMatch.engineering_recommendations.valid_tests.length,
+                        })}
+                      </Badge>
+                    </div>
+                    <p className="truncate text-sm font-bold text-content">
+                      {selectedMatch.known_analog_name ?? t(selectedMatch.region_key)}
+                    </p>
+                    <p className="text-xs tabular-nums text-content-muted">
+                      <span className="font-mono">{selectedMatch.earth_cell_h3}</span> ·{" "}
+                      {t("map.resolutionBadge", { res: selectedMatch.h3_resolution })} (
+                      {t("map.scaleLabel", {
+                        km: formatNumber(selectedMatch.effective_scale_km ?? 158.2, lang, 1),
+                      })}
+                      ) · {formatNumber(selectedMatch.coordinates.lat, lang, 2)}°,{" "}
+                      {formatNumber(selectedMatch.coordinates.lon, lang, 2)}°
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    {onRefineCell && (
+                      <button
+                        type="button"
+                        disabled={isRefining || selectedMatch.h3_resolution >= 5}
+                        onClick={() => onRefineCell(selectedMatch.earth_cell_h3)}
+                        className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded border border-accent/40 bg-accent/15 px-3 py-1.5 text-xs font-semibold text-accent hover:bg-accent/25 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-accent/40"
+                      >
+                        <ZoomIn className="h-3.5 w-3.5" aria-hidden="true" />
+                        <span>
+                          {selectedMatch.h3_resolution >= 5
+                            ? t("map.maxResReached")
+                            : isRefining
+                            ? t("map.refiningZone")
+                            : t("map.subdivideAction")}
+                        </span>
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        document
+                          .getElementById("section-diagnostics")
+                          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }}
+                      className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded border border-border-subtle bg-surface-elevated px-3 py-1.5 text-xs font-semibold text-content hover:bg-surface-muted focus:outline-none focus:ring-2 focus:ring-accent/40"
+                    >
+                      <span>{t("map.jumpToDiagnostics")}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                    <span className="block text-[11px] text-content-muted">
+                      {t("map.metricCombined")}
+                    </span>
+                    <span className="text-xs font-bold tabular-nums text-accent">
+                      {formatPercent(selectedMatch.combined_score, lang)} · S_ind{" "}
+                      {formatPercent(selectedMatch.s_ind, lang)} · S_dep{" "}
+                      {formatPercent(selectedMatch.s_dep, lang)}
+                    </span>
+                  </div>
+                  <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                    <span className="block text-[11px] text-content-muted">
+                      {t("map.cellTempLabel")}
+                    </span>
+                    <span className="text-xs font-semibold tabular-nums text-content">
+                      {formatNumber(
+                        (selectedMatch.earth_variables.dependent.mean_surface_temp_k ?? 273.15) -
+                          273.15,
+                        lang,
+                        1
+                      )}
+                      °C (
+                      {formatNumber(
+                        selectedMatch.earth_variables.dependent.mean_surface_temp_k ?? 273.15,
+                        lang,
+                        0
+                      )}{" "}
+                      K)
+                    </span>
+                  </div>
+                  <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                    <span className="block text-[11px] text-content-muted">
+                      {t("map.cellAridityLabel")} / {t("map.cellSlopeLabel")}
+                    </span>
+                    <span className="text-xs font-semibold tabular-nums text-content">
+                      AI{" "}
+                      {formatNumber(
+                        selectedMatch.earth_variables.independent.aridity_index ?? 0,
+                        lang,
+                        3
+                      )}{" "}
+                      ·{" "}
+                      {formatNumber(
+                        selectedMatch.earth_variables.independent.slope_deg ?? 0,
+                        lang,
+                        1
+                      )}
+                      °
+                    </span>
+                  </div>
+                  <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                    <span className="block text-[11px] text-content-muted">
+                      {t("map.cellRadiationLabel")} / {t("map.metricRBreak")}
+                    </span>
+                    <span className="text-xs font-semibold tabular-nums text-content">
+                      {formatNumber(
+                        selectedMatch.earth_variables.breakage.radiation_msv_yr ?? 0,
+                        lang,
+                        2
+                      )}{" "}
+                      mSv/yr · {formatPercent(selectedMatch.r_break_overall, lang)}
+                    </span>
+                  </div>
+                </div>
               </div>
             )}
           </div>
