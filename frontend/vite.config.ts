@@ -6,6 +6,16 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ["maplibre-gl"],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          maplibre: ["maplibre-gl"],
+          three: ["three"],
+        },
+      },
+    },
+  },
   server: {
     port: 5173,
     proxy: {
@@ -16,4 +26,3 @@ export default defineConfig({
     },
   },
 });
-

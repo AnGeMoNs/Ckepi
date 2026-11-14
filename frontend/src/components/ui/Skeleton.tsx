@@ -18,7 +18,7 @@ export function MapSkeleton() {
         <Skeleton className="h-5 w-44" />
         <Skeleton className="h-8 w-24" />
       </div>
-      <Skeleton className="h-[360px] w-full rounded-xl" />
+      <Skeleton className="h-64 w-full rounded-xl sm:h-80 lg:h-96" />
     </div>
   );
 }

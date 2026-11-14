@@ -1,4 +1,4 @@
-import { lazy, Suspense, useDeferredValue, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AlertCircle, Globe, MapPin, RefreshCw, SearchX } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -52,9 +52,6 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const { t } = useTranslation();
   const params = useExplorerParams();
 
-  const deferredMinSInd = useDeferredValue(params.minSInd);
-  const deferredMinSDep = useDeferredValue(params.minSDep);
-
   const analysis = useAnalogAnalysis({
     selectedSiteId: params.selectedSiteId,
     setSelectedSiteId: params.setSelectedSiteId,
@@ -63,8 +60,8 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     setCustomProbedSite: params.setCustomProbedSite,
     modelType: params.modelType,
     testProfile: params.testProfile,
-    minSInd: deferredMinSInd,
-    minSDep: deferredMinSDep,
+    minSInd: params.minSInd,
+    minSDep: params.minSDep,
     excludeBenchmarks: params.excludeBenchmarks,
     penalizeEstimated: params.penalizeEstimated,
     customIvWeights: params.customIvWeights,
@@ -209,7 +206,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
 
       <GuidedStepsBanner activeStep={activeStep} />
 
-      <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[22.5rem_minmax(0,1fr)]">
         {/* Render a single ControlPanel instance to avoid duplicate IDs and draft divergence */}
         {isDesktop ? (
           <aside className="xl:sticky xl:top-20 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto">
