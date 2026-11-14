@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   AlertCircle,
+  BookOpen,
   Check,
   ChevronDown,
   ChevronUp,
+  ClipboardCheck,
+  FlaskConical,
+  GitCompareArrows,
   RefreshCw,
   Share2,
   SlidersHorizontal,
@@ -23,7 +27,10 @@ import {
   searchAnalogs,
 } from "../api/client";
 import { DecompositionPanel } from "../components/decomposition/DecompositionPanel";
+import { EvidencePanel } from "../components/evidence/EvidencePanel";
 import { GuidedStepsBanner } from "../components/layout/GuidedStepsBanner";
+import { ContextualCuriosityStrip } from "../components/learning/ContextualCuriosityStrip";
+import { PlanetaryPhysicsLab } from "../components/learning/PlanetaryPhysicsLab";
 import { AnalogMap } from "../components/map/AnalogMap";
 import { PlanetaryMap } from "../components/map/PlanetaryMap";
 import { AnalogComparisonMatrix } from "../components/mission/AnalogComparisonMatrix";
@@ -35,6 +42,7 @@ import {
 import { DataConfidenceBanner } from "../components/mission/DataConfidenceBanner";
 import { MissionDiagnostics } from "../components/mission/MissionDiagnostics";
 import { PresetProfileInspector } from "../components/mission/PresetProfileInspector";
+import { FieldTrialPlanner } from "../components/planning/FieldTrialPlanner";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent } from "../components/ui/Card";
@@ -63,6 +71,12 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const lang = i18n.language;
 
   const initialParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+  const initialTab = initialParams?.get("tab");
+  const [activeTab, setActiveTab] = useState<"compare" | "learn" | "plan" | "evidence">(
+    initialTab === "learn" || initialTab === "plan" || initialTab === "evidence"
+      ? initialTab
+      : "compare"
+  );
   const [sites, setSites] = useState<PlanetarySite[]>([]);
   const [selectedBody, setSelectedBody] = useState<PlanetaryBody>("mars");
   const [selectedSiteId, setSelectedSiteId] = useState<string>(
@@ -410,9 +424,102 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
       ? customProbedSite
       : sites.find((s) => s.site_id === selectedSiteId);
 
+  const selectedCell =
+    searchResult?.matches.find((m) => m.earth_cell_h3 === selectedH3) ??
+    comparison?.match ??
+    null;
+
+  const handleFocusAtacama = useCallback(() => {
+    const matches = searchResult?.matches ?? [];
+    // Find closest cached H3 cell to Antofagasta / Yungay (-24.10, -69.90)
+    let bestH3: string | null = null;
+    let bestDist = Infinity;
+    for (const m of matches) {
+      const dLat = m.coordinates.lat - -24.1;
+      const dLon = m.coordinates.lon - -69.9;
+      const dist = dLat * dLat + dLon * dLon;
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestH3 = m.earth_cell_h3;
+      }
+    }
+    if (bestH3 && bestDist < 12) {
+      setSelectedH3(bestH3);
+    } else {
+      void handleProbeCoordinate(-24.1, -69.9);
+    }
+  }, [searchResult, handleProbeCoordinate]);
+
+  const navTabs: {
+    id: "compare" | "learn" | "plan" | "evidence";
+    label: string;
+    icon: typeof GitCompareArrows;
+  }[] = [
+    { id: "compare", label: t("nav.compare"), icon: GitCompareArrows },
+    { id: "learn", label: t("nav.learn"), icon: FlaskConical },
+    { id: "plan", label: t("nav.plan"), icon: ClipboardCheck },
+    { id: "evidence", label: t("nav.evidence"), icon: BookOpen },
+  ];
+
   return (
     <main className="mx-auto max-w-7xl space-y-6 px-3 py-5 sm:px-6">
-      <GuidedStepsBanner />
+      {/* Primary Journey Navigation: Compare · Learn · Plan · Evidence */}
+      <nav
+        aria-label={t("nav.tabsLabel")}
+        role="tablist"
+        className="flex flex-wrap gap-2 rounded-xl border border-border-subtle bg-surface-elevated p-2 shadow-sm"
+      >
+        {navTabs.map((tab) => {
+          const Icon = tab.icon;
+          const active = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-sm ${
+                active
+                  ? "bg-accent text-accent-foreground shadow-sm"
+                  : "text-content-muted hover:bg-surface-muted hover:text-content"
+              }`}
+            >
+              <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </nav>
+
+      {activeTab === "learn" && (
+        <PlanetaryPhysicsLab
+          body={selectedBody}
+          activeSite={activeSite}
+          selectedCell={selectedCell}
+          comparison={comparison}
+          onGoToCompare={() => setActiveTab("compare")}
+          onGoToPlan={() => setActiveTab("plan")}
+        />
+      )}
+
+      {activeTab === "plan" && (
+        <FieldTrialPlanner
+          activeSite={activeSite}
+          selectedCell={selectedCell}
+          comparison={comparison}
+          onGoToCompare={() => setActiveTab("compare")}
+          onGoToEvidence={() => setActiveTab("evidence")}
+        />
+      )}
+
+      {activeTab === "evidence" && (
+        <EvidencePanel activeSite={activeSite} comparison={comparison} />
+      )}
+
+      {activeTab === "compare" && (
+        <>
+          <GuidedStepsBanner />
 
       {/* Control Bar */}
       <Card>
@@ -537,6 +644,13 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                 <span className="font-medium">{t("controls.discoveryOnly")}</span>
                 <InfoTooltip label={t("controls.discoveryOnly")} text={t("controls.discoveryHint")} />
               </label>
+
+              <Button
+                variant="secondary"
+                onClick={handleFocusAtacama}
+              >
+                <span>{t("nav.focusAtacama")}</span>
+              </Button>
 
               <Button
                 variant="secondary"
@@ -763,6 +877,14 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
       {/* Data Confidence & Honest Estimation Banner */}
       {activeSite && <DataConfidenceBanner site={activeSite} />}
 
+      {/* Contextual Curiosity CTA linking Compare -> Learn */}
+      <ContextualCuriosityStrip
+        body={selectedBody}
+        activeSite={activeSite}
+        comparison={comparison}
+        onOpenLearn={() => setActiveTab("learn")}
+      />
+
       {/* Main Analytical Sections */}
       {decomposition && <DecompositionPanel decomposition={decomposition} />}
 
@@ -775,6 +897,8 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           activeSite={activeSite}
           onSelectCell={(h3Index) => setSelectedH3(h3Index)}
         />
+      )}
+        </>
       )}
     </main>
   );

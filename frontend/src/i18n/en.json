@@ -204,25 +204,98 @@
     "liveProbed": "Live probed"
   },
   "variables": {
-    "topographic_roughness": { "label": "Topographic Roughness", "unit": "0-1 index", "hint": "Micro-relief irregularity and rockiness affecting rover wheels and landing hazard sensors." },
-    "slope_deg": { "label": "Mean Terrain Slope", "unit": "°", "hint": "Average terrain inclination in degrees; critical for rover climbing and lander stability." },
-    "thermal_inertia": { "label": "Thermal Inertia", "unit": "TIU", "hint": "How slowly the ground heats up and cools down; separates fine dust from exposed bedrock." },
-    "surface_albedo": { "label": "Surface Albedo", "unit": "0-1", "hint": "Fraction of sunlight reflected by the surface; governs solar heating and optical contrast." },
-    "solar_flux_wm2": { "label": "Incident Solar Flux", "unit": "W/m²", "hint": "Available solar power per square meter for photovoltaic arrays and thermal balance." },
-    "subsurface_ice_frac": { "label": "Subsurface Ice", "unit": "fraction", "hint": "Estimated water-ice fraction in the regolith; key for ISRU drilling and habitat water." },
-    "aridity_index": { "label": "Hyper-Aridity Index", "unit": "0-1", "hint": "Extreme dryness (1 = hyper-arid); ensures moisture does not distort regolith mechanics." },
-    "relative_humidity_pct": { "label": "Relative Humidity", "unit": "%", "hint": "Atmospheric water vapor; near-zero humidity best approximates lunar/Martian dryness." },
-    "uv_irradiance_index": { "label": "UV Irradiance Index", "unit": "UV index", "hint": "Ultraviolet radiation intensity stressing polymers, spacesuits, and solar cells." },
-    "vegetation_lai_proxy": { "label": "Vegetation Cover (LAI)", "unit": "m²/m²", "hint": "Plant cover density (0 = barren); planetary analogs require bare mineral ground." },
-    "diurnal_temp_amplitude_k": { "label": "Diurnal Temp. Amplitude (ΔT)", "unit": "K", "hint": "Day-to-night temperature swing causing thermal fatigue in batteries, seals, and electronics." },
-    "nocturnal_cooling_k_hr": { "label": "Nocturnal Cooling Rate", "unit": "K/h", "hint": "Speed of temperature drop after sunset; tests thermal survival and insulation." },
-    "mean_surface_temp_k": { "label": "Mean Surface Temperature", "unit": "K", "hint": "Average surface temperature in Kelvin; drives cryogenic lubrication and heating needs." },
-    "surface_wind_ms": { "label": "Surface Wind Speed", "unit": "m/s", "hint": "Near-surface wind speed; relevant for Mars dust transport and rotorcraft stability." },
-    "aeolian_dust_flux": { "label": "Aeolian Dust Flux", "unit": "0-1 index", "hint": "Airborne dust intensity; tests optical lens abrasion and solar panel dust accumulation." },
-    "ice_sublimation_rate": { "label": "Ice Sublimation Rate", "unit": "0-1 index", "hint": "Rate at which exposed ice sublimates; critical for cold-trap and drilling tests." },
-    "gravity_g": { "label": "Surface Gravity", "unit": "g" },
-    "atm_pressure_mbar": { "label": "Atmospheric Pressure", "unit": "mbar" },
-    "radiation_msv_yr": { "label": "Ionizing Radiation (GCR)", "unit": "mSv/yr" }
+    "topographic_roughness": {
+      "label": "Topographic Roughness",
+      "unit": "0-1 index",
+      "hint": "Micro-relief irregularity and rockiness affecting rover wheels and landing hazard sensors."
+    },
+    "slope_deg": {
+      "label": "Mean Terrain Slope",
+      "unit": "°",
+      "hint": "Average terrain inclination in degrees; critical for rover climbing and lander stability."
+    },
+    "thermal_inertia": {
+      "label": "Thermal Inertia",
+      "unit": "TIU",
+      "hint": "How slowly the ground heats up and cools down; separates fine dust from exposed bedrock."
+    },
+    "surface_albedo": {
+      "label": "Surface Albedo",
+      "unit": "0-1",
+      "hint": "Fraction of sunlight reflected by the surface; governs solar heating and optical contrast."
+    },
+    "solar_flux_wm2": {
+      "label": "Incident Solar Flux",
+      "unit": "W/m²",
+      "hint": "Available solar power per square meter for photovoltaic arrays and thermal balance."
+    },
+    "subsurface_ice_frac": {
+      "label": "Subsurface Ice",
+      "unit": "fraction",
+      "hint": "Estimated water-ice fraction in the regolith; key for ISRU drilling and habitat water."
+    },
+    "aridity_index": {
+      "label": "Hyper-Aridity Index",
+      "unit": "0-1",
+      "hint": "Extreme dryness (1 = hyper-arid); ensures moisture does not distort regolith mechanics."
+    },
+    "relative_humidity_pct": {
+      "label": "Relative Humidity",
+      "unit": "%",
+      "hint": "Atmospheric water vapor; near-zero humidity best approximates lunar/Martian dryness."
+    },
+    "uv_irradiance_index": {
+      "label": "UV Irradiance Index",
+      "unit": "UV index",
+      "hint": "Ultraviolet radiation intensity stressing polymers, spacesuits, and solar cells."
+    },
+    "vegetation_lai_proxy": {
+      "label": "Vegetation Cover (LAI)",
+      "unit": "m²/m²",
+      "hint": "Plant cover density (0 = barren); planetary analogs require bare mineral ground."
+    },
+    "diurnal_temp_amplitude_k": {
+      "label": "Diurnal Temp. Amplitude (ΔT)",
+      "unit": "K",
+      "hint": "Day-to-night temperature swing causing thermal fatigue in batteries, seals, and electronics."
+    },
+    "nocturnal_cooling_k_hr": {
+      "label": "Nocturnal Cooling Rate",
+      "unit": "K/h",
+      "hint": "Speed of temperature drop after sunset; tests thermal survival and insulation."
+    },
+    "mean_surface_temp_k": {
+      "label": "Mean Surface Temperature",
+      "unit": "K",
+      "hint": "Average surface temperature in Kelvin; drives cryogenic lubrication and heating needs."
+    },
+    "surface_wind_ms": {
+      "label": "Surface Wind Speed",
+      "unit": "m/s",
+      "hint": "Near-surface wind speed; relevant for Mars dust transport and rotorcraft stability."
+    },
+    "aeolian_dust_flux": {
+      "label": "Aeolian Dust Flux",
+      "unit": "0-1 index",
+      "hint": "Airborne dust intensity; tests optical lens abrasion and solar panel dust accumulation."
+    },
+    "ice_sublimation_rate": {
+      "label": "Ice Sublimation Rate",
+      "unit": "0-1 index",
+      "hint": "Rate at which exposed ice sublimates; critical for cold-trap and drilling tests."
+    },
+    "gravity_g": {
+      "label": "Surface Gravity",
+      "unit": "g"
+    },
+    "atm_pressure_mbar": {
+      "label": "Atmospheric Pressure",
+      "unit": "mbar"
+    },
+    "radiation_msv_yr": {
+      "label": "Ionizing Radiation (GCR)",
+      "unit": "mSv/yr"
+    }
   },
   "breakage": {
     "alerts": {
@@ -430,6 +503,210 @@
       "uv_shielded_rock": "Relevant for UV-shielded subsurface microbial survival under high solar flux.",
       "general_organic": "Baseline terrestrial organic preservation and contamination control reference."
     }
+  },
+  "nav": {
+    "tabsLabel": "Ckepi Sections",
+    "compare": "Compare",
+    "learn": "Learn",
+    "plan": "Plan",
+    "evidence": "Evidence",
+    "backToCompare": "Back to Compare",
+    "continueToPlan": "Continue to Plan",
+    "viewEvidence": "View Evidence & SDGs",
+    "focusAtacama": "📍 Compare with Atacama",
+    "globalLabel": "Global scope",
+    "locationLabel": "Specific location"
+  },
+  "curiosity": {
+    "title": "Did you know that on a similar slope the normal force changes drastically?",
+    "body": "On {{body}} at a {{slope}}° slope, a 100 kg rover exerts {{targetNormal}} N of normal force compared to {{earthNormal}} N on Earth. Lower gravity reduces weight, but also traction.",
+    "cta": "Experiment in Learn"
+  },
+  "learn": {
+    "title": "Planetary Physics Lab — What if…?",
+    "subtitle": "Local SI-unit simulators connected to your selected body and site. Compare Earth, Mars, and the Moon with explicit equations and limits.",
+    "experimentSelectorLabel": "Experiment selector",
+    "idealizedModel": "Idealized model",
+    "equationLabel": "Equation & units",
+    "curiositiesTitle": "Contextual curiosities",
+    "challengesTitle": "Contextualized mini-challenges",
+    "correctLabel": "Correct!",
+    "reviewLabel": "Review explanation",
+    "noComparisonHint": "Select an Earth H3 cell in Compare to link real terrestrial slope measurements to these challenges.",
+    "controls": {
+      "massKg": "Mass (m)",
+      "massExact": "Exact mass (kg)",
+      "earthJumpCm": "Earth vertical jump",
+      "throwSpeed": "Initial speed (v₀)",
+      "throwAngle": "Launch angle (θ)",
+      "poolDepth": "Pool depth (d)",
+      "rockMass": "Rock mass (m)",
+      "targetAccel": "Target acceleration (a)",
+      "roverMass": "Rover mass (m)",
+      "slopeDeg": "Terrain slope (θ)",
+      "frictionCoeff": "Ideal friction coeff (μ)"
+    },
+    "experiments": {
+      "weight": {
+        "tab": "Weight & gravity",
+        "question": "Does your mass change if you travel to Mars or the Moon?",
+        "intro": "Mass (kg) is invariant; what changes is gravitational force or weight (N).",
+        "massInvariant": "Invariant mass: {{mass}} kg (Earth-scale equiv: {{kgf}} kgf)",
+        "limits": "Assumptions: standard mean surface gravity (Earth 9.80665; Mars 3.71; Moon 1.62 m/s²). A spring scale calibrated on Earth would read lower kgf, not lower mass."
+      },
+      "jump": {
+        "tab": "Jumping",
+        "question": "How high would you jump with the same takeoff speed?",
+        "intro": "At equal takeoff velocity, peak height scales inversely with g.",
+        "limits": "Ideal vertical model without air drag or pressurized spacesuit load. On Mars (~2.64×) and the Moon (~6.05×), suit mass and biomechanics limit real impulse."
+      },
+      "projectile": {
+        "tab": "Ball throw",
+        "question": "How does a projectile parabola change across worlds?",
+        "intro": "Ideal ballistic trajectory without aerodynamic drag from the same launch height.",
+        "svgLabel": "Comparison of parabolic trajectories on Earth, Mars, and Moon",
+        "limits": "No atmospheric drag; ideal max range occurs at 45° and does not depend on mass in this model. On Earth, air slows light projectiles."
+      },
+      "waves": {
+        "tab": "Habitat waves",
+        "question": "What happens to waves in a pool inside a pressurized habitat?",
+        "intro": "Simulated inside a pressurized, thermally controlled habitat (not outdoors on Mars).",
+        "habitatBadge": "Inside pressurized habitat",
+        "limits": "Valid only in the shallow-water regime (depth d ≪ wavelength λ): on Mars wave speed is ~0.615× (~38.5% slower). Deep-water waves depend on λ."
+      },
+      "rocks": {
+        "tab": "Rocks & inertia",
+        "question": "Is it equally easy to accelerate a rock even if it weighs less?",
+        "intro": "Lifting against gravity takes less force, but horizontal acceleration requires the exact same net force F = m·a.",
+        "limits": "Inertia (mass) does not decrease on Mars or the Moon. Lower weight also reduces maximum static friction with the ground."
+      },
+      "rover": {
+        "tab": "Rover & slopes",
+        "question": "How does gravity affect a rover climbing a slope?",
+        "intro": "Inclined-plane force decomposition linked to the slopes of the active site and Earth analog.",
+        "loadSiteSlope": "Load site slope ({{slope}}°)",
+        "loadEarthSlope": "Load Earth slope ({{slope}}°)",
+        "slipRisk": "Ideal slip risk",
+        "idealGrip": "Within ideal μ·N",
+        "limits": "Ideal rigid model (tan θ ≤ μ). In real Martian/lunar regolith or loose Atacama sand, wheel sinkage and soil cohesion reduce traction before the ideal limit."
+      }
+    },
+    "curiosities": {
+      "pressureTitle": "Liquid water outdoors on Mars (~0.6 kPa)",
+      "pressureDesc": "Unlike Antofagasta (~101 kPa at sea level), Martian surface pressure is ~0.6 kPa: exposed liquid water boils, freezes, or sublimates depending on temperature.",
+      "dustTitle": "Dust storms & dynamic pressure",
+      "dustDesc": "Even with fast winds, Mars thin atmosphere (~1% of Earth density) produces lower dynamic pressure q = 0.5·ρ·v² at the same wind speed.",
+      "atacamaTitle": "Why is Atacama / Yungay a key analog?",
+      "atacamaDesc": "Extreme hyperaridity, UV flux, and saline soils allow studying Mars-analog processes, while gravity (1 g), pressure, and cosmic radiation remain irreproducible."
+    },
+    "challenges": {
+      "mass": {
+        "question": "1. If a 70 kg student travels to Jezero Crater, what happens to their mass and weight?",
+        "optA": "Mass drops to ~26 kg and weight stays 686 N",
+        "optB": "Mass stays 70 kg and weight drops to ~260 N",
+        "optC": "Both mass and weight drop to one-third",
+        "explanation": "Mass is intrinsic (70 kg). Weight is gravitational force P = m·g ≈ 70 × 3.71 ≈ 259.7 N."
+      },
+      "roverDynamic": {
+        "question": "2. At the active slope ({{slope}}°) near {{site}}, what happens to a 100 kg rover compared to Earth?",
+        "optA": "It climbs with higher traction because it weighs less",
+        "optB": "Parallel force drops (from {{earthN}} N to {{marsN}} N), but normal force also drops (to {{marsNormalN}} N on Mars)",
+        "optC": "A 15° slope is universally safe on any terrain",
+        "explanation": "Lower gravity reduces parallel force ({{earthN}} N → {{marsN}} N), but also lowers normal force ({{marsNormalN}} N) and max friction μ·N."
+      },
+      "nonReplicable": {
+        "question": "3. Which Mars variable CANNOT be replicated in open-air field trials in Antofagasta?",
+        "optA": "Topographic slope and surface roughness",
+        "optB": "Surface UV irradiance and low relative humidity",
+        "optC": "Gravity (0.38 g), ~0.6 kPa CO₂ atmosphere, and ionizing GCR radiation",
+        "explanation": "Irreproducible breakage boundaries B (gravity, atmospheric pressure, cosmic radiation) cannot be replicated in open Earth field trials."
+      },
+      "distributions": {
+        "question": "4. What does it mean when two slope distributions are similar between Jezero and Atacama?",
+        "optA": "Both sites are identical for landing without further tests",
+        "optB": "Partial morphological similarity in an independent variable X, not full physical equivalence",
+        "optC": "Atmosphere and temperature are identical",
+        "explanation": "Ckepi decouples X, Y, and B: geometric slope similarity never implies complete environmental or mechanical equivalence."
+      }
+    }
+  },
+  "plan": {
+    "title": "Plan — Local Field Trial Sheet & Circular Economy",
+    "subtitle": "Turn comparative evidence into a preliminary, responsible field-trial proposal prioritizing reusable equipment and explicit limits.",
+    "exportBtn": "Export sheet (.md)",
+    "circularTitle": "Reusable / loaned equipment checklist (SDG 12)",
+    "circularNote": "Planning checklist to encourage equipment reuse and lending across schools/universities. Does not represent verified live inventory.",
+    "noEquipmentSelected": "No equipment selected",
+    "limitsTitle": "Irreproducible physical limits & scope",
+    "limitsNote": "This sheet is educational/preliminary: it does not certify terrain, replace permits, or validate real space mission readiness.",
+    "collaborationTitle": "Partnerships & local transfer (SDG 17)",
+    "collaborationNote": "Designed to be replicated across educational and university nodes without collecting personal data.",
+    "costsPending": "Pending local quote",
+    "notesPlaceholder": "Record terrain observations, safety precautions, or open questions for the trial...",
+    "disclaimer": "Notice: costs are pending local quotes, equipment items are planning references for circular reuse, and no personal data is stored.",
+    "noSiteSelected": "Select a planetary site in Compare.",
+    "noCellSelected": "No Earth H3 cell selected yet.",
+    "defaults": {
+      "title": "Preliminary rover traction and sensor trial in arid analog",
+      "objective": "Evaluate slope, granular slip, and thermal logging comparing an Atacama H3 cell against Mars slope telemetry."
+    },
+    "fields": {
+      "planetarySite": "Target planetary site",
+      "earthCell": "Selected Earth H3 cell",
+      "trialTitle": "Trial title",
+      "costs": "Cost estimate",
+      "objective": "Trial objective & hypothesis",
+      "notes": "Safety & terrain notes"
+    },
+    "equipment": {
+      "imu_inclinometer": "Reusable IMU / inclinometer sensor",
+      "rover_wheels_chassis": "Loaned STEAM prototype chassis & wheels",
+      "lifepo4_battery": "Shared rechargeable LiFePO4 battery",
+      "portable_weather_station": "Portable weather station / pyranometer",
+      "open_microcontroller": "Open microcontroller (Arduino / ESP32 / RPi)"
+    }
+  },
+  "evidence": {
+    "title": "Evidence, Open Data Sources & Sustainable Development Goals",
+    "subtitle": "Full traceability of NASA datasets, partner agencies, causal model assumptions, and AI disclosure.",
+    "globalTitle": "Global — Open science & worldwide coverage",
+    "globalDesc": "Reproducible comparisons between the global Earth H3 grid and Moon/Mars destinations using open scientific APIs.",
+    "locationTitle": "Location — Verifiable coordinates & provenance",
+    "locationDesc": "Each site (Jezero, Yungay/Atacama, or any H3 cell) preserves coordinates, observation window, and explicit confidence level.",
+    "methodTitle": "Scientific method: Causal Decomposition X → Y & Breakage B",
+    "xTitle": "Independent forcings (X)",
+    "xDesc": "Slope, roughness, albedo, solar flux, thermal inertia, subsurface ice, aridity, and humidity.",
+    "yTitle": "Dependent responses (Y)",
+    "yDesc": "Diurnal temperature amplitude ΔT, nocturnal cooling, surface wind, aeolian dust flux.",
+    "bTitle": "Irreproducible boundaries (B)",
+    "bDesc": "Surface gravity, atmospheric pressure, and ionizing GCR radiation. Never collapsed into an arbitrary similarity %.",
+    "activeProvenance": "Active planetary site provenance",
+    "earthProvenance": "Compared Earth cell provenance",
+    "sourcesTitle": "Integrated open data sources",
+    "table": {
+      "agency": "Agency / Source",
+      "dataset": "Service / Dataset",
+      "role": "Role in Ckepi",
+      "type": "Origin"
+    },
+    "sources": {
+      "trek": "Mars (Viking/MOLA) and Moon (LRO WAC/LOLA) WMTS basemap layers.",
+      "pds": "Surface telemetry (REMS, MEDA) and orbital coverage (LOLA, Diviner, CRISM, SHARAD).",
+      "power": "Solar climatology, satellite albedo, and MODIS/SMAP + GIBS layers.",
+      "copernicus": "Elevation, slope, roughness (DEM 90m), and ERA5-Land climate series.",
+      "partners": "Soil properties, Macrostrat lithology, and Sentinel/RADARSAT/G-Portal catalogs."
+    },
+    "sdgTitle": "SDG Integration (Educational & Scientific Proposal)",
+    "sdgHonestyNote": "Honesty note: the SDGs below reflect product design and target alignment; impact metrics are only reported when actually measured.",
+    "sdg4Title": "SDG 4 — Quality Education (Targets 4.3 & 4.4) [Primary]",
+    "sdg4Desc": "Planetary physics lab, SI units, explicit equations, and STEAM mini-challenges grounded in real data.",
+    "sdg9Title": "SDG 9 — Industry, Innovation & Infrastructure (Target 9.5) [Primary]",
+    "sdg9Desc": "Reproducible geospatial comparison, transparent causal decomposition, and rover/sensor trial planning.",
+    "sdg12Title": "SDG 12 — Responsible Consumption & Production (Target 12.5) [Complementary]",
+    "sdg12Desc": "Circular economy mindset in trial planning through equipment sharing and reuse.",
+    "sdg17Title": "SDG 17 — Partnerships for the Goals (Targets 17.3, 17.16, 17.17) [Complementary]",
+    "sdg17Desc": "Open, replicable architecture across educational communities and regional research.",
+    "aiDisclosureTitle": "AI Disclosure (AI_DISCLOSURE.md)",
+    "aiDisclosureDesc": "The core scientific concept (X → Y / B decomposition on H3 grid) is human-designed. AI assistants accelerated implementation, refactoring, and es/pt/en translation parity, verified by the team. No NASA logos or synthetic measurements were fabricated."
   }
 }
-

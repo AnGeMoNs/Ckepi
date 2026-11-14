@@ -204,25 +204,98 @@
     "liveProbed": "Sondeado en vivo"
   },
   "variables": {
-    "topographic_roughness": { "label": "Rugosidad Topográfica", "unit": "índice 0-1", "hint": "Irregularidad del micro-relieve y presencia de rocas; afecta ruedas de rovers y sensores de aterrizaje." },
-    "slope_deg": { "label": "Pendiente Media", "unit": "°", "hint": "Inclinación promedio del suelo en grados; clave para tracción de rovers y estabilidad de aterrizadores." },
-    "thermal_inertia": { "label": "Inercia Térmica", "unit": "TIU", "hint": "Resistencia del suelo a cambiar de temperatura; distingue polvo fino de roca expuesta." },
-    "surface_albedo": { "label": "Albedo Superficial", "unit": "0-1", "hint": "Fracción de luz solar reflejada por el suelo; regula el calentamiento y el contraste óptico." },
-    "solar_flux_wm2": { "label": "Flujo Solar Incidente", "unit": "W/m²", "hint": "Energía solar disponible por metro cuadrado para paneles fotovoltaicos y balance térmico." },
-    "subsurface_ice_frac": { "label": "Hielo Subsuperficial", "unit": "fracción", "hint": "Proporción estimada de hielo de agua bajo el regolito; clave para perforación y recursos ISRU." },
-    "aridity_index": { "label": "Índice de Hiperaridez", "unit": "0-1", "hint": "Nivel de sequedad extrema (1 = hiperárido); evita que la humedad altere la mecánica del suelo." },
-    "relative_humidity_pct": { "label": "Humedad Relativa", "unit": "%", "hint": "Vapor de agua en el aire; valores cercanos a cero imitan mejor la sequedad lunar/marciana." },
-    "uv_irradiance_index": { "label": "Índice de Irradiancia UV", "unit": "índice UV", "hint": "Intensidad de radiación ultravioleta que degrada polímeros, trajes y celdas solares." },
-    "vegetation_lai_proxy": { "label": "Cobertura Vegetal (LAI)", "unit": "m²/m²", "hint": "Densidad de vegetación (0 = suelo desnudo); los análogos planetarios requieren terreno mineral sin plantas." },
-    "diurnal_temp_amplitude_k": { "label": "Amplitud Térmica Diurna (ΔT)", "unit": "K", "hint": "Diferencia de temperatura entre el día y la noche; provoca fatiga térmica en baterías y sellos." },
-    "nocturnal_cooling_k_hr": { "label": "Tasa de Enfriamiento Nocturno", "unit": "K/h", "hint": "Rapidez con la que cae la temperatura al anochecer; evalúa aislamiento y supervivencia térmica." },
-    "mean_surface_temp_k": { "label": "Temperatura Media Superficial", "unit": "K", "hint": "Temperatura promedio del suelo en Kelvin; define necesidades de lubricación criogénica y calefacción." },
-    "surface_wind_ms": { "label": "Velocidad del Viento Superficial", "unit": "m/s", "hint": "Viento cercano a la superficie; relevante en Marte para transporte de polvo y estabilidad de drones." },
-    "aeolian_dust_flux": { "label": "Flujo Eólico de Polvo", "unit": "índice 0-1", "hint": "Cantidad de polvo en suspensión; prueba abrasión en lentes ópticas y suciedad en paneles solares." },
-    "ice_sublimation_rate": { "label": "Tasa de Sublimación de Hielo", "unit": "índice 0-1", "hint": "Velocidad a la que el hielo pasa a gas; clave para ensayos de trampas frías y perforación." },
-    "gravity_g": { "label": "Gravedad Superficial", "unit": "g" },
-    "atm_pressure_mbar": { "label": "Presión Atmosférica", "unit": "mbar" },
-    "radiation_msv_yr": { "label": "Radiación Ionizante (GCR)", "unit": "mSv/año" }
+    "topographic_roughness": {
+      "label": "Rugosidad Topográfica",
+      "unit": "índice 0-1",
+      "hint": "Irregularidad del micro-relieve y presencia de rocas; afecta ruedas de rovers y sensores de aterrizaje."
+    },
+    "slope_deg": {
+      "label": "Pendiente Media",
+      "unit": "°",
+      "hint": "Inclinación promedio del suelo en grados; clave para tracción de rovers y estabilidad de aterrizadores."
+    },
+    "thermal_inertia": {
+      "label": "Inercia Térmica",
+      "unit": "TIU",
+      "hint": "Resistencia del suelo a cambiar de temperatura; distingue polvo fino de roca expuesta."
+    },
+    "surface_albedo": {
+      "label": "Albedo Superficial",
+      "unit": "0-1",
+      "hint": "Fracción de luz solar reflejada por el suelo; regula el calentamiento y el contraste óptico."
+    },
+    "solar_flux_wm2": {
+      "label": "Flujo Solar Incidente",
+      "unit": "W/m²",
+      "hint": "Energía solar disponible por metro cuadrado para paneles fotovoltaicos y balance térmico."
+    },
+    "subsurface_ice_frac": {
+      "label": "Hielo Subsuperficial",
+      "unit": "fracción",
+      "hint": "Proporción estimada de hielo de agua bajo el regolito; clave para perforación y recursos ISRU."
+    },
+    "aridity_index": {
+      "label": "Índice de Hiperaridez",
+      "unit": "0-1",
+      "hint": "Nivel de sequedad extrema (1 = hiperárido); evita que la humedad altere la mecánica del suelo."
+    },
+    "relative_humidity_pct": {
+      "label": "Humedad Relativa",
+      "unit": "%",
+      "hint": "Vapor de agua en el aire; valores cercanos a cero imitan mejor la sequedad lunar/marciana."
+    },
+    "uv_irradiance_index": {
+      "label": "Índice de Irradiancia UV",
+      "unit": "índice UV",
+      "hint": "Intensidad de radiación ultravioleta que degrada polímeros, trajes y celdas solares."
+    },
+    "vegetation_lai_proxy": {
+      "label": "Cobertura Vegetal (LAI)",
+      "unit": "m²/m²",
+      "hint": "Densidad de vegetación (0 = suelo desnudo); los análogos planetarios requieren terreno mineral sin plantas."
+    },
+    "diurnal_temp_amplitude_k": {
+      "label": "Amplitud Térmica Diurna (ΔT)",
+      "unit": "K",
+      "hint": "Diferencia de temperatura entre el día y la noche; provoca fatiga térmica en baterías y sellos."
+    },
+    "nocturnal_cooling_k_hr": {
+      "label": "Tasa de Enfriamiento Nocturno",
+      "unit": "K/h",
+      "hint": "Rapidez con la que cae la temperatura al anochecer; evalúa aislamiento y supervivencia térmica."
+    },
+    "mean_surface_temp_k": {
+      "label": "Temperatura Media Superficial",
+      "unit": "K",
+      "hint": "Temperatura promedio del suelo en Kelvin; define necesidades de lubricación criogénica y calefacción."
+    },
+    "surface_wind_ms": {
+      "label": "Velocidad del Viento Superficial",
+      "unit": "m/s",
+      "hint": "Viento cercano a la superficie; relevante en Marte para transporte de polvo y estabilidad de drones."
+    },
+    "aeolian_dust_flux": {
+      "label": "Flujo Eólico de Polvo",
+      "unit": "índice 0-1",
+      "hint": "Cantidad de polvo en suspensión; prueba abrasión en lentes ópticas y suciedad en paneles solares."
+    },
+    "ice_sublimation_rate": {
+      "label": "Tasa de Sublimación de Hielo",
+      "unit": "índice 0-1",
+      "hint": "Velocidad a la que el hielo pasa a gas; clave para ensayos de trampas frías y perforación."
+    },
+    "gravity_g": {
+      "label": "Gravedad Superficial",
+      "unit": "g"
+    },
+    "atm_pressure_mbar": {
+      "label": "Presión Atmosférica",
+      "unit": "mbar"
+    },
+    "radiation_msv_yr": {
+      "label": "Radiación Ionizante (GCR)",
+      "unit": "mSv/año"
+    }
   },
   "breakage": {
     "alerts": {
@@ -430,6 +503,210 @@
       "uv_shielded_rock": "Relevante para supervivencia microbiana protegida de UV bajo alta irradiancia.",
       "general_organic": "Referencia base de preservación orgánica y control de contaminación planetaria."
     }
+  },
+  "nav": {
+    "tabsLabel": "Secciones de Ckepi",
+    "compare": "Comparar",
+    "learn": "Aprender",
+    "plan": "Planificar",
+    "evidence": "Evidencia",
+    "backToCompare": "Volver a Comparar",
+    "continueToPlan": "Ir a Planificar",
+    "viewEvidence": "Ver Evidencia y ODS",
+    "focusAtacama": "📍 Comparar con Atacama",
+    "globalLabel": "Alcance global",
+    "locationLabel": "Ubicación específica"
+  },
+  "curiosity": {
+    "title": "¿Sabías que en una pendiente similar la fuerza normal cambia drásticamente?",
+    "body": "En {{body}} con pendiente {{slope}}°, un rover de 100 kg ejerce {{targetNormal}} N de fuerza normal frente a {{earthNormal}} N en la Tierra. Eso reduce el peso, pero también la tracción.",
+    "cta": "Experimentar en Aprender"
+  },
+  "learn": {
+    "title": "Laboratorio de Física Planetaria — ¿Qué pasaría si…?",
+    "subtitle": "Simuladores locales en unidades SI conectados al cuerpo y sitio seleccionados. Compara Tierra, Marte y Luna con ecuaciones y límites explícitos.",
+    "experimentSelectorLabel": "Selector de experimentos",
+    "idealizedModel": "Modelo idealizado",
+    "equationLabel": "Ecuación y unidades",
+    "curiositiesTitle": "Curiosidades contextuales",
+    "challengesTitle": "Mini-retos contextualizados",
+    "correctLabel": "¡Correcto!",
+    "reviewLabel": "Revisa la explicación",
+    "noComparisonHint": "Selecciona una celda terrestre en Comparar para vincular datos reales de pendiente terrestre a estos retos.",
+    "controls": {
+      "massKg": "Masa (m)",
+      "massExact": "Masa exacta (kg)",
+      "earthJumpCm": "Salto vertical en la Tierra",
+      "throwSpeed": "Velocidad inicial (v₀)",
+      "throwAngle": "Ángulo de lanzamiento (θ)",
+      "poolDepth": "Profundidad de piscina (d)",
+      "rockMass": "Masa de la roca (m)",
+      "targetAccel": "Aceleración objetivo (a)",
+      "roverMass": "Masa del rover (m)",
+      "slopeDeg": "Pendiente del terreno (θ)",
+      "frictionCoeff": "Coeficiente de fricción ideal (μ)"
+    },
+    "experiments": {
+      "weight": {
+        "tab": "Peso y gravedad",
+        "question": "¿Tu masa cambia si viajas a Marte o a la Luna?",
+        "intro": "La masa (kg) es invariante; lo que cambia es la fuerza gravitatoria o peso (N).",
+        "massInvariant": "Masa invariante: {{mass}} kg (equiv. báscula terrestre: {{kgf}} kgf)",
+        "limits": "Supuestos: gravedad superficial media estándar (Tierra 9,80665; Marte 3,71; Luna 1,62 m/s²). Una báscula de resorte calibrada en la Tierra marcaría kgf menores, no menos masa."
+      },
+      "jump": {
+        "tab": "Saltar",
+        "question": "¿Qué tan alto saltarías con el mismo impulso inicial?",
+        "intro": "A igual velocidad de despegue, la altura máxima escala inversamente con g.",
+        "limits": "Modelo vertical ideal sin resistencia del aire ni carga de traje espacial presurizado. En Marte (~2,64×) y Luna (~6,05×), el traje y la biomecánica limitan el impulso real."
+      },
+      "projectile": {
+        "tab": "Lanzar pelota",
+        "question": "¿Cómo cambia la parábola al lanzar un objeto?",
+        "intro": "Trayectoria balística ideal sin arrastre aerodinámico desde la misma altura.",
+        "svgLabel": "Comparación de trayectorias parabólicas en Tierra, Marte y Luna",
+        "limits": "Sin arrastre atmosférico; alcance máximo ideal ocurre a 45° y no depende de la masa en este modelo. En la Tierra el aire frena proyectiles livianos."
+      },
+      "waves": {
+        "tab": "Olas en hábitat",
+        "question": "¿Qué pasaría con las olas en una piscina dentro de un hábitat presurizado?",
+        "intro": "Simulación dentro de un hábitat presurizado y térmicamente controlado (no al aire libre en Marte).",
+        "habitatBadge": "Dentro de hábitat presurizado",
+        "limits": "Válido solo en régimen de agua somera (profundidad d ≪ longitud de onda λ): en Marte la velocidad es ~0,615× (~38,5% más lenta). En agua profunda depende de λ y no aplica la misma relación."
+      },
+      "rocks": {
+        "tab": "Rocas e inercia",
+        "question": "¿Es igual de fácil acelerar una roca aunque pese menos?",
+        "intro": "Levantar contra la gravedad requiere menos fuerza, pero acelerar horizontalmente exige la misma fuerza neta F = m·a.",
+        "limits": "La inercia (masa) no disminuye en Marte ni en la Luna. Además, menor peso reduce la fricción máxima estática con el suelo."
+      },
+      "rover": {
+        "tab": "Rover y pendientes",
+        "question": "¿Cómo afecta la gravedad a un rover subiendo una pendiente?",
+        "intro": "Descomposición de fuerzas en plano inclinado conectada a las pendientes del sitio y análogo terrestre.",
+        "loadSiteSlope": "Cargar pendiente sitio ({{slope}}°)",
+        "loadEarthSlope": "Cargar pendiente Tierra ({{slope}}°)",
+        "slipRisk": "Riesgo de deslizamiento ideal",
+        "idealGrip": "Dentro de μ·N ideal",
+        "limits": "Modelo rígido ideal (tan θ ≤ μ). En regolito real marciano/lunar o arena suelta de Atacama, el hundimiento de ruedas y cohesión del suelo reducen la tracción antes del límite ideal."
+      }
+    },
+    "curiosities": {
+      "pressureTitle": "Agua líquida al aire libre en Marte (~0,6 kPa)",
+      "pressureDesc": "A diferencia de Antofagasta (~101 kPa al nivel del mar), la presión marciana ronda 0,6 kPa: el agua líquida expuesta hierve, se congela o sublima según la temperatura.",
+      "dustTitle": "Tormentas de polvo y presión dinámica",
+      "dustDesc": "Aunque el viento marciano sea rápido, su baja densidad atmosférica (~1% de la Tierra) produce menor presión dinámica q = 0,5·ρ·v² para una misma velocidad.",
+      "atacamaTitle": "¿Por qué Atacama / Yungay es análogo clave?",
+      "atacamaDesc": "Su hiperaridez extrema, radiación UV y suelos salinos permiten estudiar procesos análogos a Marte, pero gravedad (1 g), presión y radiación cósmica siguen siendo irreproducibles."
+    },
+    "challenges": {
+      "mass": {
+        "question": "1. Si un estudiante de 70 kg viaja al cráter Jezero, ¿qué ocurre con su masa y su peso?",
+        "optA": "Su masa baja a ~26 kg y su peso se mantiene en 686 N",
+        "optB": "Su masa sigue siendo 70 kg y su peso baja a ~260 N",
+        "optC": "Tanto su masa como su peso se reducen a un tercio",
+        "explanation": "La masa es una propiedad intrínseca (70 kg). El peso es la fuerza gravitatoria P = m·g ≈ 70 × 3,71 ≈ 259,7 N."
+      },
+      "roverDynamic": {
+        "question": "2. Según la pendiente activa ({{slope}}°) cerca de {{site}}, ¿qué ocurre con un rover de 100 kg frente a la Tierra?",
+        "optA": "Sube con mayor tracción porque pesa menos",
+        "optB": "La componente paralela baja (de {{earthN}} N a {{marsN}} N), pero la fuerza normal también baja (a {{marsNormalN}} N en Marte)",
+        "optC": "La pendiente de 15° es universalmente segura en cualquier suelo",
+        "explanation": "Menor gravedad reduce la fuerza paralela (de {{earthN}} N a {{marsN}} N), pero también reduce la fuerza normal ({{marsNormalN}} N) y la fricción máxima μ·N. Ningún ángulo es universalmente seguro sin conocer el suelo."
+      },
+      "nonReplicable": {
+        "question": "3. ¿Qué variable de Marte NO podemos replicar en ensayos de campo abiertos en Antofagasta?",
+        "optA": "Pendiente topográfica y rugosidad del terreno",
+        "optB": "Radiación UV superficial y baja humedad relativa",
+        "optC": "Gravedad (0,38 g), atmósfera de CO₂ a ~0,6 kPa y radiación ionizante GCR",
+        "explanation": "Las barreras físicas de ruptura B (gravedad, presión atmosférica y radiación cósmica) no son reproducibles en ensayos terrestres abiertos."
+      },
+      "distributions": {
+        "question": "4. ¿Qué significa que dos distribuciones de pendientes sean similares entre Jezero y Atacama?",
+        "optA": "Que ambos sitios son idénticos para aterrizar sin pruebas",
+        "optB": "Similitud morfológica parcial en una variable independiente X, no equivalencia física total",
+        "optC": "Que la atmósfera y temperatura son iguales",
+        "explanation": "Ckepi desacopla X, Y y B: una similitud en geometría de pendientes no implica equivalencia ambiental o mecánica completa."
+      }
+    }
+  },
+  "plan": {
+    "title": "Planificar — Ficha de Ensayo Local y Economía Circular",
+    "subtitle": "Transforma la evidencia comparativa en una propuesta de ensayo preliminar responsable, priorizando equipos reutilizables y límites explícitos.",
+    "exportBtn": "Exportar ficha (.md)",
+    "circularTitle": "Lista de equipamiento reutilizable / en préstamo (ODS 12)",
+    "circularNote": "Lista de planificación para fomentar reutilización e intercambio entre escuelas/universidades. No representa inventario verificado ni reserva confirmada.",
+    "noEquipmentSelected": "Sin equipamiento seleccionado",
+    "limitsTitle": "Límites físicos irreproducibles y alcance",
+    "limitsNote": "Esta ficha es educativa/preliminar: no certifica terrenos, no reemplaza permisos ambientales ni valida viabilidad de misión espacial real.",
+    "collaborationTitle": "Alianzas y transferencia local (ODS 17)",
+    "collaborationNote": "Diseñado para replicarse en nodos educativos y universitarios de Antofagasta y otras regiones sin requerir datos personales.",
+    "costsPending": "Pendiente de cotización local",
+    "notesPlaceholder": "Anota observaciones del terreno, precauciones de seguridad o preguntas para el ensayo...",
+    "disclaimer": "Aviso: los costos están pendientes de cotizar, el inventario es referencial para planificación circular y no se almacenan datos personales.",
+    "noSiteSelected": "Selecciona un sitio planetario en Comparar.",
+    "noCellSelected": "Aún no hay una celda terrestre seleccionada.",
+    "defaults": {
+      "title": "Ensayo preliminar de tracción y sensores en análogo árido",
+      "objective": "Evaluar inclinación, deslizamiento en suelo granular y registro térmico comparando una celda H3 de Atacama con los datos de pendiente de Marte."
+    },
+    "fields": {
+      "planetarySite": "Sitio planetario objetivo",
+      "earthCell": "Celda terrestre H3 seleccionada",
+      "trialTitle": "Título del ensayo",
+      "costs": "Estimación de costos",
+      "objective": "Objetivo e hipótesis del ensayo",
+      "notes": "Notas de seguridad y terreno"
+    },
+    "equipment": {
+      "imu_inclinometer": "Inclinómetro / sensor IMU reutilizable",
+      "rover_wheels_chassis": "Chasis y ruedas de prototipo STEAM en préstamo",
+      "lifepo4_battery": "Batería LiFePO4 recargable compartida",
+      "portable_weather_station": "Estación meteorológica / piranómetro portátil",
+      "open_microcontroller": "Microcontrolador abierto (Arduino / ESP32 / RPi)"
+    }
+  },
+  "evidence": {
+    "title": "Evidencia, Fuentes Abiertas y Objetivos de Desarrollo Sostenible",
+    "subtitle": "Trazabilidad completa de datos NASA, agencias socias, supuestos del modelo causal y transparencia de IA.",
+    "globalTitle": "Global — Cobertura y ciencia abierta",
+    "globalDesc": "Comparaciones reproducibles entre malla terrestre H3 y destinos Luna/Marte usando APIs científicas abiertas.",
+    "locationTitle": "Ubicación — Sitio con coordenadas verificables",
+    "locationDesc": "Cada punto (Jezero, Yungay/Atacama u otra celda H3) conserva coordenadas, ventana temporal y nivel de confianza explícito.",
+    "methodTitle": "Metodología científica: Descomposición Causal X → Y y Barreras B",
+    "xTitle": "Forzantes independientes (X)",
+    "xDesc": "Pendiente, rugosidad, albedo, flujo solar, inercia térmica, hielo subsuperficial, aridez y humedad.",
+    "yTitle": "Respuestas dependientes (Y)",
+    "yDesc": "Amplitud térmica diurna ΔT, enfriamiento nocturno, viento superficial, polvo eólico.",
+    "bTitle": "Barreras irreproducibles (B)",
+    "bDesc": "Gravedad superficial, presión atmosférica y radiación ionizante GCR. No se colapsan en un % único de semejanza.",
+    "activeProvenance": "Procedencia del sitio planetario activo",
+    "earthProvenance": "Procedencia de la celda terrestre comparada",
+    "sourcesTitle": "Catálogo de fuentes abiertas integradas",
+    "table": {
+      "agency": "Agencia / Fuente",
+      "dataset": "Servicio / Dataset",
+      "role": "Uso en Ckepi",
+      "type": "Naturaleza"
+    },
+    "sources": {
+      "trek": "Capas base WMTS de Marte (Viking/MOLA) y Luna (LRO WAC/LOLA).",
+      "pds": "Telemetría superficial (REMS, MEDA) y cobertura orbital (LOLA, Diviner, CRISM, SHARAD).",
+      "power": "Climatología solar, albedo satelital y gránulos MODIS/SMAP + GIBS.",
+      "copernicus": "Elevación, pendiente, rugosidad (DEM 90m) y series climáticas ERA5-Land.",
+      "partners": "Propiedades de suelo, litología Macrostrat y catálogos Sentinel/RADARSAT/G-Portal."
+    },
+    "sdgTitle": "Integración de ODS (Propuesta educativa y científica)",
+    "sdgHonestyNote": "Nota de rigor: los siguientes ODS reflejan la propuesta de producto y metas de referencia; los indicadores de impacto solo se reportan cuando han sido medidos.",
+    "sdg4Title": "ODS 4 — Educación de calidad (Metas 4.3 y 4.4) [Principal]",
+    "sdg4Desc": "Laboratorio de física planetaria, unidades SI, ecuaciones explícitas y mini-retos STEAM conectados a datos reales.",
+    "sdg9Title": "ODS 9 — Industria, innovación e infraestructura (Meta 9.5) [Principal]",
+    "sdg9Desc": "Comparación geoespacial reproducible, descomposición causal transparente y planificación de ensayos de rovers/sensores.",
+    "sdg12Title": "ODS 12 — Producción y consumo responsables (Meta 12.5) [Complementario]",
+    "sdg12Desc": "Enfoque de economía circular en la planificación de ensayos mediante préstamo y reutilización de equipamiento.",
+    "sdg17Title": "ODS 17 — Alianzas para lograr los objetivos (Metas 17.3, 17.16, 17.17) [Complementario]",
+    "sdg17Desc": "Arquitectura abierta y replicable entre comunidades educativas e investigación regional.",
+    "aiDisclosureTitle": "Declaración de uso de IA (AI_DISCLOSURE.md)",
+    "aiDisclosureDesc": "La concepción científica (descomposición X → Y / B sobre malla H3) es humana. Se utilizó asistencia de IA para acelerar implementación, refactorización y paridad trilingüe es/pt/en, verificada por el equipo. No se generaron logotipos NASA ni mediciones ficticias."
   }
 }
-
