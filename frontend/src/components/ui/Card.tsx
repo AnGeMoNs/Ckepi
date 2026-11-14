@@ -8,7 +8,7 @@ interface CardProps {
 export function Card({ children, className = "" }: CardProps) {
   return (
     <section
-      className={`rounded-xl border border-border-subtle bg-surface-elevated shadow-sm ${className}`}
+      className={`ckepi-glass rounded-xl border border-border-subtle ${className}`}
     >
       {children}
     </section>

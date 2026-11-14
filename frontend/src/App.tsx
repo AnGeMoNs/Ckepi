@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { HomePage } from "./pages/HomePage";
+import { IntroStoryPage } from "./pages/IntroStoryPage";
 import type { ReadingMode, ThemeMode } from "./types/analog";
 
 // The software loads only after the intro, so the home stays light.
@@ -12,12 +13,13 @@ const ExplorerPage = lazy(() =>
   import("./pages/ExplorerPage").then((m) => ({ default: m.ExplorerPage }))
 );
 
-type View = "home" | "app";
+type View = "home" | "story" | "app";
 
-/** Shared links (?site=, ?tab=, ?profile=) and ?view=app open the software directly. */
+/** Home → presentation (?view=intro) → software. Shared links (?site=, ?tab=, ?profile=) open the software directly. */
 function viewFromLocation(): View {
   if (typeof window === "undefined") return "home";
   const params = new URLSearchParams(window.location.search);
+  if (params.get("view") === "intro") return "story";
   return ["view", "site", "tab", "profile"].some((key) => params.has(key)) ? "app" : "home";
 }
 
@@ -49,9 +51,9 @@ export default function App() {
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
 
-  const enterApp = () => {
-    window.history.pushState({}, "", "?view=app");
-    setView("app");
+  const goTo = (next: View) => {
+    window.history.pushState({}, "", next === "story" ? "?view=intro" : "?view=app");
+    setView(next);
     window.scrollTo({ top: 0 });
   };
 
@@ -74,7 +76,10 @@ export default function App() {
   }, [i18n.language]);
 
   if (view === "home") {
-    return <HomePage onEnter={enterApp} />;
+    return <HomePage onEnter={() => goTo("story")} />;
+  }
+  if (view === "story") {
+    return <IntroStoryPage onEnter={() => goTo("app")} />;
   }
 
   return (

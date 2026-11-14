@@ -1118,5 +1118,33 @@
     "dataNote": "Exemplo real: uma área pouco estudada de Antofagasta se parece com as encostas da cratera Jezero mais do que o análogo clássico, Yungay (W₁ = 0,54° vs. 3,32°, a 30 m). Pré-selecionamos lugares para estudar; não os certificamos.",
     "aiBadge": "Vídeo gerado com IA",
     "credits": "Dados: NASA, ESA e agências parceiras. O Ckepi não é afiliado nem endossado pela NASA."
+  },
+  "story": {
+    "progressLabel": "Etapas da apresentação",
+    "goToStep": "Ir para a etapa {{n}} de {{total}}",
+    "stepOf": "Etapa {{n}} de {{total}}",
+    "skip": "Ir para o software",
+    "back": "Voltar",
+    "next": "Próximo",
+    "enter": "Entrar no software",
+    "listen": "Ouvir",
+    "stopListening": "Parar",
+    "problem": {
+      "title": "Para ir à Lua e a Marte, primeiro se testa na Terra",
+      "body": "As missões ensaiam seus equipamentos em lugares da Terra parecidos com a Lua ou Marte. Mas muitos são escolhidos pela aparência, e outros lugares que poderiam servir continuam sem estudo."
+    },
+    "whatItDoes": {
+      "title": "O CKEPI compara dimensão por dimensão",
+      "body": "Com dados abertos da NASA e de agências parceiras, comparamos terreno, clima e radiação da Terra, da Lua e de Marte. Para cada lugar mostramos o que se parece, quanto e o que não."
+    },
+    "finding": {
+      "title": "Uma descoberta em Antofagasta",
+      "body": "Na mesma escala de 30 metros, uma área pouco estudada da região (célula H3 83b224) se parece com as encostas da cratera Jezero de Marte mais do que o análogo clássico, Yungay: uma diferença de 0,54° contra 3,32°.",
+      "source": "Dados: modelo de elevação CTX de Jezero (NASA MRO, USGS) e Copernicus GLO-30 (ESA). Distância Wasserstein-1 das declividades, IC 95 % 0,40°–0,65°."
+    },
+    "limits": {
+      "title": "O que a Terra não consegue imitar",
+      "body": "Em Marte a gravidade é 0,38 vez a da Terra, o ar é cerca de 160 vezes mais rarefeito e a radiação é muito maior. Nenhum deserto reproduz isso. Por isso o CKEPI pré-seleciona lugares para estudo em campo; não os certifica."
+    }
   }
 }

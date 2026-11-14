@@ -98,7 +98,7 @@ export function HomePage({ onEnter }: HomePageProps) {
           <button
             type="button"
             onClick={() => setPhase("ready")}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-ckepi-paper/30 bg-ckepi-space/60 px-4 text-sm font-medium backdrop-blur-sm transition hover:bg-ckepi-space/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ckepi-mars"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-ckepi-paper/30 bg-ckepi-space/60 px-4 text-sm font-medium backdrop-blur-sm transition hover:bg-ckepi-space/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ckepi-copper"
           >
             <SkipForward className="h-4 w-4" aria-hidden="true" />
             {t("home.skip")}
@@ -109,7 +109,7 @@ export function HomePage({ onEnter }: HomePageProps) {
             <button
               type="button"
               onClick={replay}
-              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-ckepi-paper/20 bg-ckepi-space/60 px-4 text-sm text-ckepi-paper/80 backdrop-blur-sm transition hover:text-ckepi-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ckepi-mars"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-ckepi-paper/20 bg-ckepi-space/60 px-4 text-sm text-ckepi-paper/80 backdrop-blur-sm transition hover:text-ckepi-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ckepi-copper"
             >
               <RotateCcw className="h-4 w-4" aria-hidden="true" />
               {t("home.replay")}
@@ -132,7 +132,7 @@ export function HomePage({ onEnter }: HomePageProps) {
             >
               <h1 className="w-full max-w-md">
                 <img
-                  src="/img/ckepi/svg/ckepi-horizontal-color-dark.svg"
+                  src="/img/ckepi/svg/ckepi-horizontal-vector-dark.svg"
                   alt="CKEPI"
                   width={900}
                   height={280}
@@ -145,7 +145,7 @@ export function HomePage({ onEnter }: HomePageProps) {
                 ref={ctaRef}
                 type="button"
                 onClick={handleEnter}
-                className="group mt-8 inline-flex min-h-12 items-center gap-3 rounded-full bg-ckepi-mars px-7 text-base font-bold text-ckepi-space shadow-ckepi-glow transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ckepi-paper/70 sm:text-lg"
+                className="group mt-8 inline-flex min-h-12 items-center gap-3 rounded-full bg-ckepi-copper px-7 text-base font-bold text-ckepi-space shadow-ckepi-glow transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ckepi-paper/70 sm:text-lg"
               >
                 {t("home.cta")}
                 <ArrowRight

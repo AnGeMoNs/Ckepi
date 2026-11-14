@@ -1118,5 +1118,33 @@
     "dataNote": "Real example: an under-studied area of Antofagasta matches Jezero crater's slopes more closely than the classic Yungay analog (W₁ = 0.54° vs. 3.32°, at 30 m). We pre-select places to study; we do not certify them.",
     "aiBadge": "AI-generated video",
     "credits": "Data: NASA, ESA and partner agencies. Ckepi is not affiliated with or endorsed by NASA."
+  },
+  "story": {
+    "progressLabel": "Presentation steps",
+    "goToStep": "Go to step {{n}} of {{total}}",
+    "stepOf": "Step {{n}} of {{total}}",
+    "skip": "Go to the software",
+    "back": "Back",
+    "next": "Next",
+    "enter": "Enter the software",
+    "listen": "Listen",
+    "stopListening": "Stop",
+    "problem": {
+      "title": "To reach the Moon and Mars, we test on Earth first",
+      "body": "Missions rehearse their equipment at places on Earth that resemble the Moon or Mars. But many are chosen by how they look, and other places that could help remain unstudied."
+    },
+    "whatItDoes": {
+      "title": "CKEPI compares dimension by dimension",
+      "body": "Using open data from NASA and partner agencies, we compare terrain, climate and radiation on Earth, the Moon and Mars. For each place we show what matches, by how much, and what does not."
+    },
+    "finding": {
+      "title": "A finding in Antofagasta",
+      "body": "At the same 30-metre scale, an under-studied area of the region (H3 cell 83b224) matches the slopes of Mars's Jezero crater more closely than the classic Yungay analog: a difference of 0.54° versus 3.32°.",
+      "source": "Data: Jezero CTX elevation model (NASA MRO, USGS) and Copernicus GLO-30 (ESA). Wasserstein-1 distance of slopes, 95% CI 0.40°–0.65°."
+    },
+    "limits": {
+      "title": "What Earth cannot imitate",
+      "body": "On Mars, gravity is 0.38 times Earth's, the air is about 160 times thinner and radiation is much higher. No desert reproduces that. That is why CKEPI pre-selects places for field study; it does not certify them."
+    }
   }
 }

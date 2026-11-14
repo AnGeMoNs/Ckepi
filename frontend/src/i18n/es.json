@@ -1118,5 +1118,33 @@
     "dataNote": "Ejemplo real: una zona poco estudiada de Antofagasta se parece a las pendientes del cráter Jezero más que el análogo clásico, Yungay (W₁ = 0,54° frente a 3,32°, a 30 m). Preseleccionamos lugares para estudiar; no los certificamos.",
     "aiBadge": "Video generado con IA",
     "credits": "Datos: NASA, ESA y agencias socias. Ckepi no está afiliado ni respaldado por NASA."
+  },
+  "story": {
+    "progressLabel": "Pasos de la presentación",
+    "goToStep": "Ir al paso {{n}} de {{total}}",
+    "stepOf": "Paso {{n}} de {{total}}",
+    "skip": "Ir al software",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "enter": "Entrar al software",
+    "listen": "Escuchar",
+    "stopListening": "Detener",
+    "problem": {
+      "title": "Para ir a la Luna y a Marte, primero se prueba en la Tierra",
+      "body": "Las misiones ensayan sus equipos en lugares de la Tierra parecidos a la Luna o a Marte. Pero muchos se eligen por parecido a simple vista, y otros lugares que podrían servir siguen sin estudiarse."
+    },
+    "whatItDoes": {
+      "title": "CKEPI compara dimensión por dimensión",
+      "body": "Con datos abiertos de NASA y de agencias socias, comparamos terreno, clima y radiación de la Tierra, la Luna y Marte. Para cada lugar mostramos qué se parece, cuánto y qué no."
+    },
+    "finding": {
+      "title": "Un hallazgo en Antofagasta",
+      "body": "A la misma escala de 30 metros, una zona poco estudiada de la región (celda H3 83b224) se parece a las pendientes del cráter Jezero de Marte más que el análogo clásico, Yungay: una diferencia de 0,54° frente a 3,32°.",
+      "source": "Datos: modelo de elevación CTX de Jezero (NASA MRO, USGS) y Copernicus GLO-30 (ESA). Distancia Wasserstein-1 de pendientes, IC 95 % 0,40°–0,65°."
+    },
+    "limits": {
+      "title": "Lo que la Tierra no puede imitar",
+      "body": "En Marte la gravedad es 0,38 veces la de la Tierra, el aire es unas 160 veces más delgado y la radiación es mucho mayor. Ningún desierto reproduce eso. Por eso CKEPI preselecciona lugares para estudiar en terreno; no los certifica."
+    }
   }
 }

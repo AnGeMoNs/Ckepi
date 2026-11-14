@@ -19,19 +19,22 @@ const config: Config = {
         "status-break": "rgb(var(--color-status-break) / <alpha-value>)",
         "planet-mars": "rgb(var(--color-planet-mars) / <alpha-value>)",
         "planet-moon": "rgb(var(--color-planet-moon) / <alpha-value>)",
-        // Brand kit (frontend/public/img/ckepi/tokens.json)
-        "ckepi-space": "#05070D",
-        "ckepi-ink": "#132A38",
-        "ckepi-earth": "#38BDF8",
-        "ckepi-moon": "#CBD5E1",
-        "ckepi-mars": "#FB923C",
-        "ckepi-paper": "#F5F2EB",
+        // Brand kit V2 «sal · cobre · azufre» (frontend/public/img/ckepi/tokens.json),
+        // named by Atacama mineral. Copper is the primary action colour.
+        "ckepi-space": "#101F24",
+        "ckepi-ink": "#183A3A",
+        "ckepi-salt": "#FFF2D7",
+        "ckepi-copper": "#E8A080",
+        "ckepi-sulfur": "#E4ED83",
+        "ckepi-paper": "#FFF2D7",
+        // Charcoal paper hexagons, matching the last frame of the home video.
+        "ckepi-hex-bg": "#0E1013",
         "ckepi-hex": "#1C1F26",
         "ckepi-hex-edge": "#2A2E37",
       },
       boxShadow: {
         elevated: "0 12px 32px -12px rgb(15 23 42 / 0.28)",
-        "ckepi-glow": "0 0 32px rgb(251 146 60 / 0.45)",
+        "ckepi-glow": "0 0 32px rgb(232 160 128 / 0.40)",
       },
       dropShadow: {
         "ckepi-logo": "0 8px 24px rgb(0 0 0 / 0.6)",

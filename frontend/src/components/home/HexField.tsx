@@ -53,7 +53,7 @@ function renderCell(cell: Cell, state: "idle" | "exit", reduceMotion: boolean) {
     <motion.polygon
       key={cell.key}
       points={hexPoints(cell.x, cell.y, R - 4)}
-      className={cell.glow ? "fill-ckepi-mars" : "fill-ckepi-hex stroke-ckepi-hex-edge"}
+      className={cell.glow ? "fill-ckepi-copper" : "fill-ckepi-hex stroke-ckepi-hex-edge"}
       strokeWidth={cell.glow ? 0 : 2}
       style={{ transformBox: "fill-box", transformOrigin: "center" }}
       initial={false}
@@ -104,7 +104,7 @@ export function HexField({ state, reduceMotion }: HexFieldProps) {
           </feMerge>
         </filter>
       </defs>
-      <rect width={VIEW_W} height={VIEW_H} className="fill-ckepi-space" />
+      <rect width={VIEW_W} height={VIEW_H} className="fill-ckepi-hex-bg" />
       {/* One filter per layer (not per cell) keeps the field cheap on phones. */}
       <g filter="url(#hex-paper-shadow)">
         {cells.filter((cell) => !cell.glow).map((cell) => renderCell(cell, state, reduceMotion))}
