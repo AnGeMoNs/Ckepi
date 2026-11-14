@@ -83,10 +83,16 @@ export function FieldTrialPlanner({
     }));
   };
 
+  const activeBreaks = comparison?.match.breakage_alerts.filter((b) => b.is_broken) ?? [];
+  const recs = comparison?.match.engineering_recommendations;
+
   const buildMarkdownPlan = () => {
     const siteName = activeSite ? t(activeSite.name_key) : "N/A";
     const cellName = selectedCell ? `${t(selectedCell.region_key)} (${selectedCell.earth_cell_h3})` : "N/A";
     const equipLabels = selectedEquipment.map((id) => `- [x] ${t(`plan.equipment.${id}`)}`).join("\n");
+    const breakLines = activeBreaks.map((b) => `- ${t(b.alert_key)}`).join("\n");
+    const validLines = recs?.valid_tests.map((k) => `- ${t(k)}`).join("\n") ?? "";
+    const invalidLines = recs?.invalid_tests.map((k) => `- ${t(k)}`).join("\n") ?? "";
     return [
       `# ${trialTitle}`,
       "",
@@ -107,6 +113,9 @@ export function FieldTrialPlanner({
       "",
       `## ${t("plan.limitsTitle")}`,
       `- ${t("plan.limitsNote")}`,
+      breakLines ? `\n### ${t("plan.breakageAlertsLabel")}\n${breakLines}` : "",
+      validLines ? `\n### ${t("plan.validTestsShort")}\n${validLines}` : "",
+      invalidLines ? `\n### ${t("plan.invalidTestsShort")}\n${invalidLines}` : "",
       `- ${t("plan.costsPending")}`,
       localNotes ? `\n## ${t("plan.fields.notes")}\n${localNotes}` : "",
       "",
@@ -298,9 +307,39 @@ export function FieldTrialPlanner({
               </div>
               <p className="text-content-muted">{t("plan.limitsNote")}</p>
               {comparison && (
-                <p className="font-medium text-content">
-                  R_break: {formatPercent(comparison.match.r_break_overall, lang)}
-                </p>
+                <div className="space-y-2 pt-1">
+                  <p className="font-semibold text-content">
+                    R_break: {formatPercent(comparison.match.r_break_overall, lang)}
+                  </p>
+                  {activeBreaks.length > 0 && (
+                    <div className="space-y-1">
+                      <p className="font-medium text-status-break">
+                        {t("plan.breakageAlertsLabel")}:
+                      </p>
+                      <ul className="list-disc space-y-0.5 pl-4 text-content-muted">
+                        {activeBreaks.map((b) => (
+                          <li key={b.variable}>{t(b.alert_key)}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {recs && recs.valid_tests.length > 0 && (
+                    <p className="text-content-muted">
+                      <span className="font-medium text-status-valid">
+                        {t("plan.validTestsShort")}:
+                      </span>{" "}
+                      {recs.valid_tests.slice(0, 2).map((k) => t(k)).join(" · ")}
+                    </p>
+                  )}
+                  {recs && recs.invalid_tests.length > 0 && (
+                    <p className="text-content-muted">
+                      <span className="font-medium text-status-break">
+                        {t("plan.invalidTestsShort")}:
+                      </span>{" "}
+                      {recs.invalid_tests.slice(0, 2).map((k) => t(k)).join(" · ")}
+                    </p>
+                  )}
+                </div>
               )}
             </div>
 

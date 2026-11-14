@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertCircle,
   BookOpen,
@@ -97,6 +97,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const copiedLink = linkClipboard.status === "copied";
   const analysisController = useRef<AbortController | null>(null);
   const requests = useRef({ earth: 0, planet: 0, refine: 0 });
+  const preloadedComparisonKeyRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -298,11 +299,38 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     window.history.replaceState({}, "", url.toString());
   }, [selectedSiteId, testProfile, excludeBenchmarks, penalizeEstimated]);
 
+  const hasSearchResult = Boolean(searchResult);
+  const customWeightsKey = useMemo(
+    () =>
+      testProfile === "manual_custom"
+        ? JSON.stringify({ iv: customIvWeights, dv: customDvWeights })
+        : "",
+    [testProfile, customIvWeights, customDvWeights]
+  );
+
+  const buildCompareKey = useCallback(
+    (h3Index: string, siteId: string) =>
+      `${siteId}|${h3Index}|${modelType}|${testProfile}|${penalizeEstimated ? "1" : "0"}|${customWeightsKey}`,
+    [modelType, testProfile, penalizeEstimated, customWeightsKey]
+  );
+
   useEffect(() => {
-    if (!selectedH3 || !selectedSiteId || !searchResult) return;
+    if (!selectedH3 || !selectedSiteId || !hasSearchResult) return;
+    const key = buildCompareKey(selectedH3, selectedSiteId);
+    if (preloadedComparisonKeyRef.current === key) {
+      preloadedComparisonKeyRef.current = null;
+      return;
+    }
+
     const controller = new AbortController();
     setComparison(null);
-    compareCellWithSite(selectedH3, selectedSiteId, modelType, controller.signal)
+    compareCellWithSite(selectedH3, selectedSiteId, modelType, {
+      signal: controller.signal,
+      testProfile,
+      penalizeEstimated,
+      customIvWeights: testProfile === "manual_custom" ? customIvWeights : undefined,
+      customDvWeights: testProfile === "manual_custom" ? customDvWeights : undefined,
+    })
       .then((res) => {
         if (!controller.signal.aborted) setComparison(res);
       })
@@ -318,7 +346,17 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     return () => {
       controller.abort();
     };
-  }, [selectedH3, selectedSiteId, modelType, searchResult]);
+  }, [
+    selectedH3,
+    selectedSiteId,
+    modelType,
+    testProfile,
+    penalizeEstimated,
+    customIvWeights,
+    customDvWeights,
+    hasSearchResult,
+    buildCompareKey,
+  ]);
 
   const handleProbeCoordinate = useCallback(
     async (lat: number, lon: number) => {
@@ -326,8 +364,17 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
       setProbingCoords({ lat, lon });
       setErrorState(null);
       try {
-        const res = await probeEarthCoordinate(lat, lon, selectedSiteId, modelType);
+        const res = await probeEarthCoordinate(lat, lon, selectedSiteId, modelType, {
+          testProfile,
+          penalizeEstimated,
+          customIvWeights: testProfile === "manual_custom" ? customIvWeights : undefined,
+          customDvWeights: testProfile === "manual_custom" ? customDvWeights : undefined,
+        });
         if (requestId !== requests.current.earth) return;
+        preloadedComparisonKeyRef.current = buildCompareKey(
+          res.match.earth_cell_h3,
+          selectedSiteId
+        );
         setComparison(res);
         setSelectedH3(res.match.earth_cell_h3);
         setSearchResult((prev) => {
@@ -355,7 +402,15 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         }
       }
     },
-    [selectedSiteId, modelType]
+    [
+      selectedSiteId,
+      modelType,
+      testProfile,
+      penalizeEstimated,
+      customIvWeights,
+      customDvWeights,
+      buildCompareKey,
+    ]
   );
 
   const handleRefineCell = useCallback(
@@ -369,11 +424,19 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           selectedSiteId,
           modelType,
           penalizeEstimated,
-          testProfile
+          testProfile,
+          testProfile === "manual_custom" ? customIvWeights : undefined,
+          testProfile === "manual_custom" ? customDvWeights : undefined
         );
         if (requestId !== requests.current.refine) return;
         if (res.matches.length > 0) {
           const childIdList = res.matches.map((m) => m.earth_cell_h3);
+          if (res.top_comparison) {
+            preloadedComparisonKeyRef.current = buildCompareKey(
+              res.matches[0].earth_cell_h3,
+              selectedSiteId
+            );
+          }
           setSearchResult((prev) => {
             if (!prev) return prev;
             const childIds = new Set(childIdList);
@@ -407,7 +470,15 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         }
       }
     },
-    [selectedSiteId, modelType, penalizeEstimated, testProfile]
+    [
+      selectedSiteId,
+      modelType,
+      penalizeEstimated,
+      testProfile,
+      customIvWeights,
+      customDvWeights,
+      buildCompareKey,
+    ]
   );
 
   const handleRefreshApis = useCallback(async () => {
@@ -450,13 +521,17 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           customMinSimilarity: testProfile === "manual_custom" ? customMinSimilarity : undefined,
         });
         if (requestId !== requests.current.planet) return;
+        const firstH3 = res.analogs.matches[0]?.earth_cell_h3 ?? null;
+        if (res.top_comparison && firstH3) {
+          preloadedComparisonKeyRef.current = buildCompareKey(firstH3, res.site.site_id);
+        }
         setSelectedBody(body);
         setCustomProbedSite(res.site);
         setSelectedSiteId(res.site.site_id);
         setDecomposition(res.decomposition);
         setSearchResult(res.analogs);
         setComparison(res.top_comparison);
-        setSelectedH3(res.analogs.matches[0]?.earth_cell_h3 ?? null);
+        setSelectedH3(firstH3);
         setLastUpdated(new Date());
       } catch (err) {
         if (requestId !== requests.current.planet) return;
@@ -472,7 +547,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
       }
     },
     [modelType, testProfile, minSInd, minSDep, excludeBenchmarks, penalizeEstimated,
-      customIvWeights, customDvWeights, customMinSimilarity]
+      customIvWeights, customDvWeights, customMinSimilarity, buildCompareKey]
   );
 
   const handleSelectBody = useCallback(
@@ -834,9 +909,12 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             <div className="grid grid-cols-1 gap-4 rounded-xl border border-border-subtle bg-surface p-4 md:grid-cols-3">
               <div className="space-y-1">
                 <div className="flex items-center justify-between gap-1">
-                  <span className="text-xs font-medium text-content-muted">
+                  <label
+                    htmlFor="model-type-select"
+                    className="text-xs font-medium text-content-muted"
+                  >
                     {t("controls.modelType")}
-                  </span>
+                  </label>
                   <InfoTooltip
                     label={t("controls.modelType")}
                     text={t("controls.modelTypeHint")}
@@ -844,7 +922,6 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                 </div>
                 <Select
                   id="model-type-select"
-                  label=""
                   value={modelType}
                   onChange={(e) => setModelType(e.target.value as DecompositionModelType)}
                   options={[

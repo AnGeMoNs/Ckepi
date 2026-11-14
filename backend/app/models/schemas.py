@@ -149,20 +149,13 @@ TestProfileType = Literal[
 ]
 
 
-class AnalogSearchRequest(BaseModel):
-    """Search criteria for terrestrial H3 analog cells."""
+class _CustomWeightsMixin(BaseModel):
+    """Shared mission-profile and manual-weight override fields with [0, 1] validation."""
 
-    site_id: str
-    model_type: DecompositionModelType = "ridge"
     test_profile: TestProfileType = "causal_auto"
-    min_s_ind: float = Field(default=0.0, ge=0.0, le=1.0)
-    min_s_dep: float = Field(default=0.0, ge=0.0, le=1.0)
-    exclude_benchmarks: bool = False
     penalize_estimated: bool = False
-    limit: int = Field(default=250, ge=1, le=2500)
     custom_iv_weights: dict[str, float] | None = None
     custom_dv_weights: dict[str, float] | None = None
-    custom_min_similarity: dict[str, float] | None = None
 
     @field_validator("custom_iv_weights")
     @classmethod
@@ -174,38 +167,36 @@ class AnalogSearchRequest(BaseModel):
     def _val_dv_weights(cls, v: dict[str, float] | None) -> dict[str, float] | None:
         return _validate_unit_dict(v, _VALID_DV_SET)
 
+
+class AnalogSearchRequest(_CustomWeightsMixin):
+    """Search criteria for terrestrial H3 analog cells."""
+
+    site_id: str
+    model_type: DecompositionModelType = "ridge"
+    min_s_ind: float = Field(default=0.0, ge=0.0, le=1.0)
+    min_s_dep: float = Field(default=0.0, ge=0.0, le=1.0)
+    exclude_benchmarks: bool = False
+    limit: int = Field(default=250, ge=1, le=2500)
+    custom_min_similarity: dict[str, float] | None = None
+
     @field_validator("custom_min_similarity")
     @classmethod
     def _val_min_sim(cls, v: dict[str, float] | None) -> dict[str, float] | None:
         return _validate_unit_dict(v, _VALID_ALL_VARS)
 
 
-class PlanetaryProbeRequest(BaseModel):
+class PlanetaryProbeRequest(_CustomWeightsMixin):
     """Request to probe any Moon or Mars coordinate and match against all Earth H3 cells."""
 
     body: PlanetaryBody
     lat: float = Field(..., ge=-90.0, le=90.0)
     lon: float = Field(..., ge=-180.0, le=180.0)
     model_type: DecompositionModelType = "ridge"
-    test_profile: TestProfileType = "causal_auto"
     min_s_ind: float = Field(default=0.0, ge=0.0, le=1.0)
     min_s_dep: float = Field(default=0.0, ge=0.0, le=1.0)
     exclude_benchmarks: bool = False
-    penalize_estimated: bool = False
     limit: int = Field(default=500, ge=1, le=2500)
-    custom_iv_weights: dict[str, float] | None = None
-    custom_dv_weights: dict[str, float] | None = None
     custom_min_similarity: dict[str, float] | None = None
-
-    @field_validator("custom_iv_weights")
-    @classmethod
-    def _val_probe_iv_weights(cls, v: dict[str, float] | None) -> dict[str, float] | None:
-        return _validate_unit_dict(v, _VALID_IV_SET)
-
-    @field_validator("custom_dv_weights")
-    @classmethod
-    def _val_probe_dv_weights(cls, v: dict[str, float] | None) -> dict[str, float] | None:
-        return _validate_unit_dict(v, _VALID_DV_SET)
 
     @field_validator("custom_min_similarity")
     @classmethod
@@ -213,7 +204,7 @@ class PlanetaryProbeRequest(BaseModel):
         return _validate_unit_dict(v, _VALID_ALL_VARS)
 
 
-class EarthProbeRequest(BaseModel):
+class EarthProbeRequest(_CustomWeightsMixin):
     """Request to probe any Earth coordinate live via NASA POWER + Open-Meteo."""
 
     lat: float = Field(..., ge=-89.5, le=89.5)
@@ -348,14 +339,12 @@ class MultiAgencyCatalogResponse(BaseModel):
     habitability: HabitabilityProfile | None = None
 
 
-class AnalogRefineRequest(BaseModel):
+class AnalogRefineRequest(_CustomWeightsMixin):
     """Request to subdivide an Earth H3 cell into 7 finer child cells and score them."""
 
     earth_cell_h3: str
     site_id: str
     model_type: DecompositionModelType = "ridge"
-    test_profile: TestProfileType = "causal_auto"
-    penalize_estimated: bool = False
 
 
 class AnalogRefineResponse(BaseModel):

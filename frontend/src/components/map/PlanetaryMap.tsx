@@ -58,6 +58,7 @@ export function PlanetaryMap({
   const controlsRef = useRef<OrbitControls | null>(null);
   const sphereMeshRef = useRef<THREE.Mesh | null>(null);
   const markersGroupRef = useRef<THREE.Group | null>(null);
+  const focusGoalRef = useRef<THREE.Vector3 | null>(null);
 
   const bodyRef = useRef(body);
   const onSelectSiteRef = useRef(onSelectSite);
@@ -125,6 +126,11 @@ export function PlanetaryMap({
     controls.zoomSpeed = 0.85;
     controlsRef.current = controls;
 
+    const handleControlsStart = () => {
+      focusGoalRef.current = null;
+    };
+    controls.addEventListener("start", handleControlsStart);
+
     // Click vs drag raycasting
     const raycaster = new THREE.Raycaster();
     let downX = 0;
@@ -171,6 +177,22 @@ export function PlanetaryMap({
     let animId = 0;
     const animate = () => {
       animId = requestAnimationFrame(animate);
+      const goalDir = focusGoalRef.current;
+      if (goalDir) {
+        const dist = camera.position.length() || 2.6;
+        const currentDir = camera.position.clone().normalize();
+        if (currentDir.distanceTo(goalDir) < 0.015) {
+          camera.position.copy(goalDir).multiplyScalar(dist);
+          focusGoalRef.current = null;
+        } else {
+          if (currentDir.dot(goalDir) < -0.98) {
+            currentDir.x += 0.05;
+            currentDir.normalize();
+          }
+          currentDir.lerp(goalDir, 0.08).normalize().multiplyScalar(dist);
+          camera.position.copy(currentDir);
+        }
+      }
       controls.update();
       renderer.render(scene, camera);
     };
@@ -190,6 +212,7 @@ export function PlanetaryMap({
       observer.disconnect();
       renderer.domElement.removeEventListener("pointerdown", handlePointerDown);
       renderer.domElement.removeEventListener("pointerup", handlePointerUp);
+      controls.removeEventListener("start", handleControlsStart);
       controls.dispose();
       geometry.dispose();
       material.dispose();
@@ -290,6 +313,10 @@ export function PlanetaryMap({
       );
       group.add(customPin);
     }
+
+    focusGoalRef.current = activeTarget
+      ? latLonToVector3(activeTarget.lat, activeTarget.lon, 1.0).normalize()
+      : null;
   }, [sites, body, activeTarget]);
 
   const handleZoom = (factor: number) => {
@@ -307,6 +334,7 @@ export function PlanetaryMap({
     const cam = cameraRef.current;
     const ctrl = controlsRef.current;
     if (!cam || !ctrl) return;
+    focusGoalRef.current = null;
     const dist = cam.position.length() || 2.6;
     if (activeTarget) {
       const dir = latLonToVector3(activeTarget.lat, activeTarget.lon, dist);

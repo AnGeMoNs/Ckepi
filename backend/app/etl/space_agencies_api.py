@@ -1,7 +1,8 @@
 """Multi-agency open dataset discovery for NASA Earthdata CMR, ESA Copernicus, CSA RADARSAT & JAXA."""
 
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
-from typing import TypedDict
+from typing import Callable, TypedDict
 import httpx
 
 from app.etl.http_utils import create_http_client
@@ -151,17 +152,30 @@ def query_csa_and_jaxa_references(
     return items
 
 
+def _run_agency_query(
+    fn: Callable[[float, float, httpx.Client], list[dict[str, str]]],
+    lat: float,
+    lon: float,
+) -> list[dict[str, str]]:
+    """Execute one agency query in its own thread-local HTTP client."""
+    with create_http_client(timeout=10.0) as client:
+        return fn(lat, lon, client)
+
+
 def discover_space_agency_datasets(lat: float, lon: float) -> SpaceAgencyCatalogResult:
-    """Aggregate real NASA CMR, ESA Copernicus, CSA RADARSAT & JAXA datasets for (lat, lon)."""
-    with create_http_client(timeout=15.0) as client:
-        nasa_items = query_nasa_cmr_granules(lat, lon, client)
-        esa_items = query_esa_copernicus_products(lat, lon, client)
-        csa_jaxa_items = query_csa_and_jaxa_references(lat, lon, client)
+    """Aggregate real NASA CMR, ESA Copernicus, CSA RADARSAT & JAXA datasets concurrently."""
+    queries = (
+        query_nasa_cmr_granules,
+        query_esa_copernicus_products,
+        query_csa_and_jaxa_references,
+    )
+    with ThreadPoolExecutor(max_workers=len(queries)) as pool:
+        results = list(pool.map(lambda fn: _run_agency_query(fn, lat, lon), queries))
 
     return {
         "lat": round(lat, 4),
         "lon": round(lon, 4),
         "queried_at": datetime.now(timezone.utc).isoformat(),
-        "products": [*nasa_items, *esa_items, *csa_jaxa_items],
+        "products": [item for batch in results for item in batch],
     }
 
