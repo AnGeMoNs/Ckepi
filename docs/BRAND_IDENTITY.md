@@ -30,7 +30,7 @@ All UI components strictly use semantic Tailwind tokens defined in [`frontend/ta
 
 ## 3. Typography & Legal Font Licensing
 
-All typography used across the web application, architecture diagrams, and the 7-slide prototype deck is 100% open-source under the **SIL Open Font License 1.1 (OFL-1.1)**:
+**Status (14-nov-2026): proposal, not yet implemented.** The web app currently uses the system UI font stack and loads no web fonts. If adopted, these fonts are open-source under the **SIL Open Font License 1.1 (OFL-1.1)**, must be self-hosted (no third-party font CDN) and cited in `REFERENCES.md`:
 
 1. **Display & Section Headings:** `Space Grotesk` (Designed by Florian Karsten — `SIL OFL 1.1`). Used for planetary titles, slide headers, and HUD badges.
 2. **UI Body & Accessible Reading (*"Three Worlds in Your Hand"*):** `Inter` / System Sans-Serif Stack (Designed by Rasmus Andersson — `SIL OFL 1.1`). High x-height and open apertures for mobile-first legibility (`320px` $\to$ `4K`).
@@ -44,7 +44,7 @@ All typography used across the web application, architecture diagrams, and the 7
 2. **Architecture & Pizarra Vector Diagrams:**
    - [`docs/MAPA_SOFTWARE_PIZARRA.svg`](MAPA_SOFTWARE_PIZARRA.svg) (derived from [`docs/MAPA_SOFTWARE_PIZARRA.excalidraw`](MAPA_SOFTWARE_PIZARRA.excalidraw))
    - [`docs/MAPA_SOFTWARE.svg`](MAPA_SOFTWARE.svg) (derived from [`docs/MAPA_SOFTWARE.excalidraw`](MAPA_SOFTWARE.excalidraw))
-   - Authored by **Lattices Team (2026)** and released under **Creative Commons Attribution 4.0 International (`CC BY 4.0`)** and **MIT License**.
+   - Authored by **Lattices Team (2026)** and released under **Creative Commons Attribution 4.0 International (`CC BY 4.0`)**.
 
 ---
 
@@ -53,16 +53,16 @@ All typography used across the web application, architecture diagrams, and the 7
 In accordance with **NASA Science Policy Directive `SPD-41a` (Scientific Information Policy)** and **NASA Space Apps Challenge Rules (`Gate G8`, `Gate G9`, `Gate G12`)**, every external resource is legally cited as follows:
 
 ### A. NASA Datasets & Planetary Resources (U.S. Federal Public Domain — `17 U.S.C. § 105`)
-> *"Planetary and Earth observation datasets courtesy of NASA, JPL-Caltech, GSFC, ASU, LaRC, and USGS Astrogeology Science Center. Specifically: NASA/JPL NASADEM_HGT v001 (DOI: 10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001); NASA LRO LOLA GDR & Diviner Lunar Radiometer GDR (PDS Geosciences Node); NASA MGS MOLA MEGDR (PDS Geosciences Node); NASA MRO / USGS Mars 2020 CTX DEM (Jezero Crater); NASA Mars 2020 Perseverance MEDA & MSL Curiosity REMS/RAD (PDS Atmospheres Node); NASA LaRC POWER API v2.5 (CERES/MERRA-2); NASA Solar System Treks (Moon Trek & Mars Trek WMTS); and NASA NSSDCA Planetary Fact Sheet (Williams, 2024)."*
+> *"Planetary and Earth observation datasets courtesy of NASA, JPL-Caltech, GSFC, ASU, LaRC, and USGS Astrogeology Science Center. Specifically: NASA MRO CTX / USGS Mars 2020 Terrain Relative Navigation CTX DEM Mosaic (Jezero Crater, 20 m; core input of the terrain comparison); NASA LRO LOLA GDR & Diviner Lunar Radiometer GDR (PDS Geosciences Node); NASA MGS MOLA MEGDR (PDS Geosciences Node); NASA Mars 2020 Perseverance MEDA & MSL Curiosity REMS/RAD (PDS Atmospheres Node); NASA LaRC POWER API v2.5 (CERES/MERRA-2); NASA Solar System Treks (Moon Trek & Mars Trek WMTS); and NASA NSSDCA Planetary Fact Sheet (Williams, 2024)."*
 
-### B. Partner Space Agency & Open Scientific Catalogs (`CC BY 4.0`)
-> *"Contains modified Copernicus DEM GLO-30 data (2023), European Space Agency (ESA), licensed under the Copernicus Open License / CC BY 4.0. Historical surface climate variables provided by Open-Meteo ERA5-Land Archive (ECMWF Copernicus Climate Change Service, CC BY 4.0). Geological lithology and stratigraphy provided by Macrostrat API v2 (University of Wisconsin–Madison, CC BY 4.0)."*
+### B. Partner Space Agency & Open Scientific Catalogs (each under its own licence)
+> *"Earth terrain: Copernicus DEM GLO-30 (ESA), AWS Open Data instance, reprojected to UTM 19S at 30 m — © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved (Copernicus DEM licence; verify exact text before submission). Historical surface climate variables provided by Open-Meteo ERA5-Land Archive (ECMWF Copernicus Climate Change Service, CC BY 4.0). Geological lithology and stratigraphy provided by Macrostrat API v2 (University of Wisconsin–Madison, CC BY 4.0)."*
 
 ### C. Basemaps & Planetary Imagery
 > *"Terrestrial map tiles © OpenStreetMap contributors (ODbL) and © CARTO (CC BY 4.0). Lunar and Martian global mosaic tiles courtesy of NASA/JPL-Caltech/GSFC/ASU via NASA Solar System Treks WMTS (Public Domain)."*
 
-### D. Open-Source Software & Source Code (`MIT License`)
-> *"Ckepi source code Copyright © 2026 Lattices Team, released under the MIT License. Built with FastAPI (MIT), Pydantic v2 (MIT), DuckDB (MIT), Uber H3 (Apache-2.0), NumPy/SciPy/scikit-learn (BSD-3-Clause), React 18 (MIT), Vite (MIT), Tailwind CSS (MIT), and MapLibre GL JS (BSD-3-Clause)."*
+### D. Open-Source Software & Source Code (`Apache License 2.0`)
+> *"Ckepi source code Copyright © 2026 Lattices Team, released under the Apache License 2.0 (see LICENSE). Built with FastAPI (MIT), Pydantic v2 (MIT), DuckDB (MIT), Uber H3 (Apache-2.0), NumPy/SciPy/scikit-learn (BSD-3-Clause), React 18 (MIT), Vite (MIT), Tailwind CSS (MIT), and MapLibre GL JS (BSD-3-Clause)."*
 
 ---
 

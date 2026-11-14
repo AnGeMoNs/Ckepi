@@ -98,7 +98,7 @@ We compare a $6 \times 6\text{ km}$ window ($200 \times 200\text{ px}$ at **30 m
 
 ## Slide 7 of 7 · Legal Open Science Credits, Brand Identity & AI Disclosure
 
-### **100% Open Science Compliance (`NASA SPD-41a` / `FAIR` / `OSI MIT License`)**
+### **100% Open Science Compliance (`NASA SPD-41a` / `FAIR` / `OSI Apache-2.0`)**
 - **NASA Open Data (U.S. Federal Public Domain, `17 U.S.C. § 105`):**
   - `NASA MRO CTX / USGS Mars 2020 TRN CTX DEM Mosaic, Jezero (20 m)` — core terrain input (NASADEM not used in this build)
   - `NASA LRO LOLA GDR` & `Diviner Lunar Radiometer GDR` (PDS Geosciences Node, DOIs: `10.1007/s11214-010-9634-2`, `10.1007/s11214-010-9635-1`)
@@ -107,8 +107,8 @@ We compare a $6 \times 6\text{ km}$ window ($200 \times 200\text{ px}$ at **30 m
   - `NASA LaRC POWER API v2.5`, `NASA Solar System Treks WMTS` (*Moon Trek* / *Mars Trek*), & `NASA NSSDCA Planetary Fact Sheet` (Williams, 2024).
 - **Partner & Scientific Catalogs (`CC BY 4.0`):** `ESA Copernicus DEM GLO-30` (2023), `Open-Meteo ERA5-Land Archive`, `Macrostrat API v2` (UW–Madison), Navarro-González et al. (2003, *Science*, DOI: `10.1126/science.1089143`).
 - **Code, Typography, Icons & Basemaps:**
-  - **Source Code:** Licensed under the **MIT License** ([`LICENSE`](../LICENSE)). Built with `FastAPI`, `DuckDB`, `Uber H3`, `SciPy`, `scikit-learn`, `React 18`, `Tailwind CSS`, `MapLibre GL JS`.
-  - **Typography & Icons:** `Space Grotesk`, `Inter`, and `JetBrains Mono` (`SIL Open Font License 1.1`); `Lucide Icons` (`ISC/MIT License`). Basemaps: `© OpenStreetMap contributors` (`ODbL`) & `© CARTO` (`CC BY 4.0`).
+  - **Source Code:** Licensed under the **Apache License 2.0** ([`LICENSE`](../LICENSE)). Built with `FastAPI`, `DuckDB`, `Uber H3`, `SciPy`, `scikit-learn`, `React 18`, `Tailwind CSS`, `MapLibre GL JS`.
+  - **Typography & Icons:** System UI font stack (no web fonts are loaded or redistributed); `Lucide Icons` (`ISC/MIT License`). Basemaps: `© OpenStreetMap contributors` (`ODbL`) & `© CARTO` (`CC BY 4.0`).
 - **AI Disclosure & Brand Policy ([`AI_DISCLOSURE.md`](../AI_DISCLOSURE.md) & [`docs/BRAND_IDENTITY.md`](BRAND_IDENTITY.md)):**
   - Scientific conception, causal modeling, and statistical architecture are **100% human-authored by Lattices Team**. AI assistants (`Claude` / `Antigravity`) were used strictly for code scaffolding, i18n translation verification, and documentation formatting.
   - **Zero generative AI images/videos** and **zero NASA logos/insignia** are used in this project.

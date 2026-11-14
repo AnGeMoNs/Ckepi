@@ -30,7 +30,7 @@ All UI components strictly use semantic Tailwind tokens defined in [`frontend/ta
 
 ## 3. Typography & Legal Font Licensing
 
-All typography used across the web application, architecture diagrams, and the 7-slide prototype deck is 100% open-source under the **SIL Open Font License 1.1 (OFL-1.1)**:
+**Status (14-nov-2026): proposal, not yet implemented.** The web app currently uses the system UI font stack and loads no web fonts. If adopted, these fonts are open-source under the **SIL Open Font License 1.1 (OFL-1.1)**, must be self-hosted (no third-party font CDN) and cited in `REFERENCES.md`:
 
 1. **Display & Section Headings:** `Space Grotesk` (Designed by Florian Karsten — `SIL OFL 1.1`). Used for planetary titles, slide headers, and HUD badges.
 2. **UI Body & Accessible Reading (*"Three Worlds in Your Hand"*):** `Inter` / System Sans-Serif Stack (Designed by Rasmus Andersson — `SIL OFL 1.1`). High x-height and open apertures for mobile-first legibility (`320px` $\to$ `4K`).
