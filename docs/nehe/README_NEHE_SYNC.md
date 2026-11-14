@@ -2,7 +2,10 @@
 
 > **Para:** Nehe & Dani (*Lattices Team*, NASA Space Apps Challenge 2026 — Sede Antofagasta)  
 > **Rama Activa:** `dani` (`origin/dani`) · **Sincronizado hasta:** `375bf7e` + `b4295e9` (`18:48 CLT`)  
-> **⭐ EMPIEZA AQUÍ (DOCUMENTO TODO-EN-UNO):** **[`DOSSIER_MAESTRO_COMPLETO_NEHE.md`](DOSSIER_MAESTRO_COMPLETO_NEHE.md)** (Reúne en un solo archivo: Problema Real + Propuesta de Valor e Innovación + Tabla Científica a 30 m con DEM Reales + Tabla Tres Mundos y Brecha $\mathbf{B}$ + 4 Ejes y Metas ODS de Caja La Araucana + Resumen de las 7 Slides).  
+> **⭐ EMPIEZA AQUÍ (DOCUMENTOS TODO-EN-UNO):**
+> 1. **[`SOLUCION_CONCRETA_FEEDBACK_MENTORES.md`](SOLUCION_CONCRETA_FEEDBACK_MENTORES.md)** — Cómo enfocamos el proyecto en las **4 zonas medidas de Antofagasta ↔ Luna y Marte** cumpliendo Global, Local, Ciencia 30 m y Caja La Araucana sin saturar de información.
+> 2. **[`FUNCIONAMIENTO_PASO_A_PASO_APP.md`](FUNCIONAMIENTO_PASO_A_PASO_APP.md)** — Guía clic por clic de las **4 pantallas y 4 pestañas de la aplicación** + guion de 45 segundos para la demo en vivo.
+> 3. **[`DOSSIER_MAESTRO_COMPLETO_NEHE.md`](DOSSIER_MAESTRO_COMPLETO_NEHE.md)** — Dossier completo (Problema Real + Propuesta de Valor e Innovación + Tabla Científica a 30 m con DEM Reales + Tabla Tres Mundos y Brecha $\mathbf{B}$ + 4 Ejes y Metas ODS de Caja La Araucana + Resumen de las 7 Slides).  
 > **📊 PRESENTACIONES PPTX Y PDF LISTAS PARA USAR (7 SLIDES CON CAPTURAS REALES):**
 > - **🌍 Global (100 % Inglés):** **[`ckepi-pitch-en.pptx`](ckepi-pitch-en.pptx)** · **[`ckepi-pitch-en.pdf`](ckepi-pitch-en.pdf)** · **[`ckepi-pitch-en.html`](ckepi-pitch-en.html)**
 > - **🇨🇱 Local Antofagasta / Caja La Araucana (Español):** **[`ckepi-pitch-es.pptx`](ckepi-pitch-es.pptx)** · **[`ckepi-pitch-es.pdf`](ckepi-pitch-es.pdf)** · **[`ckepi-pitch-es.html`](ckepi-pitch-es.html)**
