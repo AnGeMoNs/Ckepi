@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ckepi-backend
+    ports:
+      - "127.0.0.1:8090:8000"
+    volumes:
+      - ./backend/app/data:/app/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ckepi-frontend
+    depends_on:
+      - backend
+    ports:
+      - "127.0.0.1:8089:80"
+    restart: unless-stopped
