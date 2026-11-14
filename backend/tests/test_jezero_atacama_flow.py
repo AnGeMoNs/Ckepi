@@ -40,15 +40,12 @@ def test_offline_jezero_atacama_comparison_flow() -> None:
         matches = search_res.json()["matches"]
         assert len(matches) > 0
 
-        # Cached Atacama / Yungay region cell (-24.1385, -69.58155)
-        atacama_cell = next(
-            (m for m in matches if m["earth_cell_h3"] == "82b227fffffffff"),
-            None,
-        )
-        assert atacama_cell is not None
+        # Atacama / Yungay cell at H3 res 3 (the global grid moved from res 2 to res 3).
+        # With ~10,700 cells it need not be in the top results, so compare it directly.
+        atacama_h3 = "83b220fffffffff"
 
         comp_res = client.get(
-            f"/api/v1/analogs/{atacama_cell['earth_cell_h3']}/compare/mars_jezero_crater"
+            f"/api/v1/analogs/{atacama_h3}/compare/mars_jezero_crater"
         )
         assert comp_res.status_code == 200
         comp = comp_res.json()
