@@ -6,6 +6,10 @@ services:
     container_name: ckepi-backend
     ports:
       - "127.0.0.1:8090:8000"
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-openrouter/free}
+      - OPENROUTER_TIMEOUT_SECONDS=${OPENROUTER_TIMEOUT_SECONDS:-35}
     volumes:
       - ./backend/app/data:/app/app/data
     restart: unless-stopped

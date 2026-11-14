@@ -256,3 +256,58 @@ export interface ApiErrorDetail {
   params?: Record<string, string>;
 }
 
+export interface MissionAiInsightItem {
+  title: string;
+  detail: string;
+  related_variables: string[];
+}
+
+export interface BreakageMitigationItem {
+  variable: string;
+  earth_gap_impact: string;
+  recommended_facility_or_protocol: string;
+}
+
+export interface MissionAiAnalysisRequest {
+  site_id: string;
+  earth_cell_h3: string;
+  model_type: DecompositionModelType;
+  distance_metric: DistanceMetricType;
+  test_profile: TestProfileType;
+  reading_mode: ReadingMode;
+  locale: SupportedLocale;
+  penalize_estimated: boolean;
+  custom_iv_weights?: Record<string, number>;
+  custom_dv_weights?: Record<string, number>;
+  custom_min_similarity?: Record<string, number>;
+  catalog_context?: MultiAgencyCatalogResponse;
+  force_refresh?: boolean;
+  cache_only?: boolean;
+}
+
+export interface MissionAiAnalysisResponse {
+  site_id: string;
+  earth_cell_h3: string;
+  locale: SupportedLocale;
+  reading_mode: ReadingMode;
+  test_profile: TestProfileType;
+  executive_synthesis: string;
+  viability_assessment: string;
+  confidence_and_scale_note: string;
+  key_strengths: MissionAiInsightItem[];
+  physical_limitations_and_gaps: MissionAiInsightItem[];
+  breakage_mitigation_plan: BreakageMitigationItem[];
+  field_campaign_considerations: string[];
+  recommended_next_steps: string[];
+  model_used: string;
+  provider: "openrouter";
+  cached: boolean;
+  generated_at: string;
+}
+
+export interface MissionAiStatusResponse {
+  enabled: boolean;
+  provider: string;
+  default_model: string;
+}
+

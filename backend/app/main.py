@@ -26,6 +26,13 @@ from app.config import (
     INDEPENDENT_VARIABLES,
     settings,
 )
+from app.engine.ai_advisor import (
+    AiAdvisorError,
+    compute_analysis_cache_key,
+    get_cached_ai_analysis,
+    request_openrouter_analysis,
+    upsert_cached_ai_analysis,
+)
 from app.engine.analog_matcher import load_earth_grid, match_terrestrial_analogs
 from app.engine.causal_decomposer import compute_breakage_index, decompose_planetary_site
 from app.engine.mission_advisor import resolve_profile_weights
@@ -54,6 +61,9 @@ from app.models.schemas import (
     DecompositionRequest,
     DecompositionResponse,
     EarthProbeRequest,
+    MissionAiAnalysisRequest,
+    MissionAiAnalysisResponse,
+    MissionAiStatusResponse,
     MultiAgencyCatalogResponse,
     PlanetaryProbeRequest,
     PlanetaryProbeResponse,
@@ -70,7 +80,10 @@ class AppState:
     duckdb_path: Path | None = None
     decomposition_cache: OrderedDict[tuple[str, str], DecompositionResponse] = OrderedDict()
     tile_cache: OrderedDict[tuple[str, int, int, int], tuple[bytes, str]] = OrderedDict()
+    ai_cache: OrderedDict[str, MissionAiAnalysisResponse] = OrderedDict()
+    ai_inflight: dict[str, asyncio.Future[MissionAiAnalysisResponse]] = {}
     probe_timestamps: dict[str, list[float]] = {}
+    ai_timestamps: dict[str, list[float]] = {}
     write_lock: threading.Lock = threading.Lock()
     async_http: httpx.AsyncClient | None = None
 
@@ -78,30 +91,51 @@ class AppState:
 state = AppState()
 MAX_TILE_CACHE_ENTRIES = 512
 MAX_DECOMP_CACHE_ENTRIES = 128
+MAX_AI_CACHE_ENTRIES = 256
 
 
-def _enforce_probe_rate_limit(request: Request) -> None:
-    """Simple sliding-window rate limiter per client IP for live external API probes."""
+def _enforce_sliding_window_rate_limit(
+    request: Request,
+    buckets: dict[str, list[float]],
+    max_per_min: int,
+    error_key: str,
+) -> None:
+    """Shared sliding-window rate limiter per client IP."""
     client_ip = request.client.host if request.client else "unknown"
     now = time.monotonic()
     window_start = now - 60.0
-    # Prune stale IP buckets periodically to prevent unbounded memory growth
-    if len(state.probe_timestamps) > 256:
-        stale_ips = [
-            ip
-            for ip, times in state.probe_timestamps.items()
-            if not times or times[-1] < window_start
-        ]
+    if len(buckets) > 256:
+        stale_ips = [ip for ip, times in buckets.items() if not times or times[-1] < window_start]
         for ip in stale_ips:
-            state.probe_timestamps.pop(ip, None)
-    history = [ts for ts in state.probe_timestamps.get(client_ip, []) if ts >= window_start]
-    if len(history) >= settings.probe_rate_limit_per_min:
+            buckets.pop(ip, None)
+    history = [ts for ts in buckets.get(client_ip, []) if ts >= window_start]
+    if len(history) >= max_per_min:
         raise HTTPException(
             status_code=429,
-            detail={"error_key": "errors.rate_limited", "params": {}},
+            detail={"error_key": error_key, "params": {}},
         )
     history.append(now)
-    state.probe_timestamps[client_ip] = history
+    buckets[client_ip] = history
+
+
+def _enforce_probe_rate_limit(request: Request) -> None:
+    """Rate limiter for live external API probes."""
+    _enforce_sliding_window_rate_limit(
+        request,
+        state.probe_timestamps,
+        settings.probe_rate_limit_per_min,
+        "errors.rate_limited",
+    )
+
+
+def _enforce_ai_rate_limit(request: Request) -> None:
+    """Dedicated rate limiter for uncached OpenRouter LLM synthesis requests."""
+    _enforce_sliding_window_rate_limit(
+        request,
+        state.ai_timestamps,
+        settings.ai_rate_limit_per_min,
+        "errors.ai_rate_limited",
+    )
 
 
 def _verify_admin_token(x_admin_token: str | None = Header(default=None)) -> None:
@@ -428,6 +462,7 @@ def refresh_datasets() -> dict[str, str]:
             state.duckdb_path = ensure_datasets_built(force=True)
             state.sites_by_id = {s.site_id: s for s in load_cached_planetary_sites()}
             state.decomposition_cache.clear()
+            state.ai_cache.clear()
         return {"status": "refreshed"}
     except Exception as exc:
         logger.exception("Dataset refresh failed")
@@ -748,3 +783,142 @@ def refine_analog_cell(payload: AnalogRefineRequest) -> AnalogRefineResponse:
         matches=search_res.matches,
         top_comparison=top_comp,
     )
+
+
+def _store_ai_lru(cache_key: str, item: MissionAiAnalysisResponse) -> None:
+    """Insert an AI mission analysis response into the bounded L1 LRU cache."""
+    state.ai_cache[cache_key] = item
+    state.ai_cache.move_to_end(cache_key)
+    while len(state.ai_cache) > MAX_AI_CACHE_ENTRIES:
+        state.ai_cache.popitem(last=False)
+
+
+@app.get("/api/v1/ai/status", response_model=MissionAiStatusResponse)
+def get_ai_status() -> MissionAiStatusResponse:
+    """Report whether OpenRouter LLM diagnostics are configured server-side."""
+    return MissionAiStatusResponse(
+        enabled=bool((settings.openrouter_api_key or "").strip()),
+        provider="openrouter",
+        default_model=settings.openrouter_model,
+    )
+
+
+@app.post(
+    "/api/v1/mission/ai-analysis",
+    response_model=MissionAiAnalysisResponse,
+    responses={204: {"description": "No cached AI analysis available for cache_only request"}},
+)
+async def generate_mission_ai_analysis(
+    payload: MissionAiAnalysisRequest,
+    request: Request,
+) -> MissionAiAnalysisResponse | Response:
+    """Synthesize grounded viability diagnostics & field considerations via OpenRouter."""
+    site = _get_site_or_404(payload.site_id)
+    db_path = _get_duckdb_path()
+
+    conn = duckdb.connect(str(db_path), read_only=True)
+    try:
+        df_cell = conn.execute(
+            "SELECT * FROM earth_h3_grid WHERE earth_cell_h3 = ?",
+            [payload.earth_cell_h3],
+        ).df()
+    finally:
+        conn.close()
+
+    if df_cell.empty:
+        raise HTTPException(
+            status_code=404,
+            detail={"error_key": "errors.cell_not_found", "params": {"h3_index": payload.earth_cell_h3}},
+        )
+
+    decomposition = _get_decomposition_cached(site, db_path, payload.model_type)
+    search_res = match_terrestrial_analogs(
+        site=site,
+        causal_weights=decomposition.global_iv_weights,
+        df_earth=df_cell,
+        limit=1,
+        custom_weights=resolve_profile_weights(payload.test_profile, payload.custom_iv_weights),
+        custom_dv_weights=payload.custom_dv_weights,
+        penalize_estimated=payload.penalize_estimated,
+        distance_metric=payload.distance_metric,
+    )
+    if not search_res.matches:
+        raise HTTPException(
+            status_code=404,
+            detail={"error_key": "errors.cell_not_found", "params": {"h3_index": payload.earth_cell_h3}},
+        )
+
+    comparison = _build_comparison_response(
+        site,
+        search_res.matches[0],
+        search_res.causal_weights_used,
+        payload.custom_dv_weights,
+    )
+    cache_key = compute_analysis_cache_key(payload, comparison)
+
+    if not payload.force_refresh:
+        l1_hit = state.ai_cache.get(cache_key)
+        if l1_hit is not None:
+            state.ai_cache.move_to_end(cache_key)
+            return l1_hit.model_copy(update={"cached": True})
+
+        l2_hit = get_cached_ai_analysis(str(db_path), cache_key, settings.ai_cache_ttl_hours)
+        if l2_hit is not None:
+            _store_ai_lru(cache_key, l2_hit)
+            return l2_hit
+
+    if payload.cache_only:
+        return Response(status_code=204)
+
+    if not (settings.openrouter_api_key or "").strip():
+        raise HTTPException(
+            status_code=503,
+            detail={"error_key": "errors.ai_not_configured", "params": {}},
+        )
+
+    existing_future = state.ai_inflight.get(cache_key)
+    if existing_future is not None:
+        result = await asyncio.shield(existing_future)
+        return result.model_copy(update={"cached": True})
+
+    _enforce_ai_rate_limit(request)
+
+    loop = asyncio.get_running_loop()
+    inflight_future: asyncio.Future[MissionAiAnalysisResponse] = loop.create_future()
+    inflight_future.add_done_callback(
+        lambda f: f.exception() if f.done() and not f.cancelled() else None
+    )
+    state.ai_inflight[cache_key] = inflight_future
+
+    try:
+        ai_result = await request_openrouter_analysis(
+            payload=payload,
+            comparison=comparison,
+            decomposition=decomposition,
+            http_client=state.async_http,
+        )
+        with state.write_lock:
+            upsert_cached_ai_analysis(str(db_path), cache_key, ai_result)
+        _store_ai_lru(cache_key, ai_result)
+        if not inflight_future.done():
+            inflight_future.set_result(ai_result)
+        return ai_result
+    except AiAdvisorError as exc:
+        http_exc = HTTPException(
+            status_code=exc.status_code,
+            detail={"error_key": exc.error_key, "params": {}},
+        )
+        if not inflight_future.done():
+            inflight_future.set_exception(http_exc)
+        raise http_exc from exc
+    except Exception as exc:
+        logger.exception("Unexpected error generating AI mission analysis")
+        http_exc = HTTPException(
+            status_code=502,
+            detail={"error_key": "errors.ai_provider_unavailable", "params": {}},
+        )
+        if not inflight_future.done():
+            inflight_future.set_exception(http_exc)
+        raise http_exc from exc
+    finally:
+        state.ai_inflight.pop(cache_key, None)

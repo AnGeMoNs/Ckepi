@@ -101,6 +101,8 @@ Definido en [config.py](../backend/app/config.py) y documentado en [DATA_PROVENA
 | `POST /api/v1/earth/probe` | Sondeo libre terrestre e inserción en DuckDB | Rate Limit (`30/min`) |
 | `GET /api/v1/analogs/{h3_index}/compare/{site_id}` | Comparación variable por variable | Validación H3 + 404 ROI |
 | `GET /api/v1/earth/{h3_index}/datasets` | Catálogo NASA/ESA/CSA/JAXA + Macrostrat + tubos de lava + habitabilidad | Validación H3 |
+| `GET /api/v1/ai/status` | Disponibilidad de síntesis IA vía OpenRouter (sin exponer secretos) | Lectura pública |
+| `POST /api/v1/mission/ai-analysis` | Síntesis estructurada de viabilidad y mitigación de rupturas vía OpenRouter + caché DuckDB | Pydantic v2 + Rate Limit (`12/min`) |
 | `POST /api/v1/datasets/refresh` | Re-materialización de datasets | Dependencia `_verify_admin_token` |
 
 ---

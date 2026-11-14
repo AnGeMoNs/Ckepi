@@ -2,7 +2,11 @@ import { Download, GitCompareArrows } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { formatNumber, formatPercent } from "../../i18n";
-import type { AnalogMatchItem, PlanetarySite } from "../../types/analog";
+import type {
+  AnalogMatchItem,
+  MissionAiAnalysisResponse,
+  PlanetarySite,
+} from "../../types/analog";
 import {
   exportMatchesToCsv,
   exportMatchesToGeoJson,
@@ -17,6 +21,7 @@ interface AnalogComparisonMatrixProps {
   matches: AnalogMatchItem[];
   selectedH3: string | null;
   activeSite?: PlanetarySite;
+  aiAnalysis?: MissionAiAnalysisResponse | null;
   onSelectCell: (h3Index: string) => void;
   onExported?: () => void;
 }
@@ -25,6 +30,7 @@ export function AnalogComparisonMatrix({
   matches,
   selectedH3,
   activeSite,
+  aiAnalysis = null,
   onSelectCell,
   onExported,
 }: AnalogComparisonMatrixProps) {
@@ -77,7 +83,8 @@ export function AnalogComparisonMatrix({
                   matches,
                   (k, p) => t(k, p),
                   matches.find((m) => m.earth_cell_h3 === selectedH3) ?? matches[0],
-                  lang
+                  lang,
+                  aiAnalysis
                 );
                 onExported?.();
               }}

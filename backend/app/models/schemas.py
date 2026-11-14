@@ -12,6 +12,8 @@ DistanceMetricType = Literal["euclidean", "mahalanobis"]
 ViabilityTier = Literal["high", "moderate", "partial"]
 ConfidenceLevel = Literal["high", "medium", "estimated"]
 VariableOrigin = Literal["measured", "derived", "model", "constant", "default"]
+ReadingModeType = Literal["mission", "explorer"]
+SupportedLocaleType = Literal["es", "pt", "en"]
 
 _VALID_IV_SET = set(INDEPENDENT_VARIABLES)
 _VALID_DV_SET = set(DEPENDENT_VARIABLES)
@@ -411,3 +413,88 @@ class AnalogRefineResponse(BaseModel):
     child_resolution: int
     matches: list[AnalogMatchItem]
     top_comparison: SiteComparisonResponse | None = None
+
+
+class MissionAiInsightItem(BaseModel):
+    """Single grounded strength or physical gap identified by the AI mission advisor."""
+
+    title: str = Field(..., min_length=1, max_length=320)
+    detail: str = Field(..., min_length=1, max_length=2500)
+    related_variables: list[str] = Field(default_factory=list)
+
+
+class BreakageMitigationItem(BaseModel):
+    """Engineering facility or test protocol compensating for an Earth breakage boundary."""
+
+    variable: str = Field(..., min_length=1, max_length=120)
+    earth_gap_impact: str = Field(..., min_length=1, max_length=1500)
+    recommended_facility_or_protocol: str = Field(..., min_length=1, max_length=1500)
+
+
+class MissionAiStructuredPayload(BaseModel):
+    """Strict structured output expected from the OpenRouter mission advisor."""
+
+    executive_synthesis: str = Field(..., min_length=1, max_length=2000)
+    viability_assessment: str = Field(..., min_length=1, max_length=3000)
+    confidence_and_scale_note: str = Field(..., min_length=1, max_length=2000)
+    key_strengths: list[MissionAiInsightItem] = Field(default_factory=list)
+    physical_limitations_and_gaps: list[MissionAiInsightItem] = Field(default_factory=list)
+    breakage_mitigation_plan: list[BreakageMitigationItem] = Field(default_factory=list)
+    field_campaign_considerations: list[str] = Field(default_factory=list)
+    recommended_next_steps: list[str] = Field(default_factory=list)
+
+
+class MissionAiAnalysisRequest(BaseModel):
+    """Request payload for OpenRouter mission viability & considerations analysis."""
+
+    site_id: str
+    earth_cell_h3: str
+    model_type: DecompositionModelType = "ridge"
+    distance_metric: DistanceMetricType = "euclidean"
+    test_profile: TestProfileType = "causal_auto"
+    reading_mode: ReadingModeType = "mission"
+    locale: SupportedLocaleType = "es"
+    penalize_estimated: bool = False
+    custom_iv_weights: dict[str, float] | None = None
+    custom_dv_weights: dict[str, float] | None = None
+    custom_min_similarity: dict[str, float] | None = None
+    catalog_context: MultiAgencyCatalogResponse | None = None
+    force_refresh: bool = False
+    cache_only: bool = False
+
+    @field_validator("custom_iv_weights")
+    @classmethod
+    def _val_ai_iv_weights(cls, v: dict[str, float] | None) -> dict[str, float] | None:
+        return _validate_unit_dict(v, _VALID_IV_SET)
+
+    @field_validator("custom_dv_weights")
+    @classmethod
+    def _val_ai_dv_weights(cls, v: dict[str, float] | None) -> dict[str, float] | None:
+        return _validate_unit_dict(v, _VALID_DV_SET)
+
+    @field_validator("custom_min_similarity")
+    @classmethod
+    def _val_ai_min_sim(cls, v: dict[str, float] | None) -> dict[str, float] | None:
+        return _validate_unit_dict(v, _VALID_ALL_VARS)
+
+
+class MissionAiAnalysisResponse(MissionAiStructuredPayload):
+    """Grounded mission viability report returned to the UI and Markdown exporter."""
+
+    site_id: str
+    earth_cell_h3: str
+    locale: SupportedLocaleType
+    reading_mode: ReadingModeType
+    test_profile: TestProfileType
+    model_used: str
+    provider: Literal["openrouter"] = "openrouter"
+    cached: bool = False
+    generated_at: str
+
+
+class MissionAiStatusResponse(BaseModel):
+    """Public AI advisor availability indicator (never leaks API secrets)."""
+
+    enabled: bool
+    provider: str
+    default_model: str

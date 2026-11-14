@@ -18,9 +18,13 @@ import { useTranslation } from "react-i18next";
 import { fetchMultiAgencyDatasets } from "../../api/client";
 import { formatNumber, formatPercent } from "../../i18n";
 import type {
+  DecompositionModelType,
+  DistanceMetricType,
+  MissionAiAnalysisResponse,
   MultiAgencyCatalogResponse,
   ReadingMode,
   SiteComparisonResponse,
+  TestProfileType,
 } from "../../types/analog";
 import { exportReportMarkdown } from "../../utils/exportResults";
 import { Badge } from "../ui/Badge";
@@ -28,16 +32,37 @@ import { Button } from "../ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 import { InfoTooltip } from "../ui/InfoTooltip";
 import { ProgressBar } from "../ui/ProgressBar";
+import { AiViabilityPanel } from "./AiViabilityPanel";
 
 interface MissionDiagnosticsProps {
   comparison: SiteComparisonResponse;
   readingMode?: ReadingMode;
+  modelType?: DecompositionModelType;
+  distanceMetric?: DistanceMetricType;
+  testProfile?: TestProfileType;
+  penalizeEstimated?: boolean;
+  customIvWeights?: Record<string, number>;
+  customDvWeights?: Record<string, number>;
+  customMinSimilarity?: Record<string, number>;
+  aiEnabled?: boolean;
+  aiAnalysis?: MissionAiAnalysisResponse | null;
+  onAiAnalysisChange?: (next: MissionAiAnalysisResponse | null) => void;
   onExported?: () => void;
 }
 
 export function MissionDiagnostics({
   comparison,
   readingMode = "mission",
+  modelType = "ridge",
+  distanceMetric = "euclidean",
+  testProfile = "causal_auto",
+  penalizeEstimated = false,
+  customIvWeights,
+  customDvWeights,
+  customMinSimilarity,
+  aiEnabled = false,
+  aiAnalysis = null,
+  onAiAnalysisChange,
   onExported,
 }: MissionDiagnosticsProps) {
   const { t, i18n } = useTranslation();
@@ -88,7 +113,14 @@ export function MissionDiagnostics({
           <Button
             variant="secondary"
             onClick={() => {
-              exportReportMarkdown(comparison.site, [match], (k, p) => t(k, p), match, lang);
+              exportReportMarkdown(
+                comparison.site,
+                [match],
+                (k, p) => t(k, p),
+                match,
+                lang,
+                aiAnalysis
+              );
               onExported?.();
             }}
           >
@@ -150,6 +182,25 @@ export function MissionDiagnostics({
             {t("mission.nasaAttribution")} · {t("mission.disclaimer")}
           </p>
         </div>
+
+        {/* OpenRouter AI Viability & Operational Considerations */}
+        {onAiAnalysisChange && (
+          <AiViabilityPanel
+            comparison={comparison}
+            readingMode={readingMode}
+            modelType={modelType}
+            distanceMetric={distanceMetric}
+            testProfile={testProfile}
+            penalizeEstimated={penalizeEstimated}
+            customIvWeights={customIvWeights}
+            customDvWeights={customDvWeights}
+            customMinSimilarity={customMinSimilarity}
+            catalogContext={catalog}
+            aiEnabled={aiEnabled}
+            analysis={aiAnalysis}
+            onAnalysisChange={onAiAnalysisChange}
+          />
+        )}
 
         {/* Selected Cell Header & Decoupled Metrics */}
         <div className="rounded border border-border-subtle bg-surface p-4 space-y-4">

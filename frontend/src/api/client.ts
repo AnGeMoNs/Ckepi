@@ -5,6 +5,9 @@ import type {
   DecompositionModelType,
   DecompositionResponse,
   DistanceMetricType,
+  MissionAiAnalysisRequest,
+  MissionAiAnalysisResponse,
+  MissionAiStatusResponse,
   MultiAgencyCatalogResponse,
   PlanetaryBody,
   PlanetaryProbeResponse,
@@ -29,7 +32,7 @@ interface FastApiErrorPayload {
   detail?: ApiErrorDetail | string;
 }
 
-async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
+async function fetchApiResponse(url: string, init?: RequestInit): Promise<Response> {
   let response: Response;
   try {
     response = await fetch(url, {
@@ -56,6 +59,11 @@ async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
     throw new ApiClientError("errors.unknown_error");
   }
 
+  return response;
+}
+
+async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
+  const response = await fetchApiResponse(url, init);
   return (await response.json()) as T;
 }
 
@@ -209,5 +217,24 @@ export function refineAnalogCell(
       penalize_estimated: penalizeEstimated,
     }),
   });
+}
+
+export function fetchAiStatus(): Promise<MissionAiStatusResponse> {
+  return requestJson<MissionAiStatusResponse>("/api/v1/ai/status");
+}
+
+export async function requestMissionAiAnalysis(
+  payload: MissionAiAnalysisRequest,
+  signal?: AbortSignal
+): Promise<MissionAiAnalysisResponse | null> {
+  const response = await fetchApiResponse("/api/v1/mission/ai-analysis", {
+    method: "POST",
+    signal,
+    body: JSON.stringify(payload),
+  });
+  if (response.status === 204) {
+    return null;
+  }
+  return (await response.json()) as MissionAiAnalysisResponse;
 }
 

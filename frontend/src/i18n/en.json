@@ -417,7 +417,30 @@
     "statusBroken": "Breakage",
     "statusAligned": "Aligned",
     "paretoBadge": "Pareto Optimal",
-    "paretoHelp": "Belongs to the 3D Pareto Frontier (S_ind, S_dep, 1 − R_break): no other terrestrial candidate outperforms it simultaneously across all three dimensions."
+    "paretoHelp": "Belongs to the 3D Pareto Frontier (S_ind, S_dep, 1 − R_break): no other terrestrial candidate outperforms it simultaneously across all three dimensions.",
+    "ai": {
+      "title": "AI Viability & Field Considerations",
+      "badge": "OpenRouter AI",
+      "generateButton": "Analyze viability & considerations with AI",
+      "generatingButton": "Analyzing physical parameters…",
+      "regenerateButton": "Regenerate analysis",
+      "cachedBadge": "Cached",
+      "modelLabel": "Model: {{model}}",
+      "notConfiguredNote": "Optional AI assistant is not configured on the server (set OPENROUTER_API_KEY in .env to enable operational synthesis).",
+      "readyDescription": "Generate a structured assessment of viability, uncertainty (±), H3 spatial scale, and engineering protocols to bridge physical breakage limits at this cell.",
+      "executiveTitle": "Executive Viability Synthesis",
+      "scaleConfidenceTitle": "Uncertainty, H3 Scale & Confidence",
+      "strengthsTitle": "Strengths & Supported Tests",
+      "limitationsTitle": "Physical Gaps & Limitations",
+      "mitigationsTitle": "Breakage Boundary Mitigation Plan (B)",
+      "impactLabel": "Campaign impact",
+      "protocolLabel": "Recommended facility / protocol",
+      "considerationsTitle": "Field Campaign Considerations",
+      "nextStepsTitle": "Recommended Next Steps",
+      "disclaimer": "LLM synthesis grounded in deterministic Ckepi data (NASA/ESA/Open-Meteo); scientific pre-screening requiring human engineering validation, not operational safety certification.",
+      "retryButton": "Retry AI analysis",
+      "includedInReport": "Automatically included when exporting Report (.md)"
+    }
   },
   "tests": {
     "valid": {
@@ -497,7 +520,11 @@
     "unauthorized": "Administrator token required to refresh datasets.",
     "unknown_body": "Unknown planetary body.",
     "invalid_tile_coords": "Tile coordinates out of range.",
-    "tile_unavailable": "NASA Trek tile unavailable."
+    "tile_unavailable": "NASA Trek tile unavailable.",
+    "ai_not_configured": "AI analysis is not enabled: OPENROUTER_API_KEY is not configured on the backend.",
+    "ai_rate_limited": "AI assistant rate limit reached. Please wait a few seconds or check your OpenRouter quota.",
+    "ai_provider_unavailable": "Could not reach the OpenRouter provider right now. Please try again.",
+    "ai_invalid_response": "The model returned an incomplete structure while synthesizing the diagnostic. Click Retry to regenerate."
   },
   "geology": {
     "title": "Geology & Lithology",
@@ -566,7 +593,18 @@
     "countryCol": "Country",
     "knownShort": "Known",
     "newShort": "New",
-    "unknown": "unknown"
+    "unknown": "unknown",
+    "aiSectionTitle": "AI Viability & Field Considerations (OpenRouter)",
+    "aiModelMeta": "Model",
+    "aiGeneratedMeta": "Generated",
+    "aiExecutiveTitle": "Executive Synthesis",
+    "aiViabilityTitle": "Viability Assessment",
+    "aiScaleConfidenceTitle": "Uncertainty & H3 Scale",
+    "aiStrengthsTitle": "Analog Strengths",
+    "aiLimitationsTitle": "Physical Gaps & Limitations",
+    "aiMitigationsTitle": "Breakage Mitigation Plan",
+    "aiConsiderationsTitle": "Field Campaign Considerations",
+    "aiNextStepsTitle": "Recommended Next Steps"
   },
   "simulants": {
     "title": "NASA/ESA Regolith Simulant Affinity & ISRU Suitability",

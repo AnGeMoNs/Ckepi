@@ -1,5 +1,9 @@
-import { formatNumber, formatPercent } from "../i18n";
-import type { AnalogMatchItem, PlanetarySite } from "../types/analog";
+import { formatNumber, formatPercent, formatTimestamp } from "../i18n";
+import type {
+  AnalogMatchItem,
+  MissionAiAnalysisResponse,
+  PlanetarySite,
+} from "../types/analog";
 
 type TranslateFn = (key: string, params?: Record<string, string | number>) => string;
 
@@ -98,7 +102,8 @@ export function exportReportMarkdown(
   matches: AnalogMatchItem[],
   translate: TranslateFn,
   selectedMatch?: AnalogMatchItem,
-  lang = "es"
+  lang = "es",
+  aiAnalysis?: MissionAiAnalysisResponse | null
 ): void {
   const focus = selectedMatch ?? matches[0];
   const top = matches.slice(0, 5);
@@ -155,6 +160,49 @@ export function exportReportMarkdown(
       ``,
       `**${translate("export.invalidTests")}**`,
       ...focus.engineering_recommendations.invalid_tests.map((k) => `- ${translate(k)}`),
+      ``
+    );
+  }
+
+  if (
+    aiAnalysis &&
+    aiAnalysis.site_id === site.site_id &&
+    (!focus || aiAnalysis.earth_cell_h3 === focus.earth_cell_h3)
+  ) {
+    lines.push(
+      `## ${translate("export.aiSectionTitle")}`,
+      ``,
+      `- **${translate("export.aiModelMeta")}:** ${aiAnalysis.model_used} (${aiAnalysis.provider})`,
+      `- **${translate("export.aiGeneratedMeta")}:** ${formatTimestamp(new Date(aiAnalysis.generated_at), lang)}`,
+      ``,
+      `### ${translate("export.aiExecutiveTitle")}`,
+      aiAnalysis.executive_synthesis,
+      ``,
+      `### ${translate("export.aiViabilityTitle")}`,
+      aiAnalysis.viability_assessment,
+      ``,
+      `### ${translate("export.aiScaleConfidenceTitle")}`,
+      aiAnalysis.confidence_and_scale_note,
+      ``,
+      `### ${translate("export.aiStrengthsTitle")}`,
+      ...aiAnalysis.key_strengths.map((s) => `- **${s.title}:** ${s.detail}`),
+      ``,
+      `### ${translate("export.aiLimitationsTitle")}`,
+      ...aiAnalysis.physical_limitations_and_gaps.map((g) => `- **${g.title}:** ${g.detail}`),
+      ``,
+      `### ${translate("export.aiMitigationsTitle")}`,
+      ...aiAnalysis.breakage_mitigation_plan.map(
+        (m) =>
+          `- **${m.variable}:** ${m.earth_gap_impact} → *${m.recommended_facility_or_protocol}*`
+      ),
+      ``,
+      `### ${translate("export.aiConsiderationsTitle")}`,
+      ...aiAnalysis.field_campaign_considerations.map((c) => `- ${c}`),
+      ``,
+      `### ${translate("export.aiNextStepsTitle")}`,
+      ...aiAnalysis.recommended_next_steps.map((n) => `- ${n}`),
+      ``,
+      `> ${translate("mission.ai.disclaimer")}`,
       ``
     );
   }

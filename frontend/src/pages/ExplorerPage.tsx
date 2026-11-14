@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AlertCircle, Globe, MapPin, RefreshCw, SearchX } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { fetchAiStatus } from "../api/client";
 import { GuidedStepsBanner } from "../components/layout/GuidedStepsBanner";
 import { SectionNav } from "../components/layout/SectionNav";
 import { ActionBar } from "../components/mission/ActionBar";
@@ -17,7 +18,7 @@ import { Toast, type ToastVariant } from "../components/ui/Toast";
 import { useAnalogAnalysis } from "../hooks/useAnalogAnalysis";
 import { useExplorerParams } from "../hooks/useExplorerParams";
 import { useMediaQuery } from "../hooks/useMediaQuery";
-import type { ReadingMode, ThemeMode } from "../types/analog";
+import type { MissionAiAnalysisResponse, ReadingMode, ThemeMode } from "../types/analog";
 
 const PlanetaryMap = lazy(() =>
   import("../components/map/PlanetaryMap").then((m) => ({ default: m.PlanetaryMap }))
@@ -84,8 +85,24 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const [toastState, setToastState] = useState<{ message: string; variant: ToastVariant } | null>(
     null
   );
+  const [aiEnabled, setAiEnabled] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<MissionAiAnalysisResponse | null>(null);
   const toastTimerRef = useRef<number | null>(null);
   const copiedTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchAiStatus()
+      .then((status) => {
+        if (!cancelled) setAiEnabled(status.enabled);
+      })
+      .catch(() => {
+        if (!cancelled) setAiEnabled(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (isDesktop) {
@@ -436,6 +453,16 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                 <MissionDiagnostics
                   comparison={analysis.comparison}
                   readingMode={readingMode}
+                  modelType={params.modelType}
+                  distanceMetric={params.distanceMetric}
+                  testProfile={params.testProfile}
+                  penalizeEstimated={params.penalizeEstimated}
+                  customIvWeights={params.customIvWeights}
+                  customDvWeights={params.customDvWeights}
+                  customMinSimilarity={params.customMinSimilarity}
+                  aiEnabled={aiEnabled}
+                  aiAnalysis={aiAnalysis}
+                  onAiAnalysisChange={setAiAnalysis}
                   onExported={handleExported}
                 />
               </Suspense>
@@ -454,6 +481,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                   matches={analysis.searchResult.matches}
                   selectedH3={analysis.selectedH3}
                   activeSite={activeSite}
+                  aiAnalysis={aiAnalysis}
                   onSelectCell={(h3Index) => {
                     setHasExploredMap(true);
                     analysis.setSelectedH3(h3Index);

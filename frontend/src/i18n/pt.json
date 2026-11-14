@@ -417,7 +417,30 @@
     "statusBroken": "Ruptura",
     "statusAligned": "Alinhado",
     "paretoBadge": "Ótimo de Pareto",
-    "paretoHelp": "Pertence à Fronteira de Pareto tridimensional (S_ind, S_dep, 1 − R_break): nenhum outro local terrestre o supera simultaneamente nas três dimensões."
+    "paretoHelp": "Pertence à Fronteira de Pareto tridimensional (S_ind, S_dep, 1 − R_break): nenhum outro local terrestre o supera simultaneamente nas três dimensões.",
+    "ai": {
+      "title": "Análise de Viabilidade e Considerações IA",
+      "badge": "OpenRouter IA",
+      "generateButton": "Analisar viabilidade e considerações com IA",
+      "generatingButton": "Analisando parâmetros físicos…",
+      "regenerateButton": "Regenerar análise",
+      "cachedBadge": "Cache local",
+      "modelLabel": "Modelo: {{model}}",
+      "notConfiguredNote": "Assistente IA opcional não configurado no servidor (defina OPENROUTER_API_KEY no .env para habilitar a síntese operacional).",
+      "readyDescription": "Gere uma avaliação estruturada de viabilidade, incerteza (±), escala espacial H3 e protocolos para compensar as rupturas físicas desta célula.",
+      "executiveTitle": "Síntese Executiva de Viabilidade",
+      "scaleConfidenceTitle": "Incerteza, Escala H3 e Confiança",
+      "strengthsTitle": "Pontos Fortes e Testes Apoiados",
+      "limitationsTitle": "Lacunas e Limitações Físicas",
+      "mitigationsTitle": "Plano de Mitigação para Rupturas Físicas (B)",
+      "impactLabel": "Impacto na campanha",
+      "protocolLabel": "Instalação / protocolo recomendado",
+      "considerationsTitle": "Considerações Operacionais de Campanha",
+      "nextStepsTitle": "Próximos Passos Recomendados",
+      "disclaimer": "Síntese gerada por LLM sobre dados determinísticos do Ckepi (NASA/ESA/Open-Meteo); pré-seleção científica que requer validação de engenharia humana e não certifica segurança operacional.",
+      "retryButton": "Tentar análise IA novamente",
+      "includedInReport": "Incluído automaticamente ao exportar Relatório (.md)"
+    }
   },
   "tests": {
     "valid": {
@@ -497,7 +520,11 @@
     "unauthorized": "Token de administrador necessário para atualizar os conjuntos de dados.",
     "unknown_body": "Corpo planetário desconhecido.",
     "invalid_tile_coords": "Coordenadas de tile fora do intervalo.",
-    "tile_unavailable": "Tile do NASA Trek indisponível."
+    "tile_unavailable": "Tile do NASA Trek indisponível.",
+    "ai_not_configured": "A análise IA não está habilitada: falta configurar OPENROUTER_API_KEY no backend.",
+    "ai_rate_limited": "Limite temporário de solicitações ao assistente IA atingido. Aguarde alguns segundos ou verifique sua cota no OpenRouter.",
+    "ai_provider_unavailable": "Não foi possível obter resposta do provedor OpenRouter no momento. Tente novamente.",
+    "ai_invalid_response": "O modelo retornou um formato incompleto ao sintetizar o diagnóstico. Clique em Tentar novamente para regenerar."
   },
   "geology": {
     "title": "Geologia e Litologia",
@@ -566,7 +593,18 @@
     "countryCol": "País",
     "knownShort": "Conhecido",
     "newShort": "Novo",
-    "unknown": "desconhecido"
+    "unknown": "desconhecido",
+    "aiSectionTitle": "Análise de Viabilidade e Considerações IA (OpenRouter)",
+    "aiModelMeta": "Modelo",
+    "aiGeneratedMeta": "Gerado",
+    "aiExecutiveTitle": "Síntese Executiva",
+    "aiViabilityTitle": "Avaliação de Viabilidade",
+    "aiScaleConfidenceTitle": "Incerteza e Escala H3",
+    "aiStrengthsTitle": "Pontos Fortes do Análogo",
+    "aiLimitationsTitle": "Limitações e Lacunas Físicas",
+    "aiMitigationsTitle": "Plano de Mitigação de Rupturas",
+    "aiConsiderationsTitle": "Considerações de Campanha de Campo",
+    "aiNextStepsTitle": "Próximos Passos Recomendados"
   },
   "simulants": {
     "title": "Afinidade com Simulantes de Regolito NASA/ESA e Adequação ISRU",
