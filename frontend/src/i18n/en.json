@@ -497,7 +497,9 @@
     "unauthorized": "Administrator token required to refresh datasets.",
     "unknown_body": "Unknown planetary body.",
     "invalid_tile_coords": "Tile coordinates out of range.",
-    "tile_unavailable": "NASA Trek tile unavailable."
+    "tile_unavailable": "NASA Trek tile unavailable.",
+    "clipboard_failed": "Could not copy. Check clipboard permission or download the plan; to share, copy the address from your browser.",
+    "invalid_response": "The server returned an invalid response. Please try again."
   },
   "geology": {
     "title": "Geology & Lithology",
@@ -537,7 +539,19 @@
     "maps": "Maps",
     "decomposition": "Decomposition",
     "diagnostics": "Diagnostics",
-    "ranking": "Ranking"
+    "ranking": "Ranking",
+    "tabsLabel": "Ckepi Sections",
+    "compare": "Compare",
+    "learn": "Learn",
+    "plan": "Plan",
+    "evidence": "Evidence",
+    "backToCompare": "Back to Compare",
+    "continueToPlan": "Continue to Plan",
+    "viewEvidence": "View Evidence & SDGs",
+    "focusAtacama": "📍 Compare with Atacama",
+    "globalLabel": "Global scope",
+    "locationLabel": "Specific location",
+    "skipToContent": "Skip to main content"
   },
   "export": {
     "reportTitle": "Ckepi Report",
@@ -598,5 +612,387 @@
       "name": "JEZ-1 (Jezero Delta Simulant — Perseverance)",
       "mineralogy": "Mg-carbonates, Fe/Mg-smectite phyllosilicates & deltaic olivine"
     }
+  },
+  "curiosity": {
+    "title": "Did you know that on a similar slope the normal force changes drastically?",
+    "body": "On {{body}} at a {{slope}}° slope, a 100 kg rover exerts {{targetNormal}} N of normal force compared to {{earthNormal}} N on Earth. Lower gravity reduces weight, but also traction.",
+    "cta": "Experiment in Learn",
+    "nextFact": "Next fact",
+    "thermalTitle": "Did you know diurnal thermal amplitude drives rover thermal design?",
+    "thermalBody": "At {{site}}, diurnal thermal amplitude is {{planetVal}} K vs {{earthVal}} K in the compared Earth cell. Extreme swings require thermal insulation and heated batteries.",
+    "roughnessTitle": "Did you know terrain roughness sets minimum rover wheel size?",
+    "roughnessBody": "Surface roughness is {{planetVal}} at {{site}} vs {{earthVal}} in the Earth cell. Rough Atacama terrain helps validate suspension before regolith.",
+    "gravityTitle": "Did you know gravity lowers weight, never mass?",
+    "gravityBody": "On {{body}}, an 80 kg object still has 80 kg of mass, but weighs {{marsN}} N (or {{moonN}} N on the Moon) vs 784.5 N on Earth."
+  },
+  "learn": {
+    "title": "Planetary Physics Lab — What if…?",
+    "subtitle": "Local SI-unit simulators connected to your selected body and site. Compare Earth, Mars, and the Moon with explicit equations and limits.",
+    "experimentSelectorLabel": "Experiment selector",
+    "idealizedModel": "Idealized model",
+    "equationLabel": "Equation & units",
+    "curiositiesTitle": "Contextual curiosities",
+    "challengesTitle": "Contextualized mini-challenges",
+    "correctLabel": "Correct!",
+    "reviewLabel": "Review explanation",
+    "noComparisonHint": "Select an Earth H3 cell in Compare to link real terrestrial slope measurements to these challenges.",
+    "controls": {
+      "massKg": "Mass (m)",
+      "massExact": "Exact mass (kg)",
+      "earthJumpCm": "Earth vertical jump",
+      "throwSpeed": "Initial speed (v₀)",
+      "throwAngle": "Launch angle (θ)",
+      "poolDepth": "Pool depth (d)",
+      "rockMass": "Rock mass (m)",
+      "targetAccel": "Target acceleration (a)",
+      "roverMass": "Rover mass (m)",
+      "slopeDeg": "Terrain slope (θ)",
+      "frictionCoeff": "Ideal friction coeff (μ)",
+      "windSpeedMs": "Wind speed (v)",
+      "waterTempC": "Water temperature (T)"
+    },
+    "experiments": {
+      "weight": {
+        "tab": "Weight & gravity",
+        "question": "Does your mass change if you travel to Mars or the Moon?",
+        "intro": "Mass (kg) is invariant; what changes is gravitational force or weight (N).",
+        "massInvariant": "Invariant mass: {{mass}} kg (Earth-scale equiv: {{kgf}} kgf)",
+        "limits": "Assumptions: standard mean surface gravity (Earth 9.80665; Mars 3.71; Moon 1.62 m/s²). A spring scale calibrated on Earth would read lower kgf, not lower mass."
+      },
+      "jump": {
+        "tab": "Jumping",
+        "question": "How high would you jump with the same takeoff speed?",
+        "intro": "At equal takeoff velocity, peak height scales inversely with g.",
+        "limits": "Ideal vertical model without air drag or pressurized spacesuit load. On Mars (~2.64×) and the Moon (~6.05×), suit mass and biomechanics limit real impulse."
+      },
+      "projectile": {
+        "tab": "Ball throw",
+        "question": "How does a projectile parabola change across worlds?",
+        "intro": "Ideal ballistic trajectory without aerodynamic drag from the same launch height.",
+        "svgLabel": "Comparison of parabolic trajectories on Earth, Mars, and Moon",
+        "limits": "No atmospheric drag; ideal max range occurs at 45° and does not depend on mass in this model. On Earth, air slows light projectiles."
+      },
+      "waves": {
+        "tab": "Habitat waves",
+        "question": "What happens to waves in a pool inside a pressurized habitat?",
+        "intro": "Simulated inside a pressurized, thermally controlled habitat (not outdoors on Mars).",
+        "habitatBadge": "Inside pressurized habitat",
+        "limits": "Valid only in the shallow-water regime (depth d ≪ wavelength λ): on Mars wave speed is ~0.615× (~38.5% slower). Deep-water waves depend on λ."
+      },
+      "rocks": {
+        "tab": "Rocks & inertia",
+        "question": "Is it equally easy to accelerate a rock even if it weighs less?",
+        "intro": "Lifting against gravity takes less force, but horizontal acceleration requires the exact same net force F = m·a.",
+        "limits": "Inertia (mass) does not decrease on Mars or the Moon. Lower weight also reduces maximum static friction with the ground."
+      },
+      "rover": {
+        "tab": "Rover & slopes",
+        "question": "How does gravity affect a rover climbing a slope?",
+        "intro": "Inclined-plane force decomposition linked to the slopes of the active site and Earth analog.",
+        "loadSiteSlope": "Load site slope ({{slope}}°)",
+        "loadEarthSlope": "Load Earth slope ({{slope}}°)",
+        "slipRisk": "Ideal slip risk",
+        "idealGrip": "Within ideal μ·N",
+        "limits": "Ideal rigid model (tan θ ≤ μ). In real Martian/lunar regolith or loose Atacama sand, wheel sinkage and soil cohesion reduce traction before the ideal limit.",
+        "diagramLabel": "Interactive free-body force diagram for rover on a {{slope}}-degree slope"
+      },
+      "wind": {
+        "tab": "Dust & wind",
+        "question": "Does a 100 km/h wind on Mars push as hard as on Earth?",
+        "intro": "Dynamic pressure scales with air density ρ: Mars atmosphere is ~60× less dense than Earth.",
+        "densityLabel": "Atmospheric density",
+        "limits": "Illustrative mean surface densities (Earth ~1.225 kg/m³; Mars ~0.020 kg/m³). Real density varies with elevation, temperature, and season."
+      },
+      "water": {
+        "tab": "Water & pressure",
+        "question": "What happens to open-air liquid water in Antofagasta vs Mars?",
+        "intro": "Liquid water stability depends on both pressure and temperature; Martian pressure (~0.61 kPa) sits right near the triple point.",
+        "boilingLabel": "Approx. boiling point",
+        "sea_level": "Antofagasta / Sea level (101.3 kPa)",
+        "altiplano": "Altiplano / Puna (~60 kPa)",
+        "mars": "Mars surface (~0.61 kPa)",
+        "regimes": {
+          "solid": "Ice (solid)",
+          "liquid": "Stable liquid water",
+          "vapor_or_boiling": "Boiling / vapor",
+          "triple_point_unstable": "Unstable (boils/sublimes near triple point)"
+        },
+        "limits": "Educational approximation using water triple point (0.611657 kPa; 0.01 °C) and Clausius-Clapeyron relation. Brines (Atacama salts or Martian perchlorates) shift freezing points."
+      }
+    },
+    "curiosities": {
+      "pressureTitle": "Liquid water outdoors on Mars (~0.6 kPa)",
+      "pressureDesc": "Unlike Antofagasta (~101 kPa at sea level), Martian surface pressure is ~0.6 kPa: exposed liquid water boils, freezes, or sublimates depending on temperature.",
+      "dustTitle": "Dust storms & dynamic pressure",
+      "dustDesc": "Even with fast winds, Mars thin atmosphere (~1% of Earth density) produces lower dynamic pressure q = 0.5·ρ·v² at the same wind speed.",
+      "atacamaTitle": "Why is Atacama / Yungay a key analog?",
+      "atacamaDesc": "Extreme hyperaridity, UV flux, and saline soils allow studying Mars-analog processes, while gravity (1 g), pressure, and cosmic radiation remain irreproducible.",
+      "soundTitle": "Sound on Mars (~240 m/s and attenuated)",
+      "soundDesc": "In Mars thin CO₂ atmosphere (~0.6 kPa), sound travels around 240 m/s (vs ~343 m/s on Earth) and high frequencies attenuate rapidly. Speaking outdoors without a suit is unsafe.",
+      "solTitle": "A Martian sol lasts 24 h 39 min (vs 29.5 days on the Moon)",
+      "solDesc": "A Martian sol is just 39 minutes longer than an Earth day, whereas the lunar day/night cycle lasts ~29.5 Earth days, challenging solar power storage.",
+      "commsTitle": "Earth–Mars signal delay (3 to 22 min one-way)",
+      "commsDesc": "Depending on orbital distance (55 to 401 million km), radio signals take ~3 to ~22 minutes each way—requiring local autonomous rover navigation."
+    },
+    "challenges": {
+      "mass": {
+        "question": "1. If a 70 kg student travels to Jezero Crater, what happens to their mass and weight?",
+        "optA": "Mass drops to ~26 kg and weight stays 686 N",
+        "optB": "Mass stays 70 kg and weight drops to ~260 N",
+        "optC": "Both mass and weight drop to one-third",
+        "explanation": "Mass is intrinsic (70 kg). Weight is gravitational force P = m·g ≈ 70 × 3.71 ≈ 259.7 N."
+      },
+      "roverDynamic": {
+        "question": "2. At the active slope ({{slope}}°) near {{site}}, what happens to a 100 kg rover compared to Earth?",
+        "optA": "It climbs with higher traction because it weighs less",
+        "optB": "Parallel force drops (from {{earthN}} N to {{marsN}} N), but normal force also drops (to {{marsNormalN}} N on Mars)",
+        "optC": "A 15° slope is universally safe on any terrain",
+        "explanation": "Lower gravity reduces parallel force ({{earthN}} N → {{marsN}} N), but also lowers normal force ({{marsNormalN}} N) and max friction μ·N."
+      },
+      "nonReplicable": {
+        "question": "3. Which Mars variable CANNOT be replicated in open-air field trials in Antofagasta?",
+        "optA": "Topographic slope and surface roughness",
+        "optB": "Surface UV irradiance and low relative humidity",
+        "optC": "Gravity (0.38 g), ~0.6 kPa CO₂ atmosphere, and ionizing GCR radiation",
+        "explanation": "Irreproducible breakage boundaries B (gravity, atmospheric pressure, cosmic radiation) cannot be replicated in open Earth field trials."
+      },
+      "distributions": {
+        "question": "4. What does it mean when two slope distributions are similar between Jezero and Atacama?",
+        "optA": "Both sites are identical for landing without further tests",
+        "optB": "Partial morphological similarity in an independent variable X, not full physical equivalence",
+        "optC": "Atmosphere and temperature are identical",
+        "explanation": "Ckepi decouples X, Y, and B: geometric slope similarity never implies complete environmental or mechanical equivalence."
+      }
+    },
+    "showScienceDetails": "View equation & scientific limits",
+    "hideScienceDetails": "Hide equation & limits",
+    "categories": {
+      "body": "Your body on other worlds",
+      "physics": "Impossible physics",
+      "engineering": "Space engineering",
+      "curiosities": "Planetary curiosities"
+    }
+  },
+  "plan": {
+    "title": "Plan — Local Field Trial Sheet & Circular Economy",
+    "subtitle": "Turn comparative evidence into a preliminary, responsible field-trial proposal prioritizing reusable equipment and explicit limits.",
+    "exportBtn": "Export sheet (.md)",
+    "circularTitle": "Reusable / loaned equipment checklist (SDG 12)",
+    "circularNote": "Planning checklist to encourage equipment reuse and lending across schools/universities. Does not represent verified live inventory.",
+    "noEquipmentSelected": "No equipment selected",
+    "limitsTitle": "Irreproducible physical limits & scope",
+    "limitsNote": "This sheet is educational/preliminary: it does not certify terrain, replace permits, or validate real space mission readiness.",
+    "collaborationTitle": "Partnerships & local transfer (SDG 17)",
+    "collaborationNote": "Designed to be replicated across educational and university nodes without collecting personal data.",
+    "costsPending": "Pending local quote",
+    "notesPlaceholder": "Record terrain observations, safety precautions, or open questions for the trial...",
+    "disclaimer": "Notice: costs are pending local quotes, equipment items are planning references for circular reuse, and no personal data is stored.",
+    "noSiteSelected": "Select a planetary site in Compare.",
+    "noCellSelected": "No Earth H3 cell selected yet.",
+    "defaults": {
+      "title": "Preliminary rover traction and sensor trial in arid analog",
+      "objective": "Evaluate slope, granular slip, and thermal logging comparing an Atacama H3 cell against Mars slope telemetry."
+    },
+    "fields": {
+      "planetarySite": "Target planetary site",
+      "earthCell": "Selected Earth H3 cell",
+      "trialTitle": "Trial title",
+      "costs": "Cost estimate",
+      "objective": "Trial objective & hypothesis",
+      "notes": "Safety & terrain notes"
+    },
+    "equipment": {
+      "imu_inclinometer": "Reusable IMU / inclinometer sensor",
+      "rover_wheels_chassis": "Loaned STEAM prototype chassis & wheels",
+      "lifepo4_battery": "Shared rechargeable LiFePO4 battery",
+      "portable_weather_station": "Portable weather station / pyranometer",
+      "open_microcontroller": "Open microcontroller (Arduino / ESP32 / RPi)"
+    },
+    "presetsLabel": "Quick trial templates",
+    "presets": {
+      "rover": {
+        "label": "🤖 Rover traction",
+        "title": "Arid-soil rover traction and slope trial",
+        "objective": "Measure wheel slip and tilt with a reusable IMU comparing an Atacama H3 cell against Jezero slope telemetry."
+      },
+      "thermal": {
+        "label": "🌡️ Thermal sensors",
+        "title": "Diurnal thermal swing and surface albedo logging",
+        "objective": "Compare diurnal temperature swings and solar irradiance in hyperarid terrain to calibrate low-cost sensors."
+      },
+      "steam": {
+        "label": "🎓 STEAM workshop",
+        "title": "Hands-on planetary physics and analog activity",
+        "objective": "Demonstrate mass vs weight, safe slope limits, and irreproducible planetary boundaries using open NASA data."
+      }
+    },
+    "copyBtn": "Copy sheet",
+    "copiedBtn": "Copied",
+    "draftSessionNote": "Your draft stays available when switching tabs during this session. Download it before reloading or closing the page."
+  },
+  "evidence": {
+    "title": "Evidence, Open Data Sources & Sustainable Development Goals",
+    "subtitle": "Full traceability of NASA datasets, partner agencies, causal model assumptions, and AI disclosure.",
+    "globalTitle": "Global — Open science & worldwide coverage",
+    "globalDesc": "Reproducible comparisons between the global Earth H3 grid and Moon/Mars destinations using open scientific APIs.",
+    "locationTitle": "Location — Verifiable coordinates & provenance",
+    "locationDesc": "Each site (Jezero, Yungay/Atacama, or any H3 cell) preserves coordinates, observation window, and explicit confidence level.",
+    "methodTitle": "Scientific method: Causal Decomposition X → Y & Breakage B",
+    "xTitle": "Independent forcings (X)",
+    "xDesc": "Slope, roughness, albedo, solar flux, thermal inertia, subsurface ice, aridity, and humidity.",
+    "yTitle": "Dependent responses (Y)",
+    "yDesc": "Diurnal temperature amplitude ΔT, nocturnal cooling, surface wind, aeolian dust flux.",
+    "bTitle": "Irreproducible boundaries (B)",
+    "bDesc": "Surface gravity, atmospheric pressure, and ionizing GCR radiation. Never collapsed into an arbitrary similarity %.",
+    "activeProvenance": "Active planetary site provenance",
+    "earthProvenance": "Compared Earth cell provenance",
+    "sourcesTitle": "Integrated open data sources",
+    "table": {
+      "agency": "Agency / Source",
+      "dataset": "Service / Dataset",
+      "role": "Role in Ckepi",
+      "type": "Origin"
+    },
+    "sources": {
+      "trek": "Mars (Viking/MOLA) and Moon (LRO WAC/LOLA) WMTS basemap layers.",
+      "pds": "Surface telemetry (REMS, MEDA) and orbital coverage (LOLA, Diviner, CRISM, SHARAD).",
+      "power": "Solar climatology, satellite albedo, and MODIS/SMAP + GIBS layers.",
+      "copernicus": "Elevation, slope, roughness (DEM 90m), and ERA5-Land climate series.",
+      "partners": "Soil properties, Macrostrat lithology, and Sentinel/RADARSAT/G-Portal catalogs."
+    },
+    "sdgTitle": "SDG Integration (Educational & Scientific Proposal)",
+    "sdgHonestyNote": "Honesty note: the SDGs below reflect product design and target alignment; impact metrics are only reported when actually measured.",
+    "sdg4Title": "SDG 4 — Quality Education (Targets 4.3 & 4.4) [Primary]",
+    "sdg4Desc": "Planetary physics lab, SI units, explicit equations, and STEAM mini-challenges grounded in real data.",
+    "sdg9Title": "SDG 9 — Industry, Innovation & Infrastructure (Target 9.5) [Primary]",
+    "sdg9Desc": "Reproducible geospatial comparison, transparent causal decomposition, and rover/sensor trial planning.",
+    "sdg12Title": "SDG 12 — Responsible Consumption & Production (Target 12.5) [Complementary]",
+    "sdg12Desc": "Circular economy mindset in trial planning through equipment sharing and reuse.",
+    "sdg17Title": "SDG 17 — Partnerships for the Goals (Targets 17.3, 17.16, 17.17) [Complementary]",
+    "sdg17Desc": "Open, replicable architecture across educational communities and regional research.",
+    "aiDisclosureTitle": "AI Disclosure (AI_DISCLOSURE.md)",
+    "aiDisclosureDesc": "The core scientific concept (X → Y / B decomposition on H3 grid) is human-designed. AI assistants accelerated implementation, refactoring, and es/pt/en translation parity, verified by the team. No NASA logos or synthetic measurements were fabricated."
+  },
+  "funFacts": {
+    "title": "Interactive planetary curiosities",
+    "subtitle": "Tap each card to reveal the science fact and its NASA/peer-reviewed source.",
+    "progress": "{{count}} of {{total}} discovered",
+    "filterLabel": "Filter curiosities by body or region",
+    "filterAll": "All",
+    "tapToReveal": "Tap to reveal",
+    "hide": "Hide",
+    "sourceLabel": "Source",
+    "allDiscovered": "You discovered all planetary curiosities!",
+    "tags": {
+      "mars": "Mars",
+      "moon": "Moon",
+      "atacama": "Atacama"
+    },
+    "items": {
+      "sound": {
+        "q": "Why would your voice sound different and much quieter on Mars?",
+        "a": "In Mars thin CO₂ atmosphere (~0.6 kPa), sound travels at ~240 m/s (vs ~343 m/s on Earth) and high frequencies attenuate quickly."
+      },
+      "sol": {
+        "q": "How long is a day on Mars?",
+        "a": "One Martian sol lasts 24 h 39 min 35 s—almost identical to an Earth day, which helps teams schedule rover operations."
+      },
+      "comms": {
+        "q": "Can you drive a Mars rover with a live joystick from Earth?",
+        "a": "No: depending on orbital distance, radio signals take ~3 to ~22 minutes one-way, so rovers rely on onboard autonomous navigation."
+      },
+      "radiation": {
+        "q": "How much radiation does an astronaut face on Mars?",
+        "a": "Without a global magnetic field or thick atmosphere, surface radiation far exceeds Earths ~2.4 mSv/yr average."
+      },
+      "olympus": {
+        "q": "How tall is Olympus Mons compared to Atacama volcanoes?",
+        "a": "It rises ~21.9 km high (~3× Everest) and spans ~600 km wide, yet its average slope is surprisingly gentle (~5°)."
+      },
+      "temperature": {
+        "q": "How much can temperature swing in a single Martian day?",
+        "a": "In craters like Jezero or Gale, diurnal temperature swings exceed 60–80 K due to low thermal inertia and thin air."
+      },
+      "blueSunset": {
+        "q": "What color are sunsets on Mars?",
+        "a": "Bluish near the Sun: fine Martian dust scatters red light at wide angles while letting blue light pass forward."
+      },
+      "phobos": {
+        "q": "Which way does Phobos rise and set in the Martian sky?",
+        "a": "Phobos orbits faster than Mars rotates (~7 h 39 min), so it rises in the west and sets in the east."
+      },
+      "dustStorm": {
+        "q": "Can dust storms cover the entire planet Mars?",
+        "a": "Yes: planet-encircling storms can dim sunlight for weeks, even though wind dynamic pressure remains low due to thin air."
+      },
+      "moonTemp": {
+        "q": "What extreme temperatures does a lunar rover face?",
+        "a": "With no atmosphere, the surface swings from ~390 K (+117 °C) in sunlight to ~100 K (-173 °C) during lunar night."
+      },
+      "moonFootprints": {
+        "q": "Why are Apollo footprints still intact after more than 50 years?",
+        "a": "The Moon has no wind or rain; only gradual micrometeorite impacts erode regolith over millions of years."
+      },
+      "moonDay": {
+        "q": "How long is a full solar day on the Moon?",
+        "a": "About 29.5 Earth days (~14 days of sunlight followed by ~14 days of darkness), requiring robust energy storage."
+      },
+      "atacamaRovers": {
+        "q": "Why has NASA tested rover prototypes in the Atacama Desert?",
+        "a": "Because of extreme hyperaridity, saline soils, high UV flux, and near-zero vegetation in sectors like Yungay."
+      },
+      "perchlorate": {
+        "q": "Which chemical compound do Atacama and Mars soils share?",
+        "a": "Both contain natural perchlorates and salts, valuable for studying regolith chemistry and extremophile limits."
+      }
+    }
+  },
+  "learnHub": {
+    "pickCategory": "Choose a science adventure to explore:",
+    "score": "Challenges: {{correct}}/{{total}}",
+    "badgeTitle": "Planetary Explorer completed!",
+    "badgeDesc": "You answered all mini-challenges correctly using real physics and Earth–planet boundaries.",
+    "categories": {
+      "body": {
+        "title": "Your body",
+        "subtitle": "Weight, mass & jumps",
+        "teaser": "Would you weigh less on Mars while keeping the exact same mass?"
+      },
+      "physics": {
+        "title": "Impossible physics",
+        "subtitle": "Throws, waves & water",
+        "teaser": "Why does open-air liquid water boil or freeze on Mars?"
+      },
+      "engineering": {
+        "title": "Space engineering",
+        "subtitle": "Rovers, slopes & dust",
+        "teaser": "Does a rover in Atacama feel the same traction as in Jezero Crater?"
+      },
+      "curiosities": {
+        "title": "Curiosities",
+        "subtitle": "Sound, climate & radiation",
+        "teaser": "Discover 14 real facts verified by NASA missions and Atacama analogs."
+      }
+    },
+    "astronautCard": {
+      "title": "Your physical profile on {{body}}",
+      "mass": "Your mass",
+      "massSame": "Unchanged on any planet",
+      "weight": "Your weight (force)",
+      "scale": "Earth-scale reading: {{kgf}} kgf",
+      "jump": "Ideal vertical jump",
+      "jumpEarth": "On Earth: {{cm}} cm",
+      "airTime": "Hang time",
+      "airTimeEarth": "On Earth: {{s}} s"
+    }
+  },
+  "quickQuiz": {
+    "cta": "Quick mini-challenge",
+    "question": "If we send a 100 kg rover to {{body}}, what changes compared to Antofagasta?",
+    "optA": "Its mass drops and slope stops mattering",
+    "optB": "Its mass stays 100 kg, while its weight in N drops",
+    "optC": "Its maximum ground friction increases",
+    "tryAgain": "Almost — remember the difference between mass (kg) and weight (N).",
+    "explanation": "On {{body}} gravity is ~{{pct}}% of Earth: mass stays {{mass}} kg, while weight drops from {{earthN}} N to {{bodyN}} N."
   }
 }

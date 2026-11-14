@@ -82,6 +82,17 @@ export function useAnalogAnalysis({
   const selectedSiteIdRef = useRef(selectedSiteId);
   selectedSiteIdRef.current = selectedSiteId;
 
+  // Never show the previous site's measurements while the new site is loading.
+  const previousSiteIdRef = useRef(selectedSiteId);
+  useEffect(() => {
+    if (previousSiteIdRef.current === selectedSiteId) return;
+    previousSiteIdRef.current = selectedSiteId;
+    setDecomposition(null);
+    setSearchResult(null);
+    setSelectedH3(null);
+    setComparison(null);
+  }, [selectedSiteId]);
+
   const loadSites = useCallback(async (): Promise<PlanetarySite[]> => {
     const list = await fetchPlanetarySites();
     setSites(list);
@@ -123,7 +134,7 @@ export function useAnalogAnalysis({
 
       try {
         const [decompRes, analogsRes] = await Promise.all([
-          runDecomposition(selectedSiteId, modelType),
+          runDecomposition(selectedSiteId, modelType, signal),
           searchAnalogs({
             siteId: selectedSiteId,
             modelType,

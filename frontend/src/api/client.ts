@@ -38,7 +38,8 @@ async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
       },
       ...init,
     });
-  } catch {
+  } catch (error) {
+    if (init?.signal?.aborted) throw error;
     throw new ApiClientError("errors.network_error");
   }
 
@@ -56,19 +57,26 @@ async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
     throw new ApiClientError("errors.unknown_error");
   }
 
-  return (await response.json()) as T;
+  try {
+    return (await response.json()) as T;
+  } catch (error) {
+    if (init?.signal?.aborted) throw error;
+    throw new ApiClientError("errors.invalid_response");
+  }
 }
 
-export function fetchPlanetarySites(): Promise<PlanetarySite[]> {
-  return requestJson<PlanetarySite[]>("/api/v1/planetary-sites");
+export function fetchPlanetarySites(signal?: AbortSignal): Promise<PlanetarySite[]> {
+  return requestJson<PlanetarySite[]>("/api/v1/planetary-sites", { signal });
 }
 
 export function runDecomposition(
   siteId: string,
-  modelType: DecompositionModelType
+  modelType: DecompositionModelType,
+  signal?: AbortSignal
 ): Promise<DecompositionResponse> {
   return requestJson<DecompositionResponse>("/api/v1/decompose", {
     method: "POST",
+    signal,
     body: JSON.stringify({
       site_id: siteId,
       model_type: modelType,
@@ -116,11 +124,13 @@ export function searchAnalogs(params: SearchAnalogsParams): Promise<AnalogSearch
 export function compareCellWithSite(
   h3Index: string,
   siteId: string,
-  modelType: DecompositionModelType
+  modelType: DecompositionModelType,
+  signal?: AbortSignal
 ): Promise<SiteComparisonResponse> {
   const query = new URLSearchParams({ model_type: modelType }).toString();
   return requestJson<SiteComparisonResponse>(
-    `/api/v1/analogs/${encodeURIComponent(h3Index)}/compare/${encodeURIComponent(siteId)}?${query}`
+    `/api/v1/analogs/${encodeURIComponent(h3Index)}/compare/${encodeURIComponent(siteId)}?${query}`,
+    { signal }
   );
 }
 
@@ -157,6 +167,7 @@ export interface ProbePlanetaryParams {
   minSInd: number;
   minSDep: number;
   excludeBenchmarks: boolean;
+  penalizeEstimated?: boolean;
   limit: number;
   customIvWeights?: Record<string, number>;
   customDvWeights?: Record<string, number>;
@@ -178,6 +189,7 @@ export function probePlanetaryLocation(
       min_s_ind: params.minSInd,
       min_s_dep: params.minSDep,
       exclude_benchmarks: params.excludeBenchmarks,
+      penalize_estimated: params.penalizeEstimated ?? false,
       limit: params.limit,
       custom_iv_weights: params.customIvWeights,
       custom_dv_weights: params.customDvWeights,

@@ -10,8 +10,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          maplibre: ["maplibre-gl"],
-          three: ["three"],
+          "react-vendor": ["react", "react-dom"],
+          "maplibre-vendor": ["maplibre-gl"],
+          "three-vendor": ["three"],
+          "i18n-vendor": ["i18next", "react-i18next"],
         },
       },
     },

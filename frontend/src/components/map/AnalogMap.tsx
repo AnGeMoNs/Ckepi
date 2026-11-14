@@ -454,6 +454,7 @@ export function AnalogMap({
           </select>
           <button
             type="button"
+            aria-pressed={isGlobe}
             onClick={() => setIsGlobe((prev) => !prev)}
             className="inline-flex min-h-11 items-center gap-1.5 rounded border border-border-subtle bg-surface px-2.5 py-1.5 text-xs font-medium text-content hover:bg-surface-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
           >
@@ -512,7 +513,11 @@ export function AnalogMap({
         </div>
 
         {probingCoords && (
-          <div className="rounded border border-accent/40 bg-accent/10 px-3 py-2 text-xs font-medium text-accent">
+          <div
+            role="status"
+            aria-live="polite"
+            className="rounded border border-accent/40 bg-accent/10 px-3 py-2 text-xs font-medium text-accent"
+          >
             {t("map.probingLocation", {
               lat: formatNumber(probingCoords.lat, i18n.language, 2),
               lon: formatNumber(probingCoords.lon, i18n.language, 2),

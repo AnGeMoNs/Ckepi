@@ -1,8 +1,19 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { AlertCircle, Globe, MapPin, RefreshCw, SearchX } from "lucide-react";
+import { lazy, Suspense, useEffect, useRef, useState, type KeyboardEvent } from "react";
+import {
+  AlertCircle,
+  BookOpen,
+  ClipboardCheck,
+  FlaskConical,
+  GitCompareArrows,
+  Globe,
+  MapPin,
+  RefreshCw,
+  SearchX,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { GuidedStepsBanner } from "../components/layout/GuidedStepsBanner";
+import { ContextualCuriosityStrip } from "../components/learning/ContextualCuriosityStrip";
 import { SectionNav } from "../components/layout/SectionNav";
 import { ActionBar } from "../components/mission/ActionBar";
 import { ControlPanel } from "../components/mission/ControlPanel";
@@ -18,6 +29,8 @@ import { useAnalogAnalysis } from "../hooks/useAnalogAnalysis";
 import { useExplorerParams } from "../hooks/useExplorerParams";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import type { ReadingMode, ThemeMode } from "../types/analog";
+import { readExplorerParams, type ExplorerTab } from "../utils/explorerParams";
+import { createFieldTrialDraft } from "../utils/fieldTrialDraft";
 
 const PlanetaryMap = lazy(() =>
   import("../components/map/PlanetaryMap").then((m) => ({ default: m.PlanetaryMap }))
@@ -38,6 +51,19 @@ const MissionDiagnostics = lazy(() =>
 const AnalogComparisonMatrix = lazy(() =>
   import("../components/mission/AnalogComparisonMatrix").then((m) => ({
     default: m.AnalogComparisonMatrix,
+  }))
+);
+const EvidencePanel = lazy(() =>
+  import("../components/evidence/EvidencePanel").then((m) => ({ default: m.EvidencePanel }))
+);
+const PlanetaryPhysicsLab = lazy(() =>
+  import("../components/learning/PlanetaryPhysicsLab").then((m) => ({
+    default: m.PlanetaryPhysicsLab,
+  }))
+);
+const FieldTrialPlanner = lazy(() =>
+  import("../components/planning/FieldTrialPlanner").then((m) => ({
+    default: m.FieldTrialPlanner,
   }))
 );
 
@@ -85,7 +111,22 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     null
   );
   const toastTimerRef = useRef<number | null>(null);
+  const [activeTab, setActiveTab] = useState<ExplorerTab>(
+    () => readExplorerParams(typeof window !== "undefined" ? window.location.search : "").tab
+  );
+  const [planDraft, setPlanDraft] = useState(createFieldTrialDraft);
   const copiedTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    if (activeTab === "compare") {
+      url.searchParams.delete("tab");
+    } else {
+      url.searchParams.set("tab", activeTab);
+    }
+    window.history.replaceState({}, "", url.toString());
+  }, [activeTab]);
 
   useEffect(() => {
     if (isDesktop) {
@@ -104,6 +145,38 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     params.customProbedSite && params.customProbedSite.site_id === params.selectedSiteId
       ? params.customProbedSite
       : analysis.sites.find((s) => s.site_id === params.selectedSiteId);
+
+  const selectedCell =
+    analysis.searchResult?.matches.find((m) => m.earth_cell_h3 === analysis.selectedH3) ??
+    analysis.comparison?.match ??
+    null;
+
+  const navTabs: { id: ExplorerTab; label: string; icon: typeof GitCompareArrows }[] = [
+    { id: "compare", label: t("nav.compare"), icon: GitCompareArrows },
+    { id: "learn", label: t("nav.learn"), icon: FlaskConical },
+    { id: "plan", label: t("nav.plan"), icon: ClipboardCheck },
+    { id: "evidence", label: t("nav.evidence"), icon: BookOpen },
+  ];
+
+  const handleTabKeyDown = (e: KeyboardEvent<HTMLElement>) => {
+    const idx = navTabs.findIndex((tab) => tab.id === activeTab);
+    if (idx === -1) return;
+    const nextIndex =
+      e.key === "ArrowRight"
+        ? (idx + 1) % navTabs.length
+        : e.key === "ArrowLeft"
+          ? (idx - 1 + navTabs.length) % navTabs.length
+          : e.key === "Home"
+            ? 0
+            : e.key === "End"
+              ? navTabs.length - 1
+              : null;
+    if (nextIndex === null) return;
+    e.preventDefault();
+    const nextTab = navTabs[nextIndex].id;
+    setActiveTab(nextTab);
+    document.getElementById(`tab-${nextTab}`)?.focus();
+  };
 
   const hasResults = Boolean(analysis.searchResult || analysis.decomposition);
   const isInitialLoading = analysis.isLoading && !hasResults;
@@ -205,11 +278,86 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   );
 
   return (
-    <main className="mx-auto max-w-screen-2xl space-y-5 px-3 py-5 sm:px-6">
+    <main id="main-content" className="mx-auto max-w-screen-2xl space-y-5 px-3 py-5 sm:px-6">
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         {analysis.isLoading ? t("controls.loading") : ""}
       </div>
 
+      {/* Primary journey: Compare · Learn · Plan · Evidence */}
+      <nav
+        aria-label={t("nav.tabsLabel")}
+        role="tablist"
+        className="flex flex-wrap gap-2 rounded-xl border border-border-subtle bg-surface-elevated p-2 shadow-sm"
+        onKeyDown={handleTabKeyDown}
+      >
+        {navTabs.map((tab) => {
+          const Icon = tab.icon;
+          const active = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              id={`tab-${tab.id}`}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              aria-controls={`panel-${tab.id}`}
+              tabIndex={active ? 0 : -1}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-sm ${
+                active
+                  ? "bg-accent text-accent-foreground shadow-sm"
+                  : "text-content-muted hover:bg-surface-muted hover:text-content"
+              }`}
+            >
+              <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </nav>
+
+      <Suspense fallback={<PanelSkeleton heightClass="h-64" />}>
+        {activeTab === "learn" && (
+          <div id="panel-learn" role="tabpanel" aria-labelledby="tab-learn">
+            <PlanetaryPhysicsLab
+              body={params.selectedBody}
+              activeSite={activeSite}
+              selectedCell={selectedCell}
+              comparison={analysis.comparison}
+              onGoToCompare={() => setActiveTab("compare")}
+              onGoToPlan={() => setActiveTab("plan")}
+            />
+          </div>
+        )}
+
+        {activeTab === "plan" && (
+          <div id="panel-plan" role="tabpanel" aria-labelledby="tab-plan">
+            <FieldTrialPlanner
+              draft={planDraft}
+              onDraftChange={setPlanDraft}
+              activeSite={activeSite}
+              selectedCell={selectedCell}
+              comparison={analysis.comparison}
+              onGoToCompare={() => setActiveTab("compare")}
+              onGoToEvidence={() => setActiveTab("evidence")}
+            />
+          </div>
+        )}
+
+        {activeTab === "evidence" && (
+          <div id="panel-evidence" role="tabpanel" aria-labelledby="tab-evidence">
+            <EvidencePanel activeSite={activeSite} comparison={analysis.comparison} />
+          </div>
+        )}
+      </Suspense>
+
+      <div
+        id="panel-compare"
+        role="tabpanel"
+        aria-labelledby="tab-compare"
+        hidden={activeTab !== "compare"}
+        className="space-y-5"
+      >
       <GuidedStepsBanner activeStep={activeStep} />
 
       <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[22.5rem_minmax(0,1fr)]">
@@ -395,6 +543,13 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
 
           {activeSite && <DataConfidenceBanner site={activeSite} />}
 
+          <ContextualCuriosityStrip
+            body={params.selectedBody}
+            activeSite={activeSite}
+            comparison={analysis.comparison}
+            onOpenLearn={() => setActiveTab("learn")}
+          />
+
           {analysis.searchResult && analysis.searchResult.matches.length === 0 && (
             <EmptyState
               icon={<SearchX className="h-6 w-6" aria-hidden="true" />}
@@ -464,6 +619,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             </section>
           )}
         </div>
+      </div>
       </div>
 
       {toastState && (
