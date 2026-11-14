@@ -365,7 +365,22 @@
       "gibs_truecolor": "NASA Worldview (VIIRS True Color)",
       "gibs_lst": "NASA Worldview (Land Surface Temp.)",
       "gibs_aerosol": "NASA Worldview (Dust / Aerosols)"
-    }
+    },
+    "hoverHudBadge": "Live H3 Telemetry",
+    "selectedHudBadge": "Selected H3 Hexagon",
+    "clickToPinHint": "Click hexagon to pin inspection or subdivide",
+    "paretoBadge": "Pareto Frontier",
+    "scaleLabel": "~{{km}} km",
+    "metricCombined": "Overall",
+    "metricSInd": "Substrate (S_ind)",
+    "metricSDep": "Dynamics (S_dep)",
+    "metricRBreak": "Breakage (R_break)",
+    "cellTempLabel": "Mean Temp.",
+    "cellAridityLabel": "Aridity (AI)",
+    "cellSlopeLabel": "Slope",
+    "cellRadiationLabel": "GCR Radiation",
+    "validTestsBadge": "{{count}} viable test(s)",
+    "jumpToDiagnostics": "View full diagnostics"
   },
   "agencies": {
     "title": "Multi-Agency Catalog (NASA · ESA · CSA · JAXA)",
