@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<style>
+  @page { size: 13.333in 7.5in; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    background: #060913;
+    color: #f8fafc;
+  }
+  .slide {
+    width: 13.333in;
+    height: 7.5in;
+    padding: 0.55in 0.65in;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    background: radial-gradient(circle at 85% 15%, rgba(234, 88, 12, 0.16), transparent 45%),
+                radial-gradient(circle at 15% 85%, rgba(14, 165, 233, 0.14), transparent 45%),
+                #060913;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .slide:last-child { page-break-after: auto; }
+  .kicker {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #38bdf8;
+    margin-bottom: 8px;
+  }
+  h1 { font-size: 56px; font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; }
+  h2 { font-size: 32px; font-weight: 750; line-height: 1.18; margin-bottom: 18px; }
+  .pill {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.14);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    color: #7dd3fc;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: stretch; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .grid-hero { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 28px; align-items: center; flex: 1; }
+  .card {
+    background: rgba(15, 23, 42, 0.82);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .card-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; color: #f1f5f9; }
+  .accent { color: #fb923c; }
+  .cyan { color: #38bdf8; }
+  .danger { color: #f87171; }
+  .ok { color: #34d399; }
+  p, li { font-size: 15px; line-height: 1.48; color: #cbd5e1; }
+  ul { padding-left: 18px; }
+  li { margin-bottom: 8px; }
+  .tagline {
+    font-size: 20px;
+    line-height: 1.4;
+    color: #e2e8f0;
+    border-left: 4px solid #fb923c;
+    padding-left: 16px;
+    margin: 20px 0;
+  }
+  .shot {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+    object-fit: cover;
+  }
+  .shot-tall { height: 4.35in; object-position: top center; }
+  .shot-med { height: 3.45in; object-position: top center; }
+  .caption { font-size: 12px; color: #94a3b8; margin-top: 8px; text-align: center; }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #64748b;
+    border-top: 1px solid rgba(148, 163, 184, 0.16);
+    padding-top: 10px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: rgba(251, 146, 60, 0.16);
+    color: #fdba74;
+    font-weight: 700;
+    font-size: 12px;
+    margin-right: 10px;
+    white-space: nowrap;
+  }
+  .source-row { display: flex; align-items: baseline; margin-top: 10px; font-size: 14px; color: #cbd5e1; }
+  .formula {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: rgba(14, 165, 233, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px;
+    color: #e0f2fe;
+  }
+  .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+  .metric {
+    background: rgba(30, 41, 59, 0.7);
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+  }
+  .m-label { font-size: 12px; color: #94a3b8; }
+  .m-val { font-size: 18px; font-weight: 750; color: #34d399; margin-top: 2px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid rgba(148, 163, 184, 0.18); text-align: left; }
+  td.warn { color: #fca5a5; font-weight: 700; }
+  .honesty-box {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.35);
+    font-size: 14px;
+    color: #fecaca;
+  }
+  .closing {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    color: #f8fafc;
+    padding: 16px 24px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, rgba(234,88,12,0.18), rgba(14,165,233,0.18));
+    border: 1px solid rgba(148, 163, 184, 0.25);
+  }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1 -->
+<section class="slide">
+  <div><span class="pill">NASA Space Apps Challenge 2026 · Antofagasta, Chile</span></div>
+  <div class="grid-hero">
+    <div>
+      <h1>Ckepi</h1>
+      <p style="font-size:21px; color:#94a3b8; margin-top:8px; font-weight:600;">Motor de Descubrimiento de Análogos Terrestres por Descomposición Causal</p>
+      <div class="tagline">“Ckepi acerca los datos de Tierra, Luna y Marte para entender qué podemos comparar y dónde termina la semejanza.”</div>
+      <p style="font-size:14px; color:#7dd3fc; font-weight:600;">Código Abierto · MIT / Apache-2.0 · Sin Inicio de Sesión</p>
+    </div>
+    <div>
+      <img class="shot shot-tall" src="file:///Users/kevin/Downloads/nasa/docs/presentation/shot_explorer_mars.png" alt="Ckepi 3D Explorer" />
+      <div class="caption">Prototipo en vivo (rama kevin): globos 3D Marte/Luna + malla H3 global de la Tierra</div>
+    </div>
+  </div>
+  <div class="footer"><span>Ckepi · 1 / 7</span><span>NASA Space Apps Challenge 2026</span></div>
+</section>
+
+<!-- SLIDE 2 -->
+<section class="slide">
+  <div>
+    <div class="kicker">01 · EL PROBLEMA Y PÚBLICO</div>
+    <h2>Una foto del desierto parece Marte, pero oculta la física</h2>
+  </div>
+  <div class="grid-2" style="flex:1; align-items:center;">
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <div class="card">
+        <div class="card-title accent">Brecha Científica</div>
+        <p>El parecido visual o los promedios simples ocultan diferencias críticas en inercia térmica, pendiente, radiación, presión y gravedad, induciendo comparaciones engañosas.</p>
+      </div>
+      <div class="card">
+        <div class="card-title cyan">Brecha de Acceso</div>
+        <p>Las herramientas planetarias actuales exigen formación técnica, dejando fuera a estudiantes, docentes, familias y personas con baja alfabetización digital.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">A Quién Sirve y Posibles Facilitadores</div>
+        <p>Estudiantes, familias, docentes e investigadores. Bibliotecas, municipios, universidades y organizaciones comunitarias son posibles facilitadores (sin alianzas confirmadas).</p>
+      </div>
+    </div>
+    <div>
+      <img class="shot shot-tall" src="file:///Users/kevin/Downloads/nasa/docs/presentation/shot_explorer_moon.png" alt="Moon Shackleton Explorer" />
+      <div class="caption">Moon South Pole (Shackleton Crater) · NASA LRO WAC / LOLA Trek WMTS</div>
+    </div>
+  </div>
+  <div class="footer"><span>Ckepi · 2 / 7</span><span>01 · EL PROBLEMA Y PÚBLICO</span></div>
+</section>
+
+<!-- SLIDE 3 -->
+<section class="slide">
+  <div>
+    <div class="kicker">02 · LA SOLUCIÓN</div>
+    <h2>Un mismo motor científico con profundidad progresiva</h2>
+  </div>
+  <div class="grid-3"><div class="card"><div class="card-title accent">1. Explorar Globos 3D</div><p>Rotar globos WMTS de Luna y Marte y sondear cualquier coordenada o 5 sitios NASA curados.</p></div><div class="card"><div class="card-title accent">2. Comparar por Dimensión</div><p>Ordenar celdas H3 terrestres separando sustrato independiente (X) y clima dependiente (Y).</p></div><div class="card"><div class="card-title accent">3. Ver Límites Físicos</div><p>Mostrar fronteras de ruptura irreducibles (B) y qué pruebas de campo son válidas o inválidas.</p></div></div>
+  <div class="grid-2" style="margin-top:16px; align-items:center;">
+    <img class="shot shot-med" src="file:///Users/kevin/Downloads/nasa/docs/presentation/shot_atacama_analysis.png" alt="Causal Decomposition & Matrix" />
+    <div class="card" style="height:100%; display:flex; flex-direction:column; justify-content:center;">
+      <div class="card-title cyan">Verified UI & Accessibility (Branch: kevin)</div>
+      <p>Desarrollado en React + MapLibre GL v6 con 1,757 celdas H3 en caché, interfaz tri-idioma (ES / PT / EN · 460 claves), modo claro/oscuro y exportación CSV / GeoJSON / Markdown.</p>
+    </div>
+  </div>
+  <div class="footer"><span>Ckepi · 3 / 7</span><span>02 · LA SOLUCIÓN</span></div>
+</section>
+
+<!-- SLIDE 4 -->
+<section class="slide">
+  <div>
+    <div class="kicker">03 · CIENCIA Y DATOS REALES NASA</div>
+    <h2>Descomposición Causal (X → Y) y Fronteras de Ruptura (B)</h2>
+  </div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title cyan">10 Forzamientos Independientes (X)</div>
+      <p>Rugosidad, pendiente, inercia térmica, albedo, flujo solar, hielo subsuperficial, aridez, HR, UV, LAI.</p>
+    </div>
+    <div class="card">
+      <div class="card-title accent">6 Respuestas Dependientes (Y)</div>
+      <p>Amplitud térmica ΔT, enfriamiento nocturno, temp. media, viento, flujo eólico de polvo, sublimación.</p>
+    </div>
+    <div class="card">
+      <div class="card-title danger">3 Fronteras de Ruptura (B)</div>
+      <p>Gravedad superficial (g), presión atmosférica (mbar) y radiación cósmica ionizante (mSv/año).</p>
+    </div>
+  </div>
+  <div class="formula">Combinado = 0.60·S_ind + 0.40·S_dep (RidgeCV / RandomForest / PCA + intervalo de incertidumbre)</div>
+  <div class="card" style="margin-top:14px;">
+    <div class="card-title">Datos Abiertos Integrados (Medido · Derivado Orbital · Proxy de Modelo)</div>
+    <div class="source-row"><span class="badge">NASA Marte y Luna</span><span>Perseverance MEDA, Curiosity REMS, PDS ODE (LRO Diviner/LOLA/Mini-RF, MRO CRISM/SHARAD), Trek WMTS</span></div><div class="source-row"><span class="badge">NASA y Socios Tierra</span><span>NASA POWER Climatology, Earthdata CMR/GIBS, Copernicus 90m DEM, ERA5-Land, SoilGrids v2.0, Macrostrat, ESA, CSA, JAXA</span></div>
+  </div>
+  <div class="footer"><span>Ckepi · 4 / 7</span><span>03 · CIENCIA Y DATOS REALES NASA</span></div>
+</section>
+
+<!-- SLIDE 5 -->
+<section class="slide">
+  <div>
+    <div class="kicker">04 · PRUEBA VERIFICADA Y LÍMITES</div>
+    <h2>Caso Real: Cráter Jezero (Marte) ↔ Atacama / Yungay (Tierra)</h2>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title ok">Celda H3 Verificada 82b227fffffffff · Atacama Desert (Yungay)</div>
+      <div class="metrics-grid"><div class="metric"><div class="m-label">Similitud Índice de Aridez</div><div class="m-val">0.982</div></div><div class="metric"><div class="m-label">Similitud Hielo Subsuperficial</div><div class="m-val">0.905</div></div><div class="metric"><div class="m-label">Similitud Albedo Superficial</div><div class="m-val">0.766</div></div><div class="metric"><div class="m-label">Similitud Inercia Térmica</div><div class="m-val">0.691</div></div><div class="metric"><div class="m-label">Similitud Pendiente</div><div class="m-val">0.602</div></div><div class="metric"><div class="m-label">Puntaje Combinado (IC)</div><div class="m-val">0.319 [0.255–0.383]</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title danger">Frontera de Ruptura Irreducible (R_break = 0.866)</div>
+      <table>
+        <thead><tr><th>Variable</th><th>Mars (Jezero)</th><th>Earth (Atacama)</th></tr></thead>
+        <tbody><tr><td>Gravedad</td><td class="warn">0.378 g (Marte)</td><td>1.0 g (Tierra)</td></tr><tr><td>Presión</td><td class="warn">8.07 mbar</td><td>851.04 mbar</td></tr><tr><td>Radiación</td><td class="warn">230.0 mSv/año</td><td>3.07 mSv/año</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="honesty-box">Válido en Atacama: calibración óptica/albedo y movilidad. Inválido al aire libre: paracaídas, enfriamiento convectivo y radiación GCR. Sin '87% igual a Marte' ni certificación; DEM 30m NASADEM/CTX pendiente.</div>
+  <div class="footer"><span>Ckepi · 5 / 7</span><span>04 · PRUEBA VERIFICADA Y LÍMITES</span></div>
+</section>
+
+<!-- SLIDE 6 -->
+<section class="slide">
+  <div>
+    <div class="kicker">05 · SOSTENIBILIDAD Y HOJA DE RUTA</div>
+    <h2>Aprendizaje Gratuito y Hipótesis Institucional por Validar</h2>
+  </div>
+  <div class="grid-2" style="flex:1; align-items:center;">
+    <div class="card" style="height:100%;">
+      <div class="card-title ok">Modelo de Sostenibilidad (Hipótesis)</div>
+      <ul><li>El acceso web y el aprendizaje son gratuitos y abiertos (stack MIT / Apache-2.0).</li><li>Hipótesis: instituciones financian talleres, formación de guías, kits impresos y caracterización territorial.</li><li>Sin afirmar ventas, precios ni convenios cerrados todavía.</li></ul>
+    </div>
+    <div class="card" style="height:100%;">
+      <div class="card-title cyan">Lente Local y Siguientes Pasos</div>
+      <ul><li>Desde Antofagasta y Atacama como referencia; contribución prevista a ODS 4.3, 4.4, 9.5, 17.3, 17.16 y 17.17.</li><li>Siguiente: completar 1,403 celdas Res-3 ERA5 (10,000/11,403 listas), validar DEM 30 m y probar con usuarios reales.</li></ul>
+    </div>
+  </div>
+  <div class="footer"><span>Ckepi · 6 / 7</span><span>05 · SOSTENIBILIDAD Y HOJA DE RUTA</span></div>
+</section>
+
+<!-- SLIDE 7 -->
+<section class="slide">
+  <div>
+    <div class="kicker">06 · CRÉDITOS, USO DE IA Y CIERRE</div>
+    <h2>Fuentes Abiertas y Declaración Transparente de IA</h2>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title cyan">Créditos de Datos y Software (Solo Texto · Sin Logos NASA)</div>
+      <p>NASA (Moon/Mars Trek WMTS, PDS ODE, Mars 2020 MEDA, MSL REMS, POWER, Earthdata CMR/GIBS) · ESA Copernicus · CSA RADARSAT · JAXA G-Portal · Open-Meteo ERA5-Land · ISRIC SoilGrids v2.0 · Macrostrat · FastAPI, DuckDB, H3, scikit-learn, React, MapLibre GL JS.</p>
+    </div>
+    <div class="card">
+      <div class="card-title accent">Declaración de Super Intelligence (IA)</div>
+      <p>La idea científica (descomposición X → Y → B) y decisiones de producto son del equipo humano. La IA asistió en código, refactorización, documentación y paridad ES/PT/EN, con revisión humana.</p>
+    </div>
+  </div>
+  <div class="card" style="text-align:center; font-size:15px; color:#cbd5e1;">GitHub: https://github.com/AnGeMoNs/Ckepi  ·  Demo Pública: [Insertar URL]  ·  Equipo: [Insertar Integrantes]</div>
+  <div class="closing">“Con Ckepi, una semejanza despierta la curiosidad; la evidencia nos enseña hasta dónde llega.”</div>
+  <div class="footer"><span>Ckepi · 7 / 7</span><span>06 · CRÉDITOS, USO DE IA Y CIERRE</span></div>
+</section>
+
+</body>
+</html>

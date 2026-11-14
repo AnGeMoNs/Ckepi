@@ -365,7 +365,22 @@
       "gibs_truecolor": "NASA Worldview (VIIRS Color Real)",
       "gibs_lst": "NASA Worldview (Temp. Superficial)",
       "gibs_aerosol": "NASA Worldview (Polvo / Aerosoles)"
-    }
+    },
+    "hoverHudBadge": "Telemetría H3 en Vivo",
+    "selectedHudBadge": "Hexágono H3 Seleccionado",
+    "clickToPinHint": "Haz clic en el hexágono para fijar su inspección o subdividirlo",
+    "paretoBadge": "Frontera Pareto",
+    "scaleLabel": "~{{km}} km",
+    "metricCombined": "Global",
+    "metricSInd": "Sustrato (S_ind)",
+    "metricSDep": "Dinámica (S_dep)",
+    "metricRBreak": "Ruptura (R_break)",
+    "cellTempLabel": "Temp. Media",
+    "cellAridityLabel": "Aridez (AI)",
+    "cellSlopeLabel": "Pendiente",
+    "cellRadiationLabel": "Radiación GCR",
+    "validTestsBadge": "{{count}} ensayo(s) viable(s)",
+    "jumpToDiagnostics": "Ver diagnóstico completo"
   },
   "agencies": {
     "title": "Catálogo Multi-Agencia (NASA · ESA · CSA · JAXA)",
