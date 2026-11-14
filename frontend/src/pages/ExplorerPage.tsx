@@ -795,7 +795,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                   ]}
                 />
                 {testProfile !== "causal_auto" && (
-                  <p className="text-xs text-status-warning">{t("controls.modelOverriddenNote")}</p>
+                  <p className="text-xs text-status-warn">{t("controls.modelOverriddenNote")}</p>
                 )}
               </div>
 

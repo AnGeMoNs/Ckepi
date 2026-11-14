@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "esbuild tests/planetaryPhysics.test.ts --bundle --platform=node --format=esm --outfile=/tmp/ckepi-physics.test.mjs && node --test /tmp/ckepi-physics.test.mjs"
+    "test": "esbuild tests/planetaryPhysics.test.ts --bundle --platform=node --format=esm --outfile=/tmp/ckepi-physics.test.mjs && esbuild tests/i18nParity.test.ts --bundle --platform=node --format=esm --outfile=/tmp/ckepi-i18n.test.mjs && node --test /tmp/ckepi-physics.test.mjs /tmp/ckepi-i18n.test.mjs"
   },
   "dependencies": {
     "@types/three": "^0.187.0",

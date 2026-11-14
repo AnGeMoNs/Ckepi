@@ -711,6 +711,24 @@
       "lifepo4_battery": "Bateria LiFePO4 recarregável compartilhada",
       "portable_weather_station": "Estação meteorológica / piranômetro portátil",
       "open_microcontroller": "Microcontrolador aberto (Arduino / ESP32 / RPi)"
+    },
+    "presetsLabel": "Modelos rápidos de ensaio",
+    "presets": {
+      "rover": {
+        "label": "🤖 Tração de rover",
+        "title": "Ensaio de tração e inclinação em solo árido",
+        "objective": "Medir deslizamento de rodas e inclinação com IMU comparando uma célula H3 do Atacama com as inclinações de Jezero."
+      },
+      "thermal": {
+        "label": "🌡️ Sensores térmicos",
+        "title": "Registro de amplitude térmica e albedo superficial",
+        "objective": "Comparar a variação térmica diurna e radiação solar em terreno hiperárido para calibrar sensores de baixo custo."
+      },
+      "steam": {
+        "label": "🎓 Oficina escolar STEAM",
+        "title": "Atividade prática de física planetária e análogos",
+        "objective": "Demonstrar massa vs peso, inclinação segura e limites físicos irreproduzíveis usando dados abertos da NASA."
+      }
     }
   },
   "evidence": {

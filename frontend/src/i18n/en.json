@@ -711,6 +711,24 @@
       "lifepo4_battery": "Shared rechargeable LiFePO4 battery",
       "portable_weather_station": "Portable weather station / pyranometer",
       "open_microcontroller": "Open microcontroller (Arduino / ESP32 / RPi)"
+    },
+    "presetsLabel": "Quick trial templates",
+    "presets": {
+      "rover": {
+        "label": "🤖 Rover traction",
+        "title": "Arid-soil rover traction and slope trial",
+        "objective": "Measure wheel slip and tilt with a reusable IMU comparing an Atacama H3 cell against Jezero slope telemetry."
+      },
+      "thermal": {
+        "label": "🌡️ Thermal sensors",
+        "title": "Diurnal thermal swing and surface albedo logging",
+        "objective": "Compare diurnal temperature swings and solar irradiance in hyperarid terrain to calibrate low-cost sensors."
+      },
+      "steam": {
+        "label": "🎓 STEAM workshop",
+        "title": "Hands-on planetary physics and analog activity",
+        "objective": "Demonstrate mass vs weight, safe slope limits, and irreproducible planetary boundaries using open NASA data."
+      }
     }
   },
   "evidence": {

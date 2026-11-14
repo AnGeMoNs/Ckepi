@@ -53,6 +53,18 @@ export function FieldTrialPlanner({
   ]);
   const [localNotes, setLocalNotes] = useState<string>("");
 
+  const applyPreset = (presetId: "rover" | "thermal" | "steam") => {
+    setTrialTitle(t(`plan.presets.${presetId}.title`));
+    setTrialObjective(t(`plan.presets.${presetId}.objective`));
+    if (presetId === "rover") {
+      setSelectedEquipment(["imu_inclinometer", "rover_wheels_chassis", "lifepo4_battery", "open_microcontroller"]);
+    } else if (presetId === "thermal") {
+      setSelectedEquipment(["portable_weather_station", "lifepo4_battery", "open_microcontroller"]);
+    } else {
+      setSelectedEquipment(["imu_inclinometer", "open_microcontroller"]);
+    }
+  };
+
   const toggleEquipment = (id: string) => {
     setSelectedEquipment((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
@@ -159,6 +171,16 @@ export function FieldTrialPlanner({
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Quick Trial Presets */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-medium text-content-muted">{t("plan.presetsLabel")}:</span>
+            {(["rover", "thermal", "steam"] as const).map((presetId) => (
+              <Button key={presetId} variant="secondary" onClick={() => applyPreset(presetId)}>
+                {t(`plan.presets.${presetId}.label`)}
+              </Button>
+            ))}
           </div>
 
           {/* Trial Form (In-memory only, no personal data stored) */}
