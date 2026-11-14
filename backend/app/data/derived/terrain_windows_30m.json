@@ -1,0 +1,110 @@
+{
+  "generated_utc": "2026-11-14T20:13:07+00:00",
+  "spacing_m": 30.0,
+  "window_m": 6000.0,
+  "grid_px": 200,
+  "windows": {
+    "mars_jezero_crater": {
+      "body": "mars",
+      "center_lat": 18.38,
+      "center_lon": 77.58,
+      "center_origin": "app/data/planetary_sites.json",
+      "crs": "Mars 2000 sphere, Equirectangular (std parallel 18.4663 N), metres",
+      "valid_fraction": 1.0,
+      "elev_min_m": -2674.5,
+      "elev_max_m": -2599.3,
+      "source": {
+        "dataset": "USGS Astrogeology Mars 2020 TRN CTX DEM Mosaic (NASA MRO CTX), 20 m/px",
+        "url": "https://planetarymaps.usgs.gov/mosaic/mars2020_trn/CTX/ScienceInvestigationMaps_JPL/M20_JezeroCrater_CTXDEM_20m.tif",
+        "file": "M20_JezeroCrater_CTXDEM_20m.tif",
+        "sha256": "ba7f706ea1b5d63a562f28a7dcf7a7f3c79bce7f048e6974b57e8a33c30d1ba2",
+        "license": "Public domain (USGS)"
+      }
+    },
+    "control_yungay": {
+      "body": "earth",
+      "center_lat": -24.08,
+      "center_lon": -69.91,
+      "center_origin": "app/engine/known_analogs.py (Atacama Desert (Yungay))",
+      "crs": "WGS 84 / UTM zone 19S (EPSG:32719), metres",
+      "valid_fraction": 1.0,
+      "elev_min_m": 957.1,
+      "elev_max_m": 1280.1,
+      "source": {
+        "dataset": "Copernicus DEM GLO-30 (ESA, DSM, 1 arcsec)",
+        "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S25_00_W070_00_DEM/Copernicus_DSM_COG_10_S25_00_W070_00_DEM.tif",
+        "file": "Copernicus_DSM_COG_10_S25_00_W070_00_DEM.tif",
+        "sha256": "ac7b8fce2e8598c5d522fd0f6ff0b4a1ae6f6c5aecda55671fc6e2bd82ec7710",
+        "license": "Copernicus DEM licence (free, attribution: (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved)"
+      }
+    },
+    "83b220fffffffff": {
+      "body": "earth",
+      "center_lat": -24.1385,
+      "center_lon": -69.58155,
+      "center_origin": "H3 cell center of 83b220fffffffff",
+      "crs": "WGS 84 / UTM zone 19S (EPSG:32719), metres",
+      "valid_fraction": 1.0,
+      "elev_min_m": 1422.6,
+      "elev_max_m": 1833.3,
+      "source": {
+        "dataset": "Copernicus DEM GLO-30 (ESA, DSM, 1 arcsec)",
+        "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S25_00_W070_00_DEM/Copernicus_DSM_COG_10_S25_00_W070_00_DEM.tif",
+        "file": "Copernicus_DSM_COG_10_S25_00_W070_00_DEM.tif",
+        "sha256": "ac7b8fce2e8598c5d522fd0f6ff0b4a1ae6f6c5aecda55671fc6e2bd82ec7710",
+        "license": "Copernicus DEM licence (free, attribution: (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved)"
+      }
+    },
+    "83b221fffffffff": {
+      "body": "earth",
+      "center_lat": -24.68337,
+      "center_lon": -68.60432,
+      "center_origin": "H3 cell center of 83b221fffffffff",
+      "crs": "WGS 84 / UTM zone 19S (EPSG:32719), metres",
+      "valid_fraction": 1.0,
+      "elev_min_m": 4195.3,
+      "elev_max_m": 5269.6,
+      "source": {
+        "dataset": "Copernicus DEM GLO-30 (ESA, DSM, 1 arcsec)",
+        "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S25_00_W069_00_DEM/Copernicus_DSM_COG_10_S25_00_W069_00_DEM.tif",
+        "file": "Copernicus_DSM_COG_10_S25_00_W069_00_DEM.tif",
+        "sha256": "5b1775bb2f295115cd5b154c3ec0fb09607fec3fd52ee3e8c63e9f6b403887c4",
+        "license": "Copernicus DEM licence (free, attribution: (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved)"
+      }
+    },
+    "83b225fffffffff": {
+      "body": "earth",
+      "center_lat": -23.60584,
+      "center_lon": -68.52431,
+      "center_origin": "H3 cell center of 83b225fffffffff",
+      "crs": "WGS 84 / UTM zone 19S (EPSG:32719), metres",
+      "valid_fraction": 1.0,
+      "elev_min_m": 2300.8,
+      "elev_max_m": 2342.2,
+      "source": {
+        "dataset": "Copernicus DEM GLO-30 (ESA, DSM, 1 arcsec)",
+        "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S24_00_W069_00_DEM/Copernicus_DSM_COG_10_S24_00_W069_00_DEM.tif",
+        "file": "Copernicus_DSM_COG_10_S24_00_W069_00_DEM.tif",
+        "sha256": "25613184ac765721c44759d95d22fb208d3c57ad68680ebb77b1b18ee312e693",
+        "license": "Copernicus DEM licence (free, attribution: (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved)"
+      }
+    },
+    "83b224fffffffff": {
+      "body": "earth",
+      "center_lat": -23.05214,
+      "center_lon": -69.49733,
+      "center_origin": "H3 cell center of 83b224fffffffff",
+      "crs": "WGS 84 / UTM zone 19S (EPSG:32719), metres",
+      "valid_fraction": 1.0,
+      "elev_min_m": 1408.2,
+      "elev_max_m": 1538.2,
+      "source": {
+        "dataset": "Copernicus DEM GLO-30 (ESA, DSM, 1 arcsec)",
+        "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S24_00_W070_00_DEM/Copernicus_DSM_COG_10_S24_00_W070_00_DEM.tif",
+        "file": "Copernicus_DSM_COG_10_S24_00_W070_00_DEM.tif",
+        "sha256": "4d8745aed594bac867a2fe434fbf7ea7d092580b077de396e67874febb2730f3",
+        "license": "Copernicus DEM licence (free, attribution: (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved)"
+      }
+    }
+  }
+}

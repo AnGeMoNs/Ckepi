@@ -11,7 +11,12 @@ Implements the rigorous statistical terrain comparison specified in docs/SDD.md 
 - 2D spatial block bootstrap (10x10 pixel blocks) for 95% confidence intervals
 """
 
+import json
 import math
+import zlib
+from functools import lru_cache
+from pathlib import Path
+
 import numpy as np
 from scipy.stats import ks_2samp, wasserstein_distance
 
@@ -23,7 +28,31 @@ from app.models.schemas import (
     TerrainDistributionComparison,
 )
 
-# Validated Yungay control benchmark physical parameters (NASADEM_HGT v001 tile s25w070)
+# Real 30 m metric DEM windows precomputed by scripts/precompute_real_terrain.py
+# (USGS/NASA MRO CTX DEM for Jezero; ESA Copernicus GLO-30 for Antofagasta and the Yungay control).
+REAL_WINDOWS_DIR = Path(__file__).resolve().parents[1] / "data" / "derived"
+REAL_CONTROL_KEY = "control_yungay"
+
+
+@lru_cache(maxsize=1)
+def _load_real_windows() -> tuple[dict[str, np.ndarray], dict[str, dict[str, object]]]:
+    """Return {key: metric DEM (m)} and their provenance; empty if the precomputed files are absent."""
+    npz_path = REAL_WINDOWS_DIR / "terrain_windows_30m.npz"
+    meta_path = REAL_WINDOWS_DIR / "terrain_windows_30m.json"
+    if not npz_path.exists() or not meta_path.exists():
+        return {}, {}
+    with np.load(npz_path) as data:
+        arrays = {key: data[key].astype(float) for key in data.files}
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))["windows"]
+    return arrays, meta
+
+
+def _stable_seed(text: str, offset: int) -> int:
+    """Deterministic across processes (built-in hash() is salted per interpreter run)."""
+    return zlib.crc32(text.encode("utf-8")) % 99991 + offset
+
+
+# Fallback-only surrogate parameters for the Yungay control when no real DEM window is available
 YUNGAY_CONTROL_SLOPE_DEG = 2.25
 YUNGAY_CONTROL_ROUGHNESS = 0.4368
 YUNGAY_CONTROL_LAT = -24.10
@@ -211,36 +240,34 @@ def compute_terrain_distribution_comparison(
     e_slope = float(match.earth_variables.independent.get("slope_deg", 2.5))
     e_rough = float(match.earth_variables.independent.get("topographic_roughness", 0.40))
 
-    seed_p = abs(hash(site.site_id)) % 99991 + 101
-    seed_e = abs(hash(match.earth_cell_h3)) % 99991 + 307
-    seed_yungay = 24106990
+    real_dems, real_meta = _load_real_windows()
 
-    dem_p_30 = _synthesize_calibrated_metric_dem(
-        mean_slope_deg=p_slope,
-        roughness_index=p_rough,
-        lat_deg=site.coordinates.lat,
-        seed=seed_p,
-        grid_size=120,
-        spacing_m=30.0,
-        apply_equirect_cos_correction=False,
+    # Surrogates must share the real windows' grid so profiles and histograms stay comparable.
+    grid_px = next(iter(real_dems.values())).shape[0] if real_dems else 120
+
+    def _surrogate(mean_slope: float, rough: float, lat: float, seed: int) -> np.ndarray:
+        return _synthesize_calibrated_metric_dem(
+            mean_slope_deg=mean_slope,
+            roughness_index=rough,
+            lat_deg=lat,
+            seed=seed,
+            grid_size=grid_px,
+            spacing_m=30.0,
+            apply_equirect_cos_correction=False,
+        )
+
+    p_is_real = site.site_id in real_dems
+    e_is_real = match.earth_cell_h3 in real_dems
+    y_is_real = REAL_CONTROL_KEY in real_dems
+
+    dem_p_30 = real_dems[site.site_id] if p_is_real else _surrogate(
+        p_slope, p_rough, site.coordinates.lat, _stable_seed(site.site_id, 101)
     )
-    dem_e_30 = _synthesize_calibrated_metric_dem(
-        mean_slope_deg=e_slope,
-        roughness_index=e_rough,
-        lat_deg=match.coordinates.lat,
-        seed=seed_e,
-        grid_size=120,
-        spacing_m=30.0,
-        apply_equirect_cos_correction=False,
+    dem_e_30 = real_dems[match.earth_cell_h3] if e_is_real else _surrogate(
+        e_slope, e_rough, match.coordinates.lat, _stable_seed(match.earth_cell_h3, 307)
     )
-    dem_yungay_30 = _synthesize_calibrated_metric_dem(
-        mean_slope_deg=YUNGAY_CONTROL_SLOPE_DEG,
-        roughness_index=YUNGAY_CONTROL_ROUGHNESS,
-        lat_deg=YUNGAY_CONTROL_LAT,
-        seed=seed_yungay,
-        grid_size=120,
-        spacing_m=30.0,
-        apply_equirect_cos_correction=False,
+    dem_yungay_30 = real_dems[REAL_CONTROL_KEY] if y_is_real else _surrogate(
+        YUNGAY_CONTROL_SLOPE_DEG, YUNGAY_CONTROL_ROUGHNESS, YUNGAY_CONTROL_LAT, 24106990
     )
 
     slope_p_30, relief_p_30 = _compute_slope_and_relief(dem_p_30, spacing_m=30.0)
@@ -338,38 +365,47 @@ def compute_terrain_distribution_comparison(
     prof_e = [round(float(dem_e_30[mid_row, idx] - np.min(dem_e_30[mid_row, :])), 2) for idx in step_idx]
     prof_y = [round(float(dem_yungay_30[mid_row, idx] - np.min(dem_yungay_30[mid_row, :])), 2) for idx in step_idx]
 
-    cos_p = round(math.cos(math.radians(abs(site.coordinates.lat))), 4)
-    is_atacama_zone = -28.5 <= match.coordinates.lat <= -18.0 and -72.0 <= match.coordinates.lon <= -66.0
-    earth_proj = (
-        "UTM Zone 19S (EPSG:32719, metric m)"
-        if is_atacama_zone
-        else f"UTM / Metric Tangent Grid (lat {match.coordinates.lat:.2f}°, m)"
+    synthetic_label = (
+        "SYNTHETIC surrogate calibrated to catalog slope/roughness — no real DEM window for this "
+        "location yet; not a measurement"
     )
-    if site.body == "mars":
-        planetary_proj = f"Mars Equirectangular → Local Metric (cos φ = {cos_p} at {site.coordinates.lat:.2f}°)"
-        planetary_dem = (
-            "USGS Mars 2020 Science Investigation CTX DEM Mosaic (20 m → 30 m)"
-            if "jezero" in site.site_id
-            else "NASA MGS MOLA / CTX Metric DEM (resampled to 30 m)"
-        )
-    else:
-        planetary_proj = f"Moon Selenographic → Local Metric (cos φ = {cos_p} at {site.coordinates.lat:.2f}°)"
-        planetary_dem = "NASA LRO LOLA DEM (PDS Geosciences, resampled to 30 m)"
 
-    earth_dem = (
-        "NASA NASADEM_HGT v001 (1 arc-sec ~30 m, DOI:10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001) + ESA Copernicus GLO-30"
+    def _real_label(key: str) -> str:
+        source = real_meta[key]["source"]
+        return f"{source['dataset']} — {real_meta[key]['crs']}, resampled to 30 m ({source['url']})"
+
+    if p_is_real:
+        planetary_proj = str(real_meta[site.site_id]["crs"])
+        planetary_dem = _real_label(site.site_id)
+    else:
+        cos_p = round(math.cos(math.radians(abs(site.coordinates.lat))), 4)
+        planetary_proj = f"Local metric grid (cos φ = {cos_p} at {site.coordinates.lat:.2f}°)"
+        planetary_dem = synthetic_label
+
+    if e_is_real:
+        earth_proj = str(real_meta[match.earth_cell_h3]["crs"])
+        earth_dem = _real_label(match.earth_cell_h3)
+    else:
+        earth_proj = f"Local metric grid (lat {match.coordinates.lat:.2f}°)"
+        earth_dem = synthetic_label
+
+    control_name = (
+        "Atacama — Yungay (real DEM: ESA Copernicus GLO-30, 30 m)"
+        if y_is_real
+        else "Atacama — Yungay (SYNTHETIC surrogate; not a measurement)"
     )
+    window_km = round(dem_p_30.shape[0] * 30.0 / 1000.0, 2)
 
     return TerrainDistributionComparison(
         common_resolution_m=30,
-        window_size_km=3.6,
+        window_size_km=window_km,
         block_bootstrap_size_px=10,
         bootstrap_iterations=120,
         earth_projection=earth_proj,
         planetary_projection=planetary_proj,
         planetary_dem_source=planetary_dem,
         earth_dem_source=earth_dem,
-        control_benchmark_name="Atacama — Yungay (NASADEM s25w070)",
+        control_benchmark_name=control_name,
         slope_distribution=DistributionHistogram(
             metric="slope_deg",
             unit="°",
