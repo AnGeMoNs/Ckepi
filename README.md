@@ -158,3 +158,11 @@ d:\nasa\
 │   │   └── utils\exportResults.ts        # Exportación CSV, GeoJSON e Informe Markdown
 │   └── package.json
 └── README.md
+
+## Continuidad del recorrido en `angemon`
+
+La rama incorpora el recorrido Comparar → Aprender → Planificar → Evidencia.
+El borrador de Planificar se conserva al cambiar de pestaña durante la sesión;
+descárgalo antes de recargar o cerrar la página. Los enlaces lunares, el foco de
+teclado y los avisos de copia/API cuentan con pruebas de regresión.
+Consulta [alcance y comandos de verificación](docs/ANGEMON_RELIABILITY.md).

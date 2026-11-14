@@ -1,4 +1,4 @@
-import { useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import {
   AlertTriangle,
   Check,
@@ -12,6 +12,8 @@ import {
 import { useTranslation } from "react-i18next";
 
 import { formatNumber, formatPercent } from "../../i18n";
+import { useClipboard } from "../../hooks/useClipboard";
+import type { FieldTrialDraft } from "../../utils/fieldTrialDraft";
 import type {
   AnalogMatchItem,
   PlanetarySite,
@@ -22,6 +24,8 @@ import { Button } from "../ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 
 interface FieldTrialPlannerProps {
+  draft: FieldTrialDraft;
+  onDraftChange: Dispatch<SetStateAction<FieldTrialDraft>>;
   activeSite?: PlanetarySite;
   selectedCell?: AnalogMatchItem | null;
   comparison?: SiteComparisonResponse | null;
@@ -38,6 +42,8 @@ const REUSABLE_EQUIPMENT_IDS = [
 ] as const;
 
 export function FieldTrialPlanner({
+  draft,
+  onDraftChange,
   activeSite,
   selectedCell,
   comparison,
@@ -47,31 +53,34 @@ export function FieldTrialPlanner({
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
 
-  const [trialTitle, setTrialTitle] = useState<string>(t("plan.defaults.title"));
-  const [trialObjective, setTrialObjective] = useState<string>(t("plan.defaults.objective"));
-  const [selectedEquipment, setSelectedEquipment] = useState<string[]>([
-    "imu_inclinometer",
-    "open_microcontroller",
-  ]);
-  const [localNotes, setLocalNotes] = useState<string>("");
-  const [copiedPlan, setCopiedPlan] = useState<boolean>(false);
+  const trialTitle = draft.title ?? t("plan.defaults.title");
+  const trialObjective = draft.objective ?? t("plan.defaults.objective");
+  const selectedEquipment = draft.equipment;
+  const localNotes = draft.notes;
+  const clipboard = useClipboard();
+  const copiedPlan = clipboard.status === "copied";
 
   const applyPreset = (presetId: "rover" | "thermal" | "steam") => {
-    setTrialTitle(t(`plan.presets.${presetId}.title`));
-    setTrialObjective(t(`plan.presets.${presetId}.objective`));
-    if (presetId === "rover") {
-      setSelectedEquipment(["imu_inclinometer", "rover_wheels_chassis", "lifepo4_battery", "open_microcontroller"]);
-    } else if (presetId === "thermal") {
-      setSelectedEquipment(["portable_weather_station", "lifepo4_battery", "open_microcontroller"]);
-    } else {
-      setSelectedEquipment(["imu_inclinometer", "open_microcontroller"]);
-    }
+    const equipment = presetId === "rover"
+      ? ["imu_inclinometer", "rover_wheels_chassis", "lifepo4_battery", "open_microcontroller"]
+      : presetId === "thermal"
+        ? ["portable_weather_station", "lifepo4_battery", "open_microcontroller"]
+        : ["imu_inclinometer", "open_microcontroller"];
+    onDraftChange((prev) => ({
+      ...prev,
+      title: t(`plan.presets.${presetId}.title`),
+      objective: t(`plan.presets.${presetId}.objective`),
+      equipment,
+    }));
   };
 
   const toggleEquipment = (id: string) => {
-    setSelectedEquipment((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
+    onDraftChange((prev) => ({
+      ...prev,
+      equipment: prev.equipment.includes(id)
+        ? prev.equipment.filter((item) => item !== id)
+        : [...prev.equipment, id],
+    }));
   };
 
   const buildMarkdownPlan = () => {
@@ -108,11 +117,7 @@ export function FieldTrialPlanner({
   };
 
   const handleCopyPlan = () => {
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      void navigator.clipboard.writeText(buildMarkdownPlan());
-      setCopiedPlan(true);
-      window.setTimeout(() => setCopiedPlan(false), 2000);
-    }
+    void clipboard.copy(buildMarkdownPlan());
   };
 
   const handleExportPlan = () => {
@@ -142,7 +147,7 @@ export function FieldTrialPlanner({
             <p className="text-xs text-content-muted sm:text-sm">{t("plan.subtitle")}</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Button variant="secondary" onClick={handleCopyPlan}>
+            <Button variant="secondary" onClick={handleCopyPlan} disabled={clipboard.status === "copying"}>
               {copiedPlan ? (
                 <Check className="h-4 w-4 text-status-valid" aria-hidden="true" />
               ) : (
@@ -161,6 +166,10 @@ export function FieldTrialPlanner({
         </CardHeader>
 
         <CardContent className="space-y-5">
+          <p className="text-xs text-content-muted">{t("plan.draftSessionNote")}</p>
+          {clipboard.status === "error" && (
+            <p role="alert" className="text-sm text-status-break">{t("errors.clipboard_failed")}</p>
+          )}
           {/* Site & Cell Context */}
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
@@ -218,7 +227,7 @@ export function FieldTrialPlanner({
               <input
                 type="text"
                 value={trialTitle}
-                onChange={(e) => setTrialTitle(e.target.value)}
+                onChange={(e) => onDraftChange((prev) => ({ ...prev, title: e.target.value }))}
                 className="min-h-11 rounded-lg border border-border-subtle bg-surface px-3 text-sm text-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               />
             </label>
@@ -238,7 +247,7 @@ export function FieldTrialPlanner({
               <textarea
                 rows={2}
                 value={trialObjective}
-                onChange={(e) => setTrialObjective(e.target.value)}
+                onChange={(e) => onDraftChange((prev) => ({ ...prev, objective: e.target.value }))}
                 className="rounded-lg border border-border-subtle bg-surface p-3 text-sm text-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               />
             </label>
@@ -312,7 +321,7 @@ export function FieldTrialPlanner({
             <textarea
               rows={2}
               value={localNotes}
-              onChange={(e) => setLocalNotes(e.target.value)}
+              onChange={(e) => onDraftChange((prev) => ({ ...prev, notes: e.target.value }))}
               placeholder={t("plan.notesPlaceholder")}
               className="rounded-lg border border-border-subtle bg-surface p-3 text-sm text-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             />

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
   AlertCircle,
   BookOpen,
@@ -64,6 +64,9 @@ import { Card, CardContent } from "../components/ui/Card";
 import { InfoTooltip } from "../components/ui/InfoTooltip";
 import { Select } from "../components/ui/Select";
 import { formatPercent, formatTimestamp } from "../i18n";
+import { useClipboard } from "../hooks/useClipboard";
+import { createFieldTrialDraft } from "../utils/fieldTrialDraft";
+import { readExplorerParams, type ExplorerTab } from "../utils/explorerParams";
 import type {
   AnalogSearchResponse,
   DecompositionModelType,
@@ -85,13 +88,15 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
 
-  const initialParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-  const initialTab = initialParams?.get("tab");
-  const [activeTab, setActiveTab] = useState<"compare" | "learn" | "plan" | "evidence">(
-    initialTab === "learn" || initialTab === "plan" || initialTab === "evidence"
-      ? initialTab
-      : "compare"
-  );
+  const [initialParams] = useState(() => readExplorerParams(
+    typeof window !== "undefined" ? window.location.search : ""
+  ));
+  const [activeTab, setActiveTab] = useState<ExplorerTab>(initialParams.tab);
+  const [planDraft, setPlanDraft] = useState(createFieldTrialDraft);
+  const linkClipboard = useClipboard();
+  const copiedLink = linkClipboard.status === "copied";
+  const analysisController = useRef<AbortController | null>(null);
+  const requests = useRef({ earth: 0, planet: 0, refine: 0 });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -104,24 +109,23 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     window.history.replaceState({}, "", url.toString());
   }, [activeTab]);
   const [sites, setSites] = useState<PlanetarySite[]>([]);
-  const [selectedBody, setSelectedBody] = useState<PlanetaryBody>("mars");
+  const [selectedBody, setSelectedBody] = useState<PlanetaryBody>(initialParams.body);
   const [selectedSiteId, setSelectedSiteId] = useState<string>(
-    initialParams?.get("site") || "mars_jezero_crater"
+    initialParams.siteId
   );
   const [customProbedSite, setCustomProbedSite] = useState<PlanetarySite | null>(null);
   const [modelType, setModelType] = useState<DecompositionModelType>("ridge");
   const [testProfile, setTestProfile] = useState<TestProfileType>(
-    (initialParams?.get("profile") as TestProfileType) || "causal_auto"
+    initialParams.profile
   );
   const [minSInd, setMinSInd] = useState<number>(0.2);
   const [minSDep, setMinSDep] = useState<number>(0.0);
   const [excludeBenchmarks, setExcludeBenchmarks] = useState<boolean>(
-    initialParams?.get("discovery") === "1"
+    initialParams.discovery
   );
   const [penalizeEstimated, setPenalizeEstimated] = useState<boolean>(
-    initialParams?.get("penalize") === "1"
+    initialParams.penalize
   );
-  const [copiedLink, setCopiedLink] = useState<boolean>(false);
   const [isRefining, setIsRefining] = useState<boolean>(false);
   const [drilldownState, setDrilldownState] = useState<{
     parentH3: string;
@@ -138,10 +142,19 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     Object.fromEntries([...MANUAL_IV_KEYS, ...MANUAL_DV_KEYS].map((k) => [k, 0]))
   );
 
-  const [decomposition, setDecomposition] = useState<DecompositionResponse | null>(null);
-  const [searchResult, setSearchResult] = useState<AnalogSearchResponse | null>(null);
+  const [rawDecomposition, setDecomposition] = useState<DecompositionResponse | null>(null);
+  const [rawSearchResult, setSearchResult] = useState<AnalogSearchResponse | null>(null);
   const [selectedH3, setSelectedH3] = useState<string | null>(null);
-  const [comparison, setComparison] = useState<SiteComparisonResponse | null>(null);
+  const [rawComparison, setComparison] = useState<SiteComparisonResponse | null>(null);
+
+  // Never attach a previous site's measurements to the newly selected target.
+  const decomposition = rawDecomposition?.site_id === selectedSiteId ? rawDecomposition : null;
+  const searchResult = rawSearchResult?.site_id === selectedSiteId ? rawSearchResult : null;
+  const comparison = rawComparison?.site.site_id === selectedSiteId &&
+    rawComparison.match.earth_cell_h3 === selectedH3 ? rawComparison : null;
+  const activeSite = customProbedSite?.site_id === selectedSiteId
+    ? customProbedSite
+    : sites.find((site) => site.site_id === selectedSiteId);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
@@ -150,38 +163,60 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const [errorState, setErrorState] = useState<{ key: string; params: Record<string, string> } | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const loadSites = useCallback(async () => {
+  const loadSites = useCallback(async (signal?: AbortSignal) => {
     try {
-      const list = await fetchPlanetarySites();
-      setSites(list);
-      if (list.length > 0 && !list.some((s) => s.site_id === selectedSiteId)) {
-        setSelectedSiteId(list[0].site_id);
-      }
+      const list = await fetchPlanetarySites(signal);
+      if (!signal?.aborted) setSites(list);
     } catch (err) {
+      if (signal?.aborted) return;
+      setIsLoading(false);
       if (err instanceof ApiClientError) {
         setErrorState({ key: err.errorKey, params: err.params });
       } else {
         setErrorState({ key: "errors.unknown_error", params: {} });
       }
     }
-  }, [selectedSiteId]);
+  }, []);
 
   useEffect(() => {
-    void loadSites();
+    const controller = new AbortController();
+    void loadSites(controller.signal);
+    return () => controller.abort();
   }, [loadSites]);
 
+  useEffect(() => {
+    if (activeSite) {
+      setSelectedBody(activeSite.body);
+    } else if (sites.length > 0) {
+      setCustomProbedSite(null);
+      setSelectedSiteId(sites.find((site) => site.body === selectedBody)?.site_id ?? sites[0].site_id);
+    }
+  }, [activeSite, sites, selectedBody]);
+
+  useEffect(() => {
+    // Invalidate pending probes when their scientific context changes.
+    requests.current.earth += 1;
+    requests.current.planet += 1;
+    requests.current.refine += 1;
+    setProbingCoords(null);
+    setProbingPlanetCoords(null);
+    setIsRefining(false);
+  }, [selectedSiteId, modelType, testProfile, minSInd, minSDep,
+    excludeBenchmarks, penalizeEstimated, customIvWeights, customDvWeights, customMinSimilarity]);
+
   const runAnalysis = useCallback(
-    async (signal?: AbortSignal) => {
-      if (!selectedSiteId) return;
-      if (customProbedSite && customProbedSite.site_id === selectedSiteId) {
-        return;
-      }
+    async () => {
+      if (!activeSite) return;
+      analysisController.current?.abort();
+      const controller = new AbortController();
+      analysisController.current = controller;
+      const { signal } = controller;
       setIsLoading(true);
       setErrorState(null);
 
       try {
         const [decompRes, analogsRes] = await Promise.all([
-          runDecomposition(selectedSiteId, modelType),
+          runDecomposition(selectedSiteId, modelType, signal),
           searchAnalogs({
             siteId: selectedSiteId,
             modelType,
@@ -205,9 +240,8 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         setLastUpdated(new Date());
 
         if (analogsRes.matches.length > 0) {
-          const stillPresent = analogsRes.matches.some((m) => m.earth_cell_h3 === selectedH3);
-          const nextH3 = stillPresent && selectedH3 ? selectedH3 : analogsRes.matches[0].earth_cell_h3;
-          setSelectedH3(nextH3);
+          setSelectedH3((current) => analogsRes.matches.some((m) => m.earth_cell_h3 === current)
+            ? current : analogsRes.matches[0].earth_cell_h3);
         } else {
           setSelectedH3(null);
           setComparison(null);
@@ -231,37 +265,26 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
       minSDep,
       excludeBenchmarks,
       penalizeEstimated,
-      selectedH3,
       customIvWeights,
       customDvWeights,
       customMinSimilarity,
-      customProbedSite,
+      activeSite,
     ]
   );
 
   useEffect(() => {
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => {
-      void runAnalysis(controller.signal);
-    }, 250);
+    setDecomposition(null);
+    setSearchResult(null);
+    setComparison(null);
+    setDrilldownState(null);
+    setLastUpdated(null);
+    setIsLoading(Boolean(activeSite));
+    const timer = window.setTimeout(() => void runAnalysis(), 250);
     return () => {
       window.clearTimeout(timer);
-      controller.abort();
+      analysisController.current?.abort();
     };
-    // Trigger analysis when parameters change (excluding selectedH3 changes)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    selectedSiteId,
-    modelType,
-    testProfile,
-    minSInd,
-    minSDep,
-    excludeBenchmarks,
-    penalizeEstimated,
-    customIvWeights,
-    customDvWeights,
-    customMinSimilarity,
-  ]);
+  }, [runAnalysis, activeSite]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -276,14 +299,15 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   }, [selectedSiteId, testProfile, excludeBenchmarks, penalizeEstimated]);
 
   useEffect(() => {
-    if (!selectedH3 || !selectedSiteId) return;
-    let cancelled = false;
-    compareCellWithSite(selectedH3, selectedSiteId, modelType)
+    if (!selectedH3 || !selectedSiteId || !searchResult) return;
+    const controller = new AbortController();
+    setComparison(null);
+    compareCellWithSite(selectedH3, selectedSiteId, modelType, controller.signal)
       .then((res) => {
-        if (!cancelled) setComparison(res);
+        if (!controller.signal.aborted) setComparison(res);
       })
       .catch((err) => {
-        if (!cancelled) {
+        if (!controller.signal.aborted) {
           if (err instanceof ApiClientError) {
             setErrorState({ key: err.errorKey, params: err.params });
           } else {
@@ -292,16 +316,18 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         }
       });
     return () => {
-      cancelled = true;
+      controller.abort();
     };
-  }, [selectedH3, selectedSiteId, modelType]);
+  }, [selectedH3, selectedSiteId, modelType, searchResult]);
 
   const handleProbeCoordinate = useCallback(
     async (lat: number, lon: number) => {
+      const requestId = ++requests.current.earth;
       setProbingCoords({ lat, lon });
       setErrorState(null);
       try {
         const res = await probeEarthCoordinate(lat, lon, selectedSiteId, modelType);
+        if (requestId !== requests.current.earth) return;
         setComparison(res);
         setSelectedH3(res.match.earth_cell_h3);
         setSearchResult((prev) => {
@@ -312,17 +338,21 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           return {
             ...prev,
             total_evaluated: prev.total_evaluated + (filtered.length === prev.matches.length ? 1 : 0),
+            returned_count: filtered.length + 1,
             matches: [res.match, ...filtered],
           };
         });
       } catch (err) {
+        if (requestId !== requests.current.earth) return;
         if (err instanceof ApiClientError) {
           setErrorState({ key: err.errorKey, params: err.params });
         } else {
           setErrorState({ key: "errors.unknown_error", params: {} });
         }
       } finally {
-        setProbingCoords(null);
+        if (requestId === requests.current.earth) {
+          setProbingCoords(null);
+        }
       }
     },
     [selectedSiteId, modelType]
@@ -330,6 +360,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
 
   const handleRefineCell = useCallback(
     async (h3Index: string) => {
+      const requestId = ++requests.current.refine;
       setIsRefining(true);
       setErrorState(null);
       try {
@@ -340,6 +371,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           penalizeEstimated,
           testProfile
         );
+        if (requestId !== requests.current.refine) return;
         if (res.matches.length > 0) {
           const childIdList = res.matches.map((m) => m.earth_cell_h3);
           setSearchResult((prev) => {
@@ -363,13 +395,16 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           }
         }
       } catch (err) {
+        if (requestId !== requests.current.refine) return;
         if (err instanceof ApiClientError) {
           setErrorState({ key: err.errorKey, params: err.params });
         } else {
           setErrorState({ key: "errors.unknown_error", params: {} });
         }
       } finally {
-        setIsRefining(false);
+        if (requestId === requests.current.refine) {
+          setIsRefining(false);
+        }
       }
     },
     [selectedSiteId, modelType, penalizeEstimated, testProfile]
@@ -395,6 +430,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
 
   const handleProbePlanet = useCallback(
     async (body: PlanetaryBody, lat: number, lon: number) => {
+      const requestId = ++requests.current.planet;
       setProbingPlanetCoords({ lat, lon });
       setErrorState(null);
       try {
@@ -407,11 +443,13 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           minSInd,
           minSDep,
           excludeBenchmarks,
+          penalizeEstimated,
           limit: 600,
           customIvWeights: testProfile === "manual_custom" ? customIvWeights : undefined,
           customDvWeights: testProfile === "manual_custom" ? customDvWeights : undefined,
           customMinSimilarity: testProfile === "manual_custom" ? customMinSimilarity : undefined,
         });
+        if (requestId !== requests.current.planet) return;
         setSelectedBody(body);
         setCustomProbedSite(res.site);
         setSelectedSiteId(res.site.site_id);
@@ -421,16 +459,20 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         setSelectedH3(res.analogs.matches[0]?.earth_cell_h3 ?? null);
         setLastUpdated(new Date());
       } catch (err) {
+        if (requestId !== requests.current.planet) return;
         if (err instanceof ApiClientError) {
           setErrorState({ key: err.errorKey, params: err.params });
         } else {
           setErrorState({ key: "errors.unknown_error", params: {} });
         }
       } finally {
-        setProbingPlanetCoords(null);
+        if (requestId === requests.current.planet) {
+          setProbingPlanetCoords(null);
+        }
       }
     },
-    [modelType, minSInd, minSDep, excludeBenchmarks]
+    [modelType, testProfile, minSInd, minSDep, excludeBenchmarks, penalizeEstimated,
+      customIvWeights, customDvWeights, customMinSimilarity]
   );
 
   const handleSelectBody = useCallback(
@@ -444,11 +486,6 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     },
     [sites]
   );
-
-  const activeSite =
-    customProbedSite && customProbedSite.site_id === selectedSiteId
-      ? customProbedSite
-      : sites.find((s) => s.site_id === selectedSiteId);
 
   const selectedCell =
     searchResult?.matches.find((m) => m.earth_cell_h3 === selectedH3) ??
@@ -497,19 +534,15 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         onKeyDown={(e) => {
           const idx = navTabs.findIndex((tab) => tab.id === activeTab);
           if (idx === -1) return;
-          if (e.key === "ArrowRight") {
-            e.preventDefault();
-            setActiveTab(navTabs[(idx + 1) % navTabs.length].id);
-          } else if (e.key === "ArrowLeft") {
-            e.preventDefault();
-            setActiveTab(navTabs[(idx - 1 + navTabs.length) % navTabs.length].id);
-          } else if (e.key === "Home") {
-            e.preventDefault();
-            setActiveTab(navTabs[0].id);
-          } else if (e.key === "End") {
-            e.preventDefault();
-            setActiveTab(navTabs[navTabs.length - 1].id);
-          }
+          const nextIndex = e.key === "ArrowRight" ? (idx + 1) % navTabs.length
+            : e.key === "ArrowLeft" ? (idx - 1 + navTabs.length) % navTabs.length
+            : e.key === "Home" ? 0
+            : e.key === "End" ? navTabs.length - 1 : null;
+          if (nextIndex === null) return;
+          e.preventDefault();
+          const nextTab = navTabs[nextIndex].id;
+          setActiveTab(nextTab);
+          document.getElementById(`tab-${nextTab}`)?.focus();
         }}
       >
         {navTabs.map((tab) => {
@@ -538,6 +571,23 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         })}
       </nav>
 
+      {/* Error Banner */}
+      {errorState && (
+        <div
+          role="alert"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-status-break/40 bg-status-break/10 p-4 text-sm text-status-break"
+        >
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 shrink-0" aria-hidden="true" />
+            <span>{t(errorState.key, errorState.params)}</span>
+          </div>
+          <Button variant="secondary" onClick={() => { void (activeSite ? runAnalysis() : loadSites()); }}>
+            <RefreshCw className="h-4 w-4" aria-hidden="true" />
+            {t("controls.retry")}
+          </Button>
+        </div>
+      )}
+
       <Suspense
         fallback={
           <div className="flex items-center gap-2 rounded-xl border border-border-subtle bg-surface-elevated px-4 py-3 text-sm text-content-muted">
@@ -562,6 +612,8 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         {activeTab === "plan" && (
           <div id="panel-plan" role="tabpanel" aria-labelledby="tab-plan">
             <FieldTrialPlanner
+              draft={planDraft}
+              onDraftChange={setPlanDraft}
               activeSite={activeSite}
               selectedCell={selectedCell}
               comparison={comparison}
@@ -757,13 +809,8 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
               </Button>
               <Button
                 variant="secondary"
-                onClick={() => {
-                  if (typeof navigator !== "undefined" && navigator.clipboard) {
-                    void navigator.clipboard.writeText(window.location.href);
-                    setCopiedLink(true);
-                    window.setTimeout(() => setCopiedLink(false), 2000);
-                  }
-                }}
+                onClick={() => void linkClipboard.copy(window.location.href)}
+                disabled={linkClipboard.status === "copying"}
               >
                 {copiedLink ? (
                   <Check className="h-4 w-4 text-status-valid" aria-hidden="true" />
@@ -774,6 +821,13 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
               </Button>
             </div>
           </div>
+
+          <span role="status" aria-live="polite" className="sr-only">
+            {copiedLink ? t("controls.copiedLink") : ""}
+          </span>
+          {linkClipboard.status === "error" && (
+            <p role="alert" className="text-sm text-status-break">{t("errors.clipboard_failed")}</p>
+          )}
 
           {/* Level 3: Collapsible Advanced Scientific Settings */}
           {showAdvanced && (
@@ -869,23 +923,6 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           )}
         </CardContent>
       </Card>
-
-      {/* Error Banner */}
-      {errorState && (
-        <div
-          role="alert"
-          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-status-break/40 bg-status-break/10 p-4 text-sm text-status-break"
-        >
-          <div className="flex items-center gap-2">
-            <AlertCircle className="h-5 w-5 shrink-0" aria-hidden="true" />
-            <span>{t(errorState.key, errorState.params)}</span>
-          </div>
-          <Button variant="secondary" onClick={() => void runAnalysis()}>
-            <RefreshCw className="h-4 w-4" aria-hidden="true" />
-            {t("controls.retry")}
-          </Button>
-        </div>
-      )}
 
       {/* Loading Indicator */}
       {isLoading && (

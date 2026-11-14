@@ -469,7 +469,9 @@
     "unauthorized": "Token de administrador necessário para atualizar os conjuntos de dados.",
     "unknown_body": "Corpo planetário desconhecido.",
     "invalid_tile_coords": "Coordenadas de tile fora do intervalo.",
-    "tile_unavailable": "Tile do NASA Trek indisponível."
+    "tile_unavailable": "Tile do NASA Trek indisponível.",
+    "clipboard_failed": "Não foi possível copiar. Verifique a permissão da área de transferência ou baixe a ficha; para compartilhar, copie o endereço do navegador.",
+    "invalid_response": "O servidor retornou uma resposta inválida. Tente novamente."
   },
   "geology": {
     "title": "Geologia e Litologia",
@@ -732,7 +734,8 @@
       }
     },
     "copyBtn": "Copiar ficha",
-    "copiedBtn": "Copiado"
+    "copiedBtn": "Copiado",
+    "draftSessionNote": "Seu rascunho é mantido ao mudar de aba durante esta sessão. Baixe-o antes de recarregar ou fechar a página."
   },
   "evidence": {
     "title": "Evidência, Fontes Abertas e Objetivos de Desenvolvimento Sustentável",

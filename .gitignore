@@ -32,3 +32,9 @@ build/
 .idea/
 *.swp
 *.swo
+
+# Browser test output
+playwright-report/
+test-results/
+
+.ckepi-tests-*/

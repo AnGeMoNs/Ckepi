@@ -164,7 +164,7 @@ export function PlanetaryPhysicsLab({
       id: "dynamic_rover_slope",
       question: t("learn.challenges.roverDynamic.question", {
         slope: formatNumber(dynamicSlopeVal, lang, 1),
-        site: activeSite ? t(activeSite.name_key) : t("bodies.mars"),
+        site: activeSite ? t(activeSite.name_key) : t(`bodies.${body}`),
       }),
       options: [
         { id: "a", label: t("learn.challenges.roverDynamic.optA") },

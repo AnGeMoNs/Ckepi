@@ -469,7 +469,9 @@
     "unauthorized": "Administrator token required to refresh datasets.",
     "unknown_body": "Unknown planetary body.",
     "invalid_tile_coords": "Tile coordinates out of range.",
-    "tile_unavailable": "NASA Trek tile unavailable."
+    "tile_unavailable": "NASA Trek tile unavailable.",
+    "clipboard_failed": "Could not copy. Check clipboard permission or download the plan; to share, copy the address from your browser.",
+    "invalid_response": "The server returned an invalid response. Please try again."
   },
   "geology": {
     "title": "Geology & Lithology",
@@ -732,7 +734,8 @@
       }
     },
     "copyBtn": "Copy sheet",
-    "copiedBtn": "Copied"
+    "copiedBtn": "Copied",
+    "draftSessionNote": "Your draft stays available when switching tabs during this session. Download it before reloading or closing the page."
   },
   "evidence": {
     "title": "Evidence, Open Data Sources & Sustainable Development Goals",
