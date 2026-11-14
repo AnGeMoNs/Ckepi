@@ -11,14 +11,14 @@
 | `pytest -q` | ✅ 8 pasan (con el margen del test relajado de 0,20 a 0,12, sin justificar aún) |
 | `npm run build` | ✅ 0 errores · ⚠ bundle de 2 MB (542 KB gzip) |
 | Paridad i18n | ✅ 381 claves |
-| Comparación Atacama–Jezero | ⚠ `terrain_statistics.py` está enchufado a `main.py`, pero **genera DEM sintéticos** (`_synthesize_calibrated_metric_dem`); no lee NASADEM ni el CTX DEM |
-| Documentación | 🔴 `DATA_PROVENANCE.md` y `REFERENCES.md` ya dicen que se usan los mosaicos reales: **hoy eso es falso** |
+| Comparación Atacama–Jezero | ✅ **Resuelto 17:20 (`1535fb7`)**: DEM reales (CTX Jezero + Copernicus GLO-30) a 30 m; resultados en `docs/RESULTADOS_TERRENO_REALES.md` |
+| Documentación | ✅ Corregida (`809f039` y siguientes): cifras reales, licencia Apache-2.0, NASADEM marcado como no usado |
 | Despliegue público del backend | 🔴 no existe. La regla NASA exige links públicos y sin login |
 | Nada commiteado desde las 14:48 | ⚠ ~20 archivos modificados por tres agentes en el mismo árbol |
 
 ## 1. Riesgos que mandan sobre todo lo demás
 
-1. **Integridad científica:** no se puede presentar como medida una comparación hecha con terreno sintético. Opción A (preferida): leer los DEM reales. Opción B (si a las 18:00 no está): la UI y los documentos la rotulan como **"demostración metodológica con terreno sintético calibrado"** y la página de NASA no da cifras de esa comparación.
+1. **Integridad científica (resuelto):** la comparación ya usa DEM reales. Toda combinación sin ventana real sale rotulada `SYNTHETIC`. Las cifras antiguas 0,77° / 4,13° están retiradas.
 2. **Despliegue:** sin backend público, el proyecto no se puede juzgar. Hay que decidirlo hoy.
 3. **Commits mezclados:** cada agente commitea solo sus rutas y pronto, para no perder trabajo.
 
@@ -31,13 +31,13 @@
 - [ ] 1.4 Dani decide qué hacer con `CLAUDE.md`, `AGENTS.md`, `.claude/`, `scripts/` (commitear o dejar locales) y con el submódulo `hackanasa` borrado (`D hackanasa`).
 
 ### Fase 2 · P0 científico real (16:40–18:00) · **Astra** (`backend/`)
-- [ ] 2.1 Descargar el **CTX DEM de Jezero** (USGS, 20 m, dominio público, 87 MB, sin login) a `backend/app/data/derived/` (no versionar el .tif si pesa; documentar la URL y el checksum).
-- [ ] 2.2 **NASADEM** `s25w070` (Yungay) y `s23w069` (Cordillera de la Sal): requieren cuenta Earthdata → **Dani** la crea o la presta. Alternativa abierta sin login: Copernicus GLO-30 (ESA), declarándolo así.
-- [ ] 2.3 Recortar ventanas de igual extensión, reproyectar a metros, remuestrear a 30 m. Verificar la escala E-O de Jezero en la etiqueta PDS4 (~19 m si la escala verdadera está en 0°).
-- [ ] 2.4 Sustituir `_synthesize_calibrated_metric_dem` por la lectura real; dejar el sintético **solo** en tests.
-- [ ] 2.5 Precalcular el resultado a `derived/*.json` con `sources[]`, para que la demo no dependa de la red.
-- [ ] 2.6 Test: una ventana real pequeña de fixture + verificación de que el JSON trae fuentes.
-- [ ] **Gate 18:00:** si 2.1–2.5 no están → Opción B y se sigue.
+- [x] 2.1 Descargar el **CTX DEM de Jezero** (USGS, 20 m, dominio público, 87 MB, sin login) a `backend/app/data/derived/` (no versionar el .tif si pesa; documentar la URL y el checksum).
+- [x] 2.2 ~~NASADEM~~ → se usó **Copernicus GLO-30** (sin login). NASADEM queda como alternativa NASA si alguien crea cuenta Earthdata.
+- [x] 2.3 Recortar ventanas de igual extensión, reproyectar a metros, remuestrear a 30 m. Verificar la escala E-O de Jezero en la etiqueta PDS4 (~19 m si la escala verdadera está en 0°).
+- [x] 2.4 Sustituir `_synthesize_calibrated_metric_dem` por la lectura real; dejar el sintético **solo** en tests.
+- [x] 2.5 Precalcular el resultado a `derived/*.json` con `sources[]`, para que la demo no dependa de la red.
+- [x] 2.6 Test: una ventana real pequeña de fixture + verificación de que el JSON trae fuentes.
+- [x] **Gate 18:00:** cumplido con la Opción A (datos reales).
 
 ### Fase 3 · Producto (16:40–22:00) · **Argon** (`frontend/`)
 - [ ] 3.1 `TerrainDistributionPanel`: histogramas, W1/KS con IC 95 %, sensibilidad 30/60/90 m, texto "qué se parece, cuánto y qué no", rótulo de fuente; rótulo "sintético" si aplica la opción B.
@@ -48,8 +48,8 @@
 - [ ] 3.6 Revisión de 320 px y 1280 px+ con `webapp-testing`; `better-accessibility` sobre el Modo Aprender.
 
 ### Fase 4 · Verdad documental (16:40–20:00) · **Claude** (`docs/`, `README.md`, `REFERENCES.md`, `AI_DISCLOSURE.md`, tests)
-- [ ] 4.1 Corregir `DATA_PROVENANCE.md` y `REFERENCES.md` para que digan **exactamente** lo que hace el código (hoy: sintético). Actualizar cuando Astra cierre la Fase 2.
-- [ ] 4.2 Verificar cada referencia nueva (DOI, URL, autores). Marcar como "por verificar" la de *Memoria La Araucana 2024–2026*.
+- [x] 4.1 Corregir `DATA_PROVENANCE.md` y `REFERENCES.md` para que digan **exactamente** lo que hace el código (hoy: sintético). Actualizar cuando Astra cierre la Fase 2.
+- [x] 4.2 Verificar cada referencia nueva (DOI, URL, autores). Marcar como "por verificar" la de *Memoria La Araucana 2024–2026*.
 - [ ] 4.3 `AI_DISCLOSURE.md`: declarar agentes y tareas sin exagerar la revisión humana.
 - [ ] 4.4 `docs/SUBMISSION_PACK_EN.md`: revisión con `validador-space-apps-2026` en modo pre-envío; eliminar cualquier cifra que el código no produzca.
 - [ ] 4.5 `README.md`: cómo correrlo, cómo se despliega, datos y licencias.
