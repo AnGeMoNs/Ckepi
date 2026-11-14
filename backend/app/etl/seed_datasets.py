@@ -192,6 +192,7 @@ def upsert_earth_cell(duckdb_path: Path, cell_record: dict[str, object]) -> None
 
     conn = duckdb.connect(str(duckdb_path))
     try:
+        conn.execute("BEGIN TRANSACTION")
         conn.execute(
             "DELETE FROM earth_h3_grid WHERE earth_cell_h3 = ?",
             [str(row["earth_cell_h3"])],
@@ -199,5 +200,9 @@ def upsert_earth_cell(duckdb_path: Path, cell_record: dict[str, object]) -> None
         conn.register("new_cell_df", df_row)
         conn.execute("INSERT INTO earth_h3_grid BY NAME SELECT * FROM new_cell_df")
         conn.unregister("new_cell_df")
+        conn.execute("COMMIT")
+    except Exception:
+        conn.execute("ROLLBACK")
+        raise
     finally:
         conn.close()

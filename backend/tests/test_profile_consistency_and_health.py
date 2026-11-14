@@ -76,7 +76,9 @@ def test_earth_probe_and_refine_apply_custom_weights_and_reuse_cached_cells(
 ) -> None:
     """Earth probe and cell refinement propagate custom weights and avoid re-fetching cached children."""
     orig_data_dir = settings.data_dir
-    shutil.copytree(orig_data_dir, tmp_path / "data")
+    # conftest.py may already have isolated the data store in tmp_path / "data".
+    if Path(orig_data_dir).resolve() != (tmp_path / "data").resolve():
+        shutil.copytree(orig_data_dir, tmp_path / "data", dirs_exist_ok=True)
     monkeypatch.setattr(settings, "data_dir", tmp_path / "data")
     monkeypatch.setattr(state, "duckdb_path", None)
 

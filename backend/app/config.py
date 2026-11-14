@@ -66,6 +66,7 @@ class Settings(BaseSettings):
     ]
     breakage_alert_threshold: float = 0.60
     default_h3_resolution: int = 3
+    # No configured token means administrative refresh is disabled (HTTP 401).
     admin_token: str | None = None
     probe_rate_limit_per_min: int = 30
     max_probed_sites: int = 50

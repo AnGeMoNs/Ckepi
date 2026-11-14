@@ -10,6 +10,7 @@ import numpy as np
 from PIL import Image
 
 from app.models.schemas import PlanetaryBody, PlanetaryFeatureInfo
+from app.etl.http_utils import create_http_client
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 
@@ -377,7 +378,7 @@ def resolve_iau_planetary_feature(
     lon_360 = lon % 360.0
     try:
         own_client = client is None
-        http = client or httpx.Client(timeout=3.0)
+        http = client or create_http_client(timeout=3.0)
         try:
             resp = http.get(
                 f"{USGS_WFS_BASE_URL}/{target_upper}/WFS",

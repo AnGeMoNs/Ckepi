@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 
 from app.etl.earth_api import cell_boundary_lon_lat
+from app.etl.http_utils import create_http_client
 
 OPEN_METEO_ELEV_URL = "https://api.open-meteo.com/v1/elevation"
 OPEN_METEO_ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive"
@@ -185,7 +186,7 @@ def build_global_earth_land_grid(
             valid_cells.append(cell)
             centers.append((float(lat), float(lon)))
 
-    with httpx.Client(timeout=45.0) as client:
+    with create_http_client(timeout=45.0) as client:
         if seed_parent_cells:
             era5_items = _batch_era5(centers, client, checkpoint_path=checkpoint_path)
             elev_by_cell = {

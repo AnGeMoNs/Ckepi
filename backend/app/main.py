@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from io import BytesIO
 import json
 import logging
+import secrets
 from pathlib import Path
 import threading
 import time
@@ -75,14 +76,16 @@ from app.models.schemas import (
 class AppState:
     """In-memory index of planetary ROIs, caches, and concurrency locks."""
 
-    sites_by_id: dict[str, PlanetarySite] = {}
-    duckdb_path: Path | None = None
-    decomposition_cache: OrderedDict[tuple[str, str], DecompositionResponse] = OrderedDict()
-    datasets_cache: OrderedDict[str, tuple[float, MultiAgencyCatalogResponse]] = OrderedDict()
-    tile_cache: OrderedDict[tuple[str, int, int, int], tuple[bytes, str]] = OrderedDict()
-    probe_timestamps: dict[str, list[float]] = {}
-    write_lock: threading.Lock = threading.Lock()
-    async_http: httpx.AsyncClient | None = None
+    def __init__(self) -> None:
+        self.sites_by_id: dict[str, PlanetarySite] = {}
+        self.duckdb_path: Path | None = None
+        self.decomposition_cache: OrderedDict[tuple[str, str], DecompositionResponse] = OrderedDict()
+        self.datasets_cache: OrderedDict[str, tuple[float, MultiAgencyCatalogResponse]] = OrderedDict()
+        self.tile_cache: OrderedDict[tuple[str, int, int, int], tuple[bytes, str]] = OrderedDict()
+        self.probe_timestamps: dict[str, list[float]] = {}
+        self.write_lock = threading.Lock()
+        self.rate_limit_lock = threading.Lock()
+        self.async_http: httpx.AsyncClient | None = None
 
 
 state = AppState()
@@ -93,6 +96,12 @@ DATASETS_CACHE_TTL_SEC = 1800.0
 
 
 def _enforce_probe_rate_limit(request: Request) -> None:
+    # Sync dependencies run in worker threads: checking and recording must be atomic.
+    with state.rate_limit_lock:
+        _record_probe_request(request)
+
+
+def _record_probe_request(request: Request) -> None:
     """Simple sliding-window rate limiter per client IP for live external API probes."""
     client_ip = request.client.host if request.client else "unknown"
     now = time.monotonic()
@@ -111,14 +120,17 @@ def _enforce_probe_rate_limit(request: Request) -> None:
         raise HTTPException(
             status_code=429,
             detail={"error_key": "errors.rate_limited", "params": {}},
+            headers={"Retry-After": "60"},
         )
     history.append(now)
     state.probe_timestamps[client_ip] = history
 
 
 def _verify_admin_token(x_admin_token: str | None = Header(default=None)) -> None:
-    """Require X-Admin-Token on dataset refresh when ADMIN_TOKEN is configured."""
-    if settings.admin_token and x_admin_token != settings.admin_token:
+    """Disable administrative writes unless a token is configured and matches."""
+    if not settings.admin_token or not x_admin_token or not secrets.compare_digest(
+        x_admin_token.encode("utf-8"), settings.admin_token.encode("utf-8")
+    ):
         raise HTTPException(
             status_code=401,
             detail={"error_key": "errors.unauthorized", "params": {}},
@@ -555,17 +567,22 @@ def probe_planetary_location(payload: PlanetaryProbeRequest) -> PlanetaryProbeRe
             detail={"error_key": "errors.external_api_unavailable", "params": {}},
         ) from exc
 
-    _store_probed_site(site)
     with state.write_lock:
         conn = duckdb.connect(str(db_path))
         try:
+            conn.execute("BEGIN TRANSACTION")
             conn.execute("DELETE FROM planetary_timeseries WHERE site_id = ?", [site.site_id])
             conn.register("probe_ts_df", df_ts)
             conn.execute("INSERT INTO planetary_timeseries BY NAME SELECT * FROM probe_ts_df")
             conn.unregister("probe_ts_df")
+            conn.execute("COMMIT")
+        except Exception:
+            conn.execute("ROLLBACK")
+            raise
         finally:
             conn.close()
 
+    _store_probed_site(site)
     decomposition = decompose_planetary_site(site, df_ts, model_type=payload.model_type)
     df_earth = load_earth_grid(db_path, exclude_benchmarks=payload.exclude_benchmarks)
     analogs = match_terrestrial_analogs(
@@ -696,7 +713,11 @@ def compare_cell_with_site(
     )
 
 
-@app.get("/api/v1/earth/{h3_index}/datasets", response_model=MultiAgencyCatalogResponse)
+@app.get(
+    "/api/v1/earth/{h3_index}/datasets",
+    response_model=MultiAgencyCatalogResponse,
+    dependencies=[Depends(_enforce_probe_rate_limit)],
+)
 def get_earth_cell_datasets(h3_index: str) -> MultiAgencyCatalogResponse:
     """Discover real NASA CMR, ESA Copernicus, CSA & JAXA open datasets for an Earth H3 cell."""
     cached_entry = state.datasets_cache.get(h3_index)
@@ -786,6 +807,13 @@ def get_earth_cell_datasets(h3_index: str) -> MultiAgencyCatalogResponse:
 def refine_analog_cell(payload: AnalogRefineRequest) -> AnalogRefineResponse:
     """Subdivide an Earth H3 cell into 7 finer child cells, hydrate via live APIs, and score them."""
     if not h3.is_valid_cell(payload.earth_cell_h3):
+        raise HTTPException(
+            status_code=400,
+            detail={"error_key": "errors.cell_not_found", "params": {"h3_index": payload.earth_cell_h3}},
+        )
+
+    # H3 cannot generate children at a coarser resolution. Reject before I/O.
+    if h3.get_resolution(payload.earth_cell_h3) >= 5:
         raise HTTPException(
             status_code=400,
             detail={"error_key": "errors.cell_not_found", "params": {"h3_index": payload.earth_cell_h3}},
