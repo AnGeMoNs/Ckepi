@@ -1,4 +1,4 @@
-import { lazy, Suspense, useDeferredValue, useEffect, useState } from "react";
+import { lazy, Suspense, useDeferredValue, useEffect, useRef, useState } from "react";
 import { AlertCircle, Globe, MapPin, RefreshCw, SearchX } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -13,7 +13,7 @@ import { Drawer } from "../components/ui/Drawer";
 import { EmptyState } from "../components/ui/EmptyState";
 import { SegmentedControl } from "../components/ui/SegmentedControl";
 import { MapSkeleton, PanelSkeleton } from "../components/ui/Skeleton";
-import { Toast } from "../components/ui/Toast";
+import { Toast, type ToastVariant } from "../components/ui/Toast";
 import { useAnalogAnalysis } from "../hooks/useAnalogAnalysis";
 import { useExplorerParams } from "../hooks/useExplorerParams";
 import { useMediaQuery } from "../hooks/useMediaQuery";
@@ -76,13 +76,24 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [mobileMapTab, setMobileMapTab] = useState<MobileMapTab>("earth");
   const [copiedLink, setCopiedLink] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastState, setToastState] = useState<{ message: string; variant: ToastVariant } | null>(
+    null
+  );
+  const toastTimerRef = useRef<number | null>(null);
+  const copiedTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (isDesktop) {
       setMobileDrawerOpen(false);
     }
   }, [isDesktop]);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current !== null) window.clearTimeout(toastTimerRef.current);
+      if (copiedTimerRef.current !== null) window.clearTimeout(copiedTimerRef.current);
+    };
+  }, []);
 
   const activeSite =
     params.customProbedSite && params.customProbedSite.site_id === params.selectedSiteId
@@ -94,19 +105,31 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const isUpdating = analysis.isLoading && hasResults;
   const activeStep: 1 | 2 | 3 = analysis.comparison ? 3 : analysis.searchResult ? 2 : 1;
 
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    window.setTimeout(() => {
-      setToastMessage((prev) => (prev === msg ? null : prev));
+  const showToast = (message: string, variant: ToastVariant = "success") => {
+    setToastState({ message, variant });
+    if (toastTimerRef.current !== null) window.clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = window.setTimeout(() => {
+      setToastState(null);
+      toastTimerRef.current = null;
     }, 3000);
   };
 
-  const handleShareLink = () => {
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      void navigator.clipboard.writeText(window.location.href);
+  const handleShareLink = async () => {
+    if (typeof navigator === "undefined" || !navigator.clipboard) {
+      showToast(t("controls.copyFailed"), "error");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(window.location.href);
       setCopiedLink(true);
-      showToast(t("controls.copiedLink"));
-      window.setTimeout(() => setCopiedLink(false), 2000);
+      showToast(t("controls.copiedLink"), "success");
+      if (copiedTimerRef.current !== null) window.clearTimeout(copiedTimerRef.current);
+      copiedTimerRef.current = window.setTimeout(() => {
+        setCopiedLink(false);
+        copiedTimerRef.current = null;
+      }, 2000);
+    } catch {
+      showToast(t("controls.copyFailed"), "error");
     }
   };
 
@@ -155,7 +178,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   return (
     <main className="mx-auto max-w-screen-2xl space-y-5 px-3 py-5 sm:px-6">
       <div className="sr-only" aria-live="polite" aria-atomic="true">
-        {analysis.isLoading ? t("controls.loading") : toastMessage ?? ""}
+        {analysis.isLoading ? t("controls.loading") : ""}
       </div>
 
       <GuidedStepsBanner activeStep={activeStep} />
@@ -191,7 +214,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             isUpdating={isUpdating}
             copiedLink={copiedLink}
             onRefreshApis={() => void handleRefresh()}
-            onShareLink={handleShareLink}
+            onShareLink={() => void handleShareLink()}
             onOpenMobileSettings={() => setMobileDrawerOpen(true)}
           />
 
@@ -378,11 +401,12 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         </div>
       </div>
 
-      {toastMessage && (
+      {toastState && (
         <Toast
-          message={toastMessage}
+          message={toastState.message}
+          variant={toastState.variant}
           dismissLabel={t("controls.dismissToast")}
-          onDismiss={() => setToastMessage(null)}
+          onDismiss={() => setToastState(null)}
         />
       )}
     </main>

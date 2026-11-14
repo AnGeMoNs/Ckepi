@@ -6,11 +6,34 @@ import es from "./es.json";
 import pt from "./pt.json";
 import type { SupportedLocale } from "../types/analog";
 
+const LOCALE_STORAGE_KEY = "ckepi-lang";
+const SUPPORTED_LOCALES: readonly SupportedLocale[] = ["es", "pt", "en"];
+
 const LOCALE_MAP: Record<SupportedLocale, string> = {
   es: "es-CL",
   pt: "pt-BR",
   en: "en-US",
 };
+
+function resolveSupportedLocale(raw: string | null | undefined): SupportedLocale | null {
+  if (!raw) return null;
+  const prefix = raw.slice(0, 2).toLowerCase();
+  return SUPPORTED_LOCALES.find((l) => l === prefix) ?? null;
+}
+
+function getInitialLanguage(): SupportedLocale {
+  if (typeof window === "undefined") return "es";
+  try {
+    const stored = resolveSupportedLocale(window.localStorage.getItem(LOCALE_STORAGE_KEY));
+    if (stored) return stored;
+  } catch {
+    // Ignore storage access errors
+  }
+  const nav = resolveSupportedLocale(window.navigator?.language);
+  return nav ?? "es";
+}
+
+const initialLanguage = getInitialLanguage();
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -18,11 +41,27 @@ i18n.use(initReactI18next).init({
     pt: { translation: pt },
     en: { translation: en },
   },
-  lng: "es",
+  lng: initialLanguage,
   fallbackLng: "en",
   interpolation: {
     escapeValue: false,
   },
+});
+
+if (typeof document !== "undefined") {
+  document.documentElement.lang = initialLanguage;
+}
+
+i18n.on("languageChanged", (lng) => {
+  const normalized = resolveSupportedLocale(lng) ?? "es";
+  if (typeof document !== "undefined") {
+    document.documentElement.lang = normalized;
+  }
+  try {
+    window.localStorage.setItem(LOCALE_STORAGE_KEY, normalized);
+  } catch {
+    // Ignore storage access errors
+  }
 });
 
 export function getActiveIntlLocale(lang: string): string {
@@ -54,4 +93,3 @@ export function formatTimestamp(date: Date, lang: string): string {
 }
 
 export default i18n;
-

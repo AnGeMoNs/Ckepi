@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import { Header } from "./components/layout/Header";
 import { ExplorerPage } from "./pages/ExplorerPage";
@@ -26,7 +26,7 @@ export default function App() {
   const [theme, setTheme] = useState<ThemeMode>(getInitialTheme);
   const [readingMode, setReadingMode] = useState<ReadingMode>("mission");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = document.documentElement;
     if (theme === "dark") {
       root.classList.add("dark");

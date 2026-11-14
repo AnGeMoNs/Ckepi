@@ -18,16 +18,6 @@
   --color-status-break: 239 68 68;
   --color-planet-mars: 217 70 43;
   --color-planet-moon: 99 102 241;
-  --color-map-match-high: #059669;
-  --color-map-match-mid: #d97706;
-  --color-map-match-low: #dc2626;
-  --color-map-outline-selected: #0f172a;
-  --color-map-outline-default: #475569;
-  --color-planet-space: #0b0d10;
-  --color-planet-sphere: #475569;
-  --color-planet-active: #ffffff;
-  --color-planet-tracked: #10b981;
-  --color-planet-estimated: #f59e0b;
 }
 
 .dark {
@@ -44,16 +34,6 @@
   --color-status-break: 248 113 113;
   --color-planet-mars: 249 115 22;
   --color-planet-moon: 129 140 248;
-  --color-map-match-high: #2ee57a;
-  --color-map-match-mid: #ffb000;
-  --color-map-match-low: #ff453a;
-  --color-map-outline-selected: #ffffff;
-  --color-map-outline-default: #0b0d10;
-  --color-planet-space: #0b0d10;
-  --color-planet-sphere: #2a2f36;
-  --color-planet-active: #ffffff;
-  --color-planet-tracked: #2ee57a;
-  --color-planet-estimated: #ffb000;
 }
 
 .cv-auto {

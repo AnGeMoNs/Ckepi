@@ -75,7 +75,8 @@
     "emptyAction": "Restablecer umbrales",
     "mapSwitcherLabel": "Vista de mapa",
     "mapViewPlanet": "Planeta",
-    "mapViewEarth": "Tierra"
+    "mapViewEarth": "Tierra",
+    "copyFailed": "No se pudo copiar el enlace al portapapeles."
   },
   "bodies": {
     "moon": "Luna",

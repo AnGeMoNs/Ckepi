@@ -24,10 +24,12 @@ export function SectionNav({ visibleSections }: SectionNavProps) {
   ];
 
   const availableItems = items.filter((item) => visibleSections[item.id]);
+  const availableKey = availableItems.map((item) => item.id).join(",");
 
   useEffect(() => {
-    if (typeof IntersectionObserver === "undefined" || availableItems.length === 0) return;
+    if (typeof IntersectionObserver === "undefined" || !availableKey) return;
 
+    const ids = availableKey.split(",") as SectionId[];
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -40,20 +42,20 @@ export function SectionNav({ visibleSections }: SectionNavProps) {
       { rootMargin: "-20% 0px -60% 0px", threshold: [0.1, 0.4] }
     );
 
-    for (const item of availableItems) {
-      const el = document.getElementById(item.id);
+    for (const id of ids) {
+      const el = document.getElementById(id);
       if (el) observer.observe(el);
     }
 
     return () => observer.disconnect();
-  }, [availableItems]);
+  }, [availableKey]);
 
   if (availableItems.length === 0) return null;
 
   return (
     <nav
       aria-label={t("nav.label")}
-      className="sticky top-[65px] z-20 -mx-1 flex items-center gap-1 overflow-x-auto rounded-xl border border-border-subtle bg-surface-elevated/95 p-1 backdrop-blur"
+      className="sticky top-[var(--header-h,4.25rem)] z-20 -mx-1 flex items-center gap-1 overflow-x-auto rounded-xl border border-border-subtle bg-surface-elevated/95 p-1 backdrop-blur"
     >
       {availableItems.map((item) => {
         const Icon = item.icon;

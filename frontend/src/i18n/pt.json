@@ -75,7 +75,8 @@
     "emptyAction": "Redefinir limites",
     "mapSwitcherLabel": "Visualização do mapa",
     "mapViewPlanet": "Planeta",
-    "mapViewEarth": "Terra"
+    "mapViewEarth": "Terra",
+    "copyFailed": "Não foi possível copiar o link para a área de transferência."
   },
   "bodies": {
     "moon": "Lua",

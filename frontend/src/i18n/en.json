@@ -75,7 +75,8 @@
     "emptyAction": "Reset thresholds",
     "mapSwitcherLabel": "Map view",
     "mapViewPlanet": "Planet",
-    "mapViewEarth": "Earth"
+    "mapViewEarth": "Earth",
+    "copyFailed": "Could not copy the link to the clipboard."
   },
   "bodies": {
     "moon": "Moon",
