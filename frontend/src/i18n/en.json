@@ -5,7 +5,12 @@
     "challengeBadge": "NASA Space Apps 2026",
     "themeLight": "Light mode",
     "themeDark": "Dark mode",
-    "languageLabel": "Language"
+    "languageLabel": "Language",
+    "readingModeLabel": "Reading mode",
+    "modes": {
+      "mission": "Mission",
+      "explorer": "STEAM Explorer"
+    }
   },
   "controls": {
     "targetSite": "Planetary Target (ROI)",
@@ -273,6 +278,12 @@
     "title": "Mission Diagnostics & Physical Comparison",
     "quickVerdictTitle": "Plain-Language Verdict",
     "quickVerdictBody": "{{earthSite}} replicates {{score}} of the physical conditions of {{targetSite}} ({{validCount}} validated mission test(s)). The analogy breaks down on: {{brokenVars}}.",
+    "explorerSummaryTitle": "What can we test here—and what does NOT match?",
+    "explorerSummaryBody": "At {{earthSite}}, terrain similarity is {{score}} (±{{uncertainty}}) at ~{{scaleKm}} km H3 scale. What Earth CANNOT replicate here: {{brokenVars}}.",
+    "nasaAttribution": "Sources: NASA PDS · LRO LOLA · MRO/MSL · NASA POWER · ESA Copernicus",
+    "disclaimer": "Scientific pre-screening for field trials; does not certify operational safety.",
+    "uncertaintyLabel": "Uncertainty",
+    "scaleLabel": "H3 Scale",
     "noneBroken": "no critical physical boundaries",
     "knownAnalogRef": "Includes classic literature analog: {{name}}",
     "earthLimitsTitle": "Earth's Limits as a Laboratory",

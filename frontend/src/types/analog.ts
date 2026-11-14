@@ -13,6 +13,7 @@ export type TestProfileType =
 export type ViabilityTier = "high" | "moderate" | "partial";
 export type SupportedLocale = "es" | "pt" | "en";
 export type ThemeMode = "light" | "dark";
+export type ReadingMode = "mission" | "explorer";
 export type EarthOverlayLayer =
   | "basemap"
   | "satellite_hd"
@@ -122,6 +123,8 @@ export interface AnalogMatchItem {
   combined_score: number;
   confidence_adjusted_score?: number;
   score_uncertainty?: number;
+  confidence_interval?: [number, number];
+  effective_scale_km?: number;
   r_break_overall: number;
   iv_similarity_breakdown: Record<string, number>;
   dv_similarity_breakdown: Record<string, number>;

@@ -17,7 +17,11 @@ import { useTranslation } from "react-i18next";
 
 import { fetchMultiAgencyDatasets } from "../../api/client";
 import { formatNumber, formatPercent } from "../../i18n";
-import type { MultiAgencyCatalogResponse, SiteComparisonResponse } from "../../types/analog";
+import type {
+  MultiAgencyCatalogResponse,
+  ReadingMode,
+  SiteComparisonResponse,
+} from "../../types/analog";
 import { exportReportMarkdown } from "../../utils/exportResults";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
@@ -27,9 +31,13 @@ import { ProgressBar } from "../ui/ProgressBar";
 
 interface MissionDiagnosticsProps {
   comparison: SiteComparisonResponse;
+  readingMode?: ReadingMode;
 }
 
-export function MissionDiagnostics({ comparison }: MissionDiagnosticsProps) {
+export function MissionDiagnostics({
+  comparison,
+  readingMode = "mission",
+}: MissionDiagnosticsProps) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const { match, variable_deltas: deltas } = comparison;
@@ -93,19 +101,50 @@ export function MissionDiagnostics({ comparison }: MissionDiagnosticsProps) {
       <CardContent className="space-y-6">
         {/* Executive Plain-Language Verdict */}
         <div className="rounded border border-accent/30 bg-accent/5 p-4 text-sm text-content">
-          <p className="font-semibold text-accent">{t("mission.quickVerdictTitle")}</p>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-semibold text-accent">
+              {readingMode === "explorer"
+                ? t("mission.explorerSummaryTitle")
+                : t("mission.quickVerdictTitle")}
+            </p>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <Badge variant="default">
+                {t("mission.uncertaintyLabel")}: ±
+                {formatPercent(match.score_uncertainty ?? 0.05, lang)}
+              </Badge>
+              <Badge variant="default">
+                {t("mission.scaleLabel")}: ~
+                {formatNumber(match.effective_scale_km ?? 158, lang, 1)} km
+              </Badge>
+            </div>
+          </div>
           <p className="mt-1 text-xs leading-relaxed text-content sm:text-sm">
-            {t("mission.quickVerdictBody", {
-              earthSite: t(match.region_key),
-              score: formatPercent(match.combined_score, lang),
-              targetSite: t(comparison.site.name_key),
-              validCount: String(recs.valid_tests.length),
-              brokenVars:
-                match.breakage_alerts
-                  .filter((b) => b.is_broken)
-                  .map((b) => t(`variables.${b.variable}.label`))
-                  .join(", ") || t("mission.noneBroken"),
-            })}
+            {readingMode === "explorer"
+              ? t("mission.explorerSummaryBody", {
+                  earthSite: t(match.region_key),
+                  score: formatPercent(match.combined_score, lang),
+                  uncertainty: formatPercent(match.score_uncertainty ?? 0.05, lang),
+                  scaleKm: formatNumber(match.effective_scale_km ?? 158, lang, 1),
+                  brokenVars:
+                    match.breakage_alerts
+                      .filter((b) => b.is_broken)
+                      .map((b) => t(`variables.${b.variable}.label`))
+                      .join(", ") || t("mission.noneBroken"),
+                })
+              : t("mission.quickVerdictBody", {
+                  earthSite: t(match.region_key),
+                  score: formatPercent(match.combined_score, lang),
+                  targetSite: t(comparison.site.name_key),
+                  validCount: String(recs.valid_tests.length),
+                  brokenVars:
+                    match.breakage_alerts
+                      .filter((b) => b.is_broken)
+                      .map((b) => t(`variables.${b.variable}.label`))
+                      .join(", ") || t("mission.noneBroken"),
+                })}
+          </p>
+          <p className="mt-2 border-t border-border-subtle pt-2 text-[11px] text-content-muted">
+            {t("mission.nasaAttribution")} · {t("mission.disclaimer")}
           </p>
         </div>
 

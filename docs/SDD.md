@@ -3,7 +3,7 @@
 **Versión:** 1.0  
 **Proyecto:** Ckepi — Motor de Descubrimiento de Análogos Planetarios Terrestres mediante Descomposición Causal de Variables  
 **Contexto:** NASA Space Apps Challenge 2026 (*Terrestrial Analogs for Moon & Mars*)  
-**Documentos Relacionados:** [README.md](file:///d:/nasa/README.md) · [DATA_PROVENANCE.md](file:///d:/nasa/docs/DATA_PROVENANCE.md)
+**Documentos Relacionados:** [README.md](../README.md) · [DATA_PROVENANCE.md](DATA_PROVENANCE.md) · [AI_DISCLOSURE.md](../AI_DISCLOSURE.md) · [REFERENCES.md](../REFERENCES.md)
 
 ---
 
@@ -53,14 +53,14 @@ flowchart TB
 
 ### 3.1 Responsabilidades por Módulo
 
-- **Backend (`d:\nasa\backend\app\`):**
-  - [config.py](file:///d:/nasa/backend/app/config.py): Definición canónica de variables $(X, Y, B)$, escalas físicas `FEATURE_SCALES` y parámetros de ejecución (`breakage_alert_threshold = 0.60`, `probe_rate_limit_per_min = 30`).
+- **Backend (`backend/app/`):**
+  - [config.py](../backend/app/config.py): Definición canónica de variables $(X, Y, B)$, escalas físicas `FEATURE_SCALES` y parámetros de ejecución (`breakage_alert_threshold = 0.60`, `probe_rate_limit_per_min = 30`).
   - `engine/causal_decomposer.py`: Ajuste estadístico $X \rightarrow Y$ mediante `RidgeCV`, `RandomForestRegressor` y análisis de componentes principales (`PCA`).
   - `engine/analog_matcher.py`: Cálculo desacoplado de similitud de sustrato ($S_{\text{ind}}$), respuesta ambiental ($S_{\text{dep}}$) y ruptura física ($R_{\text{break}}$).
   - `engine/known_analogs.py`: Registro de ~25 sitios análogos clásicos para habilitar el filtrado del *Modo Descubrimiento*.
   - `engine/mission_advisor.py`: Generación de matriz de pruebas válidas/inválidas, límites terrestres y recomendaciones de exploración.
   - `etl/`: Conectores asíncronos/síncronos con manejo de errores, reintentos y respaldo seguro (`earth_api.py`, `global_earth_etl.py`, `mars_api.py`, `moon_api.py`, `planetary_probe.py`, `geology_and_habitability.py`, `space_agencies_api.py`).
-- **Frontend (`d:\nasa\frontend\src\`):**
+- **Frontend (`frontend/src/`):**
   - `pages/ExplorerPage.tsx`: Orquestador de estado de búsqueda, selección de cuerpo/ROI, perfiles de prueba (Luna/Marte), pesos manuales y sondeo.
   - `components/map/`: `PlanetaryMap.tsx` (globo 3D Luna/Marte con NASA Trek WMTS) y `AnalogMap.tsx` (globo 3D Tierra + polígonos H3 + paginación numerada + drill-down).
   - `components/decomposition/`, `components/mission/`, `components/ui/`: Presentación desacoplada de lógica de red, usando `api/client.ts` y `types/analog.ts`.
@@ -69,7 +69,7 @@ flowchart TB
 
 ## 4. Modelo Científico de Variables ($X, Y, B$)
 
-Definido en [config.py](file:///d:/nasa/backend/app/config.py) y documentado en [DATA_PROVENANCE.md](file:///d:/nasa/docs/DATA_PROVENANCE.md):
+Definido en [config.py](../backend/app/config.py) y documentado en [DATA_PROVENANCE.md](DATA_PROVENANCE.md):
 
 | Capa | Variables | Rol en el Motor |
 |---|---|---|
@@ -81,7 +81,7 @@ Definido en [config.py](file:///d:/nasa/backend/app/config.py) y documentado en 
 
 ## 5. Estrategia Espacial H3, Caché y Resiliencia ante APIs Externas
 
-1. **Malla Base Pre-hidratada (H3 Res 2):** La base [ckepi.duckdb](file:///d:/nasa/backend/app/data/ckepi.duckdb) y [earth_h3_grid.parquet](file:///d:/nasa/backend/app/data/earth_h3_grid.parquet) almacenan las celdas continentales globales junto con marcas temporales de actualización para responder búsquedas en milisegundos sin depender de red.
+1. **Malla Base Pre-hidratada (H3 Res 2):** La base [ckepi.duckdb](../backend/app/data/ckepi.duckdb) y [earth_h3_grid.parquet](../backend/app/data/earth_h3_grid.parquet) almacenan las celdas continentales globales junto con marcas temporales de actualización para responder búsquedas en milisegundos sin depender de red.
 2. **Drill-Down Bajo Demanda (Res 3 → Res 5):** Al subdividir un hexágono (`POST /api/v1/analogs/refine`), se calculan sus 7 hijos con `h3.cell_to_children`, se consultan las APIs en vivo y se persisten en DuckDB para reutilización futura.
 3. **Checkpoints ETL:** Los procesos masivos (`global_earth_etl.py`) escriben progreso incremental (`era5_res3_checkpoint.jsonl`) para reanudar limpiamente tras límites de tasa (`HTTP 429`).
 4. **Proxy de Tiles y Texturas:** El backend actúa como proxy seguro en `/api/v1/tiles/trek/{body}/{z}/{y}/{x}.jpg` y `/api/v1/textures/planet/{body}/{layer}.jpg` para evitar problemas de CORS y cachear texturas localmente.
@@ -110,14 +110,17 @@ Definido en [config.py](file:///d:/nasa/backend/app/config.py) y documentado en 
 Ningún cambio se considera terminado hasta superar todas las compuertas aplicables:
 
 1. **Backend:**
-   ```powershell
-   cd d:\nasa\backend
+   ```bash
+   cd backend
+   # macOS / Linux:
+   .venv/bin/python -m pytest -q
+   # Windows PowerShell:
    .\.venv\Scripts\python.exe -m pytest -q
    ```
    *(Las pruebas unitarias de motor causal, matcher y validación deben pasar al 100%; las pruebas que dependen de Open-Meteo Archive en vivo deben contemplar manejo ante `HTTP 429`.)*
 2. **Frontend (Compilación y Tipado Estricto):**
-   ```powershell
-   cd d:\nasa\frontend
+   ```bash
+   cd frontend
    npm run build
    ```
    *(Debe ejecutar `tsc && vite build` con `0` errores y cero usos de `any`.)*
@@ -133,6 +136,25 @@ Ningún cambio se considera terminado hasta superar todas las compuertas aplicab
 - [ ] ¿Se reutilizaron componentes de `components/ui/` y tokens Tailwind sin `style={{ ... }}`?
 - [ ] ¿Se agregaron las claves de traducción simultáneamente en `es.json`, `pt.json` y `en.json`?
 - [ ] ¿Están tipados todos los esquemas en `schemas.py` (Pydantic v2) y `types/analog.ts` (sin `any`)?
-- [ ] ¿Se documentó en [DATA_PROVENANCE.md](file:///d:/nasa/docs/DATA_PROVENANCE.md) si se añadió una nueva variable o fuente satelital?
+- [ ] ¿Se documentó en [DATA_PROVENANCE.md](DATA_PROVENANCE.md) si se añadió una nueva variable o fuente satelital?
 - [ ] ¿Se ejecutaron `pytest`, `npm run build` y la verificación de paridad i18n tras la última edición?
+
+---
+
+## 9. Cumplimiento NASA Space Apps Challenge 2026
+
+Para garantizar elegibilidad global y máximo puntaje en los 5 criterios (*Impact, Creativity, Validity, Relevance, Presentation*):
+
+1. **Puertas Duras de Elegibilidad:**
+   - Proyecto público sin login requerido en demo en vivo.
+   - Licencia OSI explícita (**Apache-2.0** en [LICENSE](../LICENSE)).
+   - Declaración transparente de herramientas de IA ([AI_DISCLOSURE.md](../AI_DISCLOSURE.md)), sin marcas/logos NASA en contenido generado por IA.
+   - Fuentes completas registradas en [REFERENCES.md](../REFERENCES.md) y visibles directamente en las vistas de resultados de la interfaz.
+2. **Política de Fuentes Científicas:**
+   - Núcleo alimentado exclusivamente por datasets abiertos de **NASA** (PDS, LRO LOLA, MRO/MSL, POWER, Earthdata CMR, Trek WMTS) y agencias socias (**ESA Copernicus**, **CSA**, **JAXA**), más **Open-Meteo** y **Macrostrat**. No se consumen APIs ni portales de CNSA.
+3. **Honestidad Científica y Alcance:**
+   - Cada puntaje de similitud ($S_{\text{ind}}$, $S_{\text{dep}}$) expone su margen de incertidumbre (`score_uncertainty` / intervalo estimado), su resolución espacial efectiva (H3 Res 2–5) y la **Brecha Física Irreducible ($B$)** (gravedad, atmósfera, radiación, temperatura).
+   - **Ckepi preselecciona sitios para ensayos de campo; no certifica seguridad operativa.**
+4. **Impacto STEAM y Local:**
+   - La interfaz ofrece un selector entre **Modo Misión** (rigor técnico completo) y **Modo Explorador / STEAM** (lectura clara sin jerga para estudiantes y comunidades).
 

@@ -195,6 +195,9 @@ export function AnalogComparisonMatrix({
             </tbody>
           </table>
         </div>
+        <p className="mt-3 text-[11px] text-content-muted">
+          {t("mission.nasaAttribution")} · {t("mission.disclaimer")}
+        </p>
       </CardContent>
     </Card>
   );

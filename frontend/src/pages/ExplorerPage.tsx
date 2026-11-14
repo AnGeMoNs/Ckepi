@@ -47,6 +47,7 @@ import type {
   DecompositionResponse,
   PlanetaryBody,
   PlanetarySite,
+  ReadingMode,
   SiteComparisonResponse,
   TestProfileType,
   ThemeMode,
@@ -54,9 +55,10 @@ import type {
 
 interface ExplorerPageProps {
   theme: ThemeMode;
+  readingMode: ReadingMode;
 }
 
-export function ExplorerPage({ theme }: ExplorerPageProps) {
+export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
 
@@ -764,7 +766,7 @@ export function ExplorerPage({ theme }: ExplorerPageProps) {
       {/* Main Analytical Sections */}
       {decomposition && <DecompositionPanel decomposition={decomposition} />}
 
-      {comparison && <MissionDiagnostics comparison={comparison} />}
+      {comparison && <MissionDiagnostics comparison={comparison} readingMode={readingMode} />}
 
       {searchResult && (
         <AnalogComparisonMatrix

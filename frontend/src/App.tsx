@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 
 import { Header } from "./components/layout/Header";
 import { ExplorerPage } from "./pages/ExplorerPage";
-import type { ThemeMode } from "./types/analog";
+import type { ReadingMode, ThemeMode } from "./types/analog";
 
 export default function App() {
   const [theme, setTheme] = useState<ThemeMode>("dark");
+  const [readingMode, setReadingMode] = useState<ReadingMode>("mission");
 
   useEffect(() => {
     const root = document.documentElement;
@@ -21,8 +22,10 @@ export default function App() {
       <Header
         theme={theme}
         onToggleTheme={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
+        readingMode={readingMode}
+        onChangeReadingMode={setReadingMode}
       />
-      <ExplorerPage theme={theme} />
+      <ExplorerPage theme={theme} readingMode={readingMode} />
     </div>
   );
 }

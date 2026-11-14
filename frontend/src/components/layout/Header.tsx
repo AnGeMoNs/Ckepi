@@ -1,18 +1,26 @@
 import { Globe2, Moon, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import type { SupportedLocale, ThemeMode } from "../../types/analog";
+import type { ReadingMode, SupportedLocale, ThemeMode } from "../../types/analog";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 
 interface HeaderProps {
   theme: ThemeMode;
   onToggleTheme: () => void;
+  readingMode: ReadingMode;
+  onChangeReadingMode: (mode: ReadingMode) => void;
 }
 
 const LOCALES: SupportedLocale[] = ["es", "pt", "en"];
+const READING_MODES: ReadingMode[] = ["mission", "explorer"];
 
-export function Header({ theme, onToggleTheme }: HeaderProps) {
+export function Header({
+  theme,
+  onToggleTheme,
+  readingMode,
+  onChangeReadingMode,
+}: HeaderProps) {
   const { t, i18n } = useTranslation();
 
   return (
@@ -34,6 +42,31 @@ export function Header({ theme, onToggleTheme }: HeaderProps) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <div
+            role="group"
+            aria-label={t("app.readingModeLabel")}
+            className="inline-flex rounded-lg border border-border-subtle bg-surface p-0.5"
+          >
+            {READING_MODES.map((mode) => {
+              const active = readingMode === mode;
+              return (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => onChangeReadingMode(mode)}
+                  aria-pressed={active}
+                  className={`min-h-11 rounded-md px-2.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                    active
+                      ? "bg-accent text-accent-foreground"
+                      : "text-content-muted hover:bg-surface-muted hover:text-content"
+                  }`}
+                >
+                  {t(`app.modes.${mode}`)}
+                </button>
+              );
+            })}
+          </div>
+
           <div
             role="group"
             aria-label={t("app.languageLabel")}

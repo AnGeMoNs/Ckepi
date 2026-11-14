@@ -5,7 +5,12 @@
     "challengeBadge": "NASA Space Apps 2026",
     "themeLight": "Modo claro",
     "themeDark": "Modo escuro",
-    "languageLabel": "Idioma"
+    "languageLabel": "Idioma",
+    "readingModeLabel": "Perfil de leitura",
+    "modes": {
+      "mission": "Missão",
+      "explorer": "Explorador STEAM"
+    }
   },
   "controls": {
     "targetSite": "Alvo Planetário (ROI)",
@@ -273,6 +278,12 @@
     "title": "Diagnóstico de Missão e Comparação Física",
     "quickVerdictTitle": "Veredicto Rápido",
     "quickVerdictBody": "{{earthSite}} replica {{score}} das condições físicas de {{targetSite}} ({{validCount}} teste(s) de missão validado(s)). A analogia falha em: {{brokenVars}}.",
+    "explorerSummaryTitle": "O que podemos testar aqui e o que NÃO se parece?",
+    "explorerSummaryBody": "Em {{earthSite}}, o terreno tem {{score}} de similaridade (±{{uncertainty}}) na escala de ~{{scaleKm}} km. O que a Terra NÃO consegue imitar aqui: {{brokenVars}}.",
+    "nasaAttribution": "Fontes: NASA PDS · LRO LOLA · MRO/MSL · NASA POWER · ESA Copernicus",
+    "disclaimer": "Pré-seleção científica para ensaios de campo; não certifica segurança operacional.",
+    "uncertaintyLabel": "Incerteza",
+    "scaleLabel": "Escala H3",
     "noneBroken": "nenhuma fronteira física crítica",
     "knownAnalogRef": "Inclui análogo clássico da literatura: {{name}}",
     "earthLimitsTitle": "Limites da Terra como laboratório",

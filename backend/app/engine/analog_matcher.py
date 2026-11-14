@@ -175,6 +175,11 @@ def match_terrestrial_analogs(
         conf_score = site.confidence.score if site.confidence else 0.70
         confidence_adjusted_score = combined_score * (0.75 + 0.25 * conf_score)
         score_uncertainty = (1.0 - conf_score) * 0.22
+        ci_low = round(max(0.0, combined_score - score_uncertainty), 4)
+        ci_high = round(min(1.0, combined_score + score_uncertainty), 4)
+        h3_res = int(row_dict["h3_resolution"])
+        scale_map = {0: 1107.7, 1: 418.7, 2: 158.2, 3: 59.8, 4: 22.6, 5: 8.5, 6: 3.2}
+        effective_scale_km = scale_map.get(h3_res, round(158.2 / (2.64 ** max(0, h3_res - 2)), 1))
 
         known_name = match_known_analog(float(row_dict["lat"]), float(row_dict["lon"]))
         effective_is_benchmark = bool(row_dict["is_benchmark"]) or (known_name is not None)
@@ -182,7 +187,7 @@ def match_terrestrial_analogs(
         matches.append(
             AnalogMatchItem(
                 earth_cell_h3=str(row_dict["earth_cell_h3"]),
-                h3_resolution=int(row_dict["h3_resolution"]),
+                h3_resolution=h3_res,
                 coordinates=Coordinates(lat=float(row_dict["lat"]), lon=float(row_dict["lon"])),
                 h3_boundary=boundary,
                 region_key=str(row_dict["region_key"]),
@@ -195,6 +200,8 @@ def match_terrestrial_analogs(
                 combined_score=round(combined_score, 4),
                 confidence_adjusted_score=round(confidence_adjusted_score, 4),
                 score_uncertainty=round(score_uncertainty, 4),
+                confidence_interval=(ci_low, ci_high),
+                effective_scale_km=effective_scale_km,
                 r_break_overall=round(r_break_overall, 4),
                 iv_similarity_breakdown=iv_sim_breakdown,
                 dv_similarity_breakdown=dv_sim_breakdown,

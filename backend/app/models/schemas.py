@@ -247,6 +247,8 @@ class AnalogMatchItem(BaseModel):
     combined_score: float = Field(..., ge=0.0, le=1.0)
     confidence_adjusted_score: float = Field(default=0.0, ge=0.0, le=1.0)
     score_uncertainty: float = Field(default=0.0, ge=0.0, le=1.0)
+    confidence_interval: tuple[float, float] = Field(default=(0.0, 1.0))
+    effective_scale_km: float = Field(default=158.0, ge=0.0)
     r_break_overall: float = Field(..., ge=0.0, le=1.0)
     iv_similarity_breakdown: dict[str, float]
     dv_similarity_breakdown: dict[str, float]
