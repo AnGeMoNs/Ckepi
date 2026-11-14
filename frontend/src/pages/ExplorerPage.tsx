@@ -418,6 +418,19 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             </div>
           )}
 
+          {readingMode === "explorer" && (
+            <section id="section-physics-lab" className="scroll-mt-32">
+              <Suspense fallback={<PanelSkeleton heightClass="h-72" />}>
+                <PlanetaryPhysicsLab
+                  activeBody={activeSite?.body}
+                  activeSite={activeSite}
+                  selectedMatch={analysis.comparison?.match}
+                  readingMode={readingMode}
+                />
+              </Suspense>
+            </section>
+          )}
+
           {analysis.decomposition && (
             <section
               id="section-decomposition"
@@ -470,11 +483,18 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             </section>
           )}
 
-          <section id="section-physics-lab" className="scroll-mt-32">
-            <Suspense fallback={<PanelSkeleton heightClass="h-72" />}>
-              <PlanetaryPhysicsLab activeBody={activeSite?.body} />
-            </Suspense>
-          </section>
+          {readingMode !== "explorer" && (
+            <section id="section-physics-lab" className="scroll-mt-32">
+              <Suspense fallback={<PanelSkeleton heightClass="h-72" />}>
+                <PlanetaryPhysicsLab
+                  activeBody={activeSite?.body}
+                  activeSite={activeSite}
+                  selectedMatch={analysis.comparison?.match}
+                  readingMode={readingMode}
+                />
+              </Suspense>
+            </section>
+          )}
         </div>
       </div>
 

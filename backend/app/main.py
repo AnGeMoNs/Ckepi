@@ -600,8 +600,7 @@ def compare_cell_with_site(
             detail={"error_key": "errors.cell_not_found", "params": {"h3_index": h3_index}},
         )
 
-    df_ts = _load_planetary_timeseries(db_path, site.site_id)
-    decomposition = decompose_planetary_site(site, df_ts, model_type=model_type)
+    decomposition = _get_decomposition_cached(site, db_path, model_type)
     search_res = match_terrestrial_analogs(
         site=site,
         causal_weights=decomposition.global_iv_weights,

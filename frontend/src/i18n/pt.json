@@ -119,15 +119,18 @@
     "clearGlobalFilters": "Limpar filtros globais (0%)"
   },
   "comparisonMatrix": {
-    "title": "Comparação Lado a Lado de Candidatos (Top 4)",
-    "subtitle": "Clique ou toque em qualquer linha para inspecionar seu perfil físico.",
+    "title": "Comparação e Classificação de Candidatos Análogos",
+    "subtitle": "Ordene por porcentagem de similaridade, filtre por categoria e clique em qualquer linha para inspecionar seu perfil físico.",
     "siteCol": "Localização Terrestre",
     "typeCol": "Categoria",
+    "combinedCol": "% Similaridade",
     "bestTestCol": "Teste Principal Validado",
     "exportReport": "Relatório (.md)",
     "sIndTooltip": "Similaridade em variáveis ambientais independentes (ex.: gravidade, temperatura, radiação).",
     "sDepTooltip": "Similaridade na resposta operacional e condições dependentes do terreno.",
-    "rBreakTooltip": "Risco agregado de ruptura da analogia na Terra em relação ao local-alvo."
+    "rBreakTooltip": "Risco agregado de ruptura da analogia na Terra em relação ao local-alvo.",
+    "showRows": "Mostrar",
+    "topCount": "Top {{count}}"
   },
   "layers": {
     "independent": "Independente (X)",
@@ -350,6 +353,48 @@
     "paginationStatus": "Página {{page}} de {{totalPages}} · {{total}} resultados",
     "prevPage": "Anterior",
     "nextPage": "Próxima",
+    "filters": {
+      "searchPlaceholder": "Buscar região, análogo, bioma ou célula H3...",
+      "sortByLabel": "Ordenar por",
+      "sort": {
+        "combined_desc": "Maior % Similaridade Global (↓)",
+        "combined_asc": "Menor % Similaridade Global (↑)",
+        "s_ind_desc": "Maior % Substrato S_ind (↓)",
+        "s_dep_desc": "Maior % Resposta S_dep (↓)",
+        "r_break_asc": "Menor Risco Ruptura R_break (↑ Mais seguro)",
+        "r_break_desc": "Maior Risco Ruptura R_break (↓)",
+        "lat_desc": "Latitude (Norte → Sul)"
+      },
+      "category": {
+        "all": "Todas",
+        "discovery": "Descobertas",
+        "benchmark": "Benchmarks",
+        "pareto": "Ótimos Pareto",
+        "pinned": "Fixadas ★"
+      },
+      "scoreBandLabel": "Faixa de %",
+      "scoreBand": {
+        "all": "Todos os %",
+        "high": "Alta (≥ 75%)",
+        "mid": "Média (55–74%)",
+        "low": "Parcial (< 55%)"
+      },
+      "biomeAll": "Todos os biomas",
+      "perPage": "{{count}} / pág.",
+      "clearFilters": "Limpar filtros",
+      "pinCell": "Fixar célula para não perder",
+      "unpinCell": "Remover das fixadas"
+    },
+    "nav": {
+      "returnToPrevPage": "↩ Voltar à pág. {{page}}",
+      "goToSelectedCellPage": "📍 Ir à célula ativa (Pág. {{page}})",
+      "recentPagesLabel": "Vistas recém:",
+      "jumpToPageLabel": "Ir à pág.",
+      "jumpButton": "Ir",
+      "pageOption": "Pág. {{page}} (#{{start}}–{{end}} · {{score}})",
+      "back10": "−10 págs.",
+      "forward10": "+10 págs."
+    },
     "subdivideAction": "Subdividir em 7 sub-hexágonos",
     "maxResReached": "Detalhe máximo (H3-5)",
     "drilldownActive": "Visualizando {{count}} sub-zonas dentro de H3 {{parent}}",
@@ -604,10 +649,19 @@
     "title": "Laboratório Interativo de Gravidade e Física Planetária",
     "badge": "Educativo · STEAM",
     "subtitle": "Explore como a física do dia a dia muda entre a Terra, Marte e a Lua usando as mesmas leis físicas.",
+    "toggleTitan": "+ Titã (1.35 m/s²)",
     "bodies": {
       "earth": "Terra",
       "mars": "Marte",
-      "moon": "Lua"
+      "moon": "Lua",
+      "titan": "Titã",
+      "custom": "Personalizado"
+    },
+    "telemetry": {
+      "activeTarget": "Alvo ativo",
+      "surfaceTemp": "Temp. superficial",
+      "pressure": "Pressão atm.",
+      "earthAnalog": "Análogo terrestre"
     },
     "controls": {
       "play": "Reproduzir",
@@ -617,25 +671,30 @@
     "weight": {
       "title": "Calculadora de peso físico (Newtons)",
       "description": "A massa (kg) não muda ao viajar pelo espaço, mas a força gravitacional (Newtons) sim.",
-      "massLabel": "Massa do objeto ou pessoa",
+      "massLabel": "Massa do objeto, pessoa ou rover",
       "feelsLike": "equivale a {{kg}} kg na Terra",
+      "inertiaTip": "Nota de engenharia: Embora o peso diminua na Lua ou em Marte, a inércia horizontal continua sendo {{kg}} kg (F = m · a), exigindo cuidado ao frear ou fazer curvas.",
       "presets": {
         "backpack": "Mochila",
         "astronaut": "Astronauta",
-        "suit": "Traje espacial"
+        "suit": "Traje EVA",
+        "viper": "Rover VIPER",
+        "perseverance": "Perseverance"
       }
     },
     "jump": {
       "title": "Simulação de saltos conforme a gravidade",
       "description": "Com o mesmo impulso inicial, a menor gravidade permite alcançar maior altura e permanecer mais tempo no ar.",
       "velocityLabel": "Velocidade inicial de salto",
-      "jumpAction": "Saltar"
+      "jumpAction": "Saltar",
+      "airTime": "Voo"
     },
     "trajectory": {
       "title": "Comparação de trajetórias de lançamento",
       "description": "Um projétil lançado com a mesma velocidade e ângulo percorre distâncias muito diferentes em cada corpo.",
       "speedLabel": "Velocidade de lançamento",
       "angleLabel": "Ângulo",
+      "dragToggle": "Simular arrasto atmosférico real",
       "launchAction": "Lançar",
       "chartAria": "Gráfico comparativo de trajetórias parabólicas na Terra, Marte e Lua",
       "range": "Alcance",
@@ -645,7 +704,122 @@
     "waves": {
       "title": "Velocidade de ondas em água rasa",
       "description": "Em águas rasas, a velocidade de propagação de uma onda depende diretamente da gravidade e da profundidade.",
-      "depthLabel": "Profundidade da água (h)"
+      "depthLabel": "Profundidade do fluido (h)",
+      "wavelengthLabel": "Comprimento de onda (λ)",
+      "presets": {
+        "hydroponics": "Canal hidropônico",
+        "jezeroDelta": "Paleodelta Jezero",
+        "subglacialLake": "Lago profundo"
+      }
+    },
+    "quiz": {
+      "title": "Mini-Desafio STEAM: Teste sua intuição espacial",
+      "subtitleBadge": "Autoavaliação interativa",
+      "description": "Use os simuladores acima para comprovar cada resposta experimentalmente.",
+      "q1": {
+        "question": "O que acontece com a massa (kg) e o peso (N) do rover Perseverance (1025 kg) ao pousar em Marte?",
+        "optA": "Tanto sua massa quanto seu peso caem para 38%",
+        "optB": "Sua massa continua 1025 kg, mas seu peso em Newtons cai para 38%",
+        "optC": "Seu peso em Newtons não muda porque tem rodas metálicas",
+        "explanation": "Exato! A massa é uma propriedade intrínseca (1025 kg em qualquer lugar), enquanto o peso depende da gravidade local (W = m · g)."
+      },
+      "q2": {
+        "question": "No vácuo (sem atmosfera), qual ângulo de lançamento produz o alcance horizontal máximo em qualquer planeta?",
+        "optA": "Depende da gravidade do planeta",
+        "optB": "75° na Lua e 30° na Terra",
+        "optC": "45° em todos os corpos planetários",
+        "explanation": "Sem arrasto atmosférico, sin(2θ) atinge o máximo em θ = 45°, independentemente do valor de g."
+      },
+      "q3": {
+        "question": "Comparada à Terra, uma onda em um tanque de 5 m de profundidade na Lua viaja...",
+        "optA": "Mais devagar, porque c = √(g · h) e a gravidade lunar é menor",
+        "optB": "Mais rápido, porque a água pesa menos",
+        "optC": "Na mesma velocidade em ambos os mundos",
+        "explanation": "A gravidade é a força restauradora das ondas superficiais: menor gravidade implica propagação mais lenta (2.85 m/s na Lua vs. 7.00 m/s na Terra)."
+      }
+    },
+    "toggleCustom": "+ Gravidade livre",
+    "customGravityLabel": "Gravidade personalizada (m/s²)",
+    "categories": {
+      "all": "Todos os módulos (9)",
+      "mechanics": "Mecânica e Gravidade",
+      "wavesEnergy": "Ondas, Pêndulo e Energia Solar",
+      "atmosphere": "Química do Ar e Habitabilidade",
+      "quiz": "Mini-Desafio STEAM"
+    },
+    "pendulum": {
+      "title": "Pêndulo planetário e relógio gravitacional",
+      "description": "O período de um pêndulo depende apenas do comprimento do fio e da gravidade local, sem depender da massa.",
+      "lengthLabel": "Comprimento do pêndulo (L)",
+      "oscPerMin": "osc/min"
+    },
+    "escape": {
+      "title": "Velocidade de escape e energia orbital",
+      "description": "Quanta velocidade e energia cinética uma espaçonave precisa para vencer o poço gravitacional de cada mundo.",
+      "massLabel": "Massa da nave ou módulo de subida",
+      "orbital": "Órbita baixa"
+    },
+    "solar": {
+      "title": "Geração solar fotovoltaica e atenuação por poeira",
+      "description": "Simula a potência elétrica gerada por painéis espaciais (η = 30%) conforme a irradiância solar de cada mundo e a opacidade atmosférica (τ).",
+      "areaLabel": "Área de painéis solares (A)",
+      "dustLabel": "Opacidade atmosférica / tempestade de poeira (τ)",
+      "roversPowered": "Alimenta ~{{count}} rovers de 250 W"
+    },
+    "atmosphere": {
+      "title": "Composição química do ar e habitabilidade respiratória (Terra · Marte · Lua)",
+      "description": "Compare os compostos químicos atmosféricos de cada mundo e por que a mistura terrestre é ideal para a fisiologia humana frente aos desafios de suporte à vida (ECLSS / ISRU) em Marte e na Lua.",
+      "totalPressure": "Pressão total",
+      "partialO2": "Pressão parcial pO₂",
+      "armstrongLimit": "Limite de Armstrong (63 mbar)",
+      "armstrongSafe": "Seguro (líquidos estáveis a 37 °C)",
+      "armstrongBoil": "Perigo (ebulição a 37 °C sem traje)",
+      "earth": {
+        "status": "Ideal para viver",
+        "summary": "Equilíbrio ideal: 21% de O₂ para energia celular e 78% de N₂ como gás amortecedor inerte que mantém os alvéolos abertos e evita incêndios."
+      },
+      "mars": {
+        "status": "Irrespirável · Letal",
+        "summary": "Atmosfera ultrafina com 95.3% de CO₂ (hipercapnia letal) e quase zero O₂. Contudo, o CO₂ permite produzir O₂ local com a tecnologia MOXIE."
+      },
+      "moon": {
+        "status": "Vácuo · Sem ar",
+        "summary": "Não possui atmosfera gasosa respirável, mas 43% do solo (regolito) é oxigênio ligado a minerais, além de gelo de água nas crateras polares."
+      },
+      "roles": {
+        "n2Earth": "Nitrogênio: Gás amortecedor inerte que mantém a pressão alveolar sem toxicidade.",
+        "o2Earth": "Oxigênio: Combustível essencial para a respiração celular aeróbica (ATP).",
+        "ar": "Argônio: Gás nobre quimicamente inerte.",
+        "co2Earth": "Dióxido de carbono: Regula o reflexo respiratório em baixas doses e mantém o efeito estufa ameno.",
+        "co2Mars": "Dióxido de carbono: Causa hipercapnia imediata em humanos, mas é matéria-prima para gerar O₂.",
+        "n2Mars": "Nitrogênio: Presente em 2.7%; deve ser concentrado para pressurizar habitats.",
+        "o2CoMars": "Traços de O₂ (0.13%) e monóxido de carbono tóxico (CO, 0.08%).",
+        "regolithO2": "Oxigênio mineral no regolito: Extraível aquecendo óxidos de silício, ferro e titânio (>900 °C).",
+        "polarIce": "Gelo de água em crateras polares sombreadas (Shackleton): Ideal para eletrólise.",
+        "exosphere": "Exosfera vestigial: Átomos esparsos que não formam ar respirável."
+      },
+      "pillars": {
+        "o2Title": "1. Janela ideal de Oxigênio (pO₂: 160–250 mbar)",
+        "o2Desc": "Abaixo de 100 mbar ocorre hipóxia cerebral; acima de 500 mbar o oxigênio torna-se tóxico para os pulmões e altamente inflamável.",
+        "n2Title": "2. Por que precisamos do Nitrogênio (78% N₂)",
+        "n2Desc": "Respirar oxigênio puro colapsa os alvéolos (atelectasia) e multiplica o risco de incêndio. O N₂ dilui o O₂ e mantém a pressão total.",
+        "co2Title": "3. Limite crítico de CO₂ (< 5 mbar) e Pressão (> 63 mbar)",
+        "co2Desc": "Mesmo com O₂ suficiente, >1%–2% de CO₂ impede que o sangue elimine gás carbônico. Em Marte, o CO₂ representa 95.3% do ar."
+      },
+      "isru": {
+        "title": "Simulador de Suporte à Vida e ISRU (Geração de Ar para Habitat)",
+        "subtitle": "Calcule quanto oxigênio uma tripulação precisa e quantos recursos locais de Marte ou da Lua devem ser processados.",
+        "crewLabel": "Tripulação do habitat",
+        "astronauts": "astronautas",
+        "daysLabel": "Duração da missão",
+        "days": "dias",
+        "o2Required": "Oxigênio metabólico necessário",
+        "o2RateNote": "Padrão NASA ISS: 0.84 kg de O₂ por pessoa/dia",
+        "marsMoxieTitle": "Em Marte: CO₂ atmosférico a processar (MOXIE)",
+        "marsMoxieNote": "Eletrólise de óxido sólido a 800 °C",
+        "moonIceTitle": "Na Lua: Água polar ou regolito necessário",
+        "moonIceNote": "Eletrólise de gelo ou redução de regolito"
+      }
     }
   }
 }

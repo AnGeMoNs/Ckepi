@@ -1,4 +1,5 @@
-import { Download, GitCompareArrows } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowUpDown, Download, GitCompareArrows, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { formatNumber, formatPercent } from "../../i18n";
@@ -21,6 +22,9 @@ interface AnalogComparisonMatrixProps {
   onExported?: () => void;
 }
 
+type MatrixSortField = "combined" | "s_ind" | "s_dep" | "r_break";
+type MatrixCategory = "all" | "discovery" | "benchmark" | "pareto";
+
 export function AnalogComparisonMatrix({
   matches,
   selectedH3,
@@ -31,10 +35,55 @@ export function AnalogComparisonMatrix({
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
 
+  const [sortField, setSortField] = useState<MatrixSortField>("combined");
+  const [sortAsc, setSortAsc] = useState(false);
+  const [category, setCategory] = useState<MatrixCategory>("all");
+  const [limitCount, setLimitCount] = useState<number>(10);
+  const [query, setQuery] = useState("");
+
+  const originalRankMap = useMemo(() => {
+    const map = new Map<string, number>();
+    matches.forEach((m, idx) => map.set(m.earth_cell_h3, idx + 1));
+    return map;
+  }, [matches]);
+
+  const sortedCandidates = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const filtered = matches.filter((m) => {
+      if (category === "discovery" && m.is_benchmark) return false;
+      if (category === "benchmark" && !m.is_benchmark) return false;
+      if (category === "pareto" && !m.is_pareto_optimal) return false;
+      if (q) {
+        const reg = (m.known_analog_name ?? t(m.region_key)).toLowerCase();
+        const bio = t(m.biome_key).toLowerCase();
+        if (!reg.includes(q) && !bio.includes(q) && !m.earth_cell_h3.toLowerCase().includes(q)) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    const dir = sortAsc ? 1 : -1;
+    return [...filtered]
+      .sort((a, b) => {
+        if (sortField === "combined") return (a.combined_score - b.combined_score) * dir;
+        if (sortField === "s_ind") return (a.s_ind - b.s_ind) * dir;
+        if (sortField === "s_dep") return (a.s_dep - b.s_dep) * dir;
+        return (a.r_break_overall - b.r_break_overall) * dir;
+      })
+      .slice(0, limitCount);
+  }, [matches, category, query, sortField, sortAsc, limitCount, t]);
+
   if (matches.length === 0) return null;
 
-  // Pick top 4 distinct cells (ensuring at least 1 discovery & 1 benchmark if available)
-  const topCandidates: AnalogMatchItem[] = matches.slice(0, 4);
+  const handleSortCol = (field: MatrixSortField) => {
+    if (sortField === field) {
+      setSortAsc((prev) => !prev);
+    } else {
+      setSortField(field);
+      setSortAsc(field === "r_break");
+    }
+  };
 
   return (
     <Card>
@@ -89,17 +138,87 @@ export function AnalogComparisonMatrix({
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="space-y-3.5">
+        {/* Filter & Sort Controls */}
+        <div className="flex flex-col gap-2.5 rounded-xl border border-border-subtle bg-surface-muted/30 p-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto pb-0.5">
+            {(
+              [
+                { id: "all", label: t("map.filters.category.all") },
+                { id: "discovery", label: t("map.filters.category.discovery") },
+                { id: "benchmark", label: t("map.filters.category.benchmark") },
+                { id: "pareto", label: t("map.filters.category.pareto") },
+              ] as const
+            ).map((cat) => {
+              const active = category === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setCategory(cat.id)}
+                  className={`shrink-0 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-all ${
+                    active
+                      ? "border-accent bg-accent text-accent-foreground shadow-sm"
+                      : "border-border-subtle bg-surface text-content-muted hover:bg-surface-muted hover:text-content"
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative flex-1 sm:w-52 sm:flex-initial">
+              <Search
+                className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-content-muted"
+                aria-hidden="true"
+              />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={t("map.filters.searchPlaceholder")}
+                aria-label={t("map.filters.searchPlaceholder")}
+                className="min-h-9 w-full rounded-lg border border-border-subtle bg-surface pl-8 pr-7 py-1 text-xs text-content placeholder:text-content-muted/70 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-content-muted hover:text-content"
+                >
+                  <X className="h-3.5 w-3.5" aria-hidden="true" />
+                </button>
+              )}
+            </div>
+
+            <select
+              aria-label={t("comparisonMatrix.showRows")}
+              value={limitCount}
+              onChange={(e) => setLimitCount(Number(e.target.value))}
+              className="min-h-9 rounded-lg border border-border-subtle bg-surface px-2.5 py-1 text-xs font-semibold tabular-nums text-content focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+            >
+              {[4, 10, 25, 50].map((n) => (
+                <option key={n} value={n}>
+                  {t("comparisonMatrix.topCount", { count: n })}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         {/* Mobile Stacked Cards (<640px) */}
         <div className="grid grid-cols-1 gap-3 sm:hidden">
-          {topCandidates.map((m, idx) => {
+          {sortedCandidates.map((m, idx) => {
             const isActive = m.earth_cell_h3 === selectedH3;
+            const rank = originalRankMap.get(m.earth_cell_h3) ?? idx + 1;
             return (
               <button
                 key={m.earth_cell_h3}
                 type="button"
                 onClick={() => onSelectCell(m.earth_cell_h3)}
-                className={`min-h-11 w-full rounded border p-3.5 text-left transition ${
+                className={`min-h-11 w-full rounded-xl border p-3.5 text-left transition ${
                   isActive
                     ? "border-accent bg-accent/10"
                     : "border-border-subtle bg-surface hover:border-accent/60"
@@ -107,16 +226,19 @@ export function AnalogComparisonMatrix({
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-sm font-semibold text-content">
-                    #{idx + 1} · {t(m.region_key)}
+                    #{rank} · {m.known_analog_name ?? t(m.region_key)}
                   </span>
-                  <div className="flex flex-wrap items-center gap-1">
-                    {m.is_pareto_optimal && (
-                      <Badge variant="accent">{t("mission.paretoBadge")}</Badge>
-                    )}
-                    <Badge variant={m.is_benchmark ? "default" : "valid"}>
-                      {m.is_benchmark ? t("map.benchmarkBadge") : t("map.discoveryBadge")}
-                    </Badge>
-                  </div>
+                  <span className="tabular-nums text-sm font-bold text-accent">
+                    {formatPercent(m.combined_score, lang)}
+                  </span>
+                </div>
+                <div className="mt-1 flex flex-wrap items-center gap-1">
+                  {m.is_pareto_optimal && (
+                    <Badge variant="accent">{t("mission.paretoBadge")}</Badge>
+                  )}
+                  <Badge variant={m.is_benchmark ? "default" : "valid"}>
+                    {m.is_benchmark ? t("map.benchmarkBadge") : t("map.discoveryBadge")}
+                  </Badge>
                 </div>
                 <p className="mt-1 text-xs text-content-muted">
                   {t(m.biome_key)} · ({formatNumber(m.coordinates.lat, lang, 2)},{" "}
@@ -151,36 +273,68 @@ export function AnalogComparisonMatrix({
         </div>
 
         {/* Desktop / Tablet Comparison Table */}
-        <div className="hidden overflow-x-auto rounded border border-border-subtle sm:block">
+        <div className="hidden overflow-x-auto rounded-xl border border-border-subtle sm:block">
           <table className="w-full border-collapse text-left text-sm">
             <thead className="bg-surface-muted text-xs uppercase text-content-muted">
               <tr>
                 <th className="px-4 py-3 font-semibold">{t("comparisonMatrix.siteCol")}</th>
                 <th className="px-4 py-3 font-semibold">{t("comparisonMatrix.typeCol")}</th>
                 <th className="px-4 py-3 font-semibold">
-                  <span className="inline-flex items-center gap-0.5">
-                    S_ind
+                  <button
+                    type="button"
+                    onClick={() => handleSortCol("combined")}
+                    className="inline-flex items-center gap-1 font-semibold uppercase hover:text-content"
+                  >
+                    <span>{t("comparisonMatrix.combinedCol")}</span>
+                    <ArrowUpDown className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+                  </button>
+                </th>
+                <th className="px-4 py-3 font-semibold">
+                  <div className="inline-flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => handleSortCol("s_ind")}
+                      className="inline-flex items-center gap-1 font-semibold uppercase hover:text-content"
+                    >
+                      <span>S_ind</span>
+                      <ArrowUpDown className="h-3 w-3" aria-hidden="true" />
+                    </button>
                     <InfoTooltip label="S_ind" text={t("comparisonMatrix.sIndTooltip")} />
-                  </span>
+                  </div>
                 </th>
                 <th className="px-4 py-3 font-semibold">
-                  <span className="inline-flex items-center gap-0.5">
-                    S_dep
+                  <div className="inline-flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => handleSortCol("s_dep")}
+                      className="inline-flex items-center gap-1 font-semibold uppercase hover:text-content"
+                    >
+                      <span>S_dep</span>
+                      <ArrowUpDown className="h-3 w-3" aria-hidden="true" />
+                    </button>
                     <InfoTooltip label="S_dep" text={t("comparisonMatrix.sDepTooltip")} />
-                  </span>
+                  </div>
                 </th>
                 <th className="px-4 py-3 font-semibold">
-                  <span className="inline-flex items-center gap-0.5">
-                    R_break
+                  <div className="inline-flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => handleSortCol("r_break")}
+                      className="inline-flex items-center gap-1 font-semibold uppercase hover:text-content"
+                    >
+                      <span>R_break</span>
+                      <ArrowUpDown className="h-3 w-3" aria-hidden="true" />
+                    </button>
                     <InfoTooltip label="R_break" text={t("comparisonMatrix.rBreakTooltip")} />
-                  </span>
+                  </div>
                 </th>
                 <th className="px-4 py-3 font-semibold">{t("comparisonMatrix.bestTestCol")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border-subtle bg-surface-elevated">
-              {topCandidates.map((m, idx) => {
+              {sortedCandidates.map((m, idx) => {
                 const isActive = m.earth_cell_h3 === selectedH3;
+                const rank = originalRankMap.get(m.earth_cell_h3) ?? idx + 1;
                 const topTest = m.engineering_recommendations.valid_tests[0];
                 return (
                   <tr
@@ -192,7 +346,7 @@ export function AnalogComparisonMatrix({
                   >
                     <td className="px-4 py-3">
                       <p className="font-semibold text-content">
-                        #{idx + 1} · {t(m.region_key)}
+                        #{rank} · {m.known_analog_name ?? t(m.region_key)}
                       </p>
                       <p className="text-xs text-content-muted">
                         {t(m.biome_key)} · {formatNumber(m.coordinates.lat, lang, 2)},{" "}
@@ -207,6 +361,19 @@ export function AnalogComparisonMatrix({
                         {m.is_pareto_optimal && (
                           <Badge variant="accent">{t("mission.paretoBadge")}</Badge>
                         )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="space-y-1">
+                        <span className="font-bold tabular-nums text-content">
+                          {formatPercent(m.combined_score, lang)}
+                        </span>
+                        <div className="h-1.5 w-20 overflow-hidden rounded-full bg-surface-muted">
+                          <div
+                            className="h-full rounded-full bg-accent"
+                            style={{ width: `${Math.min(100, m.combined_score * 100)}%` }}
+                          />
+                        </div>
                       </div>
                     </td>
                     <td className="px-4 py-3 font-semibold tabular-nums text-accent">

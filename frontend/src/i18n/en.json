@@ -119,15 +119,18 @@
     "clearGlobalFilters": "Clear global filters (0%)"
   },
   "comparisonMatrix": {
-    "title": "Side-by-Side Candidate Comparison (Top 4)",
-    "subtitle": "Click any row or card to inspect its detailed physical profile.",
+    "title": "Candidate Analog Comparison & Classification",
+    "subtitle": "Sort by similarity percentage, filter by category, and click any row to inspect its detailed physical profile.",
     "siteCol": "Terrestrial Location",
     "typeCol": "Category",
+    "combinedCol": "% Similarity",
     "bestTestCol": "Primary Validated Test",
     "exportReport": "Report (.md)",
     "sIndTooltip": "Similarity in independent environmental drivers (e.g., gravity, temperature, radiation).",
     "sDepTooltip": "Similarity in operational response and terrain-dependent conditions.",
-    "rBreakTooltip": "Aggregate analogy breakage risk on Earth compared to the target site."
+    "rBreakTooltip": "Aggregate analogy breakage risk on Earth compared to the target site.",
+    "showRows": "Show",
+    "topCount": "Top {{count}}"
   },
   "layers": {
     "independent": "Independent (X)",
@@ -350,6 +353,48 @@
     "paginationStatus": "Page {{page}} of {{totalPages}} · {{total}} results",
     "prevPage": "Previous",
     "nextPage": "Next",
+    "filters": {
+      "searchPlaceholder": "Search region, analog, biome, or H3 cell...",
+      "sortByLabel": "Sort by",
+      "sort": {
+        "combined_desc": "Highest % Overall Similarity (↓)",
+        "combined_asc": "Lowest % Overall Similarity (↑)",
+        "s_ind_desc": "Highest % Substrate S_ind (↓)",
+        "s_dep_desc": "Highest % Response S_dep (↓)",
+        "r_break_asc": "Lowest Breakage Risk R_break (↑ Safest)",
+        "r_break_desc": "Highest Breakage Risk R_break (↓)",
+        "lat_desc": "Latitude (North → South)"
+      },
+      "category": {
+        "all": "All",
+        "discovery": "Discoveries",
+        "benchmark": "Benchmarks",
+        "pareto": "Pareto Optimal",
+        "pinned": "Pinned ★"
+      },
+      "scoreBandLabel": "Score tier",
+      "scoreBand": {
+        "all": "All %",
+        "high": "High (≥ 75%)",
+        "mid": "Medium (55–74%)",
+        "low": "Partial (< 55%)"
+      },
+      "biomeAll": "All biomes",
+      "perPage": "{{count}} / page",
+      "clearFilters": "Reset filters",
+      "pinCell": "Pin cell to keep handy",
+      "unpinCell": "Unpin cell"
+    },
+    "nav": {
+      "returnToPrevPage": "↩ Back to page {{page}}",
+      "goToSelectedCellPage": "📍 Active cell (Page {{page}})",
+      "recentPagesLabel": "Recent pages:",
+      "jumpToPageLabel": "Go to page",
+      "jumpButton": "Go",
+      "pageOption": "Page {{page}} (#{{start}}–{{end}} · {{score}})",
+      "back10": "−10 pages",
+      "forward10": "+10 pages"
+    },
     "subdivideAction": "Subdivide into 7 sub-hexagons",
     "maxResReached": "Max detail (H3-5)",
     "drilldownActive": "Viewing {{count}} sub-zones inside H3 {{parent}}",
@@ -604,10 +649,19 @@
     "title": "Interactive Gravity & Planetary Physics Lab",
     "badge": "Educational · STEAM",
     "subtitle": "Explore how everyday physics changes across Earth, Mars, and the Moon using the exact same equations.",
+    "toggleTitan": "+ Titan (1.35 m/s²)",
     "bodies": {
       "earth": "Earth",
       "mars": "Mars",
-      "moon": "Moon"
+      "moon": "Moon",
+      "titan": "Titan",
+      "custom": "Custom"
+    },
+    "telemetry": {
+      "activeTarget": "Active target",
+      "surfaceTemp": "Surface temp.",
+      "pressure": "Atm. pressure",
+      "earthAnalog": "Earth analog"
     },
     "controls": {
       "play": "Play",
@@ -617,25 +671,30 @@
     "weight": {
       "title": "Physical weight calculator (Newtons)",
       "description": "Mass (kg) stays constant anywhere in space, while gravitational force (Newtons) scales with gravity.",
-      "massLabel": "Object or person mass",
+      "massLabel": "Object, person, or rover mass",
       "feelsLike": "feels like {{kg}} kg on Earth",
+      "inertiaTip": "Engineering note: Even though weight drops on the Moon or Mars, horizontal inertia remains {{kg}} kg (F = m · a), so braking or turning a rover still requires full force.",
       "presets": {
         "backpack": "Backpack",
         "astronaut": "Astronaut",
-        "suit": "Spacesuit"
+        "suit": "EVA Suit",
+        "viper": "VIPER Rover",
+        "perseverance": "Perseverance"
       }
     },
     "jump": {
       "title": "Gravity jump simulator",
       "description": "With the same take-off impulse, lower gravity lets you jump higher and stay airborne longer.",
       "velocityLabel": "Take-off velocity",
-      "jumpAction": "Jump"
+      "jumpAction": "Jump",
+      "airTime": "Flight"
     },
     "trajectory": {
       "title": "Projectile trajectory comparison",
       "description": "A projectile launched at the same speed and angle travels dramatically farther under lower gravity.",
       "speedLabel": "Launch speed",
       "angleLabel": "Angle",
+      "dragToggle": "Simulate real atmospheric drag",
       "launchAction": "Launch",
       "chartAria": "Comparative parabolic trajectory chart for Earth, Mars, and the Moon",
       "range": "Range",
@@ -645,7 +704,122 @@
     "waves": {
       "title": "Shallow-water wave speed",
       "description": "In shallow water, wave propagation speed depends directly on local gravity and water depth.",
-      "depthLabel": "Water depth (h)"
+      "depthLabel": "Fluid depth (h)",
+      "wavelengthLabel": "Wavelength (λ)",
+      "presets": {
+        "hydroponics": "Hydroponic channel",
+        "jezeroDelta": "Jezero paleodelta",
+        "subglacialLake": "Deep basin"
+      }
+    },
+    "quiz": {
+      "title": "STEAM Mini-Challenge: Test Your Space Intuition",
+      "subtitleBadge": "Interactive self-check",
+      "description": "Use the simulators above to verify each answer experimentally.",
+      "q1": {
+        "question": "What happens to the mass (kg) and weight (N) of the Perseverance rover (1025 kg) on Mars?",
+        "optA": "Both its mass and weight drop to 38%",
+        "optB": "Its mass stays 1025 kg, while its weight in Newtons drops to 38%",
+        "optC": "Its weight in Newtons stays the same because of its metal wheels",
+        "explanation": "Correct! Mass is an intrinsic property (1025 kg anywhere), whereas weight depends on local gravity (W = m · g)."
+      },
+      "q2": {
+        "question": "In a vacuum (no atmosphere), which launch angle gives the maximum horizontal range on any planet?",
+        "optA": "It depends on the planet's gravity",
+        "optB": "75° on the Moon and 30° on Earth",
+        "optC": "45° on every planetary body",
+        "explanation": "Without atmospheric drag, sin(2θ) peaks at θ = 45° regardless of the value of g."
+      },
+      "q3": {
+        "question": "Compared to Earth, a shallow-water wave in a 5 m deep lunar basin travels...",
+        "optA": "Slower, because c = √(g · h) and lunar gravity is weaker",
+        "optB": "Faster, because water weighs less on the Moon",
+        "optC": "At the exact same speed on both worlds",
+        "explanation": "Gravity is the restoring force for surface waves: weaker gravity means slower wave propagation (2.85 m/s on the Moon vs. 7.00 m/s on Earth)."
+      }
+    },
+    "toggleCustom": "+ Custom gravity",
+    "customGravityLabel": "Custom gravity (m/s²)",
+    "categories": {
+      "all": "All modules (9)",
+      "mechanics": "Mechanics & Gravity",
+      "wavesEnergy": "Waves, Pendulum & Solar",
+      "atmosphere": "Air Chemistry & Habitability",
+      "quiz": "STEAM Challenge"
+    },
+    "pendulum": {
+      "title": "Planetary pendulum & gravitational clock",
+      "description": "A pendulum period depends solely on string length and local gravity, regardless of bob mass.",
+      "lengthLabel": "Pendulum length (L)",
+      "oscPerMin": "osc/min"
+    },
+    "escape": {
+      "title": "Escape velocity & orbital energy",
+      "description": "How much velocity and kinetic energy a spacecraft needs to escape each planetary gravity well.",
+      "massLabel": "Spacecraft or ascent stage mass",
+      "orbital": "Low orbit"
+    },
+    "solar": {
+      "title": "Solar photovoltaic power & dust storm attenuation",
+      "description": "Simulates electrical power output from space-grade solar arrays (η = 30%) across planetary solar irradiance and atmospheric dust optical depth (τ).",
+      "areaLabel": "Solar array area (A)",
+      "dustLabel": "Atmospheric dust optical depth (τ)",
+      "roversPowered": "Powers ~{{count}} rovers (250 W each)"
+    },
+    "atmosphere": {
+      "title": "Air Chemical Composition & Respiratory Habitability (Earth · Mars · Moon)",
+      "description": "Compare the chemical compounds of each world and how Earth’s gas balance is optimal for human physiology versus life-support (ECLSS / ISRU) challenges on Mars and the Moon.",
+      "totalPressure": "Total pressure",
+      "partialO2": "Partial pressure pO₂",
+      "armstrongLimit": "Armstrong limit (63 mbar)",
+      "armstrongSafe": "Safe (body fluids stable at 37 °C)",
+      "armstrongBoil": "Hazard (fluids boil at 37 °C unpressurized)",
+      "earth": {
+        "status": "Optimal for life",
+        "summary": "Ideal balance: 21% O₂ for cellular respiration and 78% N₂ as an inert buffer gas that keeps lung alveoli open and suppresses fire hazards."
+      },
+      "mars": {
+        "status": "Unbreathable · Lethal",
+        "summary": "Ultra-thin atmosphere with 95.3% CO₂ (lethal hypercapnia) and virtually zero O₂. However, atmospheric CO₂ enables in-situ O₂ production via NASA MOXIE."
+      },
+      "moon": {
+        "status": "Vacuum · Airless",
+        "summary": "No breathable gaseous atmosphere, but ~43% of lunar regolith mass is oxygen bound in metal oxides, plus water ice in polar craters."
+      },
+      "roles": {
+        "n2Earth": "Nitrogen: Inert buffer gas maintaining alveolar pressure without toxicity and driving the nitrogen cycle.",
+        "o2Earth": "Oxygen: Essential electron acceptor for aerobic cellular respiration (ATP).",
+        "ar": "Argon: Chemically inert noble gas.",
+        "co2Earth": "Carbon dioxide: Triggers breathing reflex at trace levels and maintains mild greenhouse warmth.",
+        "co2Mars": "Carbon dioxide: Causes immediate hypercapnia in humans, but serves as feedstock for MOXIE O₂ generation.",
+        "n2Mars": "Nitrogen: Present at 2.7%; must be concentrated to provide habitat buffer gas.",
+        "o2CoMars": "Trace O₂ (0.13%) and toxic carbon monoxide (CO, 0.08%).",
+        "regolithO2": "Mineral-bound oxygen in regolith: Extractable by heating Si, Fe, and Ti oxides (>900 °C).",
+        "polarIce": "Water ice in permanently shadowed polar craters (Shackleton): Ideal for electrolysis.",
+        "exosphere": "Vestigial exosphere: Sparse atoms that cannot support breathing or sound."
+      },
+      "pillars": {
+        "o2Title": "1. Optimal Oxygen Window (pO₂: 160–250 mbar)",
+        "o2Desc": "Below 100 mbar causes cerebral hypoxia and unconsciousness; above 500 mbar causes pulmonary oxygen toxicity and extreme fire risk.",
+        "n2Title": "2. Why Nitrogen Buffer Gas (78% N₂) Is Essential",
+        "n2Desc": "Breathing pure oxygen collapses lung alveoli (absorption atelectasis) and turns sparks into infernos. N₂ safely dilutes O₂ and provides total pressure.",
+        "co2Title": "3. Critical CO₂ (< 5 mbar) & Pressure (> 63 mbar) Limits",
+        "co2Desc": "Even with enough O₂, >1%–2% CO₂ prevents blood from offloading carbon dioxide. On Mars, CO₂ makes up 95.3% of the gas mix."
+      },
+      "isru": {
+        "title": "Life Support & ISRU Simulator (Habitat Air Generation)",
+        "subtitle": "Calculate how much oxygen a human crew needs and how much local Martian or Lunar resource must be processed.",
+        "crewLabel": "Habitat crew size",
+        "astronauts": "astronauts",
+        "daysLabel": "Mission duration",
+        "days": "days",
+        "o2Required": "Metabolic oxygen required",
+        "o2RateNote": "NASA ISS standard: 0.84 kg O₂ per person/day",
+        "marsMoxieTitle": "On Mars: Atmospheric CO₂ to process (MOXIE)",
+        "marsMoxieNote": "Solid oxide electrolysis at 800 °C",
+        "moonIceTitle": "On Moon: Polar water ice or regolith needed",
+        "moonIceNote": "Ice electrolysis or regolith reduction"
+      }
     }
   }
 }
