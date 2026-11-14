@@ -27,7 +27,7 @@ function getInitialDismissed(): boolean {
 }
 
 interface GuidedStepsBannerProps {
-  activeStep?: 1 | 2 | 3;
+  activeStep?: 1 | 2 | 3 | 4;
 }
 
 export function GuidedStepsBanner({ activeStep = 1 }: GuidedStepsBannerProps) {

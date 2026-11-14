@@ -23,6 +23,10 @@ const VALID_PROFILES: ReadonlySet<string> = new Set([
 
 const VALID_MODELS: ReadonlySet<string> = new Set(["ridge", "random_forest"]);
 
+function roundThreshold(value: number): number {
+  return Math.round(value * 20) / 20;
+}
+
 function parseNumericParam(
   params: URLSearchParams | null,
   key: string,
@@ -35,7 +39,7 @@ function parseNumericParam(
   if (raw === null) return fallback;
   const parsed = Number(raw);
   if (!Number.isFinite(parsed)) return fallback;
-  return Math.min(max, Math.max(min, parsed));
+  return roundThreshold(Math.min(max, Math.max(min, parsed)));
 }
 
 export function useExplorerParams() {
@@ -91,10 +95,12 @@ export function useExplorerParams() {
     if (modelType !== "ridge") url.searchParams.set("model", modelType);
     else url.searchParams.delete("model");
 
-    if (minSInd !== 0.2) url.searchParams.set("minInd", String(minSInd));
+    const roundedMinInd = roundThreshold(minSInd);
+    if (roundedMinInd !== 0.2) url.searchParams.set("minInd", roundedMinInd.toFixed(2));
     else url.searchParams.delete("minInd");
 
-    if (minSDep !== 0) url.searchParams.set("minDep", String(minSDep));
+    const roundedMinDep = roundThreshold(minSDep);
+    if (roundedMinDep !== 0) url.searchParams.set("minDep", roundedMinDep.toFixed(2));
     else url.searchParams.delete("minDep");
 
     if (excludeBenchmarks) url.searchParams.set("discovery", "1");

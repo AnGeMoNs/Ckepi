@@ -18,6 +18,7 @@ interface AnalogComparisonMatrixProps {
   selectedH3: string | null;
   activeSite?: PlanetarySite;
   onSelectCell: (h3Index: string) => void;
+  onExported?: () => void;
 }
 
 export function AnalogComparisonMatrix({
@@ -25,6 +26,7 @@ export function AnalogComparisonMatrix({
   selectedH3,
   activeSite,
   onSelectCell,
+  onExported,
 }: AnalogComparisonMatrixProps) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
@@ -48,18 +50,20 @@ export function AnalogComparisonMatrix({
         <div className="flex flex-wrap items-center gap-2">
           <Button
             variant="secondary"
-            onClick={() =>
-              exportMatchesToCsv(matches, activeSite?.site_id ?? "site", (k) => t(k))
-            }
+            onClick={() => {
+              exportMatchesToCsv(matches, activeSite?.site_id ?? "site", (k) => t(k));
+              onExported?.();
+            }}
           >
             <Download className="h-4 w-4" aria-hidden="true" />
             <span>CSV</span>
           </Button>
           <Button
             variant="secondary"
-            onClick={() =>
-              exportMatchesToGeoJson(matches, activeSite?.site_id ?? "site", (k) => t(k))
-            }
+            onClick={() => {
+              exportMatchesToGeoJson(matches, activeSite?.site_id ?? "site", (k) => t(k));
+              onExported?.();
+            }}
           >
             <Download className="h-4 w-4" aria-hidden="true" />
             <span>GeoJSON</span>
@@ -67,15 +71,16 @@ export function AnalogComparisonMatrix({
           {activeSite && (
             <Button
               variant="secondary"
-              onClick={() =>
+              onClick={() => {
                 exportReportMarkdown(
                   activeSite,
                   matches,
                   (k, p) => t(k, p),
                   matches.find((m) => m.earth_cell_h3 === selectedH3) ?? matches[0],
                   lang
-                )
-              }
+                );
+                onExported?.();
+              }}
             >
               <Download className="h-4 w-4" aria-hidden="true" />
               <span>{t("comparisonMatrix.exportReport")}</span>

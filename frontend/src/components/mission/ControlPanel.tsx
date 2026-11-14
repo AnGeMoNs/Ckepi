@@ -14,11 +14,7 @@ import { InfoTooltip } from "../ui/InfoTooltip";
 import { Select } from "../ui/Select";
 import { Slider } from "../ui/Slider";
 import { Switch } from "../ui/Switch";
-import {
-  MANUAL_DV_KEYS,
-  MANUAL_IV_KEYS,
-  ManualVariableControls,
-} from "./ManualVariableControls";
+import { ManualVariableControls } from "./ManualVariableControls";
 import { PresetProfileInspector } from "./PresetProfileInspector";
 
 interface ControlPanelProps {
@@ -143,13 +139,7 @@ export function ControlPanel({
         <PresetProfileInspector
           testProfile={testProfile}
           weightsUsed={searchResult.causal_weights_used}
-          onCloneToManual={(weights) => {
-            const normalized = Object.fromEntries(
-              MANUAL_IV_KEYS.map((k) => [k, weights[k] ?? 0])
-            );
-            void MANUAL_DV_KEYS;
-            onClonePresetToManual(normalized);
-          }}
+          onCloneToManual={onClonePresetToManual}
         />
       )}
 

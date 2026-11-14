@@ -32,11 +32,13 @@ import { ProgressBar } from "../ui/ProgressBar";
 interface MissionDiagnosticsProps {
   comparison: SiteComparisonResponse;
   readingMode?: ReadingMode;
+  onExported?: () => void;
 }
 
 export function MissionDiagnostics({
   comparison,
   readingMode = "mission",
+  onExported,
 }: MissionDiagnosticsProps) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
@@ -85,9 +87,10 @@ export function MissionDiagnostics({
         <div className="flex flex-wrap items-center gap-2">
           <Button
             variant="secondary"
-            onClick={() =>
-              exportReportMarkdown(comparison.site, [match], (k, p) => t(k, p), match, lang)
-            }
+            onClick={() => {
+              exportReportMarkdown(comparison.site, [match], (k, p) => t(k, p), match, lang);
+              onExported?.();
+            }}
           >
             <Download className="h-4 w-4" aria-hidden="true" />
             <span>{t("comparisonMatrix.exportReport")}</span>

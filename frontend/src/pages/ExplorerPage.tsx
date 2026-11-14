@@ -76,6 +76,13 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [mobileMapTab, setMobileMapTab] = useState<MobileMapTab>("earth");
   const [copiedLink, setCopiedLink] = useState(false);
+  const [hasConfigured, setHasConfigured] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    const sp = new URLSearchParams(window.location.search);
+    return sp.has("site") || sp.has("profile");
+  });
+  const [hasExploredMap, setHasExploredMap] = useState(false);
+  const [hasExportedOrShared, setHasExportedOrShared] = useState(false);
   const [toastState, setToastState] = useState<{ message: string; variant: ToastVariant } | null>(
     null
   );
@@ -103,7 +110,13 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const hasResults = Boolean(analysis.searchResult || analysis.decomposition);
   const isInitialLoading = analysis.isLoading && !hasResults;
   const isUpdating = analysis.isLoading && hasResults;
-  const activeStep: 1 | 2 | 3 = analysis.comparison ? 3 : analysis.searchResult ? 2 : 1;
+  const activeStep: 1 | 2 | 3 | 4 = hasExportedOrShared
+    ? 4
+    : hasExploredMap
+      ? 3
+      : hasConfigured
+        ? 2
+        : 1;
 
   const showToast = (message: string, variant: ToastVariant = "success") => {
     setToastState({ message, variant });
@@ -122,6 +135,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     try {
       await navigator.clipboard.writeText(window.location.href);
       setCopiedLink(true);
+      setHasExportedOrShared(true);
       showToast(t("controls.copiedLink"), "success");
       if (copiedTimerRef.current !== null) window.clearTimeout(copiedTimerRef.current);
       copiedTimerRef.current = window.setTimeout(() => {
@@ -131,6 +145,11 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     } catch {
       showToast(t("controls.copyFailed"), "error");
     }
+  };
+
+  const handleExported = () => {
+    setHasExportedOrShared(true);
+    showToast(t("controls.exportedToast"), "success");
   };
 
   const handleRefresh = async () => {
@@ -158,11 +177,15 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
       customDvWeights={params.customDvWeights}
       customMinSimilarity={params.customMinSimilarity}
       onSelectSite={(nextId, body) => {
+        setHasConfigured(true);
         params.setCustomProbedSite(null);
         params.setSelectedSiteId(nextId);
         if (body) params.setSelectedBody(body);
       }}
-      onChangeTestProfile={params.setTestProfile}
+      onChangeTestProfile={(profile) => {
+        setHasConfigured(true);
+        params.setTestProfile(profile);
+      }}
       onChangeModelType={params.setModelType}
       onChangeMinSInd={params.setMinSInd}
       onChangeMinSDep={params.setMinSDep}
@@ -171,7 +194,10 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
       onToggleAdvanced={() => params.setShowAdvanced((prev) => !prev)}
       onClonePresetToManual={params.clonePresetToManual}
       onClearGlobalThresholds={params.clearGlobalThresholds}
-      onApplyManualVariables={params.applyManualVariables}
+      onApplyManualVariables={(iv, dv, minSim) => {
+        setHasConfigured(true);
+        params.applyManualVariables(iv, dv, minSim);
+      }}
     />
   );
 
@@ -246,12 +272,16 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           )}
 
           {/* Maps Section */}
-          <section
-            id="section-maps"
-            className={`scroll-mt-32 space-y-3 transition-opacity ${
-              isUpdating ? "opacity-60" : "opacity-100"
-            }`}
-          >
+          <section id="section-maps" className="scroll-mt-32 space-y-3">
+            {isUpdating && (
+              <div
+                aria-hidden="true"
+                className="h-1 w-full overflow-hidden rounded-full bg-surface-muted"
+              >
+                <div className="h-full w-1/3 animate-pulse motion-reduce:animate-none rounded-full bg-accent" />
+              </div>
+            )}
+
             <div className="lg:hidden">
               <SegmentedControl
                 ariaLabel={t("controls.mapSwitcherLabel")}
@@ -274,12 +304,12 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             </div>
 
             {isInitialLoading ? (
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <div className="grid grid-cols-1 gap-6 2xl:grid-cols-2">
                 <MapSkeleton />
                 <MapSkeleton />
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <div className="grid grid-cols-1 gap-6 2xl:grid-cols-2">
                 <div className={mobileMapTab === "planet" ? "block" : "hidden lg:block"}>
                   <Suspense fallback={<MapSkeleton />}>
                     <PlanetaryMap
@@ -298,17 +328,19 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                       probingPlanetCoords={analysis.probingPlanetCoords}
                       onSelectBody={analysis.handleSelectBody}
                       onSelectSite={(siteId) => {
+                        setHasConfigured(true);
                         params.setCustomProbedSite(null);
                         params.setSelectedSiteId(siteId);
                       }}
-                      onProbePlanet={(body, lat, lon) =>
-                        void analysis.handleProbePlanet(body, lat, lon)
-                      }
+                      onProbePlanet={(body, lat, lon) => {
+                        setHasExploredMap(true);
+                        void analysis.handleProbePlanet(body, lat, lon);
+                      }}
                     />
                   </Suspense>
                 </div>
 
-                {analysis.searchResult && (
+                {analysis.searchResult ? (
                   <div className={mobileMapTab === "earth" ? "block" : "hidden lg:block"}>
                     <Suspense fallback={<MapSkeleton />}>
                       <AnalogMap
@@ -319,14 +351,39 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                         probingCoords={analysis.probingCoords}
                         isRefining={analysis.isRefining}
                         drilldownState={analysis.drilldownState}
-                        onSelectCell={(h3Index) => analysis.setSelectedH3(h3Index)}
-                        onProbeCoordinate={(lat, lon) =>
-                          void analysis.handleProbeCoordinate(lat, lon)
-                        }
-                        onRefineCell={(h3Index) => void analysis.handleRefineCell(h3Index)}
+                        onSelectCell={(h3Index) => {
+                          setHasExploredMap(true);
+                          analysis.setSelectedH3(h3Index);
+                        }}
+                        onProbeCoordinate={(lat, lon) => {
+                          setHasExploredMap(true);
+                          void analysis.handleProbeCoordinate(lat, lon);
+                        }}
+                        onRefineCell={(h3Index) => {
+                          setHasExploredMap(true);
+                          void analysis.handleRefineCell(h3Index);
+                        }}
                         onExitDrilldown={() => analysis.setDrilldownState(null)}
                       />
                     </Suspense>
+                  </div>
+                ) : (
+                  <div className={mobileMapTab === "earth" ? "block" : "hidden lg:block"}>
+                    {analysis.isLoading ? (
+                      <MapSkeleton />
+                    ) : (
+                      <EmptyState
+                        icon={<AlertCircle className="h-6 w-6 text-status-break" aria-hidden="true" />}
+                        title={
+                          analysis.errorState
+                            ? t(analysis.errorState.key, analysis.errorState.params)
+                            : t("controls.loading")
+                        }
+                        description={t("controls.emptyDescription")}
+                        actionLabel={t("controls.retry")}
+                        onAction={() => void analysis.runAnalysis()}
+                      />
+                    )}
                   </div>
                 )}
               </div>
@@ -355,7 +412,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           {analysis.decomposition && (
             <section
               id="section-decomposition"
-              className={`cv-auto scroll-mt-32 transition-opacity ${
+              className={`scroll-mt-32 transition-opacity ${
                 isUpdating ? "opacity-60" : "opacity-100"
               }`}
             >
@@ -368,7 +425,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           {analysis.comparison && (
             <section
               id="section-diagnostics"
-              className={`cv-auto scroll-mt-32 transition-opacity ${
+              className={`scroll-mt-32 transition-opacity ${
                 isUpdating ? "opacity-60" : "opacity-100"
               }`}
             >
@@ -376,6 +433,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                 <MissionDiagnostics
                   comparison={analysis.comparison}
                   readingMode={readingMode}
+                  onExported={handleExported}
                 />
               </Suspense>
             </section>
@@ -384,7 +442,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           {analysis.searchResult && analysis.searchResult.matches.length > 0 && (
             <section
               id="section-ranking"
-              className={`cv-auto scroll-mt-32 transition-opacity ${
+              className={`scroll-mt-32 transition-opacity ${
                 isUpdating ? "opacity-60" : "opacity-100"
               }`}
             >
@@ -393,7 +451,11 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                   matches={analysis.searchResult.matches}
                   selectedH3={analysis.selectedH3}
                   activeSite={activeSite}
-                  onSelectCell={(h3Index) => analysis.setSelectedH3(h3Index)}
+                  onSelectCell={(h3Index) => {
+                    setHasExploredMap(true);
+                    analysis.setSelectedH3(h3Index);
+                  }}
+                  onExported={handleExported}
                 />
               </Suspense>
             </section>

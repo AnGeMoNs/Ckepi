@@ -38,7 +38,7 @@
 
 .cv-auto {
   content-visibility: auto;
-  contain-intrinsic-size: 1px 420px;
+  contain-intrinsic-size: auto 600px;
 }
 
 html,
