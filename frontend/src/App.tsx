@@ -6,7 +6,7 @@ import { AppBackdrop } from "./components/ui/AppBackdrop";
 import { HomePage } from "./pages/HomePage";
 import { IntroStoryPage } from "./pages/IntroStoryPage";
 import { LocalExplorePage } from "./pages/LocalExplorePage";
-import { fetchPlanetarySites } from "./api/client";
+import { getLocalSites } from "./api/localData";
 import type { PlanetarySite } from "./types/analog";
 import type { ReadingMode, ThemeMode } from "./types/analog";
 
@@ -57,7 +57,7 @@ export default function App() {
   useEffect(() => {
     if (view !== "explore" || sites.length > 0) return;
     const controller = new AbortController();
-    fetchPlanetarySites().then(setSites).catch(() => undefined);
+    getLocalSites(controller.signal).then(setSites).catch(() => undefined);
     return () => controller.abort();
   }, [view, sites.length]);
 

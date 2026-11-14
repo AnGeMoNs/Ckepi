@@ -1,0 +1,14 @@
+{
+  "generated_utc": "2026-11-14T23:21:08+00:00",
+  "sites": [
+    "moon_shackleton_pole",
+    "mars_jezero_crater"
+  ],
+  "cells": [
+    "83b224fffffffff",
+    "83b220fffffffff",
+    "83b225fffffffff",
+    "83b221fffffffff"
+  ],
+  "note": "Snapshot of the Ckepi API for the static local mode. Terrain: real DEMs (CTX Jezero, Copernicus GLO-30)."
+}

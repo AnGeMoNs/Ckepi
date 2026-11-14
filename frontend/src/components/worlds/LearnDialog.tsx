@@ -2,7 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
 
-import { compareCellWithSite } from "../../api/client";
+import { getJezeroComparison } from "../../api/localData";
 import { formatNumber } from "../../i18n";
 import type { PlanetarySite, SiteComparisonResponse } from "../../types/analog";
 import { PaperPlanet, type WorldKey } from "./PaperPlanet";
@@ -48,7 +48,7 @@ export function LearnDialog({ world, sites, onClose }: LearnDialogProps) {
   useEffect(() => {
     if (!world || crossing) return;
     const controller = new AbortController();
-    compareCellWithSite(ANTOFAGASTA_CELL, "mars_jezero_crater", "ridge", { signal: controller.signal })
+    getJezeroComparison(ANTOFAGASTA_CELL, controller.signal)
       .then(setCrossing)
       .catch(() => undefined);
     return () => controller.abort();
@@ -316,7 +316,7 @@ function Zones() {
     const controller = new AbortController();
     Promise.all(
       LOCAL_CELLS.map((h3) =>
-        compareCellWithSite(h3, "mars_jezero_crater", "ridge", { signal: controller.signal }).then((r) => {
+        getJezeroComparison(h3, controller.signal).then((r) => {
           const s = r.statistical_distribution?.slope_distribution;
           return s ? { h3, w1: s.wasserstein_distance } : null;
         })
