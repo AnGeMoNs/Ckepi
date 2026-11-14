@@ -1147,7 +1147,8 @@
     "cta": "Explorar los tres mundos",
     "dataNote": "Ejemplo real: una zona poco estudiada de Antofagasta se parece a las pendientes del cráter Jezero más que el análogo clásico, Yungay (W₁ = 0,54° frente a 3,32°, a 30 m). Preseleccionamos lugares para estudiar; no los certificamos.",
     "aiBadge": "Video generado con IA",
-    "credits": "Datos: NASA, ESA y agencias socias. Ckepi no está afiliado ni respaldado por NASA."
+    "credits": "Datos: NASA, ESA y agencias socias. Ckepi no está afiliado ni respaldado por NASA.",
+    "aiImageBadge": "Ilustración generada con IA · Ckepi"
   },
   "story": {
     "progressLabel": "Pasos de la presentación",
@@ -1175,6 +1176,208 @@
     "limits": {
       "title": "Lo que la Tierra no puede imitar",
       "body": "En Marte la gravedad es 0,38 veces la de la Tierra, el aire es unas 160 veces más delgado y la radiación es mucho mayor. Ningún desierto reproduce eso. Por eso CKEPI preselecciona lugares para estudiar en terreno; no los certifica."
+    }
+  },
+  "worlds": {
+    "title": "Tres mundos, datos reales",
+    "subtitle": "Tierra, Luna y Marte lado a lado. Cada valor viene de la API con su origen.",
+    "earth": "Tierra",
+    "moon": "Luna",
+    "mars": "Marte",
+    "rows": {
+      "gravity": "Gravedad",
+      "pressure": "Presión del aire",
+      "radiation": "Radiación",
+      "temperature": "Temperatura media",
+      "thermalSwing": "Cambio día–noche",
+      "slope": "Pendiente"
+    },
+    "notReproducible": "La Tierra no lo reproduce",
+    "origin": {
+      "measured": "medido",
+      "derived": "derivado",
+      "model": "modelo",
+      "constant": "constante",
+      "default": "por defecto"
+    },
+    "sourcesNote": "Tierra: celda H3 seleccionada (NASA POWER, Copernicus DEM, ERA5-Land). Luna y Marte: NASA PDS (LRO, REMS, MEDA) y valores de referencia; las barras de presión y radiación usan escala logarítmica.",
+    "terrainTitle": "Terreno medido a 30 m",
+    "terrainLead": "Diferencia de pendientes con Marte (Wasserstein-1)",
+    "ci": "IC 95 %: {{low}}°–{{high}}°",
+    "controlCompare": "Yungay, el análogo clásico: {{value}}°",
+    "legendMars": "Marte",
+    "legendEarth": "Tierra (celda)",
+    "legendControl": "Yungay",
+    "terrainSources": "DEM reales: CTX de Jezero (NASA MRO, USGS) y Copernicus GLO-30 (ESA).",
+    "syntheticWarning": "Esta celda aún no tiene DEM real: el histograma es una simulación y no una medición.",
+    "openFull": "Ver análisis completo",
+    "pickCell": "Elige una celda de la Tierra para comparar su terreno real con Marte.",
+    "pickAntofagasta": "Ver la celda de Antofagasta"
+  },
+  "worldsHero": {
+    "kicker": "NASA Space Apps 2026 · Antofagasta",
+    "title": "¿Dónde en la Tierra ensayamos la Luna y Marte?",
+    "subtitle": "Ckepi cruza datos abiertos de NASA con el desierto de Antofagasta: qué se parece, cuánto y qué no. Toca un mundo.",
+    "verdictLabel": {
+      "match": "Sí",
+      "partial": "En parte",
+      "gap": "No"
+    },
+    "verdict": {
+      "dryness": "desierto seco y cielo despejado",
+      "vacuum": "vacío: sin aire",
+      "radiation": "radiación espacial",
+      "realDem": "terreno medido con DEM reales",
+      "local": "laboratorio natural local",
+      "network": "red con otras regiones",
+      "terrain": "pendientes del terreno",
+      "cold": "frío y cambio día–noche",
+      "gravityAirRadiation": "gravedad, aire y radiación"
+    },
+    "moon": {
+      "tag": "Base lunar · polo sur",
+      "name": "Luna",
+      "question": "¿Qué de Atacama sirve para preparar una base en el polo sur lunar?",
+      "hookLabel": "gravedad de la Luna (Tierra = 1 g)",
+      "cta": "Cruzar Luna ↔ Antofagasta"
+    },
+    "earth": {
+      "tag": "Nuestro laboratorio",
+      "name": "Antofagasta",
+      "question": "El desierto más seco del mundo como lugar de ensayo, medido zona por zona.",
+      "hookLabel": "zonas medidas con terreno real a 30 m",
+      "cta": "Ver el laboratorio local"
+    },
+    "mars": {
+      "tag": "Cráter Jezero",
+      "name": "Marte",
+      "question": "¿Dónde en Antofagasta se parece el terreno al de Jezero?",
+      "hookLabel": "diferencia de pendientes con Antofagasta (menos es más parecido)",
+      "cta": "Cruzar Marte ↔ Antofagasta"
+    }
+  },
+  "crossing": {
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "done": "Listo",
+    "stepOf": "Paso {{n}} de {{total}}",
+    "loading": "Cargando datos reales…",
+    "groups": {
+      "tests": "Para qué sirve",
+      "skills": "Qué aprendes (STEAM)",
+      "jobs": "En qué podrías trabajar"
+    },
+    "gaps": {
+      "backpack": "Una mochila de {{kg}} kg pesaría…"
+    },
+    "mars": {
+      "title": "Marte ↔ Antofagasta",
+      "cross": {
+        "title": "Jezero se encuentra con Antofagasta",
+        "body": "Perseverance explora el cráter Jezero. Buscamos el lugar de Antofagasta cuyo terreno se le parece más, para ensayar aquí lo que irá allá."
+      },
+      "match": {
+        "title": "Lo que sí se parece: las pendientes",
+        "body": "Con el modelo de elevación de NASA de Jezero y el terreno real de Antofagasta, a la misma escala de 30 m, una zona poco estudiada se parece más a Jezero que el análogo clásico.",
+        "ours": "Zona de Antofagasta (83b224)",
+        "classic": "Yungay, el análogo clásico",
+        "legend": "Barras: Marte (cobre), Antofagasta (sal) y Yungay (gris). Distancia Wasserstein-1, menos es más parecido.",
+        "source": "Datos: CTX DEM de Jezero (NASA MRO, USGS, 20 m) y Copernicus GLO-30 (ESA), ventanas de 6 km a 30 m. Es una preselección, no una certificación."
+      },
+      "gaps": {
+        "title": "Lo que la Tierra no puede imitar",
+        "body": "Ningún desierto reproduce la gravedad, el aire delgado ni la radiación de Marte. Por eso decimos qué sirve para probar y qué no."
+      },
+      "use": {
+        "title": "Para qué sirve y qué aprendes",
+        "body": "El parecido en pendientes permite preparar ensayos concretos, y la misma comparación enseña habilidades con demanda en la región.",
+        "tests": [
+          "Ruedas y suspensión de un rover en pendientes como las de Jezero",
+          "Navegación con cámaras sobre terreno real",
+          "Planificar rutas antes de ir a terreno"
+        ],
+        "skills": [
+          "Leer mapas de elevación (geomática)",
+          "Comparar distribuciones con estadística",
+          "Programar con datos abiertos de NASA"
+        ],
+        "jobs": [
+          "Robótica y automatización minera",
+          "Observatorios astronómicos de la región",
+          "Energía solar del desierto"
+        ]
+      }
+    },
+    "moon": {
+      "title": "Luna ↔ Antofagasta",
+      "cross": {
+        "title": "El polo sur lunar se encuentra con Antofagasta",
+        "body": "Las futuras bases lunares apuntan al polo sur, con luz rasante y frío extremo. Vemos qué condiciones de Atacama ayudan a prepararlas."
+      },
+      "match": {
+        "title": "Lo que se parece en parte",
+        "body": "Atacama comparte con la Luna aridez extrema y radiación ultravioleta alta, y tiene grandes cambios de temperatura entre el día y la noche, aunque mucho menores que en la Luna.",
+        "uv": "Índice UV",
+        "dryness": "Índice de aridez",
+        "note": "Valores del motor de Ckepi (Tierra: celda 83b224; Luna: polo sur, Shackleton). Algunos valores lunares son de modelo, no medidos."
+      },
+      "gaps": {
+        "title": "Lo que la Tierra no puede imitar",
+        "body": "En la Luna no hay aire, la gravedad es un sexto de la terrestre y la radiación es mucho mayor. Eso no se ensaya en un desierto."
+      },
+      "use": {
+        "title": "Para qué sirve y qué aprendes",
+        "body": "La aridez y el cielo despejado de Atacama permiten probar parte del equipamiento de una base, y enseñan oficios presentes en la región.",
+        "tests": [
+          "Paneles solares con luz intensa y polvo",
+          "Equipos que deben resistir sequedad extrema",
+          "Comunicaciones bajo cielo despejado"
+        ],
+        "skills": [
+          "Física de la luz y la temperatura",
+          "Lectura de datos de sondas (LRO)",
+          "Diseño de experimentos"
+        ],
+        "jobs": [
+          "Observatorios astronómicos",
+          "Energía solar",
+          "Ingeniería de equipos para minería"
+        ]
+      }
+    },
+    "earth": {
+      "title": "Antofagasta, laboratorio natural",
+      "lab": {
+        "title": "Cuatro zonas medidas con terreno real",
+        "body": "Comparamos el terreno de cuatro zonas de la región con el cráter Jezero, a la misma escala de 30 m. Así se ve cuál conviene estudiar primero.",
+        "cells": {
+          "83b224fffffffff": "Pampa (celda 83b224)",
+          "83b220fffffffff": "Cerca de Yungay (83b220)",
+          "83b225fffffffff": "Salar (83b225)",
+          "83b221fffffffff": "Alta cordillera (83b221)"
+        },
+        "control": "Yungay, el análogo clásico: {{value}}°. Barras más cortas = terreno más parecido a Jezero."
+      },
+      "use": {
+        "title": "Para qué sirve este laboratorio",
+        "body": "Las zonas medidas de Antofagasta permiten preparar ensayos en terreno y aprender con datos reales de misiones.",
+        "tests": [
+          "Elegir dónde ensayar la movilidad de un rover",
+          "Comparar una zona nueva con Jezero en minutos",
+          "Llevar los datos a una salida a terreno"
+        ],
+        "skills": [
+          "Leer mapas de elevación (geomática)",
+          "Estadística con distribuciones completas",
+          "Programar con datos abiertos de NASA"
+        ],
+        "jobs": [
+          "Robótica y automatización minera",
+          "Observatorios astronómicos de la región",
+          "Energía solar del desierto"
+        ]
+      }
     }
   }
 }

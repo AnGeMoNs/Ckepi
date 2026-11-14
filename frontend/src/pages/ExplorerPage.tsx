@@ -10,15 +10,17 @@ import {
   RefreshCw,
   SearchX,
 } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
 import { GuidedStepsBanner } from "../components/layout/GuidedStepsBanner";
 import { ContextualCuriosityStrip } from "../components/learning/ContextualCuriosityStrip";
+import { ThreeWorldsBoard } from "../components/worlds/ThreeWorldsBoard";
+import { WorldsHero } from "../components/worlds/WorldsHero";
 import { SectionNav } from "../components/layout/SectionNav";
 import { ActionBar } from "../components/mission/ActionBar";
 import { ControlPanel } from "../components/mission/ControlPanel";
 import { DataConfidenceBanner } from "../components/mission/DataConfidenceBanner";
-import { LaAraucanaImpactPanel } from "../components/mission/LaAraucanaImpactPanel";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
 import { Drawer } from "../components/ui/Drawer";
@@ -77,7 +79,16 @@ type MobileMapTab = "planet" | "earth";
 
 export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const { t } = useTranslation();
+  const reduceMotion = Boolean(useReducedMotion());
   const params = useExplorerParams();
+  // Tab panels rise in like the home's paper layers; nothing moves with reduced motion.
+  const panelMotion = reduceMotion
+    ? {}
+    : {
+        initial: { opacity: 0, y: 12 },
+        animate: { opacity: 1, y: 0 },
+        transition: { type: "spring" as const, stiffness: 180, damping: 26 },
+      };
 
   const analysis = useAnalogAnalysis({
     selectedSiteId: params.selectedSiteId,
@@ -284,11 +295,14 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         {analysis.isLoading ? t("controls.loading") : ""}
       </div>
 
+      {/* Main screen: the three worlds and their crossing with Antofagasta. */}
+      <WorldsHero sites={analysis.sites} />
+
       {/* Primary journey: Compare · Learn · Plan · Evidence */}
       <nav
         aria-label={t("nav.tabsLabel")}
         role="tablist"
-        className="flex flex-wrap gap-2 rounded-xl border border-border-subtle bg-surface-elevated p-2 shadow-sm"
+        className="ckepi-glass flex flex-wrap gap-2 rounded-xl border border-border-subtle p-2"
         onKeyDown={handleTabKeyDown}
       >
         {navTabs.map((tab) => {
@@ -304,14 +318,21 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
               aria-controls={`panel-${tab.id}`}
               tabIndex={active ? 0 : -1}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-sm ${
-                active
-                  ? "bg-accent text-accent-foreground shadow-sm"
-                  : "text-content-muted hover:bg-surface-muted hover:text-content"
+              className={`relative flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-sm ${
+                active ? "text-accent-foreground" : "text-content-muted hover:bg-surface-muted hover:text-content"
               }`}
             >
-              <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-              <span>{tab.label}</span>
+              {active && (
+                // The copper pill slides between tabs (shared layout animation).
+                <motion.span
+                  layoutId="ckepi-active-tab"
+                  aria-hidden="true"
+                  className="absolute inset-0 rounded-lg bg-accent shadow-ckepi-glow"
+                  transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }}
+                />
+              )}
+              <Icon className="relative h-4 w-4 shrink-0" aria-hidden="true" />
+              <span className="relative">{tab.label}</span>
             </button>
           );
         })}
@@ -319,7 +340,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
 
       <Suspense fallback={<PanelSkeleton heightClass="h-64" />}>
         {activeTab === "learn" && (
-          <div id="panel-learn" role="tabpanel" aria-labelledby="tab-learn">
+          <motion.div id="panel-learn" role="tabpanel" aria-labelledby="tab-learn" {...panelMotion}>
             <PlanetaryPhysicsLab
               body={params.selectedBody}
               activeSite={activeSite}
@@ -328,11 +349,11 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
               onGoToCompare={() => setActiveTab("compare")}
               onGoToPlan={() => setActiveTab("plan")}
             />
-          </div>
+          </motion.div>
         )}
 
         {activeTab === "plan" && (
-          <div id="panel-plan" role="tabpanel" aria-labelledby="tab-plan">
+          <motion.div id="panel-plan" role="tabpanel" aria-labelledby="tab-plan" {...panelMotion}>
             <FieldTrialPlanner
               draft={planDraft}
               onDraftChange={setPlanDraft}
@@ -342,23 +363,40 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
               onGoToCompare={() => setActiveTab("compare")}
               onGoToEvidence={() => setActiveTab("evidence")}
             />
-          </div>
+          </motion.div>
         )}
 
         {activeTab === "evidence" && (
-          <div id="panel-evidence" role="tabpanel" aria-labelledby="tab-evidence">
+          <motion.div id="panel-evidence" role="tabpanel" aria-labelledby="tab-evidence" {...panelMotion}>
             <EvidencePanel activeSite={activeSite} comparison={analysis.comparison} />
-          </div>
+          </motion.div>
         )}
       </Suspense>
 
-      <div
+      <motion.div
         id="panel-compare"
         role="tabpanel"
         aria-labelledby="tab-compare"
         hidden={activeTab !== "compare"}
         className="space-y-5"
+        // Kept mounted (maps are expensive); it fades back in when the tab returns.
+        initial={false}
+        animate={{ opacity: activeTab === "compare" ? 1 : 0, y: activeTab === "compare" || reduceMotion ? 0 : 12 }}
+        transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 180, damping: 26 }}
       >
+      <ThreeWorldsBoard
+        sites={analysis.sites}
+        activeSite={activeSite}
+        comparison={analysis.comparison}
+        onPickEarthCell={(h3Index) => {
+          setHasExploredMap(true);
+          analysis.setSelectedH3(h3Index);
+        }}
+        onOpenFullAnalysis={() =>
+          document.getElementById("section-diagnostics")?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" })
+        }
+      />
+
       <GuidedStepsBanner activeStep={activeStep} />
 
       <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[22.5rem_minmax(0,1fr)]">
@@ -598,17 +636,6 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             </section>
           )}
 
-          <LaAraucanaImpactPanel
-            comparison={analysis.comparison}
-            selectedH3={analysis.selectedH3}
-            onSelectAntofagastaCell={(h3Index, siteId) => {
-              if (siteId && siteId !== params.selectedSiteId) {
-                params.setCustomProbedSite(null);
-                params.setSelectedSiteId(siteId);
-              }
-              analysis.setSelectedH3(h3Index);
-            }}
-          />
 
           {analysis.searchResult && analysis.searchResult.matches.length > 0 && (
             <section
@@ -633,7 +660,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           )}
         </div>
       </div>
-      </div>
+      </motion.div>
 
       {toastState && (
         <Toast

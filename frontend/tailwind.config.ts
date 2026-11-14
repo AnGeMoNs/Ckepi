@@ -5,6 +5,10 @@ const config: Config = {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Public Sans Variable"', "system-ui", "sans-serif"],
+        mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
+      },
       colors: {
         surface: "rgb(var(--color-surface) / <alpha-value>)",
         "surface-elevated": "rgb(var(--color-surface-elevated) / <alpha-value>)",
@@ -19,6 +23,9 @@ const config: Config = {
         "status-break": "rgb(var(--color-status-break) / <alpha-value>)",
         "planet-mars": "rgb(var(--color-planet-mars) / <alpha-value>)",
         "planet-moon": "rgb(var(--color-planet-moon) / <alpha-value>)",
+        "world-earth": "rgb(var(--color-world-earth) / <alpha-value>)",
+        "world-moon": "rgb(var(--color-world-moon) / <alpha-value>)",
+        "world-mars": "rgb(var(--color-world-mars) / <alpha-value>)",
         // Brand kit V2 «sal · cobre · azufre» (frontend/public/img/ckepi/tokens.json),
         // named by Atacama mineral. Copper is the primary action colour.
         "ckepi-space": "#101F24",

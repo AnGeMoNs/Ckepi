@@ -1,6 +1,8 @@
 import { lazy, Suspense, useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { HexReveal } from "./components/home/HexReveal";
+import { AppBackdrop } from "./components/ui/AppBackdrop";
 import { HomePage } from "./pages/HomePage";
 import { IntroStoryPage } from "./pages/IntroStoryPage";
 import type { ReadingMode, ThemeMode } from "./types/analog";
@@ -44,6 +46,8 @@ export default function App() {
   const [theme, setTheme] = useState<ThemeMode>(getInitialTheme);
   const [readingMode, setReadingMode] = useState<ReadingMode>("mission");
   const [view, setView] = useState<View>(viewFromLocation);
+  // True only when arriving from the presentation, to play the hex-wave reveal.
+  const [revealing, setRevealing] = useState(false);
 
   useEffect(() => {
     const onPopState = () => setView(viewFromLocation());
@@ -53,6 +57,7 @@ export default function App() {
 
   const goTo = (next: View) => {
     window.history.pushState({}, "", next === "story" ? "?view=intro" : "?view=app");
+    if (next === "app") setRevealing(true);
     setView(next);
     window.scrollTo({ top: 0 });
   };
@@ -76,14 +81,16 @@ export default function App() {
   }, [i18n.language]);
 
   if (view === "home") {
-    return <HomePage onEnter={() => goTo("story")} />;
+    return <HomePage onEnter={() => goTo("app")} />;
   }
   if (view === "story") {
     return <IntroStoryPage onEnter={() => goTo("app")} />;
   }
 
   return (
-    <div className="min-h-screen bg-surface text-content transition-colors">
+    <div className="relative isolate min-h-screen bg-surface text-content transition-colors">
+      <AppBackdrop />
+      {revealing && <HexReveal onDone={() => setRevealing(false)} />}
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-accent-foreground focus:shadow-lg"

@@ -33,7 +33,7 @@ from app.engine.analog_matcher import (
 )
 from app.engine.causal_decomposer import compute_breakage_index, decompose_planetary_site
 from app.engine.mission_advisor import resolve_profile_weights
-from app.engine.terrain_statistics import compute_terrain_distribution_comparison
+from app.engine.terrain_statistics import compute_terrain_distribution_comparison, warm_real_comparisons
 from app.etl.earth_api import probe_earth_location
 from app.etl.http_utils import create_async_http_client, create_http_client
 from app.etl.geology_and_habitability import (
@@ -163,6 +163,10 @@ async def lifespan(_: FastAPI):
     """Build real-API Parquet/DuckDB datasets on startup and manage shared HTTP client."""
     state.duckdb_path = ensure_datasets_built()
     state.sites_by_id = {site.site_id: site for site in load_cached_planetary_sites()}
+    # Real-DEM terrain comparisons take ~10 s each; warm them in the background so the demo answers instantly.
+    threading.Thread(
+        target=warm_real_comparisons, args=(list(state.sites_by_id.values()),), daemon=True
+    ).start()
     state.async_http = create_async_http_client(timeout=20.0)
     try:
         yield

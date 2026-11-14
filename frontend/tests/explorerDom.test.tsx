@@ -12,6 +12,16 @@ for (const key of ["window", "document", "navigator", "HTMLElement", "HTMLInputE
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} } as any);
 window.HTMLElement.prototype.scrollIntoView = () => {};
+// jsdom has no IntersectionObserver; framer-motion's in-view animations need one. Report everything as visible.
+class VisibleIntersectionObserver {
+  constructor(private callback: (entries: { isIntersecting: boolean; target: Element }[]) => void) {}
+  observe(target: Element) { this.callback([{ isIntersecting: true, target }]); }
+  unobserve() {}
+  disconnect() {}
+  takeRecords() { return []; }
+}
+Object.defineProperty(globalThis, "IntersectionObserver", { configurable: true, value: VisibleIntersectionObserver });
+(window as any).IntersectionObserver = VisibleIntersectionObserver;
 const { act } = await import("react");
 const { createRoot } = await import("react-dom/client");
 const { default: i18n } = await import("../src/i18n");
