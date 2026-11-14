@@ -7,14 +7,15 @@
 
 ---
 
-## PARTE 0 · ARCHIVOS DE PRESENTACIÓN (.PPTX, .PDF Y .HTML) LISTOS PARA USAR
+## PARTE 0 · ARCHIVOS DE PRESENTACIÓN (.PPTX, .PDF Y .HTML), LOGOS V2 Y FONDOS PAPER-CUT LISTOS PARA USAR
 
-Dentro de esta misma carpeta (`docs/nehe/`) ya están generadas las presentaciones de **7 diapositivas** con capturas reales de la aplicación (`shot_explorer_mars.png`, `shot_explorer_moon.png`, `shot_atacama_analysis.png`) y todas las métricas reales verificadas a 30 m, respetando el 100 % de las 3 rúbricas (Global NASA, Científica 30 m y Local Antofagasta / Caja La Araucana):
+Dentro de esta misma carpeta (`docs/nehe/`) ya están generadas las presentaciones de **7 diapositivas** con **la nueva Identidad Visual V2 («Sal, Cobre y Azufre»)** (`#101F24` Noche Mineral, `#183A3A` Tinta de Roca, `#FFF2D7` Sal Cálida, `#E4ED83` Azufre Pálido, `#E8A080` Cobre Luminoso), **los fondos paper-cut de cada escena** con velo de contraste WCAG AA y **marca de agua visible `AI-generated background & symbol · Ckepi`**, el **logo oficial CKEPI V2**, las capturas reales de la aplicación (`shot_explorer_mars.png`, `shot_explorer_moon.png`, `shot_atacama_analysis.png`) y todas las métricas reales verificadas a 30 m:
 
 | Modalidad | PowerPoint Editable (`.pptx`) | PDF Listo para Proyectar / Subir (`.pdf`) | Vista Web / Imprimible (`.html`) |
 |---|---|---|---|
-| **🌍 Global (100 % Inglés · 7 Slides)** | [`ckepi-pitch-en.pptx`](ckepi-pitch-en.pptx) | [`ckepi-pitch-en.pdf`](ckepi-pitch-en.pdf) | [`ckepi-pitch-en.html`](ckepi-pitch-en.html) y [`PPT_7_SLIDES_PROTOTYPE.html`](PPT_7_SLIDES_PROTOTYPE.html) |
-| **🇨🇱 Local Antofagasta / Caja La Araucana (Español · 7 Slides)** | [`ckepi-pitch-es.pptx`](ckepi-pitch-es.pptx) | [`ckepi-pitch-es.pdf`](ckepi-pitch-es.pdf) | [`ckepi-pitch-es.html`](ckepi-pitch-es.html) |
+| **🌍 Global (100 % Inglés · 7 Slides · Brand V2 + Paper-Cut BG)** | [`ckepi-pitch-en.pptx`](ckepi-pitch-en.pptx) | [`ckepi-pitch-en.pdf`](ckepi-pitch-en.pdf) | [`ckepi-pitch-en.html`](ckepi-pitch-en.html) y [`PPT_7_SLIDES_PROTOTYPE.html`](PPT_7_SLIDES_PROTOTYPE.html) |
+| **🇨🇱 Local Antofagasta / Caja La Araucana (Español · 7 Slides · Brand V2 + Paper-Cut BG)** | [`ckepi-pitch-es.pptx`](ckepi-pitch-es.pptx) | [`ckepi-pitch-es.pdf`](ckepi-pitch-es.pdf) | [`ckepi-pitch-es.html`](ckepi-pitch-es.html) |
+| **🎨 Kit de Marca V2, Logos y Fondos 16:9 para PPT/Canva** | [`brand_and_backgrounds/`](brand_and_backgrounds/) | [`CKEPI-brand-board.png`](brand_and_backgrounds/CKEPI-brand-board.png) · [`IDENTIDAD_V2.md`](brand_and_backgrounds/IDENTIDAD_V2.md) | [`BRAND_IDENTITY_AND_LEGAL_CREDITS.md`](BRAND_IDENTITY_AND_LEGAL_CREDITS.md) |
 
 > **¿Cómo regenerar los `.pptx`, `.pdf` y `.html` si cambias un texto?**  
 > Ejecuta desde la raíz del repositorio:  
