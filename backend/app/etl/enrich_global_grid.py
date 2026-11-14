@@ -227,12 +227,12 @@ def _fetch_soil_geo_one(cell_id: str, lat: float, lon: float, client: httpx.Clie
         "bdod_g_cm3": soil.get("bdod_g_cm3"),
         "soc_pct": soil.get("soc_pct"),
         "lithology": geo.lithology if geo else None,
-        "rock_name": geo.rock_name if geo else None,
-        "geologic_age": geo.age_name if geo else None,
+        "unit_name": geo.unit_name if geo else None,
+        "geologic_age": geo.age if geo else None,
     }
 
 
-def run_soil_geo_phase(df_target: pd.DataFrame, mode: str = "priority", workers: int = 2) -> None:
+def run_soil_geo_phase(df_target: pd.DataFrame, mode: str = "priority", workers: int = 6) -> None:
     """Phase 4: Hydrate SoilGrids v2.0 & Macrostrat geology with strict rate-limit handling."""
     done = _load_checkpoint(CKPT_SOIL_GEO_PATH)
     if mode == "priority":
@@ -255,7 +255,7 @@ def run_soil_geo_phase(df_target: pd.DataFrame, mode: str = "priority", workers:
         return
 
     rows = list(pending[["earth_cell_h3", "lat", "lon"]].itertuples(index=False, name=None))
-    chunk_size = 20
+    chunk_size = 40
     with create_http_client(timeout=10.0) as client:
         for i in range(0, len(rows), chunk_size):
             chunk = rows[i : i + chunk_size]
@@ -266,10 +266,11 @@ def run_soil_geo_phase(df_target: pd.DataFrame, mode: str = "priority", workers:
                     for cell_id, lat, lon in chunk
                 }
                 for fut in as_completed(futures):
+                    cid = futures[fut]
                     try:
                         batch_items.append(fut.result())
-                    except Exception:
-                        pass
+                    except Exception as exc:
+                        print(f"[SoilGrids+Macrostrat] Warning {cid}: {exc}", flush=True)
             _append_checkpoint(CKPT_SOIL_GEO_PATH, batch_items)
             print(f"[SoilGrids+Macrostrat] Progress: {min(len(done) + i + len(chunk), len(subset))}/{len(subset)}", flush=True)
 
