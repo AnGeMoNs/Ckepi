@@ -32,6 +32,7 @@ import type {
   AnalogMatchItem,
   EarthOverlayLayer,
   MultiAgencyCatalogResponse,
+  ReadingMode,
   ThemeMode,
 } from "../../types/analog";
 import { Badge } from "../ui/Badge";
@@ -46,6 +47,7 @@ interface AnalogMapProps {
   totalEvaluated: number;
   selectedH3: string | null;
   theme: ThemeMode;
+  readingMode?: ReadingMode;
   probingCoords: { lat: number; lon: number } | null;
   isRefining?: boolean;
   earthDensity?: "global" | "top";
@@ -157,6 +159,7 @@ export function AnalogMap({
   totalEvaluated,
   selectedH3,
   theme,
+  readingMode = "mission",
   probingCoords,
   isRefining = false,
   earthDensity = "global",
@@ -169,6 +172,7 @@ export function AnalogMap({
 }: AnalogMapProps) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+  const isStudent = readingMode === "explorer";
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const onSelectRef = useRef(onSelectCell);
@@ -208,6 +212,16 @@ export function AnalogMap({
   const [scoreBandFilter, setScoreBandFilter] = useState<ScoreBandFilter>("all");
   const [biomeFilter, setBiomeFilter] = useState<string>("all");
   const [pageSize, setPageSize] = useState<number>(9);
+
+  useEffect(() => {
+    if (isStudent) {
+      setHexMetric("combined");
+      if (categoryFilter === "pareto") setCategoryFilter("all");
+      if (sortBy !== "combined_desc" && sortBy !== "combined_asc" && sortBy !== "lat_desc") {
+        setSortBy("combined_desc");
+      }
+    }
+  }, [isStudent, categoryFilter, sortBy]);
   const [pinnedH3, setPinnedH3] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -822,23 +836,27 @@ export function AnalogMap({
             <option value="gibs_aerosol">{t("map.layers.gibs_aerosol")}</option>
             <option value="basemap">{t("map.layers.basemap")}</option>
           </select>
-          <label htmlFor="earth-hex-metric" className="sr-only">
-            {t("map.hexMetricLabel")}
-          </label>
-          <select
-            id="earth-hex-metric"
-            value={hexMetric}
-            onChange={(e) =>
-              setHexMetric(e.target.value as "combined" | "s_ind" | "s_dep" | "r_break")
-            }
-            aria-label={t("map.hexMetricLabel")}
-            className="min-h-11 rounded border border-border-subtle bg-surface px-2.5 py-1.5 text-xs font-medium text-content focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
-          >
-            <option value="combined">{t("map.metricCombined")}</option>
-            <option value="s_ind">{t("map.metricSInd")}</option>
-            <option value="s_dep">{t("map.metricSDep")}</option>
-            <option value="r_break">{t("map.metricRBreak")}</option>
-          </select>
+          {!isStudent && (
+            <>
+              <label htmlFor="earth-hex-metric" className="sr-only">
+                {t("map.hexMetricLabel")}
+              </label>
+              <select
+                id="earth-hex-metric"
+                value={hexMetric}
+                onChange={(e) =>
+                  setHexMetric(e.target.value as "combined" | "s_ind" | "s_dep" | "r_break")
+                }
+                aria-label={t("map.hexMetricLabel")}
+                className="min-h-11 rounded border border-border-subtle bg-surface px-2.5 py-1.5 text-xs font-medium text-content focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+              >
+                <option value="combined">{t("map.metricCombined")}</option>
+                <option value="s_ind">{t("map.metricSInd")}</option>
+                <option value="s_dep">{t("map.metricSDep")}</option>
+                <option value="r_break">{t("map.metricRBreak")}</option>
+              </select>
+            </>
+          )}
           {onChangeEarthDensity && (
             <button
               type="button"
@@ -897,7 +915,7 @@ export function AnalogMap({
             <RotateCcw className="h-3.5 w-3.5 text-content-muted" aria-hidden="true" />
             <span>{t("map.resetView")}</span>
           </button>
-          {selectedH3 && onRefineCell && (
+          {!isStudent && selectedH3 && onRefineCell && (
             <button
               type="button"
               disabled={isRefining || (selectedMatch?.h3_resolution ?? 0) >= 5}
@@ -978,7 +996,7 @@ export function AnalogMap({
                     {t("map.hoverHudBadge")}
                   </span>
                   <div className="flex items-center gap-1.5">
-                    {hoveredEntry.match.is_pareto_optimal && (
+                    {!isStudent && hoveredEntry.match.is_pareto_optimal && (
                       <Badge variant="valid">{t("map.paretoBadge")}</Badge>
                     )}
                     <span className="rounded bg-surface-muted px-1.5 py-0.5 text-[11px] font-bold tabular-nums text-content">
@@ -991,44 +1009,75 @@ export function AnalogMap({
                   <p className="truncate text-xs font-bold text-content">
                     {hoveredEntry.match.known_analog_name ?? t(hoveredEntry.match.region_key)}
                   </p>
-                  <p className="truncate font-mono text-[11px] text-content-muted">
-                    {hoveredEntry.match.earth_cell_h3} ·{" "}
-                    {t("map.resolutionBadge", { res: hoveredEntry.match.h3_resolution })} (
-                    {t("map.scaleLabel", {
-                      km: formatNumber(hoveredEntry.match.effective_scale_km ?? 158.2, lang, 1),
-                    })}
-                    )
-                  </p>
+                  {!isStudent && (
+                    <p className="truncate font-mono text-[11px] text-content-muted">
+                      {hoveredEntry.match.earth_cell_h3} ·{" "}
+                      {t("map.resolutionBadge", { res: hoveredEntry.match.h3_resolution })} (
+                      {t("map.scaleLabel", {
+                        km: formatNumber(hoveredEntry.match.effective_scale_km ?? 158.2, lang, 1),
+                      })}
+                      )
+                    </p>
+                  )}
                 </div>
 
-                <div className="grid grid-cols-4 gap-1 rounded border border-border-subtle bg-surface-elevated p-1.5 text-center">
-                  <div>
-                    <span className="block text-[10px] text-content-muted">
-                      {t("map.metricCombined")}
-                    </span>
-                    <span className="text-xs font-bold tabular-nums text-accent">
-                      {formatPercent(hoveredEntry.match.combined_score, lang)}
-                    </span>
+                {isStudent ? (
+                  <div className="grid grid-cols-3 gap-1 rounded border border-border-subtle bg-surface-elevated p-1.5 text-center">
+                    <div>
+                      <span className="block text-[10px] text-content-muted">
+                        {t("studentPanel.overallLabel")}
+                      </span>
+                      <span className="text-xs font-bold tabular-nums text-accent">
+                        {formatPercent(hoveredEntry.match.combined_score, lang)}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="block text-[10px] text-content-muted">
+                        {t("studentPanel.terrainShort")}
+                      </span>
+                      <span className="text-xs font-semibold tabular-nums text-status-valid">
+                        {formatPercent(hoveredEntry.match.s_ind, lang)}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="block text-[10px] text-content-muted">
+                        {t("studentPanel.climateShort")}
+                      </span>
+                      <span className="text-xs font-semibold tabular-nums text-status-warn">
+                        {formatPercent(hoveredEntry.match.s_dep, lang)}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="block text-[10px] text-content-muted">S_ind</span>
-                    <span className="text-xs font-semibold tabular-nums text-status-valid">
-                      {formatPercent(hoveredEntry.match.s_ind, lang)}
-                    </span>
+                ) : (
+                  <div className="grid grid-cols-4 gap-1 rounded border border-border-subtle bg-surface-elevated p-1.5 text-center">
+                    <div>
+                      <span className="block text-[10px] text-content-muted">
+                        {t("map.metricCombined")}
+                      </span>
+                      <span className="text-xs font-bold tabular-nums text-accent">
+                        {formatPercent(hoveredEntry.match.combined_score, lang)}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="block text-[10px] text-content-muted">S_ind</span>
+                      <span className="text-xs font-semibold tabular-nums text-status-valid">
+                        {formatPercent(hoveredEntry.match.s_ind, lang)}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="block text-[10px] text-content-muted">S_dep</span>
+                      <span className="text-xs font-semibold tabular-nums text-status-warn">
+                        {formatPercent(hoveredEntry.match.s_dep, lang)}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="block text-[10px] text-content-muted">R_break</span>
+                      <span className="text-xs font-semibold tabular-nums text-status-break">
+                        {formatPercent(hoveredEntry.match.r_break_overall, lang)}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="block text-[10px] text-content-muted">S_dep</span>
-                    <span className="text-xs font-semibold tabular-nums text-status-warn">
-                      {formatPercent(hoveredEntry.match.s_dep, lang)}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="block text-[10px] text-content-muted">R_break</span>
-                    <span className="text-xs font-semibold tabular-nums text-status-break">
-                      {formatPercent(hoveredEntry.match.r_break_overall, lang)}
-                    </span>
-                  </div>
-                </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-1.5 text-[11px]">
                   <div className="rounded bg-surface-muted/70 px-2 py-1">
@@ -1042,24 +1091,19 @@ export function AnalogMap({
                         lang,
                         1
                       )}
-                      °C (
-                      {formatNumber(
-                        hoveredEntry.match.earth_variables.dependent.mean_surface_temp_k ?? 273.15,
-                        lang,
-                        0
-                      )}{" "}
-                      K)
-                    </span>
-                  </div>
-                  <div className="rounded bg-surface-muted/70 px-2 py-1">
-                    <span className="block text-[10px] text-content-muted">
-                      {t("map.cellAridityLabel")}
-                    </span>
-                    <span className="font-semibold tabular-nums text-content">
-                      {formatNumber(
-                        hoveredEntry.match.earth_variables.independent.aridity_index ?? 0,
-                        lang,
-                        3
+                      °C
+                      {!isStudent && (
+                        <>
+                          {" "}
+                          (
+                          {formatNumber(
+                            hoveredEntry.match.earth_variables.dependent.mean_surface_temp_k ??
+                              273.15,
+                            lang,
+                            0
+                          )}{" "}
+                          K)
+                        </>
                       )}
                     </span>
                   </div>
@@ -1076,19 +1120,35 @@ export function AnalogMap({
                       °
                     </span>
                   </div>
-                  <div className="rounded bg-surface-muted/70 px-2 py-1">
-                    <span className="block text-[10px] text-content-muted">
-                      {t("map.cellRadiationLabel")}
-                    </span>
-                    <span className="font-semibold tabular-nums text-content">
-                      {formatNumber(
-                        hoveredEntry.match.earth_variables.breakage.radiation_msv_yr ?? 0,
-                        lang,
-                        2
-                      )}{" "}
-                      mSv/yr
-                    </span>
-                  </div>
+                  {!isStudent && (
+                    <>
+                      <div className="rounded bg-surface-muted/70 px-2 py-1">
+                        <span className="block text-[10px] text-content-muted">
+                          {t("map.cellAridityLabel")}
+                        </span>
+                        <span className="font-semibold tabular-nums text-content">
+                          {formatNumber(
+                            hoveredEntry.match.earth_variables.independent.aridity_index ?? 0,
+                            lang,
+                            3
+                          )}
+                        </span>
+                      </div>
+                      <div className="rounded bg-surface-muted/70 px-2 py-1">
+                        <span className="block text-[10px] text-content-muted">
+                          {t("map.cellRadiationLabel")}
+                        </span>
+                        <span className="font-semibold tabular-nums text-content">
+                          {formatNumber(
+                            hoveredEntry.match.earth_variables.breakage.radiation_msv_yr ?? 0,
+                            lang,
+                            2
+                          )}{" "}
+                          mSv/yr
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 <p className="text-[11px] font-medium text-accent">{t("map.clickToPinHint")}</p>
@@ -1109,7 +1169,7 @@ export function AnalogMap({
                           {t("map.rankBadge", { rank: selectedRank })}
                         </span>
                       )}
-                      {selectedMatch.is_pareto_optimal && (
+                      {!isStudent && selectedMatch.is_pareto_optimal && (
                         <Badge variant="valid">{t("map.paretoBadge")}</Badge>
                       )}
                       <Badge variant="default">
@@ -1122,18 +1182,24 @@ export function AnalogMap({
                       {selectedMatch.known_analog_name ?? t(selectedMatch.region_key)}
                     </p>
                     <p className="text-xs tabular-nums text-content-muted">
-                      <span className="font-mono">{selectedMatch.earth_cell_h3}</span> ·{" "}
-                      {t("map.resolutionBadge", { res: selectedMatch.h3_resolution })} (
-                      {t("map.scaleLabel", {
-                        km: formatNumber(selectedMatch.effective_scale_km ?? 158.2, lang, 1),
-                      })}
-                      ) · {formatNumber(selectedMatch.coordinates.lat, lang, 2)}°,{" "}
+                      {!isStudent && (
+                        <>
+                          <span className="font-mono">{selectedMatch.earth_cell_h3}</span> ·{" "}
+                          {t("map.resolutionBadge", { res: selectedMatch.h3_resolution })} (
+                          {t("map.scaleLabel", {
+                            km: formatNumber(selectedMatch.effective_scale_km ?? 158.2, lang, 1),
+                          })}
+                          ) ·{" "}
+                        </>
+                      )}
+                      {t(selectedMatch.biome_key)} · {selectedMatch.country_code} ·{" "}
+                      {formatNumber(selectedMatch.coordinates.lat, lang, 2)}°,{" "}
                       {formatNumber(selectedMatch.coordinates.lon, lang, 2)}°
                     </p>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
-                    {onRefineCell && (
+                    {!isStudent && onRefineCell && (
                       <button
                         type="button"
                         disabled={isRefining || selectedMatch.h3_resolution >= 5}
@@ -1154,16 +1220,71 @@ export function AnalogMap({
                       type="button"
                       onClick={() => {
                         document
-                          .getElementById("section-diagnostics")
+                          .getElementById(
+                            isStudent ? "section-student-comparison" : "section-diagnostics"
+                          )
                           ?.scrollIntoView({ behavior: "smooth", block: "start" });
                       }}
                       className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded border border-border-subtle bg-surface-elevated px-3 py-1.5 text-xs font-semibold text-content hover:bg-surface-muted focus:outline-none focus:ring-2 focus:ring-accent/40"
                     >
-                      <span>{t("map.jumpToDiagnostics")}</span>
+                      <span>
+                        {isStudent
+                          ? t("studentPanel.jumpToComparison")
+                          : t("map.jumpToDiagnostics")}
+                      </span>
                     </button>
                   </div>
                 </div>
 
+                {isStudent ? (
+                  <div className="grid grid-cols-2 gap-2 border-t border-border-subtle pt-2.5 sm:grid-cols-4">
+                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                      <span className="block text-[11px] text-content-muted">
+                        {t("studentPanel.overallLabel")}
+                      </span>
+                      <span className="text-xs font-bold tabular-nums text-accent">
+                        {formatPercent(selectedMatch.combined_score, lang)}
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                      <span className="block text-[11px] text-content-muted">
+                        {t("studentPanel.terrainShort")} / {t("studentPanel.climateShort")}
+                      </span>
+                      <span className="text-xs font-semibold tabular-nums text-content">
+                        {formatPercent(selectedMatch.s_ind, lang)} ·{" "}
+                        {formatPercent(selectedMatch.s_dep, lang)}
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                      <span className="block text-[11px] text-content-muted">
+                        {t("map.cellTempLabel")}
+                      </span>
+                      <span className="text-xs font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          (selectedMatch.earth_variables.dependent.mean_surface_temp_k ?? 273.15) -
+                            273.15,
+                          lang,
+                          1
+                        )}
+                        °C
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                      <span className="block text-[11px] text-content-muted">
+                        {t("map.cellSlopeLabel")}
+                      </span>
+                      <span className="text-xs font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.slope_deg ?? 0,
+                          lang,
+                          1
+                        )}
+                        °
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                <>
                 <div className="space-y-2 border-t border-border-subtle pt-2.5">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="text-xs font-semibold uppercase tracking-wide text-content-muted">
@@ -1391,6 +1512,8 @@ export function AnalogMap({
                     )}
                   </div>
                 )}
+                </>
+                )}
               </div>
             )}
           </div>
@@ -1472,11 +1595,15 @@ export function AnalogMap({
                     label: t("map.filters.category.benchmark"),
                     count: categoryCounts.benchmark,
                   },
-                  {
-                    id: "pareto",
-                    label: t("map.filters.category.pareto"),
-                    count: categoryCounts.pareto,
-                  },
+                  ...(!isStudent
+                    ? [
+                        {
+                          id: "pareto" as const,
+                          label: t("map.filters.category.pareto"),
+                          count: categoryCounts.pareto,
+                        },
+                      ]
+                    : []),
                   {
                     id: "pinned",
                     label: t("map.filters.category.pinned"),
@@ -1550,10 +1677,14 @@ export function AnalogMap({
                 >
                   <option value="combined_desc">{t("map.filters.sort.combined_desc")}</option>
                   <option value="combined_asc">{t("map.filters.sort.combined_asc")}</option>
-                  <option value="s_ind_desc">{t("map.filters.sort.s_ind_desc")}</option>
-                  <option value="s_dep_desc">{t("map.filters.sort.s_dep_desc")}</option>
-                  <option value="r_break_asc">{t("map.filters.sort.r_break_asc")}</option>
-                  <option value="r_break_desc">{t("map.filters.sort.r_break_desc")}</option>
+                  {!isStudent && (
+                    <>
+                      <option value="s_ind_desc">{t("map.filters.sort.s_ind_desc")}</option>
+                      <option value="s_dep_desc">{t("map.filters.sort.s_dep_desc")}</option>
+                      <option value="r_break_asc">{t("map.filters.sort.r_break_asc")}</option>
+                      <option value="r_break_desc">{t("map.filters.sort.r_break_desc")}</option>
+                    </>
+                  )}
                   <option value="lat_desc">{t("map.filters.sort.lat_desc")}</option>
                 </select>
               </div>
@@ -1734,16 +1865,25 @@ export function AnalogMap({
                                 : t("map.discoveryBadge")}
                             </span>
                           </Badge>
-                          {match.is_pareto_optimal && (
+                          {!isStudent && match.is_pareto_optimal && (
                             <Badge variant="accent" className="shrink-0 whitespace-nowrap">
                               Pareto
                             </Badge>
                           )}
                         </div>
                         <span className="text-[11px] tabular-nums text-content-muted">
-                          S_ind {formatPercent(match.s_ind, lang)} · S_dep{" "}
-                          {formatPercent(match.s_dep, lang)} · R{" "}
-                          {formatPercent(match.r_break_overall, lang)}
+                          {isStudent
+                            ? `${t("studentPanel.terrainShort")} ${formatPercent(
+                                match.s_ind,
+                                lang
+                              )} · ${t("studentPanel.climateShort")} ${formatPercent(
+                                match.s_dep,
+                                lang
+                              )}`
+                            : `S_ind ${formatPercent(match.s_ind, lang)} · S_dep ${formatPercent(
+                                match.s_dep,
+                                lang
+                              )} · R ${formatPercent(match.r_break_overall, lang)}`}
                         </span>
                       </div>
                     </div>

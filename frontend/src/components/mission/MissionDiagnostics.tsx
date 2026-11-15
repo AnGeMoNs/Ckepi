@@ -33,6 +33,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 import { InfoTooltip } from "../ui/InfoTooltip";
 import { ProgressBar } from "../ui/ProgressBar";
 import { AiViabilityPanel } from "./AiViabilityPanel";
+import { ChallengeDimensionsGrid } from "./ChallengeDimensionsGrid";
 import { TerrainDistributionPanel } from "./TerrainDistributionPanel";
 
 interface MissionDiagnosticsProps {
@@ -311,6 +312,9 @@ export function MissionDiagnostics({
             </div>
           </div>
         </div>
+
+        {/* 8 Challenge Dimensions & Physical Processes */}
+        <ChallengeDimensionsGrid comparison={comparison} catalog={catalog} />
 
         {/* Engineering Valid vs Invalid Tests */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

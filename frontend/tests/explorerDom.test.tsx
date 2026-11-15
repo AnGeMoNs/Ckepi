@@ -15,6 +15,7 @@ window.HTMLElement.prototype.scrollIntoView = () => {};
 const { act } = await import("react");
 const { createRoot } = await import("react-dom/client");
 const { default: i18n } = await import("../src/i18n");
+const { clearApiCache } = await import("../src/api/client");
 const { ExplorerPage } = await import("../src/pages/ExplorerPage");
 const sites = JSON.parse(readFileSync("../backend/app/data/planetary_sites.json", "utf8"));
 let root: ReturnType<typeof createRoot>;
@@ -79,6 +80,7 @@ function button(text: string) {
 
 beforeEach(async () => {
   fetchCalls = [];
+  clearApiCache();
   globalThis.fetch = mockApi as typeof fetch;
   await i18n.changeLanguage("es");
   root = createRoot(document.getElementById("root")!);

@@ -189,7 +189,7 @@ export function FieldTrialPlanner({
                 <p className="mt-1 text-content-muted">
                   {t(activeSite.name_key)} ({formatNumber(activeSite.coordinates.lat, lang, 2)}°,{" "}
                   {formatNumber(activeSite.coordinates.lon, lang, 2)}°) ·{" "}
-                  {t("variables.slope_deg")}:{" "}
+                  {t("variables.slope_deg.label")}:{" "}
                   {formatNumber(activeSite.variables.independent.slope_deg ?? 0, lang, 1)}°
                 </p>
               ) : (

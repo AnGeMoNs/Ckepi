@@ -24,6 +24,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 interface LaAraucanaImpactPanelProps {
   comparison: SiteComparisonResponse | null;
   selectedH3: string | null;
+  variant?: "full" | "student" | "impact";
   onSelectAntofagastaCell: (h3Index: string, siteId?: string) => void;
 }
 
@@ -57,6 +58,7 @@ const ANTOFAGASTA_NODES = [
 export function LaAraucanaImpactPanel({
   comparison,
   selectedH3,
+  variant = "full",
   onSelectAntofagastaCell,
 }: LaAraucanaImpactPanelProps) {
   const { t, i18n } = useTranslation();
@@ -176,6 +178,7 @@ export function LaAraucanaImpactPanel({
         </div>
 
         {/* Section 2: "Tres Mundos en tu Mano" (Earth · Moon · Mars) Progressive STEAM Module */}
+        {variant !== "impact" && (
         <div className="rounded border border-border-subtle bg-surface p-4 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
@@ -295,8 +298,10 @@ export function LaAraucanaImpactPanel({
             )}
           </div>
         </div>
+        )}
 
         {/* Section 3: Caja La Araucana 4 Official Objectives & Verified UN SDGs */}
+        {variant !== "student" && (
         <div className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-content">
@@ -361,6 +366,7 @@ export function LaAraucanaImpactPanel({
             <span>{t("araucana.sustainabilityBody")}</span>
           </div>
         </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -105,13 +105,48 @@ def query_esa_copernicus_products(
     return items
 
 
+def _build_nasa_open_portal_links(lat: float, lon: float) -> list[dict[str, str]]:
+    """Construct coordinate-anchored NASA Worldview, Earthdata Search, and PDS/LRO Diviner deep links."""
+    wv_min_lon = max(-180.0, lon - 2.5)
+    wv_min_lat = max(-90.0, lat - 2.5)
+    wv_max_lon = min(180.0, lon + 2.5)
+    wv_max_lat = min(90.0, lat + 2.5)
+    sb_min_lon = max(-180.0, lon - 0.5)
+    sb_min_lat = max(-90.0, lat - 0.5)
+    sb_max_lon = min(180.0, lon + 0.5)
+    sb_max_lat = min(90.0, lat + 0.5)
+    return [
+        {
+            "agency": "NASA",
+            "mission": "NASA Worldview (GIBS Interactive Layers)",
+            "product_id": f"Viewport ({lat:.2f}, {lon:.2f})",
+            "sensing_date": "Live / Daily",
+            "url": f"https://worldview.earthdata.nasa.gov/?v={wv_min_lon:.2f},{wv_min_lat:.2f},{wv_max_lon:.2f},{wv_max_lat:.2f}",
+        },
+        {
+            "agency": "NASA",
+            "mission": "NASA Earthdata Search",
+            "product_id": f"BBox ({lat:.2f}, {lon:.2f})",
+            "sensing_date": "Open Catalog",
+            "url": f"https://search.earthdata.nasa.gov/search?sb={sb_min_lon:.2f},{sb_min_lat:.2f},{sb_max_lon:.2f},{sb_max_lat:.2f}",
+        },
+        {
+            "agency": "NASA PDS",
+            "mission": "NASA PDS · LRO Diviner & Planetary Archive",
+            "product_id": "Lunar & Mars Orbital Datasets",
+            "sensing_date": "PDS Archive",
+            "url": "https://pds-geosciences.wustl.edu/missions/lro/diviner.htm",
+        },
+    ]
+
+
 def query_csa_and_jaxa_references(
     lat: float,
     lon: float,
     client: httpx.Client,
 ) -> list[dict[str, str]]:
-    """Query CSA RADARSAT Open Data metadata and provide JAXA G-Portal & ESA Open Science links."""
-    items: list[dict[str, str]] = []
+    """Query CSA RADARSAT Open Data metadata and provide NASA/ESA/JAXA open portal links."""
+    items: list[dict[str, str]] = _build_nasa_open_portal_links(lat, lon)
     for pkg_id, label in (("radarsat1", "CSA RADARSAT-1 SAR"), ("rcm", "CSA RADARSAT Constellation (RCM)")):
         title = pkg_id.upper()
         try:

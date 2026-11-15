@@ -6,6 +6,7 @@ import {
   FlaskConical,
   GitCompareArrows,
   Globe,
+  GraduationCap,
   MapPin,
   RefreshCw,
   SearchX,
@@ -20,6 +21,10 @@ import { ActionBar } from "../components/mission/ActionBar";
 import { ControlPanel } from "../components/mission/ControlPanel";
 import { DataConfidenceBanner } from "../components/mission/DataConfidenceBanner";
 import { LaAraucanaImpactPanel } from "../components/mission/LaAraucanaImpactPanel";
+import { UnexpectedDiscoverySpotlight } from "../components/mission/UnexpectedDiscoverySpotlight";
+import { StudentComparisonPanel } from "../components/student/StudentComparisonPanel";
+import { StudentControlPanel } from "../components/student/StudentControlPanel";
+import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
 import { Drawer } from "../components/ui/Drawer";
@@ -77,12 +82,19 @@ const FieldTrialPlanner = lazy(() =>
 interface ExplorerPageProps {
   theme: ThemeMode;
   readingMode: ReadingMode;
+  onChangeReadingMode?: (mode: ReadingMode) => void;
 }
 
 type MobileMapTab = "planet" | "earth";
+type LearnSubView = "site_lab" | "atm_lab" | "three_worlds";
 
-export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
+export function ExplorerPage({
+  theme,
+  readingMode,
+  onChangeReadingMode,
+}: ExplorerPageProps) {
   const { t } = useTranslation();
+  const isStudent = readingMode === "explorer";
   const params = useExplorerParams();
 
   const analysis = useAnalogAnalysis({
@@ -123,7 +135,14 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const [activeTab, setActiveTab] = useState<ExplorerTab>(
     () => readExplorerParams(typeof window !== "undefined" ? window.location.search : "").tab
   );
+  const [learnView, setLearnView] = useState<LearnSubView>("site_lab");
   const [planDraft, setPlanDraft] = useState(createFieldTrialDraft);
+
+  useEffect(() => {
+    if (isStudent && (activeTab === "plan" || activeTab === "evidence")) {
+      setActiveTab("compare");
+    }
+  }, [isStudent, activeTab]);
   const copiedTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -174,12 +193,17 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     analysis.comparison?.match ??
     null;
 
-  const navTabs: { id: ExplorerTab; label: string; icon: typeof GitCompareArrows }[] = [
-    { id: "compare", label: t("nav.compare"), icon: GitCompareArrows },
-    { id: "learn", label: t("nav.learn"), icon: FlaskConical },
-    { id: "plan", label: t("nav.plan"), icon: ClipboardCheck },
-    { id: "evidence", label: t("nav.evidence"), icon: BookOpen },
-  ];
+  const navTabs: { id: ExplorerTab; label: string; icon: typeof GitCompareArrows }[] = isStudent
+    ? [
+        { id: "compare", label: t("nav.studentCompare"), icon: GitCompareArrows },
+        { id: "learn", label: t("nav.learn"), icon: FlaskConical },
+      ]
+    : [
+        { id: "compare", label: t("nav.compare"), icon: GitCompareArrows },
+        { id: "learn", label: t("nav.learn"), icon: FlaskConical },
+        { id: "plan", label: t("nav.plan"), icon: ClipboardCheck },
+        { id: "evidence", label: t("nav.evidence"), icon: BookOpen },
+      ];
 
   const handleTabKeyDown = (e: KeyboardEvent<HTMLElement>) => {
     const idx = navTabs.findIndex((tab) => tab.id === activeTab);
@@ -253,7 +277,30 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     }
   };
 
-  const controlPanelNode = (
+  const controlPanelNode = isStudent ? (
+    <StudentControlPanel
+      sites={analysis.sites}
+      selectedBody={params.selectedBody}
+      selectedSiteId={params.selectedSiteId}
+      customProbedSite={params.customProbedSite}
+      activeSite={activeSite}
+      testProfile={params.testProfile}
+      onSelectBody={(body) => {
+        setHasConfigured(true);
+        analysis.handleSelectBody(body);
+      }}
+      onSelectSite={(nextId, body) => {
+        setHasConfigured(true);
+        params.setCustomProbedSite(null);
+        params.setSelectedSiteId(nextId);
+        if (body) params.setSelectedBody(body);
+      }}
+      onChangeTestProfile={(profile) => {
+        setHasConfigured(true);
+        params.setTestProfile(profile);
+      }}
+    />
+  ) : (
     <ControlPanel
       layout={isDesktop ? "horizontal" : "vertical"}
       sites={analysis.sites}
@@ -307,7 +354,46 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         {analysis.isLoading ? t("controls.loading") : ""}
       </div>
 
-      {/* Primary journey: Compare · Learn · Plan · Evidence */}
+      {/* Explicit Mode Context Banner & 1-Click Switcher */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border-subtle bg-surface-elevated px-3.5 py-2.5 shadow-sm sm:px-4">
+        <div className="flex min-w-0 items-center gap-2.5">
+          {isStudent ? (
+            <GraduationCap className="h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+          ) : (
+            <FlaskConical className="h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+          )}
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold text-content sm:text-sm">
+                {isStudent ? t("modeBanner.studentTitle") : t("modeBanner.scienceTitle")}
+              </span>
+              <Badge variant={isStudent ? "valid" : "accent"}>
+                {t(`app.modes.${readingMode}`)}
+              </Badge>
+            </div>
+            <p className="text-xs text-content-muted">
+              {isStudent ? t("modeBanner.studentDesc") : t("modeBanner.scienceDesc")}
+            </p>
+          </div>
+        </div>
+        {onChangeReadingMode && (
+          <Button
+            variant="secondary"
+            onClick={() => onChangeReadingMode(isStudent ? "mission" : "explorer")}
+          >
+            {isStudent ? (
+              <FlaskConical className="h-4 w-4 text-accent" aria-hidden="true" />
+            ) : (
+              <GraduationCap className="h-4 w-4 text-accent" aria-hidden="true" />
+            )}
+            <span>
+              {isStudent ? t("modeBanner.switchToScience") : t("modeBanner.switchToStudent")}
+            </span>
+          </Button>
+        )}
+      </div>
+
+      {/* Primary journey tabs (mode-aware) */}
       <nav
         aria-label={t("nav.tabsLabel")}
         role="tablist"
@@ -340,17 +426,97 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         })}
       </nav>
 
+      {analysis.errorState && (
+        <div
+          role="alert"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-status-break/40 bg-status-break/10 p-4 text-sm text-status-break"
+        >
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 shrink-0" aria-hidden="true" />
+            <span>{t(analysis.errorState.key, analysis.errorState.params)}</span>
+          </div>
+          <Button variant="secondary" onClick={() => void analysis.runAnalysis()}>
+            <RefreshCw className="h-4 w-4" aria-hidden="true" />
+            {t("controls.retry")}
+          </Button>
+        </div>
+      )}
+
       <Suspense fallback={<PanelSkeleton heightClass="h-64" />}>
         {activeTab === "learn" && (
-          <div id="panel-learn" role="tabpanel" aria-labelledby="tab-learn">
-            <PlanetaryPhysicsLab
-              body={params.selectedBody}
-              activeSite={activeSite}
-              selectedCell={selectedCell}
-              comparison={analysis.comparison}
-              onGoToCompare={() => setActiveTab("compare")}
-              onGoToPlan={() => setActiveTab("plan")}
-            />
+          <div id="panel-learn" role="tabpanel" aria-labelledby="tab-learn" className="space-y-4">
+            <div
+              role="tablist"
+              aria-label={t("learn.hubLabel")}
+              className="flex flex-wrap gap-2 rounded-xl border border-border-subtle bg-surface-elevated p-2 shadow-sm"
+            >
+              {(
+                [
+                  { id: "site_lab", label: t("learn.subtabs.siteLab"), icon: FlaskConical },
+                  { id: "atm_lab", label: t("learn.subtabs.atmLab"), icon: Globe },
+                  { id: "three_worlds", label: t("learn.subtabs.threeWorlds"), icon: GraduationCap },
+                ] as const
+              ).map((sub) => {
+                const SubIcon = sub.icon;
+                const isActiveSub = learnView === sub.id;
+                return (
+                  <button
+                    key={sub.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActiveSub}
+                    onClick={() => setLearnView(sub.id)}
+                    className={`flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-sm ${
+                      isActiveSub
+                        ? "bg-accent text-accent-foreground shadow-sm"
+                        : "text-content-muted hover:bg-surface-muted hover:text-content"
+                    }`}
+                  >
+                    <SubIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    <span>{sub.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {learnView === "site_lab" && (
+              <PlanetaryPhysicsLab
+                body={params.selectedBody}
+                activeSite={activeSite}
+                selectedCell={selectedCell}
+                comparison={analysis.comparison}
+                onGoToCompare={() => setActiveTab("compare")}
+                onGoToPlan={() => {
+                  if (isStudent) onChangeReadingMode?.("mission");
+                  setActiveTab("plan");
+                }}
+              />
+            )}
+
+            {learnView === "atm_lab" && (
+              <EducationPhysicsLab
+                activeBody={activeSite?.body}
+                activeSite={activeSite}
+                selectedMatch={analysis.comparison?.match}
+                readingMode={readingMode}
+              />
+            )}
+
+            {learnView === "three_worlds" && (
+              <LaAraucanaImpactPanel
+                variant="student"
+                comparison={analysis.comparison}
+                selectedH3={analysis.selectedH3}
+                onSelectAntofagastaCell={(h3Index, siteId) => {
+                  if (siteId && siteId !== params.selectedSiteId) {
+                    params.setCustomProbedSite(null);
+                    params.setSelectedSiteId(siteId);
+                  }
+                  analysis.setSelectedH3(h3Index);
+                  setActiveTab("compare");
+                }}
+              />
+            )}
           </div>
         )}
 
@@ -369,8 +535,21 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         )}
 
         {activeTab === "evidence" && (
-          <div id="panel-evidence" role="tabpanel" aria-labelledby="tab-evidence">
+          <div id="panel-evidence" role="tabpanel" aria-labelledby="tab-evidence" className="space-y-6">
             <EvidencePanel activeSite={activeSite} comparison={analysis.comparison} />
+            <LaAraucanaImpactPanel
+              variant="impact"
+              comparison={analysis.comparison}
+              selectedH3={analysis.selectedH3}
+              onSelectAntofagastaCell={(h3Index, siteId) => {
+                if (siteId && siteId !== params.selectedSiteId) {
+                  params.setCustomProbedSite(null);
+                  params.setSelectedSiteId(siteId);
+                }
+                analysis.setSelectedH3(h3Index);
+                setActiveTab("compare");
+              }}
+            />
           </div>
         )}
       </Suspense>
@@ -382,7 +561,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
         hidden={activeTab !== "compare"}
         className="space-y-5"
       >
-      <GuidedStepsBanner activeStep={activeStep} />
+      {isStudent && <GuidedStepsBanner activeStep={activeStep} />}
 
       <div className="space-y-6">
         {/* Render a single ControlPanel instance to avoid duplicate IDs and draft divergence */}
@@ -420,32 +599,25 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           />
 
           <SectionNav
-            visibleSections={{
-              "section-maps": true,
-              "section-decomposition": Boolean(analysis.decomposition),
-              "section-diagnostics": Boolean(analysis.comparison),
-              "section-ranking": Boolean(
-                analysis.searchResult && analysis.searchResult.matches.length > 0
-              ),
-              "section-physics-lab": true,
-            }}
+            visibleSections={
+              isStudent
+                ? {
+                    "section-maps": true,
+                    "section-student-comparison": Boolean(analysis.comparison),
+                  }
+                : {
+                    "section-maps": true,
+                    "section-discovery": Boolean(
+                      analysis.searchResult && analysis.searchResult.matches.length > 0
+                    ),
+                    "section-decomposition": Boolean(analysis.decomposition),
+                    "section-diagnostics": Boolean(analysis.comparison),
+                    "section-ranking": Boolean(
+                      analysis.searchResult && analysis.searchResult.matches.length > 0
+                    ),
+                  }
+            }
           />
-
-          {analysis.errorState && (
-            <div
-              role="alert"
-              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-status-break/40 bg-status-break/10 p-4 text-sm text-status-break"
-            >
-              <div className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 shrink-0" aria-hidden="true" />
-                <span>{t(analysis.errorState.key, analysis.errorState.params)}</span>
-              </div>
-              <Button variant="secondary" onClick={() => void analysis.runAnalysis()}>
-                <RefreshCw className="h-4 w-4" aria-hidden="true" />
-                {t("controls.retry")}
-              </Button>
-            </div>
-          )}
 
           {/* Maps Section */}
           <section id="section-maps" className="scroll-mt-32 space-y-3">
@@ -524,6 +696,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                         totalEvaluated={analysis.searchResult.total_evaluated}
                         selectedH3={analysis.selectedH3}
                         theme={theme}
+                        readingMode={readingMode}
                         probingCoords={analysis.probingCoords}
                         isRefining={analysis.isRefining}
                         earthDensity={analysis.earthDensity}
@@ -568,15 +741,6 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             )}
           </section>
 
-          {activeSite && <DataConfidenceBanner site={activeSite} />}
-
-          <ContextualCuriosityStrip
-            body={params.selectedBody}
-            activeSite={activeSite}
-            comparison={analysis.comparison}
-            onOpenLearn={() => setActiveTab("learn")}
-          />
-
           {analysis.searchResult && analysis.searchResult.matches.length === 0 && (
             <EmptyState
               icon={<SearchX className="h-6 w-6" aria-hidden="true" />}
@@ -594,20 +758,73 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             </div>
           )}
 
-          {readingMode === "explorer" && (
-            <section id="section-physics-lab" className="scroll-mt-32">
-              <Suspense fallback={<PanelSkeleton heightClass="h-72" />}>
-                <EducationPhysicsLab
-                  activeBody={activeSite?.body}
-                  activeSite={activeSite}
-                  selectedMatch={analysis.comparison?.match}
-                  readingMode={readingMode}
-                />
-              </Suspense>
+          {isStudent && analysis.comparison && (
+            <section
+              id="section-student-comparison"
+              className={`scroll-mt-32 transition-opacity ${
+                isUpdating ? "opacity-60" : "opacity-100"
+              }`}
+            >
+              <StudentComparisonPanel
+                comparison={analysis.comparison}
+                matches={analysis.searchResult?.matches ?? []}
+                activeSite={activeSite}
+                aiEnabled={aiEnabled}
+                aiAnalysis={aiAnalysis}
+                onAiAnalysisChange={setAiAnalysis}
+                onSelectCell={(h3Index) => {
+                  setHasExploredMap(true);
+                  analysis.setSelectedH3(h3Index);
+                }}
+                onOpenLearn={() => {
+                  setLearnView("site_lab");
+                  setActiveTab("learn");
+                }}
+                onSwitchToScientific={() => onChangeReadingMode?.("mission")}
+              />
             </section>
           )}
 
-          {analysis.decomposition && (
+          {isStudent && (
+            <ContextualCuriosityStrip
+              body={params.selectedBody}
+              activeSite={activeSite}
+              comparison={analysis.comparison}
+              onOpenLearn={() => {
+                setLearnView("site_lab");
+                setActiveTab("learn");
+              }}
+            />
+          )}
+
+          {!isStudent && analysis.searchResult && analysis.searchResult.matches.length > 0 && (
+            <section
+              id="section-discovery"
+              className={`scroll-mt-32 transition-opacity ${
+                isUpdating ? "opacity-60" : "opacity-100"
+              }`}
+            >
+              <UnexpectedDiscoverySpotlight
+                matches={analysis.searchResult.matches}
+                totalEvaluated={analysis.searchResult.total_evaluated}
+                selectedH3={analysis.selectedH3}
+                excludeBenchmarks={params.excludeBenchmarks}
+                site={activeSite}
+                onSelectCell={(h3Index) => {
+                  setHasExploredMap(true);
+                  analysis.setSelectedH3(h3Index);
+                }}
+                onToggleExcludeBenchmarks={(next) => {
+                  setHasConfigured(true);
+                  params.setExcludeBenchmarks(next);
+                }}
+              />
+            </section>
+          )}
+
+          {!isStudent && activeSite && <DataConfidenceBanner site={activeSite} />}
+
+          {!isStudent && analysis.decomposition && (
             <section
               id="section-decomposition"
               className={`scroll-mt-32 transition-opacity ${
@@ -620,7 +837,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             </section>
           )}
 
-          {analysis.comparison && (
+          {!isStudent && analysis.comparison && (
             <section
               id="section-diagnostics"
               className={`scroll-mt-32 transition-opacity ${
@@ -647,19 +864,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             </section>
           )}
 
-          <LaAraucanaImpactPanel
-            comparison={analysis.comparison}
-            selectedH3={analysis.selectedH3}
-            onSelectAntofagastaCell={(h3Index, siteId) => {
-              if (siteId && siteId !== params.selectedSiteId) {
-                params.setCustomProbedSite(null);
-                params.setSelectedSiteId(siteId);
-              }
-              analysis.setSelectedH3(h3Index);
-            }}
-          />
-
-          {analysis.searchResult && analysis.searchResult.matches.length > 0 && (
+          {!isStudent && analysis.searchResult && analysis.searchResult.matches.length > 0 && (
             <section
               id="section-ranking"
               className={`scroll-mt-32 transition-opacity ${
@@ -677,19 +882,6 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                     analysis.setSelectedH3(h3Index);
                   }}
                   onExported={handleExported}
-                />
-              </Suspense>
-            </section>
-          )}
-
-          {readingMode !== "explorer" && (
-            <section id="section-physics-lab" className="scroll-mt-32">
-              <Suspense fallback={<PanelSkeleton heightClass="h-72" />}>
-                <EducationPhysicsLab
-                  activeBody={activeSite?.body}
-                  activeSite={activeSite}
-                  selectedMatch={analysis.comparison?.match}
-                  readingMode={readingMode}
                 />
               </Suspense>
             </section>

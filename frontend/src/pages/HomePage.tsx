@@ -1,9 +1,10 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, RotateCcw, SkipForward } from "lucide-react";
+import { ArrowRight, FlaskConical, GraduationCap, RotateCcw, SkipForward } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { HexField } from "../components/home/HexField";
+import type { ReadingMode } from "../types/analog";
 
 type Phase = "video" | "ready" | "leaving";
 
@@ -13,7 +14,7 @@ const EXIT_MS = 1050;
 const VIDEO_FALLBACK_MS = 12_000;
 
 interface HomePageProps {
-  onEnter: () => void;
+  onEnter: (mode?: ReadingMode) => void;
 }
 
 export function HomePage({ onEnter }: HomePageProps) {
@@ -35,9 +36,9 @@ export function HomePage({ onEnter }: HomePageProps) {
     if (phase === "ready") ctaRef.current?.focus({ preventScroll: true });
   }, [phase]);
 
-  const handleEnter = () => {
+  const handleEnter = (mode: ReadingMode) => {
     setPhase("leaving");
-    window.setTimeout(onEnter, reduceMotion ? 150 : EXIT_MS);
+    window.setTimeout(() => onEnter(mode), reduceMotion ? 150 : EXIT_MS);
   };
 
   const replay = () => {
@@ -143,18 +144,33 @@ export function HomePage({ onEnter }: HomePageProps) {
               </h1>
               <p className="mt-4 text-lg font-semibold sm:text-2xl">{t("home.tagline")}</p>
               <p className="mt-2 text-base text-ckepi-paper/80 sm:text-lg">{t("home.question")}</p>
-              <button
-                ref={ctaRef}
-                type="button"
-                onClick={handleEnter}
-                className="group mt-8 inline-flex min-h-12 items-center gap-3 rounded-full bg-ckepi-copper px-7 text-base font-bold text-ckepi-space shadow-ckepi-glow transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ckepi-paper/70 sm:text-lg"
-              >
-                <span>{t("home.cta")}</span>
-                <ArrowRight
-                  className="h-5 w-5 transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
-                  aria-hidden="true"
-                />
-              </button>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <button
+                  ref={ctaRef}
+                  type="button"
+                  onClick={() => handleEnter("explorer")}
+                  className="group inline-flex min-h-12 items-center gap-2.5 rounded-full bg-ckepi-copper px-6 py-2.5 text-sm font-bold text-ckepi-space shadow-ckepi-glow transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ckepi-paper/70 sm:text-base"
+                >
+                  <GraduationCap className="h-5 w-5 shrink-0" aria-hidden="true" />
+                  <span>{t("home.ctaStudent")}</span>
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
+                    aria-hidden="true"
+                  />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleEnter("mission")}
+                  className="group inline-flex min-h-12 items-center gap-2.5 rounded-full border border-ckepi-paper/45 bg-ckepi-space/75 px-6 py-2.5 text-sm font-bold text-ckepi-paper backdrop-blur-sm transition hover:border-ckepi-copper hover:bg-ckepi-space focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ckepi-paper/70 sm:text-base"
+                >
+                  <FlaskConical className="h-5 w-5 shrink-0 text-ckepi-copper" aria-hidden="true" />
+                  <span>{t("home.ctaScientist")}</span>
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
+                    aria-hidden="true"
+                  />
+                </button>
+              </div>
               <p className="mt-6 max-w-lg text-xs text-ckepi-paper/70 sm:text-sm">{t("home.dataNote")}</p>
             </motion.div>
           )}

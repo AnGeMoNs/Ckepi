@@ -2,14 +2,14 @@
   "app": {
     "title": "Ckepi",
     "subtitle": "Motor de Decomposição Causal e Análogos Planetários",
-    "challengeBadge": "NASA Space Apps 2026",
+    "challengeBadge": "Ciência Planetária Aberta · SPD-41a",
     "themeLight": "Modo claro",
     "themeDark": "Modo escuro",
     "languageLabel": "Idioma",
     "readingModeLabel": "Perfil de leitura",
     "modes": {
-      "mission": "Missão",
-      "explorer": "Explorador STEAM"
+      "mission": "Cientista",
+      "explorer": "Estudante"
     },
     "mobileMenuLabel": "Preferências"
   },
@@ -532,6 +532,53 @@
       "disclaimer": "Síntese gerada por LLM sobre dados determinísticos do Ckepi (NASA/ESA/Open-Meteo); pré-seleção científica que requer validação de engenharia humana e não certifica segurança operacional.",
       "retryButton": "Tentar análise IA novamente",
       "includedInReport": "Incluído automaticamente ao exportar Relatório (.md)"
+    },
+    "dimensions": {
+      "title": "8 Dimensões do Desafio e Processos Físicos",
+      "subtitle": "Como esta célula terrestre se compara em cada dimensão de exploração além da aparência visual",
+      "badge": "Auditoria Multidimensional",
+      "geologyProcess": "Intemperismo do regolito e mineralogia",
+      "geologyFallback": "Albedo {{albedo}} · IT {{ti}} J·m⁻²·K⁻¹·s⁻¹/²",
+      "terrainProcess": "Estabilidade de encostas, crateras e relevo DEM",
+      "terrainDetail": "Declive {{slope}}° · Rugosidade {{rough}} m · {{scale}} km{{w1}}",
+      "thermalProcess": "Resfriamento diurno, geada e irradiância",
+      "thermalDetail": "Média {{tempC}} °C · Variação {{ampK}} K · Solar {{solar}} W/m²",
+      "waterProcess": "Gelo subsuperficial, salmouras e hiperaridez",
+      "waterDetail": "Gelo {{ice}} · Aridez {{aridity}} · UR {{rh}}%",
+      "aeolianProcess": "Suspensão de poeira, saltação e erosão",
+      "aeolianDetail": "Vento {{wind}} m/s · Fluxo poeira {{dust}}",
+      "biologyProcess": "Limites extremófilos e bioassinaturas",
+      "biologyFallback": "Proxy IAF {{lai}} (limite quase estéril de vegetação)",
+      "subsurfaceProcess": "Tubos de lava, cavernas e blindagem natural",
+      "subsurfaceFallback": "Consulte o catálogo multiagência para sinal subsuperficial",
+      "operationsProcess": "Pouso, mobilidade robótica e brecha B",
+      "operationsDetail": "{{valid}} testes válidos · {{invalid}} não transferíveis · R_break {{rbreak}}",
+      "items": {
+        "geology": {
+          "title": "Geologia e Regolito"
+        },
+        "terrain": {
+          "title": "Terreno e Relevo 30 m"
+        },
+        "thermal": {
+          "title": "Térmica e Iluminação"
+        },
+        "water": {
+          "title": "Água, Gelo e Salmouras"
+        },
+        "aeolian": {
+          "title": "Poeira e Processo Eólico"
+        },
+        "biology": {
+          "title": "Habitabilidade e Bioassinaturas"
+        },
+        "subsurface": {
+          "title": "Subsolo e Tubos de Lava"
+        },
+        "operations": {
+          "title": "Operações e Brecha B"
+        }
+      }
     }
   },
   "tests": {
@@ -674,7 +721,10 @@
     "globalLabel": "Alcance global",
     "locationLabel": "Localização específica",
     "skipToContent": "Pular para o conteúdo principal",
-    "physicsLab": "Lab. de Física"
+    "physicsLab": "Lab. de Física",
+    "studentCompare": "Explorar Mundos",
+    "studentComparison": "Terra vs Planeta",
+    "discovery": "Descobertas"
   },
   "export": {
     "reportTitle": "Relatório Ckepi",
@@ -714,7 +764,9 @@
     "aiLimitationsTitle": "Limitações e Lacunas Físicas",
     "aiMitigationsTitle": "Plano de Mitigação de Rupturas",
     "aiConsiderationsTitle": "Considerações de Campanha de Campo",
-    "aiNextStepsTitle": "Próximos Passos Recomendados"
+    "aiNextStepsTitle": "Próximos Passos Recomendados",
+    "dimensionsTitle": "8 Dimensões do Desafio e Processos Físicos",
+    "openDataLinksTitle": "Links de Dados Abertos por Coordenada (NASA, ESA, CSA, JAXA)"
   },
   "simulants": {
     "title": "Afinidade com Simulantes de Regolito NASA/ESA e Adequação ISRU",
@@ -905,6 +957,12 @@
       "physics": "Física impossível",
       "engineering": "Engenharia espacial",
       "curiosities": "Curiosidades planetárias"
+    },
+    "hubLabel": "Laboratórios Interativos",
+    "subtabs": {
+      "siteLab": "Lab. Física do Local e Gravidade",
+      "atmLab": "Atmosfera, Poeira e Radiação",
+      "threeWorlds": "Desafio Três Mundos e Quiz"
     }
   },
   "plan": {
@@ -1251,7 +1309,9 @@
     "cta": "Explorar os três mundos",
     "dataNote": "Exemplo real: uma área pouco estudada de Antofagasta se parece com as encostas da cratera Jezero mais do que o análogo clássico, Yungay (W₁ = 0,54° vs. 3,32°, a 30 m). Pré-selecionamos lugares para estudar; não os certificamos.",
     "aiBadge": "Vídeo gerado com IA",
-    "credits": "Dados: NASA, ESA e agências parceiras. O Ckepi não é afiliado nem endossado pela NASA."
+    "credits": "Dados: NASA, ESA e agências parceiras. O Ckepi não é afiliado nem endossado pela NASA.",
+    "ctaStudent": "Explorar como Estudante",
+    "ctaScientist": "Modo Científico"
   },
   "story": {
     "progressLabel": "Etapas da apresentação",
@@ -1564,5 +1624,99 @@
       "slopeParam": "Inclinação",
       "cropSuitability": "Cultivos"
     }
+  },
+  "modeBanner": {
+    "studentTitle": "Modo Estudante e Divulgação",
+    "studentDesc": "Comparações claras entre a Terra, a Lua e Marte em linguagem simples, com narração por voz e laboratórios — sem fórmulas complexas.",
+    "scienceTitle": "Modo Científico de Descoberta",
+    "scienceDesc": "Decomposição causal X → Y ∥ B, descoberta de análogos não reconhecidos fora dos sítios clássicos, 8 dimensões do desafio, validação ≥30 m e links abertos.",
+    "switchToScience": "Mudar para Modo Científico",
+    "switchToStudent": "Mudar para Modo Estudante"
+  },
+  "studentControls": {
+    "step1Label": "1. Escolha um mundo e local",
+    "chooseWorld": "Escolha o mundo de destino",
+    "choosePlace": "Local na Lua ou em Marte",
+    "step2Label": "2. O que você quer comparar?",
+    "step2Hint": "Classificamos locais da Terra conforme seu objetivo.",
+    "goals": {
+      "causal_auto": {
+        "title": "Semelhança Geral",
+        "desc": "Equilibra terreno, aridez e condições de superfície."
+      },
+      "rover_mobility": {
+        "title": "Dirigir um Rover",
+        "desc": "Busca inclinações e solos semelhantes para testar rodas."
+      },
+      "solar_power_thermal": {
+        "title": "Energia Solar e Calor",
+        "desc": "Compara luz solar, albedo e extremos de temperatura."
+      },
+      "isru_ice_drilling": {
+        "title": "Buscar Gelo e Água",
+        "desc": "Explora solos congelados ou muito secos para perfuração."
+      },
+      "lava_tube_habitat": {
+        "title": "Cavernas e Abrigos",
+        "desc": "Busca rochas vulcânicas e túneis subterrâneos."
+      },
+      "navigation_landing": {
+        "title": "Pouso Seguro",
+        "desc": "Avalia relevo e inclinações para testar descidas."
+      }
+    }
+  },
+  "studentPanel": {
+    "title": "{{earthPlace}} comparado com {{targetPlace}}",
+    "matchHigh": "Alta semelhança física",
+    "matchModerate": "Semelhança parcial útil",
+    "matchPartial": "Semelhança limitada — veja diferenças",
+    "listenVoice": "Ouvir explicação",
+    "stopVoice": "Parar voz",
+    "speechSummary": "{{earthPlace}} se parece em {{score}} com {{targetPlace}} em terreno e superfície. Porém, nunca coincide em tudo: fora da Terra a gravidade é apenas {{gravity}} g e a radiação chega a {{radiation}} milisieverts por ano.",
+    "terrainLabel": "Terreno e Rochas",
+    "climateLabel": "Clima e Poeira",
+    "overallLabel": "Semelhança Geral",
+    "terrainShort": "Terreno",
+    "climateShort": "Clima",
+    "jumpToComparison": "Ver Ficha Terra vs Planeta",
+    "matchesTitle": "O que SE PARECE aqui",
+    "matchesSubtitle": "Características mais próximas entre os dois locais:",
+    "targetShort": "Destino",
+    "earthShort": "Terra",
+    "experimentsCanTestTitle": "Experimentos que VOCÊ PODE testar",
+    "differencesTitle": "O que NUNCA se parece na Terra",
+    "differencesSubtitle": "Nem o melhor análogo da Terra imita estas condições espaciais:",
+    "limits": {
+      "gravityTitle": "Menor gravidade",
+      "gravityBody": "Em {{body}}, a gravidade é {{g}} g em vez de 1.00 g na Terra: a poeira cai devagar e as rodas deslizam mais.",
+      "airTitle": "Ar irrespirável ou ausente",
+      "airMoon": "A Lua quase não tem atmosfera (~0 kPa), diferente do ar terrestre (~101 kPa).",
+      "airMars": "Marte tem ar muito rarefeito de CO₂ (~0.6 kPa contra ~101 kPa na Terra) e sem oxigênio.",
+      "radiationTitle": "Radiação espacial",
+      "radiationBody": "Sem o escudo magnético e a atmosfera da Terra, a radiação chega a ~{{rad}} mSv/ano."
+    },
+    "experimentsCannotTestTitle": "O que NÃO dá para testar aqui",
+    "tryOtherPlaces": "Clique em outro local de destaque na Terra:",
+    "goToPhysicsLab": "Abrir Laboratório de Física",
+    "switchToScienceCta": "Explorar no Modo Científico"
+  },
+  "discoverySpotlight": {
+    "title": "Descoberta Sistemática vs. Sítios Clássicos",
+    "candidatesBadge": "{{count}} candidatos inéditos / {{total}} células",
+    "paretoBadge": "{{count}} descobertas Pareto-ótimas",
+    "subtitle": "Avalia biomas terrestres de forma sistemática para revelar candidatos pouco estudados comparáveis a {{target}}, além dos desertos famosos.",
+    "showBenchmarksAction": "Incluir 25 Sítios Clássicos",
+    "onlyDiscoveriesAction": "Apenas Candidatos Inéditos",
+    "topUnexpectedLabel": "Melhor Candidato Pouco Estudado",
+    "noUnexpectedHint": "Nenhum candidato inédito atinge os limites atuais. Reduza S_ind ou limpe os filtros para ampliar a busca.",
+    "currentlyInspecting": "Inspecionando Este Candidato",
+    "inspectCandidate": "Inspecionar Descoberta",
+    "canonicalControlLabel": "Referência Clássica de Controle",
+    "discoveryComparableNote": "O melhor candidato pouco estudado iguala ou fica a menos de 3 pontos percentuais do análogo clássico líder, abrindo novo terreno de teste.",
+    "benchmarkReferenceNote": "Use os análogos clássicos como linha de base calibrada ao verificar quais células pouco estudadas superam dimensões específicas.",
+    "benchmarksExcludedNote": "Sítios clássicos estão ocultos no momento para priorizar a descoberta de análogos ainda não reconhecidos.",
+    "compareBenchmark": "Comparar Controle Clássico",
+    "moreUnexpectedTitle": "Outros Candidatos Pouco Estudados em Destaque"
   }
 }

@@ -2,14 +2,14 @@
   "app": {
     "title": "Ckepi",
     "subtitle": "Causal Variable Decomposition & Planetary Analog Engine",
-    "challengeBadge": "NASA Space Apps 2026",
+    "challengeBadge": "Open Planetary Science · SPD-41a",
     "themeLight": "Light mode",
     "themeDark": "Dark mode",
     "languageLabel": "Language",
     "readingModeLabel": "Reading mode",
     "modes": {
-      "mission": "Mission",
-      "explorer": "STEAM Explorer"
+      "mission": "Scientist",
+      "explorer": "Student"
     },
     "mobileMenuLabel": "Preferences"
   },
@@ -532,6 +532,53 @@
       "disclaimer": "LLM synthesis grounded in deterministic Ckepi data (NASA/ESA/Open-Meteo); scientific pre-screening requiring human engineering validation, not operational safety certification.",
       "retryButton": "Retry AI analysis",
       "includedInReport": "Automatically included when exporting Report (.md)"
+    },
+    "dimensions": {
+      "title": "8 Challenge Dimensions & Physical Processes",
+      "subtitle": "How this Earth cell compares across every exploration dimension beyond visual resemblance",
+      "badge": "Multidimensional Audit",
+      "geologyProcess": "Regolith weathering & mineralogy",
+      "geologyFallback": "Albedo {{albedo}} · TI {{ti}} J·m⁻²·K⁻¹·s⁻¹/²",
+      "terrainProcess": "Slope stability, cratering & DEM relief",
+      "terrainDetail": "Slope {{slope}}° · Roughness {{rough}} m · {{scale}} km{{w1}}",
+      "thermalProcess": "Diurnal cooling, frost & irradiance",
+      "thermalDetail": "Mean {{tempC}} °C · Swing {{ampK}} K · Solar {{solar}} W/m²",
+      "waterProcess": "Subsurface ice, brine & hyperaridity",
+      "waterDetail": "Ice {{ice}} · Aridity {{aridity}} · RH {{rh}}%",
+      "aeolianProcess": "Dust suspension, saltation & erosion",
+      "aeolianDetail": "Wind {{wind}} m/s · Dust flux {{dust}}",
+      "biologyProcess": "Extremophile limits & biosignatures",
+      "biologyFallback": "LAI proxy {{lai}} (near-sterile vegetation limit)",
+      "subsurfaceProcess": "Lava tubes, caves & shielding voids",
+      "subsurfaceFallback": "Inspect multi-agency catalog for subsurface flag",
+      "operationsProcess": "Robotic landing, mobility & breakage B",
+      "operationsDetail": "{{valid}} valid tests · {{invalid}} non-transferable · R_break {{rbreak}}",
+      "items": {
+        "geology": {
+          "title": "Geology & Regolith"
+        },
+        "terrain": {
+          "title": "Terrain & 30 m Relief"
+        },
+        "thermal": {
+          "title": "Thermal & Illumination"
+        },
+        "water": {
+          "title": "Water, Ice & Brines"
+        },
+        "aeolian": {
+          "title": "Dust & Aeolian Process"
+        },
+        "biology": {
+          "title": "Habitability & Biosignatures"
+        },
+        "subsurface": {
+          "title": "Subsurface & Lava Tubes"
+        },
+        "operations": {
+          "title": "Operations & Breakage B"
+        }
+      }
     }
   },
   "tests": {
@@ -674,7 +721,10 @@
     "globalLabel": "Global scope",
     "locationLabel": "Specific location",
     "skipToContent": "Skip to main content",
-    "physicsLab": "Physics Lab"
+    "physicsLab": "Physics Lab",
+    "studentCompare": "Explore Worlds",
+    "studentComparison": "Earth vs Planet",
+    "discovery": "Discoveries"
   },
   "export": {
     "reportTitle": "Ckepi Report",
@@ -714,7 +764,9 @@
     "aiLimitationsTitle": "Physical Gaps & Limitations",
     "aiMitigationsTitle": "Breakage Mitigation Plan",
     "aiConsiderationsTitle": "Field Campaign Considerations",
-    "aiNextStepsTitle": "Recommended Next Steps"
+    "aiNextStepsTitle": "Recommended Next Steps",
+    "dimensionsTitle": "8 Challenge Dimensions & Physical Processes",
+    "openDataLinksTitle": "Coordinate-Anchored Open Data Links (NASA, ESA, CSA, JAXA)"
   },
   "simulants": {
     "title": "NASA/ESA Regolith Simulant Affinity & ISRU Suitability",
@@ -905,6 +957,12 @@
       "physics": "Impossible physics",
       "engineering": "Space engineering",
       "curiosities": "Planetary curiosities"
+    },
+    "hubLabel": "Interactive Science Labs",
+    "subtabs": {
+      "siteLab": "Gravity & Site Physics Lab",
+      "atmLab": "Atmosphere, Dust & Radiation",
+      "threeWorlds": "Three Worlds Challenge & Quiz"
     }
   },
   "plan": {
@@ -1251,7 +1309,9 @@
     "cta": "Explore the three worlds",
     "dataNote": "Real example: an under-studied area of Antofagasta matches Jezero crater's slopes more closely than the classic Yungay analog (W₁ = 0.54° vs. 3.32°, at 30 m). We pre-select places to study; we do not certify them.",
     "aiBadge": "AI-generated video",
-    "credits": "Data: NASA, ESA and partner agencies. Ckepi is not affiliated with or endorsed by NASA."
+    "credits": "Data: NASA, ESA and partner agencies. Ckepi is not affiliated with or endorsed by NASA.",
+    "ctaStudent": "Explore as Student",
+    "ctaScientist": "Scientific Mode"
   },
   "story": {
     "progressLabel": "Presentation steps",
@@ -1564,5 +1624,99 @@
       "slopeParam": "Slope",
       "cropSuitability": "Crops"
     }
+  },
+  "modeBanner": {
+    "studentTitle": "Student & Outreach Mode",
+    "studentDesc": "Clear Moon and Mars comparisons with everyday language, voice narration, and interactive labs — free of heavy statistical formulas.",
+    "scienceTitle": "Scientific Discovery Mode",
+    "scienceDesc": "Full causal X → Y ∥ B decomposition, unexpected analog screening beyond known benchmarks, 8 challenge dimensions, multiscale ≥30 m validation, and open-data links.",
+    "switchToScience": "Switch to Scientific Mode",
+    "switchToStudent": "Switch to Student Mode"
+  },
+  "studentControls": {
+    "step1Label": "1. Choose a world and site",
+    "chooseWorld": "Choose destination world",
+    "choosePlace": "Site on the Moon or Mars",
+    "step2Label": "2. What do you want to compare?",
+    "step2Hint": "We rank Earth places for your mission goal.",
+    "goals": {
+      "causal_auto": {
+        "title": "Overall Match",
+        "desc": "Balance terrain, dryness, and surface conditions."
+      },
+      "rover_mobility": {
+        "title": "Driving a Rover",
+        "desc": "Find slopes and loose soils to test wheels safely."
+      },
+      "solar_power_thermal": {
+        "title": "Solar Power & Heat",
+        "desc": "Compare sunlight, albedo, and cold temperature swings."
+      },
+      "isru_ice_drilling": {
+        "title": "Ice & Water Search",
+        "desc": "Look for frozen or ultra-dry soil to practice drilling."
+      },
+      "lava_tube_habitat": {
+        "title": "Caves & Shelters",
+        "desc": "Find volcanic rock and underground shelter analogs."
+      },
+      "navigation_landing": {
+        "title": "Safe Landing",
+        "desc": "Check terrain roughness and slopes for landers."
+      }
+    }
+  },
+  "studentPanel": {
+    "title": "{{earthPlace}} compared with {{targetPlace}}",
+    "matchHigh": "Strong terrain & surface match",
+    "matchModerate": "Useful partial match",
+    "matchPartial": "Limited match — check differences",
+    "listenVoice": "Listen explanation",
+    "stopVoice": "Stop voice",
+    "speechSummary": "{{earthPlace}} matches {{targetPlace}} by {{score}} in terrain and surface patterns. However, it never matches everything: gravity off Earth is only {{gravity}} g and radiation reaches {{radiation}} millisieverts per year.",
+    "terrainLabel": "Terrain & Rocks",
+    "climateLabel": "Temperature & Dust",
+    "overallLabel": "Overall Match",
+    "terrainShort": "Terrain",
+    "climateShort": "Climate",
+    "jumpToComparison": "See Full Earth vs Planet Card",
+    "matchesTitle": "What DOES match here",
+    "matchesSubtitle": "Closest Earth–planet surface features:",
+    "targetShort": "Target",
+    "earthShort": "Earth",
+    "experimentsCanTestTitle": "Activities you CAN test here",
+    "differencesTitle": "What NEVER matches on Earth",
+    "differencesSubtitle": "Even the best analog on Earth cannot copy these planetary physics:",
+    "limits": {
+      "gravityTitle": "Lower gravity",
+      "gravityBody": "On {{body}}, gravity is {{g}} g instead of 1.00 g on Earth — dust falls slower and wheels slip differently.",
+      "airTitle": "Unbreathable / missing air",
+      "airMoon": "The Moon has near-zero atmosphere (~0 kPa), unlike Earth's dense air (~101 kPa).",
+      "airMars": "Mars has ultra-thin carbon dioxide air (~0.6 kPa vs ~101 kPa on Earth) — no breathable oxygen and tiny wind force.",
+      "radiationTitle": "Space radiation",
+      "radiationBody": "Without Earth's magnetic shield and thick atmosphere, radiation reaches ~{{rad}} mSv/yr."
+    },
+    "experimentsCannotTestTitle": "What CANNOT be tested here",
+    "tryOtherPlaces": "Click another top Earth place to compare:",
+    "goToPhysicsLab": "Open Interactive Physics Lab",
+    "switchToScienceCta": "Explore in Scientific Mode"
+  },
+  "discoverySpotlight": {
+    "title": "Systematic Discovery vs. Classical Benchmarks",
+    "candidatesBadge": "{{count}} unrecognized candidates / {{total}} cells",
+    "paretoBadge": "{{count}} Pareto-optimal discoveries",
+    "subtitle": "Evaluates planetary regions systematically across all terrestrial biomes to surface under-studied candidates comparable to {{target}}, not merely famous deserts.",
+    "showBenchmarksAction": "Include 25 Classical Benchmarks",
+    "onlyDiscoveriesAction": "Only Unrecognized Candidates",
+    "topUnexpectedLabel": "Top Unrecognized Earth Candidate",
+    "noUnexpectedHint": "No non-benchmark candidates pass your current thresholds. Lower S_ind or reset filters to broaden discovery.",
+    "currentlyInspecting": "Inspecting This Candidate",
+    "inspectCandidate": "Inspect Discovery on Map",
+    "canonicalControlLabel": "Classical Reference Benchmark",
+    "discoveryComparableNote": "The top under-studied candidate matches or sits within 3 percentage points of the best classic analog while probing previously unrecognized terrain.",
+    "benchmarkReferenceNote": "Use classical analogs (e.g., Atacama/Yungay, Haughton, Iceland) as calibration baselines while evaluating whether under-studied cells match specific landing dimensions closer.",
+    "benchmarksExcludedNote": "Canonical benchmark regions are currently filtered out so your search prioritizes previously unrecognized analogs.",
+    "compareBenchmark": "Compare Benchmark Control",
+    "moreUnexpectedTitle": "Next Highest-Ranked Unrecognized Candidates"
   }
 }

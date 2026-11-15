@@ -301,7 +301,7 @@ export function PlanetaryPhysicsLab({
             <div className="rounded-xl border border-accent/30 bg-gradient-to-br from-accent/10 to-transparent p-4">
               <p className="flex items-center gap-2 text-sm font-semibold text-content">
                 <span aria-hidden="true">🧑‍🚀</span>
-                {t("learnHub.astronautCard.title", { body: t(`bodies.${targetBody}`) })}
+                <span>{t("learnHub.astronautCard.title", { body: t(`bodies.${targetBody}`) })}</span>
               </p>
               <ul className="mt-2 grid grid-cols-1 gap-2 text-xs sm:grid-cols-2 lg:grid-cols-4">
                 <li className="rounded-lg bg-surface/70 p-2.5">

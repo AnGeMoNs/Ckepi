@@ -1,5 +1,5 @@
 import { useEffect, useId, useLayoutEffect, useRef } from "react";
-import { Moon, SlidersHorizontal, Sun } from "lucide-react";
+import { FlaskConical, GraduationCap, Moon, SlidersHorizontal, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import type { ReadingMode, SupportedLocale, ThemeMode } from "../../types/analog";
@@ -15,7 +15,7 @@ interface HeaderProps {
 }
 
 const LOCALES: SupportedLocale[] = ["es", "pt", "en"];
-const READING_MODES: ReadingMode[] = ["mission", "explorer"];
+const READING_MODES: ReadingMode[] = ["explorer", "mission"];
 
 export function Header({
   theme,
@@ -86,6 +86,12 @@ export function Header({
   const readingOptions = READING_MODES.map((mode) => ({
     value: mode,
     label: t(`app.modes.${mode}`),
+    icon:
+      mode === "explorer" ? (
+        <GraduationCap className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+      ) : (
+        <FlaskConical className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+      ),
   }));
 
   const localeOptions = LOCALES.map((loc) => ({

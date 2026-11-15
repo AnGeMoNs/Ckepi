@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import { Compass, FlaskConical, Layers, ListOrdered, Map } from "lucide-react";
+import { Compass, Layers, ListOrdered, Map, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export type SectionId =
   | "section-maps"
+  | "section-student-comparison"
+  | "section-discovery"
   | "section-decomposition"
   | "section-diagnostics"
-  | "section-ranking"
-  | "section-physics-lab";
+  | "section-ranking";
 
 interface SectionNavProps {
-  visibleSections: Record<SectionId, boolean>;
+  visibleSections: Partial<Record<SectionId, boolean>>;
 }
 
 export function SectionNav({ visibleSections }: SectionNavProps) {
@@ -19,10 +20,11 @@ export function SectionNav({ visibleSections }: SectionNavProps) {
 
   const items: Array<{ id: SectionId; label: string; icon: typeof Map }> = [
     { id: "section-maps", label: t("nav.maps"), icon: Map },
+    { id: "section-student-comparison", label: t("nav.studentComparison"), icon: Sparkles },
+    { id: "section-discovery", label: t("nav.discovery"), icon: Sparkles },
     { id: "section-decomposition", label: t("nav.decomposition"), icon: Layers },
     { id: "section-diagnostics", label: t("nav.diagnostics"), icon: Compass },
     { id: "section-ranking", label: t("nav.ranking"), icon: ListOrdered },
-    { id: "section-physics-lab", label: t("nav.physicsLab"), icon: FlaskConical },
   ];
 
   const availableItems = items.filter((item) => visibleSections[item.id]);

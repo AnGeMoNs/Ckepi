@@ -54,7 +54,7 @@ export function EvidencePanel({ activeSite, comparison }: EvidencePanelProps) {
           <div className="flex flex-wrap items-center gap-2">
             <BookOpen className="h-5 w-5 text-accent" aria-hidden="true" />
             <CardTitle>{t("evidence.title")}</CardTitle>
-            <Badge variant="accent">NASA Space Apps 2026</Badge>
+            <Badge variant="accent">{t("app.challengeBadge")}</Badge>
           </div>
           <p className="mt-1 text-xs text-content-muted sm:text-sm">{t("evidence.subtitle")}</p>
         </CardHeader>
