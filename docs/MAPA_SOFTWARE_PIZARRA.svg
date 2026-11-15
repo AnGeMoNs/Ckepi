@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0.0 -10.0 1920.0 1440.0" width="100%" style="background:#ffffff;font-family:Inter,system-ui,-apple-system,sans-serif;">
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1 L 8 5 L 0 9 z" fill="#495057"/>
+  </marker>
+</defs>
+<rect x="0.0" y="-10.0" width="1920.0" height="1440.0" fill="#ffffff"/>
+<text x="40.0" y="60.0" fill="#1e1e1e" font-size="40.0" font-weight="700" text-anchor="start">
+  <tspan x="40.0" dy="0">CKEPI · Pizarra para devs</tspan>
+</text>
+<text x="40.0" y="96.0" fill="#495057" font-size="20.0" font-weight="700" text-anchor="start">
+  <tspan x="40.0" dy="0">Luna/Marte ↔ Tierra: análogos por X→Y y brecha B · rama dani · cierre dom 23:59 (Chile), enviar ≤20:00</tspan>
+</text>
+<rect x="30.0" y="150.0" width="350.0" height="700.0" rx="10" fill="none" stroke="#2f9e44" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="46.0" y="182.0" fill="#2f9e44" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="46.0" dy="0">FRONTEND  React 18 + TS + Tailwind</tspan>
+</text>
+<rect x="45.0" y="210.0" width="320.0" height="105.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="205.0" y="258.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="205.0" dy="0">ExplorerPage</tspan>
+  <tspan x="205.0" dy="22.5">(orquesta todo)</tspan>
+</text>
+<rect x="45.0" y="335.0" width="320.0" height="105.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="205.0" y="383.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="205.0" dy="0">AnalogMap · PlanetaryMap</tspan>
+  <tspan x="205.0" dy="22.5">globos MapLibre</tspan>
+</text>
+<rect x="45.0" y="460.0" width="320.0" height="105.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="205.0" y="508.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="205.0" dy="0">Matrix · Diagnostics ·</tspan>
+  <tspan x="205.0" dy="22.5">Decomposition</tspan>
+</text>
+<rect x="45.0" y="585.0" width="320.0" height="105.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="205.0" y="644.2" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="205.0" dy="0">ui/ + i18n es·pt·en</tspan>
+</text>
+<rect x="45.0" y="710.0" width="320.0" height="105.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="205.0" y="758.0" fill="#1e1e1e" font-size="18.0" font-weight="700" text-anchor="middle">
+  <tspan x="205.0" dy="0">★ Modo Aprender</tspan>
+  <tspan x="205.0" dy="22.5">«Tres mundos» (Argon)</tspan>
+</text>
+<rect x="390.0" y="150.0" width="350.0" height="700.0" rx="10" fill="none" stroke="#f08c00" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="406.0" y="182.0" fill="#f08c00" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="406.0" dy="0">API  FastAPI + Pydantic v2</tspan>
+</text>
+<rect x="405.0" y="210.0" width="320.0" height="105.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="565.0" y="258.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="565.0" dy="0">api/client.ts</tspan>
+  <tspan x="565.0" dy="22.5">(única puerta)</tspan>
+</text>
+<rect x="405.0" y="335.0" width="320.0" height="105.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="565.0" y="383.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="565.0" dy="0">/analogs/search · refine</tspan>
+  <tspan x="565.0" dy="22.5">/decompose · /compare</tspan>
+</text>
+<rect x="405.0" y="460.0" width="320.0" height="105.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="565.0" y="508.2" fill="#1e1e1e" font-size="17.0" font-weight="500" text-anchor="middle">
+  <tspan x="565.0" dy="0">/earth/probe · /planetary/probe</tspan>
+  <tspan x="565.0" dy="21.2">(30/min)</tspan>
+</text>
+<rect x="405.0" y="585.0" width="320.0" height="105.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="565.0" y="633.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="565.0" dy="0">/tiles · /textures</tspan>
+  <tspan x="565.0" dy="22.5">(proxy NASA Trek)</tspan>
+</text>
+<rect x="405.0" y="710.0" width="320.0" height="105.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="565.0" y="758.0" fill="#1e1e1e" font-size="18.0" font-weight="700" text-anchor="middle">
+  <tspan x="565.0" dy="0">★ endpoint Atacama vs.</tspan>
+  <tspan x="565.0" dy="22.5">Jezero (Astra)</tspan>
+</text>
+<rect x="750.0" y="150.0" width="350.0" height="700.0" rx="10" fill="none" stroke="#6741d9" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="766.0" y="182.0" fill="#6741d9" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="766.0" dy="0">MOTOR  backend/app/engine</tspan>
+</text>
+<rect x="765.0" y="210.0" width="320.0" height="105.0" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2.0"/>
+<text x="925.0" y="258.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="925.0" dy="0">causal_decomposer</tspan>
+  <tspan x="925.0" dy="22.5">X → Y · PCA · B</tspan>
+</text>
+<rect x="765.0" y="335.0" width="320.0" height="105.0" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2.0"/>
+<text x="925.0" y="383.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="925.0" dy="0">analog_matcher</tspan>
+  <tspan x="925.0" dy="22.5">S_ind · S_dep · R_break</tspan>
+</text>
+<rect x="765.0" y="460.0" width="320.0" height="105.0" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2.0"/>
+<text x="925.0" y="508.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="925.0" dy="0">mission_advisor</tspan>
+  <tspan x="925.0" dy="22.5">veredicto + límites</tspan>
+</text>
+<rect x="765.0" y="585.0" width="320.0" height="105.0" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2.0"/>
+<text x="925.0" y="633.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="925.0" dy="0">known_analogs</tspan>
+  <tspan x="925.0" dy="22.5">~25 clásicos</tspan>
+</text>
+<rect x="765.0" y="710.0" width="320.0" height="105.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="925.0" y="758.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="925.0" dy="0">terrain_statistics (Astra)</tspan>
+  <tspan x="925.0" dy="22.5">⚠ hoy DEM sintético</tspan>
+</text>
+<rect x="1110.0" y="150.0" width="350.0" height="700.0" rx="10" fill="none" stroke="#1971c2" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="1126.0" y="182.0" fill="#1971c2" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="1126.0" dy="0">DATOS  DuckDB + GeoParquet</tspan>
+</text>
+<rect x="1125.0" y="210.0" width="320.0" height="105.0" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.0"/>
+<text x="1285.0" y="258.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="1285.0" dy="0">ckepi.duckdb</tspan>
+  <tspan x="1285.0" dy="22.5">celdas H3 res 2–5</tspan>
+</text>
+<rect x="1125.0" y="335.0" width="320.0" height="105.0" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.0"/>
+<text x="1285.0" y="394.2" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="1285.0" dy="0">earth_h3_grid.parquet</tspan>
+</text>
+<rect x="1125.0" y="460.0" width="320.0" height="105.0" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.0"/>
+<text x="1285.0" y="508.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="1285.0" dy="0">planetary_sites.json</tspan>
+  <tspan x="1285.0" dy="22.5">+ timeseries.parquet</tspan>
+</text>
+<rect x="1125.0" y="585.0" width="320.0" height="105.0" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.0"/>
+<text x="1285.0" y="633.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="1285.0" dy="0">checkpoint ERA5 res3</tspan>
+  <tspan x="1285.0" dy="22.5">(.jsonl)</tspan>
+</text>
+<rect x="1125.0" y="710.0" width="320.0" height="105.0" rx="10" fill="#fcc2d7" stroke="#c2255c" stroke-width="2.0"/>
+<text x="1285.0" y="758.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="1285.0" dy="0">DATA_PROVENANCE.md</tspan>
+  <tspan x="1285.0" dy="22.5">REFERENCES.md</tspan>
+</text>
+<rect x="1470.0" y="150.0" width="350.0" height="700.0" rx="10" fill="none" stroke="#495057" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="1486.0" y="182.0" fill="#495057" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="1486.0" dy="0">ETL → FUENTES</tspan>
+</text>
+<rect x="1485.0" y="210.0" width="320.0" height="105.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="1645.0" y="258.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="1645.0" dy="0">NASA POWER · Open-Meteo</tspan>
+  <tspan x="1645.0" dy="22.5">Copernicus DEM · SoilGrids</tspan>
+</text>
+<rect x="1485.0" y="335.0" width="320.0" height="105.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="1645.0" y="383.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="1645.0" dy="0">NASA PDS ODE</tspan>
+  <tspan x="1645.0" dy="22.5">LRO · REMS · MEDA</tspan>
+</text>
+<rect x="1485.0" y="460.0" width="320.0" height="105.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="1645.0" y="519.2" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="1645.0" dy="0">NASA Trek · CMR · GIBS</tspan>
+</text>
+<rect x="1485.0" y="585.0" width="320.0" height="105.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="1645.0" y="633.0" fill="#1e1e1e" font-size="18.0" font-weight="500" text-anchor="middle">
+  <tspan x="1645.0" dy="0">ESA · CSA · JAXA</tspan>
+  <tspan x="1645.0" dy="22.5">Macrostrat</tspan>
+</text>
+<rect x="1485.0" y="710.0" width="320.0" height="105.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="1645.0" y="758.0" fill="#1e1e1e" font-size="18.0" font-weight="700" text-anchor="middle">
+  <tspan x="1645.0" dy="0">★ NASADEM + CTX DEM</tspan>
+  <tspan x="1645.0" dy="22.5">Jezero 20 m (reales)</tspan>
+</text>
+<polyline points="365.0,387.5 405.0,387.5" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<polyline points="725.0,512.5 765.0,512.5" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<polyline points="1085.0,387.5 1125.0,387.5" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<polyline points="1445.0,387.5 1485.0,387.5" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<rect x="30.0" y="880.0" width="1850.0" height="250.0" rx="10" fill="none" stroke="#1e1e1e" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="46.0" y="912.0" fill="#1e1e1e" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="46.0" dy="0">FLUJOS</tspan>
+</text>
+<text x="55.0" y="950.0" fill="#343a40" font-size="20.0" font-weight="700" text-anchor="start">
+  <tspan x="55.0" dy="0">A · Buscar análogos</tspan>
+</text>
+<text x="340.0" y="949.0" fill="#495057" font-size="17.0" font-weight="500" text-anchor="start">
+  <tspan x="340.0" dy="0">elige cuerpo + sitio + perfil → POST /analogs/search → matcher (DuckDB, sin red) → advisor → mapa + matriz + exportar</tspan>
+</text>
+<text x="55.0" y="1012.0" fill="#343a40" font-size="20.0" font-weight="700" text-anchor="start">
+  <tspan x="55.0" dy="0">B · Drill-down H3</tspan>
+</text>
+<text x="340.0" y="1011.0" fill="#495057" font-size="17.0" font-weight="700" text-anchor="start">
+  <tspan x="340.0" dy="0">clic en hexágono → POST /analogs/refine → 7 hijos → ETL en vivo (caché + 429) → upsert DuckDB → re-ranking</tspan>
+</text>
+<text x="55.0" y="1074.0" fill="#343a40" font-size="20.0" font-weight="700" text-anchor="start">
+  <tspan x="55.0" dy="0">C · ★ Atacama vs. Jezero</tspan>
+</text>
+<text x="340.0" y="1073.0" fill="#495057" font-size="17.0" font-weight="500" text-anchor="start">
+  <tspan x="340.0" dy="0">NASADEM + CTX DEM reales → 30 m → pendiente/relieve → KS · Wasserstein · bootstrap IC 95 % → JSON con fuentes</tspan>
+</text>
+<rect x="40.0" y="1160.0" width="440.0" height="150.0" rx="10" fill="#fcc2d7" stroke="#c2255c" stroke-width="2.0"/>
+<text x="260.0" y="1218.4" fill="#1e1e1e" font-size="19.0" font-weight="500" text-anchor="middle">
+  <tspan x="260.0" dy="0">ASTRA → solo backend/</tspan>
+  <tspan x="260.0" dy="23.8">ARGON → solo frontend/</tspan>
+  <tspan x="260.0" dy="23.8">CLAUDE → docs/ · README · tests</tspan>
+</text>
+<rect x="500.0" y="1160.0" width="440.0" height="150.0" rx="10" fill="#fcc2d7" stroke="#c2255c" stroke-width="2.0"/>
+<text x="720.0" y="1218.4" fill="#1e1e1e" font-size="19.0" font-weight="500" text-anchor="middle">
+  <tspan x="720.0" dy="0">GIT: git add solo tu carpeta</tspan>
+  <tspan x="720.0" dy="23.8">nunca -A · pull --rebase antes de push</tspan>
+  <tspan x="720.0" dy="23.8">nunca push a main · PR dani → main</tspan>
+</text>
+<rect x="960.0" y="1160.0" width="440.0" height="150.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="1180.0" y="1218.4" fill="#1e1e1e" font-size="19.0" font-weight="500" text-anchor="middle">
+  <tspan x="1180.0" dy="0">LISTO SI: pytest -q · npm run build</tspan>
+  <tspan x="1180.0" dy="23.8">paridad i18n · 320 px y 1280 px+</tspan>
+  <tspan x="1180.0" dy="23.8">sin any · sin style={{}}</tspan>
+</text>
+<rect x="1420.0" y="1160.0" width="460.0" height="150.0" rx="10" fill="#fcc2d7" stroke="#c2255c" stroke-width="2.0"/>
+<text x="1650.0" y="1218.4" fill="#1e1e1e" font-size="19.0" font-weight="500" text-anchor="middle">
+  <tspan x="1650.0" dy="0">NASA: inglés · video ≤30 s · links</tspan>
+  <tspan x="1650.0" dy="23.8">públicos · dato NASA · IA declarada</tspan>
+  <tspan x="1650.0" dy="23.8">sin logos NASA ni menores · OSI</tspan>
+</text>
+<rect x="40.0" y="1330.0" width="1840.0" height="60.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="960.0" y="1367.1" fill="#1e1e1e" font-size="19.0" font-weight="500" text-anchor="middle">
+  <tspan x="960.0" dy="0">NUNCA: inventar datos o porcentajes · «idéntico a Marte» · «zona segura» · texto sin traducir · tocar archivos de otro agente</tspan>
+</text>
+</svg>

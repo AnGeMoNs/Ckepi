@@ -31,23 +31,25 @@ export function ActionBar({
   const lang = i18n.language;
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border-subtle bg-surface-elevated px-4 py-3">
+    <div className="flex flex-col gap-3 rounded-2xl border border-border-subtle/90 bg-surface-elevated/95 p-3.5 shadow-sm backdrop-blur-sm sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:px-5 sm:py-3.5">
       {/* Left: Metadata & Context */}
-      <div className="flex min-w-0 flex-wrap items-center gap-2 text-xs text-content-muted">
+      <div className="flex min-w-0 flex-wrap items-center gap-1.5 sm:gap-2 text-xs text-content-muted">
         {activeSite && (
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="font-medium text-content">{t(activeSite.name_key)}</span>
-            <span>·</span>
-            <span>{t("controls.dataSources")}:</span>
-            {activeSite.data_sources.map((src) => (
-              <Badge key={src} variant="default">
-                {src}
-              </Badge>
-            ))}
+            <span className="font-bold text-content">{t(activeSite.name_key)}</span>
+            <span className="hidden sm:inline">·</span>
+            <span className="hidden sm:inline">{t("controls.dataSources")}:</span>
+            <div className="flex flex-wrap items-center gap-1">
+              {activeSite.data_sources.map((src) => (
+                <Badge key={src} variant="default">
+                  {src}
+                </Badge>
+              ))}
+            </div>
           </div>
         )}
         {lastUpdated && (
-          <span>
+          <span className="text-[11px] sm:text-xs">
             · {t("controls.lastUpdated")}: {formatTimestamp(lastUpdated, lang)}
           </span>
         )}
@@ -66,12 +68,12 @@ export function ActionBar({
       <div
         role="group"
         aria-label={t("controls.actionsGroup")}
-        className="flex flex-wrap items-center gap-2"
+        className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center"
       >
         <Button
           variant="primary"
           onClick={onOpenMobileSettings}
-          className="xl:hidden"
+          className="col-span-2 xl:hidden"
         >
           <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
           <span>{t("controls.openSettings")}</span>
@@ -81,21 +83,26 @@ export function ActionBar({
           variant="secondary"
           disabled={isRefreshing}
           onClick={onRefreshApis}
+          className="w-full sm:w-auto"
         >
           <RefreshCw
-            className={`h-4 w-4 ${isRefreshing ? "animate-spin motion-reduce:animate-none" : ""}`}
+            className={`h-4 w-4 shrink-0 ${isRefreshing ? "animate-spin motion-reduce:animate-none" : ""}`}
             aria-hidden="true"
           />
-          <span>{isRefreshing ? t("controls.refreshing") : t("controls.refreshApis")}</span>
+          <span className="truncate">
+            {isRefreshing ? t("controls.refreshing") : t("controls.refreshApis")}
+          </span>
         </Button>
 
-        <Button variant="secondary" onClick={onShareLink}>
+        <Button variant="secondary" onClick={onShareLink} className="w-full sm:w-auto">
           {copiedLink ? (
-            <Check className="h-4 w-4 text-status-valid" aria-hidden="true" />
+            <Check className="h-4 w-4 shrink-0 text-status-valid" aria-hidden="true" />
           ) : (
-            <Share2 className="h-4 w-4" aria-hidden="true" />
+            <Share2 className="h-4 w-4 shrink-0" aria-hidden="true" />
           )}
-          <span>{copiedLink ? t("controls.copiedLink") : t("controls.shareLink")}</span>
+          <span className="truncate">
+            {copiedLink ? t("controls.copiedLink") : t("controls.shareLink")}
+          </span>
         </Button>
       </div>
     </div>

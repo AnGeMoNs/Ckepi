@@ -2,14 +2,14 @@
   "app": {
     "title": "Ckepi",
     "subtitle": "Causal Variable Decomposition & Planetary Analog Engine",
-    "challengeBadge": "NASA Space Apps 2026",
+    "challengeBadge": "Open Planetary Science · SPD-41a",
     "themeLight": "Light mode",
     "themeDark": "Dark mode",
     "languageLabel": "Language",
     "readingModeLabel": "Reading mode",
     "modes": {
-      "mission": "Mission",
-      "explorer": "STEAM Explorer"
+      "mission": "Scientist",
+      "explorer": "Student"
     },
     "mobileMenuLabel": "Preferences"
   },
@@ -116,7 +116,10 @@
     "independentGroup": "Independent Variables / Substrate (X)",
     "dependentGroup": "Dependent Variables / Environmental Response (Y)",
     "globalFilterActive": "Global filters active in Advanced Settings: S_ind ≥ {{sInd}}, S_dep ≥ {{sDep}}",
-    "clearGlobalFilters": "Clear global filters (0%)"
+    "clearGlobalFilters": "Clear global filters (0%)",
+    "collapse": "Hide variables",
+    "expand": "Adjust weights & filters",
+    "activeSummary": "{{weights}} variables with active weight · {{filters}} with min. similarity"
   },
   "comparisonMatrix": {
     "title": "Side-by-Side Candidate Comparison (Top 4)",
@@ -127,7 +130,10 @@
     "exportReport": "Report (.md)",
     "sIndTooltip": "Similarity in independent environmental drivers (e.g., gravity, temperature, radiation).",
     "sDepTooltip": "Similarity in operational response and terrain-dependent conditions.",
-    "rBreakTooltip": "Aggregate analogy breakage risk on Earth compared to the target site."
+    "rBreakTooltip": "Aggregate analogy breakage risk on Earth compared to the target site.",
+    "combinedCol": "% Similarity",
+    "showRows": "Show",
+    "topCount": "Top {{count}}"
   },
   "layers": {
     "independent": "Independent (X)",
@@ -354,6 +360,18 @@
     "maxResReached": "Max detail (H3-5)",
     "drilldownActive": "Viewing {{count}} sub-zones inside H3 {{parent}}",
     "exitDrilldown": "Back to global view",
+    "resetView": "Global view",
+    "searchPlaceholder": "Search region, country, analog or H3...",
+    "searchLabel": "Filter analog cells",
+    "clearSearch": "Clear search",
+    "filterAll": "All",
+    "sortLabel": "Sort by",
+    "sortCombined": "Combined score",
+    "sortSInd": "Highest S_ind (substrate)",
+    "sortSDep": "Highest S_dep (response)",
+    "sortLowestBreak": "Lowest R_break",
+    "emptyFilteredResults": "No cells match your current search or filter.",
+    "clearFilters": "Clear filters",
     "resolutionBadge": "H3 Res {{res}}",
     "probeHint": "Click anywhere on the map to query NASA POWER + Copernicus DEM + ERA5 live.",
     "probingLocation": "Querying real telemetry for ({{lat}}, {{lon}})...",
@@ -380,7 +398,66 @@
     "cellSlopeLabel": "Slope",
     "cellRadiationLabel": "GCR Radiation",
     "validTestsBadge": "{{count}} viable test(s)",
-    "jumpToDiagnostics": "View full diagnostics"
+    "jumpToDiagnostics": "View full diagnostics",
+    "hexMetricLabel": "Hexagon color lens",
+    "densityGlobal": "Full globe ({{count}})",
+    "densityTop": "Top {{count}} (fast)",
+    "renderedEvaluatedCount": "{{rendered}} rendered / {{total}} evaluated",
+    "legendLowRisk": "Low breakage risk (≤ 25%)",
+    "legendMidRisk": "Moderate risk (26–45%)",
+    "legendHighRisk": "High breakage risk (> 45%)",
+    "earthProfileTitle": "Earth Physical & Environmental Profile",
+    "cellThermalRoughness": "Roughness / Inertia",
+    "cellOpticsSolar": "Albedo / Solar Flux",
+    "cellHumidityUv": "Humidity / UV Index",
+    "cellWindDust": "Wind / Dust Flux",
+    "cellDiurnalLabel": "Diurnal ΔT",
+    "cellCatalogGeology": "Geology (Macrostrat)",
+    "cellCatalogSimulant": "Simulant / Habitability",
+    "cellCatalogTitle": "Cell Geological & Satellite Context",
+    "filters": {
+      "searchPlaceholder": "Search region, analog, biome, or H3 cell...",
+      "sortByLabel": "Sort by",
+      "sort": {
+        "combined_desc": "Highest % Overall Similarity (↓)",
+        "combined_asc": "Lowest % Overall Similarity (↑)",
+        "s_ind_desc": "Highest % Substrate S_ind (↓)",
+        "s_dep_desc": "Highest % Response S_dep (↓)",
+        "r_break_asc": "Lowest Breakage Risk R_break (↑ Safest)",
+        "r_break_desc": "Highest Breakage Risk R_break (↓)",
+        "lat_desc": "Latitude (North → South)"
+      },
+      "category": {
+        "all": "All",
+        "discovery": "Discoveries",
+        "benchmark": "Benchmarks",
+        "pareto": "Pareto Optimal",
+        "pinned": "Pinned ★"
+      },
+      "scoreBandLabel": "Score tier",
+      "scoreBand": {
+        "all": "All %",
+        "high": "High (≥ 75%)",
+        "mid": "Medium (55–74%)",
+        "low": "Partial (< 55%)"
+      },
+      "biomeAll": "All biomes",
+      "perPage": "{{count}} / page",
+      "clearFilters": "Reset filters",
+      "pinCell": "Pin cell to keep handy",
+      "unpinCell": "Unpin cell"
+    },
+    "nav": {
+      "returnToPrevPage": "↩ Back to page {{page}}",
+      "goToSelectedCellPage": "📍 Active cell (Page {{page}})",
+      "recentPagesLabel": "Recent pages:",
+      "jumpToPageLabel": "Go to page",
+      "jumpButton": "Go",
+      "pageOption": "Page {{page}} (#{{start}}–{{end}} · {{score}})",
+      "back10": "−10 pages",
+      "forward10": "+10 pages",
+      "pageShort": "Pg. {{page}}"
+    }
   },
   "agencies": {
     "title": "Multi-Agency Catalog (NASA · ESA · CSA · JAXA)",
@@ -390,8 +467,8 @@
   },
   "mission": {
     "title": "Mission Diagnostics & Physical Comparison",
-    "quickVerdictTitle": "Plain-Language Verdict",
-    "quickVerdictBody": "{{earthSite}} replicates {{score}} of the physical conditions of {{targetSite}} ({{validCount}} validated mission test(s)). The analogy breaks down on: {{brokenVars}}.",
+    "quickVerdictTitle": "Decoupled Physical Verdict",
+    "quickVerdictBody": "{{earthSite}} exhibits decoupled similarity S_ind={{sInd}} and S_dep={{sDep}} (combined score {{score}} ±{{uncertainty}}) relative to {{targetSite}}, enabling {{validCount}} validated field trial(s). Irreducible physical gap (B) on Earth: {{brokenVars}}.",
     "explorerSummaryTitle": "What can we test here—and what does NOT match?",
     "explorerSummaryBody": "At {{earthSite}}, terrain similarity is {{score}} (±{{uncertainty}}) at ~{{scaleKm}} km H3 scale. What Earth CANNOT replicate here: {{brokenVars}}.",
     "nasaAttribution": "Sources: NASA PDS · LRO LOLA · MRO/MSL · NASA POWER · ESA Copernicus",
@@ -455,6 +532,53 @@
       "disclaimer": "LLM synthesis grounded in deterministic Ckepi data (NASA/ESA/Open-Meteo); scientific pre-screening requiring human engineering validation, not operational safety certification.",
       "retryButton": "Retry AI analysis",
       "includedInReport": "Automatically included when exporting Report (.md)"
+    },
+    "dimensions": {
+      "title": "8 Challenge Dimensions & Physical Processes",
+      "subtitle": "How this Earth cell compares across every exploration dimension beyond visual resemblance",
+      "badge": "Multidimensional Audit",
+      "geologyProcess": "Regolith weathering & mineralogy",
+      "geologyFallback": "Albedo {{albedo}} · TI {{ti}} J·m⁻²·K⁻¹·s⁻¹/²",
+      "terrainProcess": "Slope stability, cratering & DEM relief",
+      "terrainDetail": "Slope {{slope}}° · Roughness {{rough}} m · {{scale}} km{{w1}}",
+      "thermalProcess": "Diurnal cooling, frost & irradiance",
+      "thermalDetail": "Mean {{tempC}} °C · Swing {{ampK}} K · Solar {{solar}} W/m²",
+      "waterProcess": "Subsurface ice, brine & hyperaridity",
+      "waterDetail": "Ice {{ice}} · Aridity {{aridity}} · RH {{rh}}%",
+      "aeolianProcess": "Dust suspension, saltation & erosion",
+      "aeolianDetail": "Wind {{wind}} m/s · Dust flux {{dust}}",
+      "biologyProcess": "Extremophile limits & biosignatures",
+      "biologyFallback": "LAI proxy {{lai}} (near-sterile vegetation limit)",
+      "subsurfaceProcess": "Lava tubes, caves & shielding voids",
+      "subsurfaceFallback": "Inspect multi-agency catalog for subsurface flag",
+      "operationsProcess": "Robotic landing, mobility & breakage B",
+      "operationsDetail": "{{valid}} valid tests · {{invalid}} non-transferable · R_break {{rbreak}}",
+      "items": {
+        "geology": {
+          "title": "Geology & Regolith"
+        },
+        "terrain": {
+          "title": "Terrain & 30 m Relief"
+        },
+        "thermal": {
+          "title": "Thermal & Illumination"
+        },
+        "water": {
+          "title": "Water, Ice & Brines"
+        },
+        "aeolian": {
+          "title": "Dust & Aeolian Process"
+        },
+        "biology": {
+          "title": "Habitability & Biosignatures"
+        },
+        "subsurface": {
+          "title": "Subsurface & Lava Tubes"
+        },
+        "operations": {
+          "title": "Operations & Breakage B"
+        }
+      }
     }
   },
   "tests": {
@@ -482,7 +606,7 @@
     }
   },
   "regions": {
-    "atacama_yungay": "Atacama Desert — Yungay, Chile",
+    "atacama_yungay": "Atacama Desert — Yungay, Antofagasta, Chile",
     "mcmurdo_dry_valleys": "McMurdo Dry Valleys, Antarctica",
     "haughton_crater": "Haughton Impact Crater, Devon Island, Canada",
     "krafla_iceland": "Krafla / Askja Volcanic Field, Iceland",
@@ -507,7 +631,10 @@
     "amazon_central_basin": "Central Amazon Basin (Negative Control), Brazil",
     "pantanal_wetland": "Pantanal Wetland (Negative Control), Brazil",
     "custom_probed_cell": "Live Probed Point (H3 Grid)",
-    "global_h3_cell": "Global Terrestrial Cell (H3)"
+    "global_h3_cell": "Global Terrestrial Cell (H3)",
+    "antofagasta_salar_pajonales": "Salar de Pajonales / Llano de la Paciencia, Antofagasta, Chile",
+    "antofagasta_cordillera_sal": "Cordillera de la Sal (Valle de la Luna), Antofagasta, Chile",
+    "antofagasta_pampa_central": "Pampa Central — Sierra Gorda, Antofagasta, Chile"
   },
   "biomes": {
     "hyperarid_desert": "Hyper-Arid Desert",
@@ -536,6 +663,8 @@
     "unknown_body": "Unknown planetary body.",
     "invalid_tile_coords": "Tile coordinates out of range.",
     "tile_unavailable": "NASA Trek tile unavailable.",
+    "clipboard_failed": "Could not copy. Check clipboard permission or download the plan; to share, copy the address from your browser.",
+    "invalid_response": "The server returned an invalid response. Please try again.",
     "ai_not_configured": "AI analysis is not enabled: OPENROUTER_API_KEY is not configured on the backend.",
     "ai_rate_limited": "AI assistant rate limit reached. Please wait a few seconds or check your OpenRouter quota.",
     "ai_provider_unavailable": "Could not reach the OpenRouter provider right now. Please try again.",
@@ -579,7 +708,23 @@
     "maps": "Maps",
     "decomposition": "Decomposition",
     "diagnostics": "Diagnostics",
-    "ranking": "Ranking"
+    "ranking": "Ranking",
+    "tabsLabel": "Ckepi Sections",
+    "compare": "Compare",
+    "learn": "Learn",
+    "plan": "Plan",
+    "evidence": "Evidence",
+    "backToCompare": "Back to Compare",
+    "continueToPlan": "Continue to Plan",
+    "viewEvidence": "View Scientific Evidence",
+    "focusAtacama": "📍 Compare with Atacama",
+    "globalLabel": "Global scope",
+    "locationLabel": "Specific location",
+    "skipToContent": "Skip to main content",
+    "physicsLab": "Physics Lab",
+    "studentCompare": "Explore Worlds",
+    "studentComparison": "Earth vs Planet",
+    "discovery": "Discoveries"
   },
   "export": {
     "reportTitle": "Ckepi Report",
@@ -619,7 +764,9 @@
     "aiLimitationsTitle": "Physical Gaps & Limitations",
     "aiMitigationsTitle": "Breakage Mitigation Plan",
     "aiConsiderationsTitle": "Field Campaign Considerations",
-    "aiNextStepsTitle": "Recommended Next Steps"
+    "aiNextStepsTitle": "Recommended Next Steps",
+    "dimensionsTitle": "8 Challenge Dimensions & Physical Processes",
+    "openDataLinksTitle": "Coordinate-Anchored Open Data Links (NASA, ESA, CSA, JAXA)"
   },
   "simulants": {
     "title": "NASA/ESA Regolith Simulant Affinity & ISRU Suitability",
@@ -651,5 +798,915 @@
       "name": "JEZ-1 (Jezero Delta Simulant — Perseverance)",
       "mineralogy": "Mg-carbonates, Fe/Mg-smectite phyllosilicates & deltaic olivine"
     }
+  },
+  "curiosity": {
+    "title": "Did you know that on a similar slope the normal force changes drastically?",
+    "body": "On {{body}} at a {{slope}}° slope, a 100 kg rover exerts {{targetNormal}} N of normal force compared to {{earthNormal}} N on Earth. Lower gravity reduces weight, but also traction.",
+    "cta": "Experiment in Learn",
+    "nextFact": "Next fact",
+    "thermalTitle": "Did you know diurnal thermal amplitude drives rover thermal design?",
+    "thermalBody": "At {{site}}, diurnal thermal amplitude is {{planetVal}} K vs {{earthVal}} K in the compared Earth cell. Extreme swings require thermal insulation and heated batteries.",
+    "roughnessTitle": "Did you know terrain roughness sets minimum rover wheel size?",
+    "roughnessBody": "Surface roughness is {{planetVal}} at {{site}} vs {{earthVal}} in the Earth cell. Rough Atacama terrain helps validate suspension before regolith.",
+    "gravityTitle": "Did you know gravity lowers weight, never mass?",
+    "gravityBody": "On {{body}}, an 80 kg object still has 80 kg of mass, but weighs {{marsN}} N (or {{moonN}} N on the Moon) vs 784.5 N on Earth."
+  },
+  "learn": {
+    "title": "Planetary Physics Lab — What if…?",
+    "subtitle": "Local SI-unit simulators connected to your selected body and site. Compare Earth, Mars, and the Moon with explicit equations and limits.",
+    "experimentSelectorLabel": "Experiment selector",
+    "idealizedModel": "Idealized model",
+    "equationLabel": "Equation & units",
+    "curiositiesTitle": "Contextual curiosities",
+    "challengesTitle": "Contextualized mini-challenges",
+    "correctLabel": "Correct!",
+    "reviewLabel": "Review explanation",
+    "noComparisonHint": "Select an Earth H3 cell in Compare to link real terrestrial slope measurements to these challenges.",
+    "controls": {
+      "massKg": "Mass (m)",
+      "massExact": "Exact mass (kg)",
+      "earthJumpCm": "Earth vertical jump",
+      "throwSpeed": "Initial speed (v₀)",
+      "throwAngle": "Launch angle (θ)",
+      "poolDepth": "Pool depth (d)",
+      "rockMass": "Rock mass (m)",
+      "targetAccel": "Target acceleration (a)",
+      "roverMass": "Rover mass (m)",
+      "slopeDeg": "Terrain slope (θ)",
+      "frictionCoeff": "Ideal friction coeff (μ)",
+      "windSpeedMs": "Wind speed (v)",
+      "waterTempC": "Water temperature (T)"
+    },
+    "experiments": {
+      "weight": {
+        "tab": "Weight & gravity",
+        "question": "Does your mass change if you travel to Mars or the Moon?",
+        "intro": "Mass (kg) is invariant; what changes is gravitational force or weight (N).",
+        "massInvariant": "Invariant mass: {{mass}} kg (Earth-scale equiv: {{kgf}} kgf)",
+        "limits": "Assumptions: standard mean surface gravity (Earth 9.80665; Mars 3.71; Moon 1.62 m/s²). A spring scale calibrated on Earth would read lower kgf, not lower mass."
+      },
+      "jump": {
+        "tab": "Jumping",
+        "question": "How high would you jump with the same takeoff speed?",
+        "intro": "At equal takeoff velocity, peak height scales inversely with g.",
+        "limits": "Ideal vertical model without air drag or pressurized spacesuit load. On Mars (~2.64×) and the Moon (~6.05×), suit mass and biomechanics limit real impulse."
+      },
+      "projectile": {
+        "tab": "Ball throw",
+        "question": "How does a projectile parabola change across worlds?",
+        "intro": "Ideal ballistic trajectory without aerodynamic drag from the same launch height.",
+        "svgLabel": "Comparison of parabolic trajectories on Earth, Mars, and Moon",
+        "limits": "No atmospheric drag; ideal max range occurs at 45° and does not depend on mass in this model. On Earth, air slows light projectiles."
+      },
+      "waves": {
+        "tab": "Habitat waves",
+        "question": "What happens to waves in a pool inside a pressurized habitat?",
+        "intro": "Simulated inside a pressurized, thermally controlled habitat (not outdoors on Mars).",
+        "habitatBadge": "Inside pressurized habitat",
+        "limits": "Valid only in the shallow-water regime (depth d ≪ wavelength λ): on Mars wave speed is ~0.615× (~38.5% slower). Deep-water waves depend on λ."
+      },
+      "rocks": {
+        "tab": "Rocks & inertia",
+        "question": "Is it equally easy to accelerate a rock even if it weighs less?",
+        "intro": "Lifting against gravity takes less force, but horizontal acceleration requires the exact same net force F = m·a.",
+        "limits": "Inertia (mass) does not decrease on Mars or the Moon. Lower weight also reduces maximum static friction with the ground."
+      },
+      "rover": {
+        "tab": "Rover & slopes",
+        "question": "How does gravity affect a rover climbing a slope?",
+        "intro": "Inclined-plane force decomposition linked to the slopes of the active site and Earth analog.",
+        "loadSiteSlope": "Load site slope ({{slope}}°)",
+        "loadEarthSlope": "Load Earth slope ({{slope}}°)",
+        "slipRisk": "Ideal slip risk",
+        "idealGrip": "Within ideal μ·N",
+        "limits": "Ideal rigid model (tan θ ≤ μ). In real Martian/lunar regolith or loose Atacama sand, wheel sinkage and soil cohesion reduce traction before the ideal limit.",
+        "diagramLabel": "Interactive free-body force diagram for rover on a {{slope}}-degree slope"
+      },
+      "wind": {
+        "tab": "Dust & wind",
+        "question": "Does a 100 km/h wind on Mars push as hard as on Earth?",
+        "intro": "Dynamic pressure scales with air density ρ: Mars atmosphere is ~60× less dense than Earth.",
+        "densityLabel": "Atmospheric density",
+        "limits": "Illustrative mean surface densities (Earth ~1.225 kg/m³; Mars ~0.020 kg/m³). Real density varies with elevation, temperature, and season."
+      },
+      "water": {
+        "tab": "Water & pressure",
+        "question": "What happens to open-air liquid water in Antofagasta vs Mars?",
+        "intro": "Liquid water stability depends on both pressure and temperature; Martian pressure (~0.61 kPa) sits right near the triple point.",
+        "boilingLabel": "Approx. boiling point",
+        "sea_level": "Antofagasta / Sea level (101.3 kPa)",
+        "altiplano": "Altiplano / Puna (~60 kPa)",
+        "mars": "Mars surface (~0.61 kPa)",
+        "regimes": {
+          "solid": "Ice (solid)",
+          "liquid": "Stable liquid water",
+          "vapor_or_boiling": "Boiling / vapor",
+          "triple_point_unstable": "Unstable (boils/sublimes near triple point)"
+        },
+        "limits": "Educational approximation using water triple point (0.611657 kPa; 0.01 °C) and Clausius-Clapeyron relation. Brines (Atacama salts or Martian perchlorates) shift freezing points."
+      }
+    },
+    "curiosities": {
+      "pressureTitle": "Liquid water outdoors on Mars (~0.6 kPa)",
+      "pressureDesc": "Unlike Antofagasta (~101 kPa at sea level), Martian surface pressure is ~0.6 kPa: exposed liquid water boils, freezes, or sublimates depending on temperature.",
+      "dustTitle": "Dust storms & dynamic pressure",
+      "dustDesc": "Even with fast winds, Mars thin atmosphere (~1% of Earth density) produces lower dynamic pressure q = 0.5·ρ·v² at the same wind speed.",
+      "atacamaTitle": "Why is Atacama / Yungay a key analog?",
+      "atacamaDesc": "Extreme hyperaridity, UV flux, and saline soils allow studying Mars-analog processes, while gravity (1 g), pressure, and cosmic radiation remain irreproducible.",
+      "soundTitle": "Sound on Mars (~240 m/s and attenuated)",
+      "soundDesc": "In Mars thin CO₂ atmosphere (~0.6 kPa), sound travels around 240 m/s (vs ~343 m/s on Earth) and high frequencies attenuate rapidly. Speaking outdoors without a suit is unsafe.",
+      "solTitle": "A Martian sol lasts 24 h 39 min (vs 29.5 days on the Moon)",
+      "solDesc": "A Martian sol is just 39 minutes longer than an Earth day, whereas the lunar day/night cycle lasts ~29.5 Earth days, challenging solar power storage.",
+      "commsTitle": "Earth–Mars signal delay (3 to 22 min one-way)",
+      "commsDesc": "Depending on orbital distance (55 to 401 million km), radio signals take ~3 to ~22 minutes each way—requiring local autonomous rover navigation."
+    },
+    "challenges": {
+      "mass": {
+        "question": "1. If a 70 kg student travels to Jezero Crater, what happens to their mass and weight?",
+        "optA": "Mass drops to ~26 kg and weight stays 686 N",
+        "optB": "Mass stays 70 kg and weight drops to ~260 N",
+        "optC": "Both mass and weight drop to one-third",
+        "explanation": "Mass is intrinsic (70 kg). Weight is gravitational force P = m·g ≈ 70 × 3.71 ≈ 259.7 N."
+      },
+      "roverDynamic": {
+        "question": "2. At the active slope ({{slope}}°) near {{site}}, what happens to a 100 kg rover compared to Earth?",
+        "optA": "It climbs with higher traction because it weighs less",
+        "optB": "Parallel force drops (from {{earthN}} N to {{marsN}} N), but normal force also drops (to {{marsNormalN}} N on Mars)",
+        "optC": "A 15° slope is universally safe on any terrain",
+        "explanation": "Lower gravity reduces parallel force ({{earthN}} N → {{marsN}} N), but also lowers normal force ({{marsNormalN}} N) and max friction μ·N."
+      },
+      "nonReplicable": {
+        "question": "3. Which Mars variable CANNOT be replicated in open-air field trials in Antofagasta?",
+        "optA": "Topographic slope and surface roughness",
+        "optB": "Surface UV irradiance and low relative humidity",
+        "optC": "Gravity (0.38 g), ~0.6 kPa CO₂ atmosphere, and ionizing GCR radiation",
+        "explanation": "Irreproducible breakage boundaries B (gravity, atmospheric pressure, cosmic radiation) cannot be replicated in open Earth field trials."
+      },
+      "distributions": {
+        "question": "4. What does it mean when two slope distributions are similar between Jezero and Atacama?",
+        "optA": "Both sites are identical for landing without further tests",
+        "optB": "Partial morphological similarity in an independent variable X, not full physical equivalence",
+        "optC": "Atmosphere and temperature are identical",
+        "explanation": "Ckepi decouples X, Y, and B: geometric slope similarity never implies complete environmental or mechanical equivalence."
+      }
+    },
+    "showScienceDetails": "View equation & scientific limits",
+    "hideScienceDetails": "Hide equation & limits",
+    "categories": {
+      "body": "Your body on other worlds",
+      "physics": "Impossible physics",
+      "engineering": "Space engineering",
+      "curiosities": "Planetary curiosities"
+    },
+    "hubLabel": "Interactive Science Labs",
+    "subtabs": {
+      "siteLab": "Gravity & Site Physics Lab",
+      "atmLab": "Atmosphere, Dust & Radiation",
+      "threeWorlds": "Three Worlds Challenge & Quiz"
+    }
+  },
+  "plan": {
+    "title": "Plan — Local Field Trial Sheet & Circular Economy",
+    "subtitle": "Turn comparative evidence into a preliminary, responsible field-trial proposal prioritizing reusable equipment and explicit limits.",
+    "exportBtn": "Export sheet (.md)",
+    "circularTitle": "Reusable / loaned equipment checklist (SDG 12)",
+    "circularNote": "Planning checklist to encourage equipment reuse and lending across schools/universities. Does not represent verified live inventory.",
+    "noEquipmentSelected": "No equipment selected",
+    "limitsTitle": "Irreproducible physical limits & scope",
+    "limitsNote": "This sheet is educational/preliminary: it does not certify terrain, replace permits, or validate real space mission readiness.",
+    "collaborationTitle": "Partnerships & local transfer (SDG 17)",
+    "collaborationNote": "Designed to be replicated across educational and university nodes without collecting personal data.",
+    "costsPending": "Pending local quote",
+    "notesPlaceholder": "Record terrain observations, safety precautions, or open questions for the trial...",
+    "disclaimer": "Notice: costs are pending local quotes, equipment items are planning references for circular reuse, and no personal data is stored.",
+    "noSiteSelected": "Select a planetary site in Compare.",
+    "noCellSelected": "No Earth H3 cell selected yet.",
+    "defaults": {
+      "title": "Preliminary rover traction and sensor trial in arid analog",
+      "objective": "Evaluate slope, granular slip, and thermal logging comparing an Atacama H3 cell against Mars slope telemetry."
+    },
+    "fields": {
+      "planetarySite": "Target planetary site",
+      "earthCell": "Selected Earth H3 cell",
+      "trialTitle": "Trial title",
+      "costs": "Cost estimate",
+      "objective": "Trial objective & hypothesis",
+      "notes": "Safety & terrain notes"
+    },
+    "equipment": {
+      "imu_inclinometer": "Reusable IMU / inclinometer sensor",
+      "rover_wheels_chassis": "Loaned STEAM prototype chassis & wheels",
+      "lifepo4_battery": "Shared rechargeable LiFePO4 battery",
+      "portable_weather_station": "Portable weather station / pyranometer",
+      "open_microcontroller": "Open microcontroller (Arduino / ESP32 / RPi)"
+    },
+    "presetsLabel": "Quick trial templates",
+    "presets": {
+      "rover": {
+        "label": "🤖 Rover traction",
+        "title": "Arid-soil rover traction and slope trial",
+        "objective": "Measure wheel slip and tilt with a reusable IMU comparing an Atacama H3 cell against Jezero slope telemetry."
+      },
+      "thermal": {
+        "label": "🌡️ Thermal sensors",
+        "title": "Diurnal thermal swing and surface albedo logging",
+        "objective": "Compare diurnal temperature swings and solar irradiance in hyperarid terrain to calibrate low-cost sensors."
+      },
+      "steam": {
+        "label": "🎓 STEAM workshop",
+        "title": "Hands-on planetary physics and analog activity",
+        "objective": "Demonstrate mass vs weight, safe slope limits, and irreproducible planetary boundaries using open NASA data."
+      }
+    },
+    "copyBtn": "Copy sheet",
+    "copiedBtn": "Copied",
+    "breakageAlertsLabel": "Active physical boundaries",
+    "validTestsShort": "Valid field trials",
+    "invalidTestsShort": "Not reproducible on Earth",
+    "draftSessionNote": "Your draft stays available when switching tabs during this session. Download it before reloading or closing the page."
+  },
+  "evidence": {
+    "title": "Scientific Evidence & Open Data Provenance",
+    "subtitle": "Full traceability of NASA datasets, partner agencies, causal model assumptions, and AI disclosure.",
+    "globalTitle": "Global — Open science & worldwide coverage",
+    "globalDesc": "Reproducible comparisons between the global Earth H3 grid and Moon/Mars destinations using open scientific APIs.",
+    "locationTitle": "Location — Verifiable coordinates & provenance",
+    "locationDesc": "Each site (Jezero, Yungay/Atacama, or any H3 cell) preserves coordinates, observation window, and explicit confidence level.",
+    "methodTitle": "Scientific method: Causal Decomposition X → Y & Breakage B",
+    "xTitle": "Independent forcings (X)",
+    "xDesc": "Slope, roughness, albedo, solar flux, thermal inertia, subsurface ice, aridity, and humidity.",
+    "yTitle": "Dependent responses (Y)",
+    "yDesc": "Diurnal temperature amplitude ΔT, nocturnal cooling, surface wind, aeolian dust flux.",
+    "bTitle": "Irreproducible boundaries (B)",
+    "bDesc": "Surface gravity, atmospheric pressure, and ionizing GCR radiation. Never collapsed into an arbitrary similarity %.",
+    "activeProvenance": "Active planetary site provenance",
+    "earthProvenance": "Compared Earth cell provenance",
+    "sourcesTitle": "Integrated open data sources",
+    "table": {
+      "agency": "Agency / Source",
+      "dataset": "Service / Dataset",
+      "role": "Role in Ckepi",
+      "type": "Origin"
+    },
+    "sources": {
+      "trek": "Mars (Viking/MOLA) and Moon (LRO WAC/LOLA) WMTS basemap layers.",
+      "pds": "Surface telemetry (REMS, MEDA) and orbital coverage (LOLA, Diviner, CRISM, SHARAD).",
+      "power": "Solar climatology, satellite albedo, and MODIS/SMAP + GIBS layers.",
+      "copernicus": "Elevation, slope, roughness (DEM 90m), and ERA5-Land climate series.",
+      "partners": "Soil properties, Macrostrat lithology, and Sentinel/RADARSAT/G-Portal catalogs."
+    },
+    "aiDisclosureTitle": "AI Disclosure (AI_DISCLOSURE.md)",
+    "aiDisclosureDesc": "The core scientific concept (X → Y / B decomposition on H3 grid) is human-designed. AI assistants accelerated implementation, refactoring, and es/pt/en translation parity, verified by the team. No NASA logos or synthetic measurements were fabricated."
+  },
+  "funFacts": {
+    "title": "Interactive planetary curiosities",
+    "subtitle": "Tap each card to reveal the science fact and its NASA/peer-reviewed source.",
+    "progress": "{{count}} of {{total}} discovered",
+    "filterLabel": "Filter curiosities by body or region",
+    "filterAll": "All",
+    "tapToReveal": "Tap to reveal",
+    "hide": "Hide",
+    "sourceLabel": "Source",
+    "allDiscovered": "You discovered all planetary curiosities!",
+    "tags": {
+      "mars": "Mars",
+      "moon": "Moon",
+      "atacama": "Atacama"
+    },
+    "items": {
+      "sound": {
+        "q": "Why would your voice sound different and much quieter on Mars?",
+        "a": "In Mars thin CO₂ atmosphere (~0.6 kPa), sound travels at ~240 m/s (vs ~343 m/s on Earth) and high frequencies attenuate quickly."
+      },
+      "sol": {
+        "q": "How long is a day on Mars?",
+        "a": "One Martian sol lasts 24 h 39 min 35 s—almost identical to an Earth day, which helps teams schedule rover operations."
+      },
+      "comms": {
+        "q": "Can you drive a Mars rover with a live joystick from Earth?",
+        "a": "No: depending on orbital distance, radio signals take ~3 to ~22 minutes one-way, so rovers rely on onboard autonomous navigation."
+      },
+      "radiation": {
+        "q": "How much radiation does an astronaut face on Mars?",
+        "a": "Without a global magnetic field or thick atmosphere, surface radiation far exceeds Earths ~2.4 mSv/yr average."
+      },
+      "olympus": {
+        "q": "How tall is Olympus Mons compared to Atacama volcanoes?",
+        "a": "It rises ~21.9 km high (~3× Everest) and spans ~600 km wide, yet its average slope is surprisingly gentle (~5°)."
+      },
+      "temperature": {
+        "q": "How much can temperature swing in a single Martian day?",
+        "a": "In craters like Jezero or Gale, diurnal temperature swings exceed 60–80 K due to low thermal inertia and thin air."
+      },
+      "blueSunset": {
+        "q": "What color are sunsets on Mars?",
+        "a": "Bluish near the Sun: fine Martian dust scatters red light at wide angles while letting blue light pass forward."
+      },
+      "phobos": {
+        "q": "Which way does Phobos rise and set in the Martian sky?",
+        "a": "Phobos orbits faster than Mars rotates (~7 h 39 min), so it rises in the west and sets in the east."
+      },
+      "dustStorm": {
+        "q": "Can dust storms cover the entire planet Mars?",
+        "a": "Yes: planet-encircling storms can dim sunlight for weeks, even though wind dynamic pressure remains low due to thin air."
+      },
+      "moonTemp": {
+        "q": "What extreme temperatures does a lunar rover face?",
+        "a": "With no atmosphere, the surface swings from ~390 K (+117 °C) in sunlight to ~100 K (-173 °C) during lunar night."
+      },
+      "moonFootprints": {
+        "q": "Why are Apollo footprints still intact after more than 50 years?",
+        "a": "The Moon has no wind or rain; only gradual micrometeorite impacts erode regolith over millions of years."
+      },
+      "moonDay": {
+        "q": "How long is a full solar day on the Moon?",
+        "a": "About 29.5 Earth days (~14 days of sunlight followed by ~14 days of darkness), requiring robust energy storage."
+      },
+      "atacamaRovers": {
+        "q": "Why has NASA tested rover prototypes in the Atacama Desert?",
+        "a": "Because of extreme hyperaridity, saline soils, high UV flux, and near-zero vegetation in sectors like Yungay."
+      },
+      "perchlorate": {
+        "q": "Which chemical compound do Atacama and Mars soils share?",
+        "a": "Both contain natural perchlorates and salts, valuable for studying regolith chemistry and extremophile limits."
+      }
+    }
+  },
+  "learnHub": {
+    "pickCategory": "Choose a science adventure to explore:",
+    "score": "Challenges: {{correct}}/{{total}}",
+    "badgeTitle": "Planetary Explorer completed!",
+    "badgeDesc": "You answered all mini-challenges correctly using real physics and Earth–planet boundaries.",
+    "categories": {
+      "body": {
+        "title": "Your body",
+        "subtitle": "Weight, mass & jumps",
+        "teaser": "Would you weigh less on Mars while keeping the exact same mass?"
+      },
+      "physics": {
+        "title": "Impossible physics",
+        "subtitle": "Throws, waves & water",
+        "teaser": "Why does open-air liquid water boil or freeze on Mars?"
+      },
+      "engineering": {
+        "title": "Space engineering",
+        "subtitle": "Rovers, slopes & dust",
+        "teaser": "Does a rover in Atacama feel the same traction as in Jezero Crater?"
+      },
+      "curiosities": {
+        "title": "Curiosities",
+        "subtitle": "Sound, climate & radiation",
+        "teaser": "Discover 14 real facts verified by NASA missions and Atacama analogs."
+      }
+    },
+    "astronautCard": {
+      "title": "Your physical profile on {{body}}",
+      "mass": "Your mass",
+      "massSame": "Unchanged on any planet",
+      "weight": "Your weight (force)",
+      "scale": "Earth-scale reading: {{kgf}} kgf",
+      "jump": "Ideal vertical jump",
+      "jumpEarth": "On Earth: {{cm}} cm",
+      "airTime": "Hang time",
+      "airTimeEarth": "On Earth: {{s}} s"
+    }
+  },
+  "quickQuiz": {
+    "cta": "Quick mini-challenge",
+    "question": "If we send a 100 kg rover to {{body}}, what changes compared to Antofagasta?",
+    "optA": "Its mass drops and slope stops mattering",
+    "optB": "Its mass stays 100 kg, while its weight in N drops",
+    "optC": "Its maximum ground friction increases",
+    "tryAgain": "Almost — remember the difference between mass (kg) and weight (N).",
+    "explanation": "On {{body}} gravity is ~{{pct}}% of Earth: mass stays {{mass}} kg, while weight drops from {{earthN}} N to {{bodyN}} N."
+  },
+  "distribution": {
+    "title": "Common-Scale (30 m) Statistical Terrain Distribution Comparison",
+    "subtitle": "Wasserstein-1 (W₁) and Kolmogorov–Smirnov (D_KS) distances over {{samples}} pixels at {{spacing}} m/px (Earth in UTM 19S; Mars in the CTX DEM equirectangular projection, true scale at Jezero).",
+    "commonScaleBadge": "Common scale {{spacing}} m/px",
+    "bootstrapBadge": "2D Block Bootstrap: {{iterations}} iter ({{blockSize}}×{{blockSize}} px)",
+    "targetDemLabel": "Target DEM",
+    "earthDemLabel": "Earth Sector DEM",
+    "controlDemLabel": "Classic Control",
+    "slopeCardTitle": "Slope Distribution (30 m · Central Finite Differences)",
+    "slopeStatement": "The slope distribution of {{earthSite}} differs from {{targetSite}} by W₁ = {{w1}}° (95% CI: {{ciLow}}°–{{ciHigh}}°, KS D = {{ks}}), compared to W₁ = {{controlW1}}° at the classic Yungay control site.",
+    "reliefCardTitle": "Local Relief Distribution (300×300 m Moving Window)",
+    "reliefStatement": "The local relief distribution (Z_max − Z_min in 300×300 m) of {{earthSite}} differs from {{targetSite}} by W₁ = {{w1}} m (95% CI: {{ciLow}}–{{ciHigh}} m, KS D = {{ks}}), compared to W₁ = {{controlW1}} m at Yungay.",
+    "histogramTitle": "Overlapping Empirical Density Histograms (Target vs. Selected Earth Sector vs. Yungay Control)",
+    "toggleSlope": "Slope (° at 30 m)",
+    "toggleRelief": "Local Relief (m, 300×300 m)",
+    "controlYungayLabel": "Classic Control: Yungay (24.1°S)",
+    "transectTitle": "Comparative Relative Elevation Transect Profile (3.6 km at 30 m/px)",
+    "transectSubtitle": "Compares geomorphological amplitude and metric roughness without cross-scale extrapolation.",
+    "scaleTableTitle": "Multi-Scale Sensitivity Analysis (30 m · 60 m · 90 m)",
+    "scaleTableHint": "Verifies statistical stability under spatial aggregation (prevents resolution artifacts).",
+    "colScale": "Spatial scale",
+    "colSlopeW1": "W₁ Slope (°)",
+    "colSlopeKs": "KS D (Slope)",
+    "colReliefW1": "W₁ Relief (m)",
+    "colSlopeP50": "P50 (Earth vs. Target)",
+    "colSlopeP90": "P90 (Earth vs. Target)",
+    "noteStatTitle": "Statistical Rigor (2D Spatial Autocorrelation)",
+    "noteStatBody": "Neighboring DEM pixels exhibit spatial autocorrelation. Thus 95% CIs are computed via 2D block bootstrap (10×10 px = 300×300 m) rather than naive i.i.d. pixel resampling.",
+    "noteRadTitle": "Radiation Physics (Curiosity/RAD)",
+    "noteRadBody": "On Mars, Curiosity/RAD measured ~0.64 mSv/day (~230 mSv/yr GCR+SEP; Hassler et al., 2014, Science). Atacama (~2.4 mSv/yr) validates UV optics and terrain, not nuclear GCR shielding.",
+    "noteBioTitle": "Robotics vs. Astrobiology Boundary",
+    "noteBioBody": "This comparison quantifies geomorphological and thermo-radiative fidelity for rover traction, LiDAR navigation, and ISRU drills; it does not claim surface biological habitability."
+  },
+  "threeWorlds": {
+    "title": "Three Worlds in Your Hand: Earth · Moon · Mars (STEAM Literacy)",
+    "subtitle": "Explore with verified NASA NSSDCA facts what changes across worlds and why Antofagasta trains real space missions.",
+    "listenVoice": "Listen aloud",
+    "stopVoice": "Stop audio",
+    "speechScript": "Welcome to Ckepi, Three Worlds in Your Hand. If a backpack weighs 10 kilograms in Antofagasta, on the Moon it weighs only 1.7 kilograms and on Mars 3.8 kilograms. Today we compare {{earthSite}} with {{targetSite}}: the statistical slope difference at 30 meters scale is {{w1Slope}} degrees. In Antofagasta we can field-test rover wheels, LiDAR cameras, and drills, while reduced gravity, thin air, and cosmic radiation require specialized simulation chambers.",
+    "levels": {
+      "level1": "Level 1: Look (Everyday)",
+      "level2": "Level 2: Compare (Physics)",
+      "level3": "Level 3: Investigate (Gap B)"
+    },
+    "earth": {
+      "name": "Earth (Antofagasta)",
+      "summary": "Our hyper-arid natural laboratory protected by a dense atmosphere and global magnetosphere.",
+      "backpack": "A 10 kg backpack feels like 10.0 kg (1.00 g).",
+      "air": "Breathable air at 1013 mbar (N₂/O₂); supports standard drones and convective cooling.",
+      "dayAndTemp": "Solar day: 24 h 00 min · Global mean temp.: ~15 °C (288 K).",
+      "radiation": "Natural background radiation: ~2.4 mSv/yr (shielded by magnetosphere and atmosphere)."
+    },
+    "moon": {
+      "name": "Moon (South Pole / Maria)",
+      "summary": "Airless world with permanently shadowed polar craters and electrostatically charged dust.",
+      "backpack": "A 10 kg backpack feels like 1.7 kg (0.166 g).",
+      "air": "Hard vacuum (0 mbar): no sound, no wind, and no aerodynamic parachutes.",
+      "dayAndTemp": "Solar day: ~29.5 Earth days · Extreme thermal swings (>260 K).",
+      "radiation": "Unshielded surface radiation: ~380 mSv/yr without magnetosphere."
+    },
+    "mars": {
+      "name": "Mars (Jezero / Gale Crater)",
+      "summary": "Cold desert world with a thin CO₂ atmosphere, ancient lake deltas, and active dust storms.",
+      "backpack": "A 10 kg backpack feels like 3.8 kg (0.38 g).",
+      "air": "Thin CO₂ atmosphere (~6.1 mbar, <1% of Earth): requires high-RPM rotorcraft.",
+      "dayAndTemp": "Solar day (Sol): 24 h 39 min · Mean surface temp.: −63 °C (210 K).",
+      "radiation": "Surface radiation measured by Curiosity/RAD: ~230 mSv/yr (~0.64 mSv/day, Hassler et al. 2014)."
+    },
+    "quiz": {
+      "question": "STEAM micro-challenge: you must test a rover's suspension for the floor of Jezero Crater (median slope 1.7° in a 6 km CTX DEM window). Which Antofagasta sector would you pick?",
+      "sourceNote": "Real data: Jezero CTX DEM (NASA MRO, USGS) vs. Copernicus GLO-30, at 30 m",
+      "options": {
+        "pajonales": "B) Salar de Pajonales cell (H3 83b221…, 4,200–5,270 m)",
+        "yungay": "C) Yungay, the classic analog",
+        "pampa": "A) Pampa Central cell (H3 83b224…, ~1,400 m)"
+      },
+      "feedback": {
+        "pajonales": "Not this time: it is high-Andes terrain with much steeper slopes (median 7.9° vs. 1.7°; W₁ = 6.9°). A good example of what does NOT match Jezero.",
+        "yungay": "Yungay is famous for its hyper-aridity, but its slopes are further from Jezero (W₁ = 3.3°) because it has steep hillsides. The classic analog is not always the best for every test.",
+        "pampa": "Good pick! Its slope distribution differs from Jezero's by W₁ = 0.54° (95% CI: 0.40°–0.65°), and the result holds at 60 and 90 m. It is a candidate for field study, not a certified site: Mars gravity, pressure and radiation cannot be reproduced on Earth."
+      }
+    }
+  },
+  "araucana": {
+    "title": "Antofagasta Territorial Impact & Caja La Araucana Strategic Alignment",
+    "badgeLocal": "Antofagasta Hub 2026",
+    "badgeOds": "Verified UN SDG Targets",
+    "antofagastaLabTitle": "Antofagasta Region Natural Laboratory (1-Click Selection)",
+    "antofagastaLabSubtitle": "Click a regional node to load its 30 m terrain comparison (Jezero CTX DEM vs. Copernicus GLO-30) and its mission diagnostics:",
+    "utmScaleBadge": "UTM Zone 19S (EPSG:32719) · 30 m",
+    "nodes": {
+      "pajonalesRole": "Negative case: high-Andes cell (4,200–5,270 m) with much steeper slopes than Jezero (W₁ = 6.9° at 30 m).",
+      "cordilleraRole": "Nearly flat (median slope 0.2°): smoother than the Jezero floor (W₁ = 1.7°, KS = 0.82).",
+      "pampaRole": "Closest slope match to the Jezero floor (W₁ = 0.54° at 30 m; holds at 60 and 90 m). Candidate for field study.",
+      "yungayRole": "Classic control from the literature. Its slopes are further from Jezero (W₁ ≈ 3.3–3.7°); its value is hyper-aridity."
+    },
+    "pillarsTitle": "Alignment with Caja La Araucana's 4 Official Objectives & UN SDGs",
+    "pillarsSubtitle": "Direct traceability to the Integrated Sustainability Report and regional development:",
+    "pillars": {
+      "p1Title": "1. Democratize Frontier Science",
+      "p1Body": "Transforms raw NASA PDS and ESA Copernicus telemetry into a zero-cost browser laboratory with voice readout for schools, workers, and families.",
+      "p2Title": "2. STEAM Skills & Employability",
+      "p2Body": "Builds high-demand regional skills in Antofagasta: Python, DuckDB, GeoParquet, H3 spatial grids, and non-parametric statistics (Wasserstein/KS).",
+      "p3Title": "3. Local Application in Antofagasta",
+      "p3Body": "Highlights under-studied regional sectors (Salar de Pajonales, Cordillera de la Sal, Pampa Central) for mining/space robotics, solar testing, and scientific astro-tourism.",
+      "p4Title": "4. Interregional Innovation Network (Lattice)",
+      "p4Body": "Scalable H3 architecture connecting Antofagasta with Atacama, Coquimbo, Biobío, and Magallanes alongside regional universities (UCN, UA)."
+    },
+    "sustainabilityTitle": "Institutional Sustainability Model:",
+    "sustainabilityBody": "100% open-source core (Apache-2.0) for public education + services for institutions to characterize test sites."
+  },
+  "home": {
+    "skip": "Skip intro",
+    "replay": "Replay intro",
+    "tagline": "Earth · Moon · Mars, compared with open NASA data",
+    "question": "What matches? By how much? And what doesn't?",
+    "cta": "Explore the three worlds",
+    "dataNote": "Real example: an under-studied area of Antofagasta matches Jezero crater's slopes more closely than the classic Yungay analog (W₁ = 0.54° vs. 3.32°, at 30 m). We pre-select places to study; we do not certify them.",
+    "aiBadge": "AI-generated video",
+    "credits": "Data: NASA, ESA and partner agencies. Ckepi is not affiliated with or endorsed by NASA.",
+    "ctaStudent": "Explore as Student",
+    "ctaScientist": "Scientific Mode"
+  },
+  "story": {
+    "progressLabel": "Presentation steps",
+    "goToStep": "Go to step {{n}} of {{total}}",
+    "stepOf": "Step {{n}} of {{total}}",
+    "skip": "Go to the software",
+    "back": "Back",
+    "next": "Next",
+    "enter": "Enter the software",
+    "listen": "Listen",
+    "stopListening": "Stop",
+    "problem": {
+      "title": "To reach the Moon and Mars, we test on Earth first",
+      "body": "Missions rehearse their equipment at places on Earth that resemble the Moon or Mars. But many are chosen by how they look, and other places that could help remain unstudied."
+    },
+    "whatItDoes": {
+      "title": "CKEPI compares dimension by dimension",
+      "body": "Using open data from NASA and partner agencies, we compare terrain, climate and radiation on Earth, the Moon and Mars. For each place we show what matches, by how much, and what does not."
+    },
+    "finding": {
+      "title": "A finding in Antofagasta",
+      "body": "At the same 30-metre scale, an under-studied area of the region (H3 cell 83b224) matches the slopes of Mars's Jezero crater more closely than the classic Yungay analog: a difference of 0.54° versus 3.32°.",
+      "source": "Data: Jezero CTX elevation model (NASA MRO, USGS) and Copernicus GLO-30 (ESA). Wasserstein-1 distance of slopes, 95% CI 0.40°–0.65°."
+    },
+    "limits": {
+      "title": "What Earth cannot imitate",
+      "body": "On Mars, gravity is 0.38 times Earth's, the air is about 160 times thinner and radiation is much higher. No desert reproduces that. That is why CKEPI pre-selects places for field study; it does not certify them."
+    }
+  },
+  "physicsLab": {
+    "title": "Interactive Gravity & Planetary Physics Lab",
+    "badge": "Educational · STEAM",
+    "subtitle": "Explore how everyday physics changes across Earth, Mars, and the Moon using the exact same equations.",
+    "toggleTitan": "+ Titan (1.35 m/s²)",
+    "bodies": {
+      "earth": "Earth",
+      "mars": "Mars",
+      "moon": "Moon",
+      "titan": "Titan",
+      "custom": "Custom"
+    },
+    "telemetry": {
+      "activeTarget": "Active target",
+      "surfaceTemp": "Surface temp.",
+      "pressure": "Atm. pressure",
+      "earthAnalog": "Earth analog"
+    },
+    "controls": {
+      "play": "Play",
+      "pause": "Pause",
+      "reset": "Reset"
+    },
+    "weight": {
+      "title": "Physical weight calculator (Newtons)",
+      "description": "Mass (kg) stays constant anywhere in space, while gravitational force (Newtons) scales with gravity.",
+      "massLabel": "Object, person, or rover mass",
+      "feelsLike": "feels like {{kg}} kg on Earth",
+      "inertiaTip": "Engineering note: Even though weight drops on the Moon or Mars, horizontal inertia remains {{kg}} kg (F = m · a), so braking or turning a rover still requires full force.",
+      "presets": {
+        "backpack": "Backpack",
+        "astronaut": "Astronaut",
+        "suit": "EVA Suit",
+        "viper": "VIPER Rover",
+        "perseverance": "Perseverance"
+      }
+    },
+    "jump": {
+      "title": "Gravity jump simulator",
+      "description": "With the same take-off impulse, lower gravity lets you jump higher and stay airborne longer.",
+      "velocityLabel": "Take-off velocity",
+      "jumpAction": "Jump",
+      "airTime": "Flight"
+    },
+    "trajectory": {
+      "title": "Projectile trajectory comparison",
+      "description": "A projectile launched at the same speed and angle travels dramatically farther under lower gravity.",
+      "speedLabel": "Launch speed",
+      "angleLabel": "Angle",
+      "dragToggle": "Simulate real atmospheric drag",
+      "launchAction": "Launch",
+      "chartAria": "Comparative parabolic trajectory chart for Earth, Mars, and the Moon",
+      "range": "Range",
+      "height": "Max height",
+      "time": "Flight"
+    },
+    "waves": {
+      "title": "Shallow-water wave speed",
+      "description": "In shallow water, wave propagation speed depends directly on local gravity and water depth.",
+      "depthLabel": "Fluid depth (h)",
+      "wavelengthLabel": "Wavelength (λ)",
+      "presets": {
+        "hydroponics": "Hydroponic channel",
+        "jezeroDelta": "Jezero paleodelta",
+        "subglacialLake": "Deep basin"
+      }
+    },
+    "quiz": {
+      "title": "STEAM Mini-Challenge: Test Your Space Intuition",
+      "subtitleBadge": "Interactive self-check",
+      "description": "Use the simulators above to verify each answer experimentally.",
+      "q1": {
+        "question": "What happens to the mass (kg) and weight (N) of the Perseverance rover (1025 kg) on Mars?",
+        "optA": "Both its mass and weight drop to 38%",
+        "optB": "Its mass stays 1025 kg, while its weight in Newtons drops to 38%",
+        "optC": "Its weight in Newtons stays the same because of its metal wheels",
+        "explanation": "Correct! Mass is an intrinsic property (1025 kg anywhere), whereas weight depends on local gravity (W = m · g)."
+      },
+      "q2": {
+        "question": "In a vacuum (no atmosphere), which launch angle gives the maximum horizontal range on any planet?",
+        "optA": "It depends on the planet's gravity",
+        "optB": "75° on the Moon and 30° on Earth",
+        "optC": "45° on every planetary body",
+        "explanation": "Without atmospheric drag, sin(2θ) peaks at θ = 45° regardless of the value of g."
+      },
+      "q3": {
+        "question": "Compared to Earth, a shallow-water wave in a 5 m deep lunar basin travels...",
+        "optA": "Slower, because c = √(g · h) and lunar gravity is weaker",
+        "optB": "Faster, because water weighs less on the Moon",
+        "optC": "At the exact same speed on both worlds",
+        "explanation": "Gravity is the restoring force for surface waves: weaker gravity means slower wave propagation (2.85 m/s on the Moon vs. 7.00 m/s on Earth)."
+      }
+    },
+    "toggleCustom": "+ Custom gravity",
+    "customGravityLabel": "Custom gravity (m/s²)",
+    "categories": {
+      "all": "All modules (9)",
+      "mechanics": "Mechanics & Gravity",
+      "wavesEnergy": "Waves, Pendulum & Solar",
+      "atmosphere": "Air Chemistry & Habitability",
+      "quiz": "STEAM Challenge"
+    },
+    "pendulum": {
+      "title": "Planetary pendulum & gravitational clock",
+      "description": "A pendulum period depends solely on string length and local gravity, regardless of bob mass.",
+      "lengthLabel": "Pendulum length (L)",
+      "oscPerMin": "osc/min"
+    },
+    "escape": {
+      "title": "Escape velocity & orbital energy",
+      "description": "How much velocity and kinetic energy a spacecraft needs to escape each planetary gravity well.",
+      "massLabel": "Spacecraft or ascent stage mass",
+      "orbital": "Low orbit"
+    },
+    "solar": {
+      "title": "Solar photovoltaic power & dust storm attenuation",
+      "description": "Simulates electrical power output from space-grade solar arrays (η = 30%) across planetary solar irradiance and atmospheric dust optical depth (τ).",
+      "areaLabel": "Solar array area (A)",
+      "dustLabel": "Atmospheric dust optical depth (τ)",
+      "roversPowered": "Powers ~{{count}} rovers (250 W each)"
+    },
+    "atmosphere": {
+      "title": "Air Chemical Composition & Respiratory Habitability (Earth · Mars · Moon)",
+      "description": "Compare the chemical compounds of each world and how Earth’s gas balance is optimal for human physiology versus life-support (ECLSS / ISRU) challenges on Mars and the Moon.",
+      "totalPressure": "Total pressure",
+      "partialO2": "Partial pressure pO₂",
+      "armstrongLimit": "Armstrong limit (63 mbar)",
+      "armstrongSafe": "Safe (body fluids stable at 37 °C)",
+      "armstrongBoil": "Hazard (fluids boil at 37 °C unpressurized)",
+      "earth": {
+        "status": "Optimal for life",
+        "summary": "Ideal balance: 21% O₂ for cellular respiration and 78% N₂ as an inert buffer gas that keeps lung alveoli open and suppresses fire hazards."
+      },
+      "mars": {
+        "status": "Unbreathable · Lethal",
+        "summary": "Ultra-thin atmosphere with 95.3% CO₂ (lethal hypercapnia) and virtually zero O₂. However, atmospheric CO₂ enables in-situ O₂ production via NASA MOXIE."
+      },
+      "moon": {
+        "status": "Vacuum · Airless",
+        "summary": "No breathable gaseous atmosphere, but ~43% of lunar regolith mass is oxygen bound in metal oxides, plus water ice in polar craters."
+      },
+      "roles": {
+        "n2Earth": "Nitrogen: Inert buffer gas maintaining alveolar pressure without toxicity and driving the nitrogen cycle.",
+        "o2Earth": "Oxygen: Essential electron acceptor for aerobic cellular respiration (ATP).",
+        "ar": "Argon: Chemically inert noble gas.",
+        "co2Earth": "Carbon dioxide: Triggers breathing reflex at trace levels and maintains mild greenhouse warmth.",
+        "co2Mars": "Carbon dioxide: Causes immediate hypercapnia in humans, but serves as feedstock for MOXIE O₂ generation.",
+        "n2Mars": "Nitrogen: Present at 2.7%; must be concentrated to provide habitat buffer gas.",
+        "o2CoMars": "Trace O₂ (0.13%) and toxic carbon monoxide (CO, 0.08%).",
+        "regolithO2": "Mineral-bound oxygen in regolith: Extractable by heating Si, Fe, and Ti oxides (>900 °C).",
+        "polarIce": "Water ice in permanently shadowed polar craters (Shackleton): Ideal for electrolysis.",
+        "exosphere": "Vestigial exosphere: Sparse atoms that cannot support breathing or sound."
+      },
+      "pillars": {
+        "o2Title": "1. Optimal Oxygen Window (pO₂: 160–250 mbar)",
+        "o2Desc": "Below 100 mbar causes cerebral hypoxia and unconsciousness; above 500 mbar causes pulmonary oxygen toxicity and extreme fire risk.",
+        "n2Title": "2. Why Nitrogen Buffer Gas (78% N₂) Is Essential",
+        "n2Desc": "Breathing pure oxygen collapses lung alveoli (absorption atelectasis) and turns sparks into infernos. N₂ safely dilutes O₂ and provides total pressure.",
+        "co2Title": "3. Critical CO₂ (< 5 mbar) & Pressure (> 63 mbar) Limits",
+        "co2Desc": "Even with enough O₂, >1%–2% CO₂ prevents blood from offloading carbon dioxide. On Mars, CO₂ makes up 95.3% of the gas mix."
+      },
+      "isru": {
+        "title": "Life Support & ISRU Simulator (Habitat Air Generation)",
+        "subtitle": "Calculate how much oxygen a human crew needs and how much local Martian or Lunar resource must be processed.",
+        "crewLabel": "Habitat crew size",
+        "astronauts": "astronauts",
+        "daysLabel": "Mission duration",
+        "days": "days",
+        "o2Required": "Metabolic oxygen required",
+        "o2RateNote": "NASA ISS standard: 0.84 kg O₂ per person/day",
+        "marsMoxieTitle": "On Mars: Atmospheric CO₂ to process (MOXIE)",
+        "marsMoxieNote": "Solid oxide electrolysis at 800 °C",
+        "moonIceTitle": "On Moon: Polar water ice or regolith needed",
+        "moonIceNote": "Ice electrolysis or regolith reduction"
+      }
+    }
+  },
+  "telemetryAndRover": {
+    "lagTitle": "Data Lag Period & Telemetry Synchronization (NASA / ESA)",
+    "lagSubtitle": "Real engine update timestamps, sensor observation windows, and physical transmission latency.",
+    "lastSyncLabel": "Last API sync",
+    "elapsedJustNow": "Just now (< 1 min)",
+    "elapsedMinutes": "{{count}} min ago",
+    "elapsedHours": "{{count}} h {{mins}} min ago",
+    "elapsedDays": "{{count}} days ago",
+    "planetaryFeedTitle": "Planetary Telemetry ({{body}})",
+    "earthFeedTitle": "Earth H3 Grid ({{cell}})",
+    "obsWindowLabel": "Observation window",
+    "signalLatencyLabel": "Physical signal / archive lag",
+    "marsLatencyDesc": "Radio one-way light time (OWLT): 4–22 min (avg ~12.5 min) · NASA DSN downlink lag (REMS/MEDA): 24–72 h (1–3 sols).",
+    "moonLatencyDesc": "Radio one-way light time (OWLT): 1.28 s real-time · NASA PDS LRO orbital calibration cycle (Diviner/LOLA): campaign-consolidated.",
+    "earthLatencyDesc": "ERA5 / Open-Meteo reanalysis: < 1 h live probe · NASA POWER radiative flux (CERES/MERRA-2): 2–5 days NRT lag.",
+    "freshnessLive": "Live synced",
+    "freshnessCached": "Validated cache",
+    "roverTitle": "Deployment Success Simulator & Optimal Location Finder",
+    "roverSubtitle": "Calculates operational success probability from slope, roughness, solar/thermal energy, dust, and atmosphere to identify the optimal site.",
+    "systemTypeLabel": "System to deploy",
+    "systems": {
+      "rover": "Surface Rover (e.g. Perseverance / VIPER)",
+      "lander": "Landing Module (Lander)",
+      "isru_drill": "Cryogenic ISRU Drill (Ice / O₂)",
+      "rotorcraft": "Coaxial Rotorcraft / Drone (e.g. Ingenuity)"
+    },
+    "planetarySectionTitle": "Where to deploy on {{body}}? (Target Operational Success)",
+    "earthSectionTitle": "Where to test on Earth? (Field Trial Success)",
+    "currentTargetSuccess": "Estimated success at {{site}}",
+    "currentEarthSuccess": "Field trial fidelity at {{site}}",
+    "optimalBadge": "★ Most Optimal Site",
+    "selectSiteBtn": "Select",
+    "activeBadge": "Active",
+    "factors": {
+      "traction": "Traction & Slope",
+      "thermalSolar": "Solar & Thermal Survival",
+      "dustWind": "Dust, Wind & Atmosphere",
+      "instrumentConf": "Instrumental Coverage"
+    },
+    "moonRotorcraftZero": "0% on the Moon: Hard vacuum (~10⁻¹² mbar) prevents aerodynamic rotor lift; requires chemical thrusters.",
+    "verdictHigh": "Highly Favorable Deployment (Low Risk)",
+    "verdictMed": "Viable Deployment with Operational Caution",
+    "verdictLow": "Critical Deployment / High Mechanical or Environmental Risk",
+    "duration": {
+      "label": "Mission duration (climate & seasonal shift)",
+      "months": "{{count}} month(s) ({{days}} days)",
+      "presets": {
+        "short": "15 days (1 lunar day)",
+        "twoMonths": "2 months (60 days)",
+        "sixMonths": "6 months (Seasonal)",
+        "oneYear": "12 months (Earth year)",
+        "marsYear": "23 months (1 Mars year)"
+      },
+      "climateImpactTitle": "Climate Drift Over Mission Duration ({{months}} months)",
+      "marsClimateNote": "Over {{days}} days (~{{sols}} Martian sols), seasonal shift alters temperature by ±{{tempSwing}} K, accumulates ~{{dustLoss}}% solar panel dust, and raises regional dust storm probability to {{stormRisk}}%.",
+      "moonClimateNote": "Over {{days}} days the rover faces {{lunarNights}} continuous 14-day lunar night(s) at −170 °C (100 K) without sunlight; requires radioisotope heaters (RHU/RTG) or cryogenic hibernation.",
+      "survivalAfterDuration": "Survival after {{months}} mo"
+    },
+    "researchGoals": {
+      "label": "Rover Mission & Research Focus",
+      "rover_new_worlds": "Rover Exploration: Discover New Unseen Places (Traction + Firm Soil)",
+      "landing_viability": "Viable Landing Terrain (Slope < 8° + LiDAR Hazard Safety)",
+      "crop_agriculture": "Crop & Greenhouse Viability (Sunlight + Water/Ice + Thermal Stability)",
+      "isru_water": "Water Ice Mining & ISRU Resource Extraction",
+      "astrobiology": "Astrobiology, Biosignatures & Lava Tubes"
+    },
+    "cropScoreLabel": "Crop / Greenhouse Suitability",
+    "landingScoreLabel": "Landing Viability",
+    "agencies": {
+      "title": "Landing Zones & Rovers: NASA Proposals vs. Other Countries",
+      "subtitle": "Compare landing and rover sites from NASA (USA), CNSA (China), ISRO (India), ESA (Europe), and JAXA (Japan). Click any site to probe it live.",
+      "filterAll": "All agencies",
+      "probeLiveBtn": "Probe in 3D",
+      "activeSiteBadge": "Active site",
+      "sites": {
+        "nasa_jezero": "Mars — Jezero Crater (Perseverance Rover · Paleolake)",
+        "nasa_gale": "Mars — Gale Crater (Curiosity Rover · Aeolis Mons)",
+        "nasa_arcadia": "Mars — Arcadia Planitia (NASA/Starship Proposal · Shallow Ice)",
+        "nasa_shackleton": "Moon — Shackleton South Pole (NASA Artemis III / VIPER Rover)",
+        "cnsa_utopia": "Mars — Utopia Planitia (Zhurong Rover · CNSA China)",
+        "cnsa_von_karman": "Moon — Von Kármán Far Side (Yutu-2 Rover · CNSA China)",
+        "isro_shiv_shakti": "Moon — Shiv Shakti South Pole (Pragyan Chandrayaan-3 · ISRO India)",
+        "esa_oxia_planum": "Mars — Oxia Planum (Rosalind Franklin Rover · ESA Europe)",
+        "jaxa_shioli": "Moon — Shioli Crater (SLIM Lander + LEV Rovers · JAXA Japan)"
+      }
+    },
+    "pointZero": {
+      "title": "Rover Point Zero (Baseline Parameter = 0) & First Filter for Unseen Sections",
+      "subtitle": "Lock the current rover position as baseline (Δ = 0 for density/inertia, humidity, temperature, and slope) and apply a primary environmental filter to compare new unseen sections.",
+      "setBaselineBtn": "Lock current Rover as Point 0",
+      "baselineActive": "Point 0 active: {{name}} (Baseline = 0)",
+      "unseenOnly": "Unseen Data Only (Hide classic benchmarks)",
+      "firstFiltersTitle": "Primary Environmental Filter (Humidity · Temperature · Density · Slope)",
+      "maxHumidity": "Max humidity (%)",
+      "maxTempC": "Max temp. (°C)",
+      "minDensityTiu": "Min density / inertia (TIU)",
+      "maxSlopeDeg": "Max slope (°)",
+      "resetFirstFilters": "Reset primary filter",
+      "newSectionsCount": "{{count}} new sections match primary filter",
+      "deltaLabel": "Δ vs Point 0",
+      "densityParam": "Density/Inertia",
+      "humidityParam": "Humidity",
+      "tempParam": "Temp.",
+      "slopeParam": "Slope",
+      "cropSuitability": "Crops"
+    }
+  },
+  "modeBanner": {
+    "studentTitle": "Student & Outreach Mode",
+    "studentDesc": "Clear Moon and Mars comparisons with everyday language, voice narration, and interactive labs — free of heavy statistical formulas.",
+    "scienceTitle": "Scientific Discovery Mode",
+    "scienceDesc": "Full causal X → Y ∥ B decomposition, unexpected analog screening beyond known benchmarks, 8 challenge dimensions, multiscale ≥30 m validation, and open-data links.",
+    "switchToScience": "Switch to Scientific Mode",
+    "switchToStudent": "Switch to Student Mode"
+  },
+  "studentControls": {
+    "step1Label": "1. Choose a world and site",
+    "chooseWorld": "Choose destination world",
+    "choosePlace": "Site on the Moon or Mars",
+    "step2Label": "2. What do you want to compare?",
+    "step2Hint": "We rank Earth places for your mission goal.",
+    "goals": {
+      "causal_auto": {
+        "title": "Overall Match",
+        "desc": "Balance terrain, dryness, and surface conditions."
+      },
+      "rover_mobility": {
+        "title": "Driving a Rover",
+        "desc": "Find slopes and loose soils to test wheels safely."
+      },
+      "solar_power_thermal": {
+        "title": "Solar Power & Heat",
+        "desc": "Compare sunlight, albedo, and cold temperature swings."
+      },
+      "isru_ice_drilling": {
+        "title": "Ice & Water Search",
+        "desc": "Look for frozen or ultra-dry soil to practice drilling."
+      },
+      "lava_tube_habitat": {
+        "title": "Caves & Shelters",
+        "desc": "Find volcanic rock and underground shelter analogs."
+      },
+      "navigation_landing": {
+        "title": "Safe Landing",
+        "desc": "Check terrain roughness and slopes for landers."
+      }
+    }
+  },
+  "studentPanel": {
+    "title": "{{earthPlace}} compared with {{targetPlace}}",
+    "matchHigh": "Strong terrain & surface match",
+    "matchModerate": "Useful partial match",
+    "matchPartial": "Limited match — check differences",
+    "listenVoice": "Listen explanation",
+    "stopVoice": "Stop voice",
+    "speechSummary": "{{earthPlace}} matches {{targetPlace}} by {{score}} in terrain and surface patterns. However, it never matches everything: gravity off Earth is only {{gravity}} g and radiation reaches {{radiation}} millisieverts per year.",
+    "terrainLabel": "Terrain & Rocks",
+    "climateLabel": "Temperature & Dust",
+    "overallLabel": "Overall Match",
+    "terrainShort": "Terrain",
+    "climateShort": "Climate",
+    "jumpToComparison": "See Full Earth vs Planet Card",
+    "matchesTitle": "What DOES match here",
+    "matchesSubtitle": "Closest Earth–planet surface features:",
+    "targetShort": "Target",
+    "earthShort": "Earth",
+    "experimentsCanTestTitle": "Activities you CAN test here",
+    "differencesTitle": "What NEVER matches on Earth",
+    "differencesSubtitle": "Even the best analog on Earth cannot copy these planetary physics:",
+    "limits": {
+      "gravityTitle": "Lower gravity",
+      "gravityBody": "On {{body}}, gravity is {{g}} g instead of 1.00 g on Earth — dust falls slower and wheels slip differently.",
+      "airTitle": "Unbreathable / missing air",
+      "airMoon": "The Moon has near-zero atmosphere (~0 kPa), unlike Earth's dense air (~101 kPa).",
+      "airMars": "Mars has ultra-thin carbon dioxide air (~0.6 kPa vs ~101 kPa on Earth) — no breathable oxygen and tiny wind force.",
+      "radiationTitle": "Space radiation",
+      "radiationBody": "Without Earth's magnetic shield and thick atmosphere, radiation reaches ~{{rad}} mSv/yr."
+    },
+    "experimentsCannotTestTitle": "What CANNOT be tested here",
+    "tryOtherPlaces": "Click another top Earth place to compare:",
+    "goToPhysicsLab": "Open Interactive Physics Lab",
+    "switchToScienceCta": "Explore in Scientific Mode"
+  },
+  "discoverySpotlight": {
+    "title": "Systematic Discovery vs. Classical Benchmarks",
+    "candidatesBadge": "{{count}} unrecognized candidates / {{total}} cells",
+    "paretoBadge": "{{count}} Pareto-optimal discoveries",
+    "subtitle": "Evaluates planetary regions systematically across all terrestrial biomes to surface under-studied candidates comparable to {{target}}, not merely famous deserts.",
+    "showBenchmarksAction": "Include 25 Classical Benchmarks",
+    "onlyDiscoveriesAction": "Only Unrecognized Candidates",
+    "topUnexpectedLabel": "Top Unrecognized Earth Candidate",
+    "noUnexpectedHint": "No non-benchmark candidates pass your current thresholds. Lower S_ind or reset filters to broaden discovery.",
+    "currentlyInspecting": "Inspecting This Candidate",
+    "inspectCandidate": "Inspect Discovery on Map",
+    "canonicalControlLabel": "Classical Reference Benchmark",
+    "discoveryComparableNote": "The top under-studied candidate matches or sits within 3 percentage points of the best classic analog while probing previously unrecognized terrain.",
+    "benchmarkReferenceNote": "Use classical analogs (e.g., Atacama/Yungay, Haughton, Iceland) as calibration baselines while evaluating whether under-studied cells match specific landing dimensions closer.",
+    "benchmarksExcludedNote": "Canonical benchmark regions are currently filtered out so your search prioritizes previously unrecognized analogs.",
+    "compareBenchmark": "Compare Benchmark Control",
+    "moreUnexpectedTitle": "Next Highest-Ranked Unrecognized Candidates"
   }
 }

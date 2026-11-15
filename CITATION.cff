@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: "Ckepi: Causal Variable Decomposition & Planetary Analog Discovery Engine (Earth · Moon · Mars)"
+message: "If you use Ckepi or its causal/statistical analog framework in your research or educational programs, please cite it using this metadata."
+type: software
+authors:
+  - name: "Lattices Team (Antofagasta Hub — NASA Space Apps Challenge 2026)"
+repository-code: "https://github.com/AnGeMoNs/Ckepi"
+license: Apache-2.0
+keywords:
+  - planetary-analogs
+  - mars
+  - moon
+  - atacama-desert
+  - antofagasta
+  - h3-spatial-index
+  - wasserstein-distance
+  - kolmogorov-smirnov
+  - open-science
+  - nasa-space-apps-2026
+abstract: >-
+  Open-source planetary analog discovery and STEAM literacy platform that
+  decouples independent substrate forcings (X), dependent environmental
+  responses (Y), and irreducible physical breakage boundaries (B: gravity,
+  atmospheric pressure, ionizing radiation) across a global multi-resolution
+  H3 hexagonal grid, paired with common-scale (30 m) non-parametric terrain
+  distribution comparisons (Wasserstein-1 and Kolmogorov-Smirnov with 2D
+  spatial block bootstrap) and an accessible "Three Worlds for Everyone"
+  educational module.

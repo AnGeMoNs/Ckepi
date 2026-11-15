@@ -3,6 +3,7 @@ import type {
   AnalogMatchItem,
   MissionAiAnalysisResponse,
   PlanetarySite,
+  TerrainDistributionComparison,
 } from "../types/analog";
 
 type TranslateFn = (key: string, params?: Record<string, string | number>) => string;
@@ -103,7 +104,8 @@ export function exportReportMarkdown(
   translate: TranslateFn,
   selectedMatch?: AnalogMatchItem,
   lang = "es",
-  aiAnalysis?: MissionAiAnalysisResponse | null
+  aiAnalysis?: MissionAiAnalysisResponse | null,
+  statisticalDistribution?: TerrainDistributionComparison | null
 ): void {
   const focus = selectedMatch ?? matches[0];
   const top = matches.slice(0, 5);
@@ -145,6 +147,24 @@ export function exportReportMarkdown(
         ([k, v]) => `- ${translate(`variables.${k}.label`)}: ${formatPercent(v, lang)}`
       ),
       ``,
+      `### ${translate("export.dimensionsTitle")}`,
+      `- **${translate("mission.dimensions.items.geology.title")}:** ${translate("mission.dimensions.geologyProcess")}`,
+      `- **${translate("mission.dimensions.items.terrain.title")}:** ${translate("mission.dimensions.terrainProcess")} (Slope ${formatNumber(focus.earth_variables.independent.slope_deg ?? 0, lang, 1)}°, Roughness ${formatNumber(focus.earth_variables.independent.topographic_roughness ?? 0, lang, 2)})`,
+      `- **${translate("mission.dimensions.items.thermal.title")}:** ${translate("mission.dimensions.thermalProcess")} (Mean ${formatNumber((focus.earth_variables.dependent.mean_surface_temp_k ?? 273.15) - 273.15, lang, 1)}°C, Δ ${formatNumber(focus.earth_variables.dependent.diurnal_temp_amplitude_k ?? 0, lang, 1)} K)`,
+      `- **${translate("mission.dimensions.items.water.title")}:** ${translate("mission.dimensions.waterProcess")} (Subsurface Ice ${formatPercent(focus.earth_variables.independent.subsurface_ice_frac ?? 0, lang)}, Aridity ${formatNumber(focus.earth_variables.independent.aridity_index ?? 0, lang, 2)})`,
+      `- **${translate("mission.dimensions.items.aeolian.title")}:** ${translate("mission.dimensions.aeolianProcess")} (Wind ${formatNumber(focus.earth_variables.dependent.surface_wind_ms ?? 0, lang, 1)} m/s, Dust ${formatNumber(focus.earth_variables.dependent.aeolian_dust_flux ?? 0, lang, 2)})`,
+      `- **${translate("mission.dimensions.items.biology.title")}:** ${translate("mission.dimensions.biologyProcess")}`,
+      `- **${translate("mission.dimensions.items.subsurface.title")}:** ${translate("mission.dimensions.subsurfaceProcess")}`,
+      `- **${translate("mission.dimensions.items.operations.title")}:** ${translate("mission.dimensions.operationsProcess")} (R_break ${formatPercent(focus.r_break_overall, lang)})`,
+      ``,
+      `### ${translate("export.openDataLinksTitle")}`,
+      `- NASA Worldview: https://worldview.earthdata.nasa.gov/?v=${Math.max(-180, focus.coordinates.lon - 2.5).toFixed(2)},${Math.max(-90, focus.coordinates.lat - 2.5).toFixed(2)},${Math.min(180, focus.coordinates.lon + 2.5).toFixed(2)},${Math.min(90, focus.coordinates.lat + 2.5).toFixed(2)}`,
+      `- NASA Earthdata Search: https://search.earthdata.nasa.gov/search?sb=${Math.max(-180, focus.coordinates.lon - 0.5).toFixed(2)},${Math.max(-90, focus.coordinates.lat - 0.5).toFixed(2)},${Math.min(180, focus.coordinates.lon + 0.5).toFixed(2)},${Math.min(90, focus.coordinates.lat + 0.5).toFixed(2)}`,
+      `- NASA PDS / LRO Diviner: https://pds-geosciences.wustl.edu/missions/lro/diviner.htm`,
+      `- ESA Copernicus Data Space: https://dataspace.copernicus.eu/ · ESA Open Science: https://opensciencedata.esa.int/`,
+      `- CSA RADARSAT (RCM / RADARSAT-1): https://donnees-data.asc-csa.gc.ca/en/dataset/rcm`,
+      `- JAXA G-Portal: https://gportal.jaxa.jp/gpr/search`,
+      ``,
       `### ${translate("export.whereBreaks")}`,
       ...broken.map(
         (b) =>
@@ -162,6 +182,25 @@ export function exportReportMarkdown(
       ...focus.engineering_recommendations.invalid_tests.map((k) => `- ${translate(k)}`),
       ``
     );
+
+    if (statisticalDistribution) {
+      const sDist = statisticalDistribution.slope_distribution;
+      const rDist = statisticalDistribution.relief_distribution;
+      lines.push(
+        `### Common-Scale (30 m) Terrain Distribution Analysis (Wasserstein-1 & KS)`,
+        `- **Target DEM Source:** ${statisticalDistribution.planetary_dem_source}`,
+        `- **Earth DEM Source:** ${statisticalDistribution.earth_dem_source}`,
+        `- **Control Benchmark DEM:** ${statisticalDistribution.control_benchmark_name}`,
+        `- **Slope Distribution Distance (30 m):** W₁ = ${sDist.wasserstein_distance.toFixed(2)}° (95% 2D Block-Bootstrap CI: ${sDist.w1_ci_95[0].toFixed(2)}°–${sDist.w1_ci_95[1].toFixed(2)}°), KS D = ${sDist.ks_statistic.toFixed(3)} (vs Yungay Control W₁ = ${sDist.control_yungay_w1.toFixed(2)}°)`,
+        `- **Local Relief Distance (300x300 m window):** W₁ = ${rDist.wasserstein_distance.toFixed(2)} m (95% 2D Block-Bootstrap CI: ${rDist.w1_ci_95[0].toFixed(2)}–${rDist.w1_ci_95[1].toFixed(2)} m), KS D = ${rDist.ks_statistic.toFixed(3)}`,
+        `- **Multi-Scale Sensitivity (30 m / 60 m / 90 m):**`,
+        ...statisticalDistribution.scale_sensitivity.map(
+          (pt) =>
+            `  - **${pt.resolution_m} m scale:** Slope W₁ = ${pt.slope_wasserstein_deg.toFixed(2)}°, KS D = ${pt.slope_ks_stat.toFixed(3)}, Relief W₁ = ${pt.relief_wasserstein_m.toFixed(2)} m, Earth P50/P90 = ${pt.earth_slope_median_deg.toFixed(2)}°/${pt.earth_slope_p90_deg.toFixed(2)}°`
+        ),
+        ``
+      );
+    }
   }
 
   if (

@@ -19,6 +19,7 @@ import { ManualVariableControls } from "./ManualVariableControls";
 import { PresetProfileInspector } from "./PresetProfileInspector";
 
 interface ControlPanelProps {
+  layout?: "horizontal" | "vertical";
   sites: PlanetarySite[];
   selectedSiteId: string;
   customProbedSite: PlanetarySite | null;
@@ -54,6 +55,7 @@ interface ControlPanelProps {
 }
 
 export function ControlPanel({
+  layout = "vertical",
   sites,
   selectedSiteId,
   customProbedSite,
@@ -110,36 +112,120 @@ export function ControlPanel({
     ? selectedSiteId
     : effectiveOptions[0].value;
 
+  const isHorizontal = layout === "horizontal";
+
   return (
     <div className="space-y-4">
-      <div className="space-y-4">
-        <Select
-          id="target-site-select"
-          label={t("controls.targetSite")}
-          value={effectiveValue}
-          onChange={(e) => {
-            const nextId = e.target.value;
-            const found = sites.find((s) => s.site_id === nextId);
-            onSelectSite(nextId, found?.body);
-          }}
-          options={effectiveOptions}
-        />
+      <div
+        className={
+          isHorizontal
+            ? "grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-12 xl:items-end"
+            : "space-y-4"
+        }
+      >
+        <div className={isHorizontal ? "min-w-0 xl:col-span-3" : undefined}>
+          <Select
+            id="target-site-select"
+            label={t("controls.targetSite")}
+            value={effectiveValue}
+            onChange={(e) => {
+              const nextId = e.target.value;
+              const found = sites.find((s) => s.site_id === nextId);
+              onSelectSite(nextId, found?.body);
+            }}
+            options={effectiveOptions}
+          />
+        </div>
 
-        <Select
-          id="test-profile-select"
-          label={t("controls.testProfile")}
-          value={testProfile}
-          onChange={(e) => onChangeTestProfile(e.target.value as TestProfileType)}
-          options={[
-            { value: "causal_auto", label: t("controls.profiles.causal_auto") },
-            { value: "navigation_landing", label: t("controls.profiles.navigation_landing") },
-            { value: "rover_mobility", label: t("controls.profiles.rover_mobility") },
-            { value: "isru_ice_drilling", label: t("controls.profiles.isru_ice_drilling") },
-            { value: "lava_tube_habitat", label: t("controls.profiles.lava_tube_habitat") },
-            { value: "solar_power_thermal", label: t("controls.profiles.solar_power_thermal") },
-            { value: "manual_custom", label: t("controls.profiles.manual_custom") },
-          ]}
-        />
+        <div className={isHorizontal ? "min-w-0 xl:col-span-3" : undefined}>
+          <Select
+            id="test-profile-select"
+            label={t("controls.testProfile")}
+            value={testProfile}
+            onChange={(e) => onChangeTestProfile(e.target.value as TestProfileType)}
+            options={[
+              { value: "causal_auto", label: t("controls.profiles.causal_auto") },
+              { value: "navigation_landing", label: t("controls.profiles.navigation_landing") },
+              { value: "rover_mobility", label: t("controls.profiles.rover_mobility") },
+              { value: "isru_ice_drilling", label: t("controls.profiles.isru_ice_drilling") },
+              { value: "lava_tube_habitat", label: t("controls.profiles.lava_tube_habitat") },
+              { value: "solar_power_thermal", label: t("controls.profiles.solar_power_thermal") },
+              { value: "manual_custom", label: t("controls.profiles.manual_custom") },
+            ]}
+          />
+        </div>
+
+        {isHorizontal ? (
+          <>
+            <div className="min-w-0 xl:col-span-3">
+              <Switch
+                id="discovery-mode-toggle"
+                checked={excludeBenchmarks}
+                onChange={onChangeExcludeBenchmarks}
+                label={t("controls.discoveryOnly")}
+                icon={<Sparkles className="h-4 w-4 text-status-valid" aria-hidden="true" />}
+                trailing={
+                  <InfoTooltip
+                    label={t("controls.discoveryOnly")}
+                    text={t("controls.discoveryHint")}
+                  />
+                }
+              />
+            </div>
+
+            <div className="min-w-0 xl:col-span-3">
+              <Button
+                variant="secondary"
+                onClick={onToggleAdvanced}
+                aria-expanded={showAdvanced}
+                className="w-full justify-between whitespace-normal text-left"
+              >
+                <span className="inline-flex min-w-0 items-center gap-2">
+                  <SlidersHorizontal className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <span className="leading-snug">{t("controls.advancedToggle")}</span>
+                </span>
+                {showAdvanced ? (
+                  <ChevronUp className="h-4 w-4 shrink-0" aria-hidden="true" />
+                ) : (
+                  <ChevronDown className="h-4 w-4 shrink-0" aria-hidden="true" />
+                )}
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="space-y-2.5 border-t border-border-subtle pt-3">
+            <Switch
+              id="discovery-mode-toggle"
+              checked={excludeBenchmarks}
+              onChange={onChangeExcludeBenchmarks}
+              label={t("controls.discoveryOnly")}
+              icon={<Sparkles className="h-4 w-4 text-status-valid" aria-hidden="true" />}
+              trailing={
+                <InfoTooltip
+                  label={t("controls.discoveryOnly")}
+                  text={t("controls.discoveryHint")}
+                />
+              }
+            />
+
+            <Button
+              variant="secondary"
+              onClick={onToggleAdvanced}
+              aria-expanded={showAdvanced}
+              className="w-full justify-between"
+            >
+              <span className="inline-flex items-center gap-2">
+                <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
+                <span>{t("controls.advancedToggle")}</span>
+              </span>
+              {showAdvanced ? (
+                <ChevronUp className="h-4 w-4" aria-hidden="true" />
+              ) : (
+                <ChevronDown className="h-4 w-4" aria-hidden="true" />
+              )}
+            </Button>
+          </div>
+        )}
       </div>
 
       {testProfile !== "manual_custom" && searchResult && (
@@ -152,6 +238,7 @@ export function ControlPanel({
 
       {testProfile === "manual_custom" && (
         <ManualVariableControls
+          layout={layout}
           targetIndependent={activeSite?.variables.independent ?? {}}
           targetDependent={activeSite?.variables.dependent ?? {}}
           variableProvenance={activeSite?.confidence?.variable_provenance}
@@ -165,38 +252,14 @@ export function ControlPanel({
         />
       )}
 
-      <div className="space-y-2.5 border-t border-border-subtle pt-3">
-        <Switch
-          id="discovery-mode-toggle"
-          checked={excludeBenchmarks}
-          onChange={onChangeExcludeBenchmarks}
-          label={t("controls.discoveryOnly")}
-          icon={<Sparkles className="h-4 w-4 text-status-valid" aria-hidden="true" />}
-          trailing={
-            <InfoTooltip label={t("controls.discoveryOnly")} text={t("controls.discoveryHint")} />
-          }
-        />
-
-        <Button
-          variant="secondary"
-          onClick={onToggleAdvanced}
-          aria-expanded={showAdvanced}
-          className="w-full justify-between"
-        >
-          <span className="inline-flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
-            <span>{t("controls.advancedToggle")}</span>
-          </span>
-          {showAdvanced ? (
-            <ChevronUp className="h-4 w-4" aria-hidden="true" />
-          ) : (
-            <ChevronDown className="h-4 w-4" aria-hidden="true" />
-          )}
-        </Button>
-      </div>
-
       {showAdvanced && (
-        <div className="space-y-4 rounded-xl border border-border-subtle bg-surface p-3.5">
+        <div
+          className={
+            isHorizontal
+              ? "grid grid-cols-1 gap-4 rounded-xl border border-border-subtle bg-surface p-3.5 md:grid-cols-2 xl:grid-cols-5 xl:items-start"
+              : "space-y-4 rounded-xl border border-border-subtle bg-surface p-3.5"
+          }
+        >
           <div className="space-y-1">
             <div className="flex items-center justify-between gap-1">
               <span className="text-xs font-medium text-content-muted">
