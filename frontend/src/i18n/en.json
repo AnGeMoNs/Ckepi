@@ -716,7 +716,7 @@
     "evidence": "Evidence",
     "backToCompare": "Back to Compare",
     "continueToPlan": "Continue to Plan",
-    "viewEvidence": "View Evidence & SDGs",
+    "viewEvidence": "View Scientific Evidence",
     "focusAtacama": "📍 Compare with Atacama",
     "globalLabel": "Global scope",
     "locationLabel": "Specific location",
@@ -1026,7 +1026,7 @@
     "draftSessionNote": "Your draft stays available when switching tabs during this session. Download it before reloading or closing the page."
   },
   "evidence": {
-    "title": "Evidence, Open Data Sources & Sustainable Development Goals",
+    "title": "Scientific Evidence & Open Data Provenance",
     "subtitle": "Full traceability of NASA datasets, partner agencies, causal model assumptions, and AI disclosure.",
     "globalTitle": "Global — Open science & worldwide coverage",
     "globalDesc": "Reproducible comparisons between the global Earth H3 grid and Moon/Mars destinations using open scientific APIs.",
@@ -1055,16 +1055,6 @@
       "copernicus": "Elevation, slope, roughness (DEM 90m), and ERA5-Land climate series.",
       "partners": "Soil properties, Macrostrat lithology, and Sentinel/RADARSAT/G-Portal catalogs."
     },
-    "sdgTitle": "SDG Integration (Educational & Scientific Proposal)",
-    "sdgHonestyNote": "Honesty note: the SDGs below reflect product design and target alignment; impact metrics are only reported when actually measured.",
-    "sdg4Title": "SDG 4 — Quality Education (Targets 4.3 & 4.4) [Primary]",
-    "sdg4Desc": "Planetary physics lab, SI units, explicit equations, and STEAM mini-challenges grounded in real data.",
-    "sdg9Title": "SDG 9 — Industry, Innovation & Infrastructure (Target 9.5) [Primary]",
-    "sdg9Desc": "Reproducible geospatial comparison, transparent causal decomposition, and rover/sensor trial planning.",
-    "sdg12Title": "SDG 12 — Responsible Consumption & Production (Target 12.5) [Complementary]",
-    "sdg12Desc": "Circular economy mindset in trial planning through equipment sharing and reuse.",
-    "sdg17Title": "SDG 17 — Partnerships for the Goals (Targets 17.3, 17.16, 17.17) [Complementary]",
-    "sdg17Desc": "Open, replicable architecture across educational communities and regional research.",
     "aiDisclosureTitle": "AI Disclosure (AI_DISCLOSURE.md)",
     "aiDisclosureDesc": "The core scientific concept (X → Y / B decomposition on H3 grid) is human-designed. AI assistants accelerated implementation, refactoring, and es/pt/en translation parity, verified by the team. No NASA logos or synthetic measurements were fabricated."
   },

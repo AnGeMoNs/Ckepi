@@ -716,7 +716,7 @@
     "evidence": "Evidência",
     "backToCompare": "Voltar para Comparar",
     "continueToPlan": "Ir para Planejar",
-    "viewEvidence": "Ver Evidência e ODS",
+    "viewEvidence": "Ver Evidência Científica",
     "focusAtacama": "📍 Comparar com Atacama",
     "globalLabel": "Alcance global",
     "locationLabel": "Localização específica",
@@ -1026,7 +1026,7 @@
     "draftSessionNote": "Seu rascunho é mantido ao mudar de aba durante esta sessão. Baixe-o antes de recarregar ou fechar a página."
   },
   "evidence": {
-    "title": "Evidência, Fontes Abertas e Objetivos de Desenvolvimento Sustentável",
+    "title": "Evidência Científica e Procedência de Dados Abertos",
     "subtitle": "Rastreabilidade completa de dados NASA, agências parceiras, premissas do modelo causal e transparência de IA.",
     "globalTitle": "Global — Cobertura e ciência aberta",
     "globalDesc": "Comparações reproduzíveis entre malha terrestre H3 e destinos Lua/Marte usando APIs científicas abertas.",
@@ -1055,16 +1055,6 @@
       "copernicus": "Elevação, inclinação, rugosidade (DEM 90m) e séries climáticas ERA5-Land.",
       "partners": "Propriedades de solo, litologia Macrostrat e catálogos Sentinel/RADARSAT/G-Portal."
     },
-    "sdgTitle": "Integração de ODS (Proposta educativa e científica)",
-    "sdgHonestyNote": "Nota de rigor: os ODS abaixo refletem a proposta de produto e metas de referência; indicadores de impacto só são reportados quando medidos.",
-    "sdg4Title": "ODS 4 — Educação de qualidade (Metas 4.3 e 4.4) [Principal]",
-    "sdg4Desc": "Laboratório de física planetária, unidades SI, equações explícitas e minidesafios STEAM conectados a dados reais.",
-    "sdg9Title": "ODS 9 — Indústria, inovação e infraestrutura (Meta 9.5) [Principal]",
-    "sdg9Desc": "Comparação geoespacial reproduzível, decomposição causal transparente e planejamento de ensaios de rovers/sensores.",
-    "sdg12Title": "ODS 12 — Consumo e produção responsáveis (Meta 12.5) [Complementar]",
-    "sdg12Desc": "Abordagem de economia circular no planejamento de ensaios via empréstimo e reutilização de equipamentos.",
-    "sdg17Title": "ODS 17 — Parcerias e meios de implementação (Metas 17.3, 17.16, 17.17) [Complementar]",
-    "sdg17Desc": "Arquitetura aberta e replicável entre comunidades educativas e pesquisa regional.",
     "aiDisclosureTitle": "Declaração de uso de IA (AI_DISCLOSURE.md)",
     "aiDisclosureDesc": "A concepção científica (decomposição X → Y / B em malha H3) é humana. Assistentes de IA apoiaram implementação, refatoração e paridade trilíngue es/pt/en, revisadas pela equipe."
   },

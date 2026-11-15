@@ -52,8 +52,12 @@ test("planner draft survives evidence navigation and exports its text", async ({
   await notes.fill("Reutilizar sensores del laboratorio");
   const equipment = page.getByRole("checkbox").nth(1);
   await equipment.check();
-  await page.locator("#tab-evidence").click();
+  await page.getByRole("button", { name: "Ver Evidencia Científica", exact: true }).click();
   await expect(page.locator("#panel-evidence")).toBeVisible();
+  await expect(page.locator("#tab-learn")).toHaveCount(0);
+  await expect(page.locator("#tab-plan")).toHaveCount(0);
+  await expect(page.locator("#panel-evidence")).not.toContainText(/\bODS\b|\bSDGs?\b|La Araucana/i);
+  await page.getByRole("button", { name: "Cambiar a Modo Estudiante", exact: true }).click();
   await page.locator("#tab-plan").click();
   await expect(title).toHaveValue("Ensayo de Angelo");
   await expect(notes).toHaveValue("Reutilizar sensores del laboratorio");
@@ -94,11 +98,19 @@ test("arrow keys, Home and End move both selection and keyboard focus", async ({
   await expect(page.locator("#tab-plan")).toBeFocused();
   await expect(page.locator("#tab-plan")).toHaveAttribute("aria-selected", "true");
   await page.keyboard.press("End");
-  await expect(page.locator("#tab-evidence")).toBeFocused();
+  await expect(page.locator("#tab-plan")).toBeFocused();
   await page.keyboard.press("Home");
   await expect(page.locator("#tab-compare")).toBeFocused();
   await page.keyboard.press("ArrowLeft");
+  await expect(page.locator("#tab-plan")).toBeFocused();
+
+  await page.goto("/?mode=mission");
+  await expect(page.locator("nav[role='tablist'] [role='tab']")).toHaveCount(2);
+  await page.locator("#tab-compare").focus();
+  await page.keyboard.press("ArrowRight");
   await expect(page.locator("#tab-evidence")).toBeFocused();
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.locator("#tab-compare")).toBeFocused();
 });
 
 test("local laboratory works and explains a catalog outage", async ({ page }) => {
@@ -115,16 +127,21 @@ test("mobile panels fit the viewport and untouched defaults follow the language"
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/?tab=plan");
   const spanishTitle = await page.getByRole("textbox").nth(0).inputValue();
-  await page.getByRole("button", { name: "en", exact: true }).click();
+  await page.locator("header button[aria-haspopup='dialog']").click();
+  await page.getByRole("button", { name: "EN", exact: true }).click();
   await expect(page.getByRole("textbox").nth(0)).not.toHaveValue(spanishTitle);
-  for (const tab of ["plan", "learn", "evidence"]) {
+  for (const tab of ["plan", "learn"]) {
     await page.locator(`#tab-${tab}`).click();
     await expect(page.locator(`#panel-${tab}`)).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
+  await page.goto("/?tab=evidence&mode=mission");
+  await expect(page.locator("#panel-evidence")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
 test("changing planetary sites removes previous cell data while the next query is pending", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
   const cellFor = (site: typeof sites[number]) => ({
     earth_cell_h3: site.body === "moon" ? "837b59fffffffff" : "82b227fffffffff",
     h3_resolution: 2, coordinates: { lat: -24.1, lon: -69.9 },
@@ -148,14 +165,12 @@ test("changing planetary sites removes previous cell data while the next query i
     const site = sites.find((s: { site_id: string }) => s.site_id === new URL(route.request().url()).pathname.split("/").pop())!;
     return route.fulfill({ json: { site, match: cellFor(site), variable_deltas: [] } });
   });
-  await page.goto("/?tab=plan");
-  await expect(page.locator("#panel-plan")).toContainText("82b227fffffffff");
-  await page.locator("#tab-compare").click();
+  await page.goto("/?mode=mission");
+  await expect(page.locator("#section-diagnostics")).toContainText("82b227fffffffff");
   await page.locator("#target-site-select").selectOption("moon_shackleton_pole");
-  await page.locator("#tab-plan").click();
   await expect.poll(() => moonRequested).toBe(true);
-  await expect(page.locator("#panel-plan")).not.toContainText("82b227fffffffff");
+  await expect(page.locator("#panel-compare")).not.toContainText("82b227fffffffff");
   releaseMoon();
-  await expect(page.locator("#panel-plan")).toContainText("837b59fffffffff");
-  await expect(page.locator("#panel-plan")).not.toContainText("82b227fffffffff");
+  await expect(page.locator("#section-diagnostics")).toContainText("837b59fffffffff");
+  await expect(page.locator("#panel-compare")).not.toContainText("82b227fffffffff");
 });

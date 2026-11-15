@@ -201,13 +201,6 @@ export function exportReportMarkdown(
         ``
       );
     }
-
-    lines.push(
-      `### Territorial Impact (Antofagasta & Caja La Araucana — UN SDGs)`,
-      `- **La Araucana Strategic Alignment:** (1) Democratizing frontier science, (2) STEAM employability & open data science, (3) Local application in Antofagasta Region, (4) Interregional innovation lattice.`,
-      `- **Verified UN SDG Targets:** ODS 4.3, 4.4 (STEAM & technical education), ODS 8 & 9.5 (scientific research & innovation), ODS 10 (territorial equity), ODS 17.3, 17.16, 17.17 (multi-stakeholder partnerships).`,
-      ``
-    );
   }
 
   if (

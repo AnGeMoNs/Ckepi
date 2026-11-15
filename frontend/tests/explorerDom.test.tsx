@@ -12,7 +12,7 @@ for (const key of ["window", "document", "navigator", "HTMLElement", "HTMLInputE
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} } as any);
 window.HTMLElement.prototype.scrollIntoView = () => {};
-const { act } = await import("react");
+const { act, useState } = await import("react");
 const { createRoot } = await import("react-dom/client");
 const { default: i18n } = await import("../src/i18n");
 const { clearApiCache } = await import("../src/api/client");
@@ -56,9 +56,14 @@ async function waitFor(check: () => boolean, message: string) {
   }
   assert.fail(message);
 }
-async function render(search: string) {
+function ExplorerHarness({ initialMode }: { initialMode: "explorer" | "mission" }) {
+  const [mode, setMode] = useState<"explorer" | "mission">(initialMode);
+  return <ExplorerPage theme="dark" readingMode={mode} onChangeReadingMode={setMode} />;
+}
+
+async function render(search: string, mode: "explorer" | "mission" = "explorer") {
   window.history.replaceState({}, "", `/${search}`);
-  await act(async () => { root.render(<ExplorerPage theme="dark" readingMode="mission" />); });
+  await act(async () => { root.render(<ExplorerHarness initialMode={mode} />); });
 }
 async function click(selector: string) {
   const element = document.querySelector<HTMLElement>(selector);
@@ -99,15 +104,19 @@ test("DOM: lunar link and invalid profile use the correct body and API profile",
 });
 
 test("DOM: draft text and equipment survive round trip to Evidence", async () => {
-  await render("?tab=plan");
+  await render("?tab=plan", "explorer");
   await waitFor(() => !!document.querySelector("#panel-plan input[type=text]"), "Planner not loaded");
   await input(document.querySelector<HTMLInputElement>("#panel-plan input[type=text]")!, "Ensayo de Angelo");
   const notes = document.querySelectorAll<HTMLTextAreaElement>("#panel-plan textarea")[1];
   await input(notes, "Reutilizar sensores");
   await click("#panel-plan input[type=checkbox]:not(:checked)");
   const checked = document.querySelectorAll("#panel-plan input[type=checkbox]:checked").length;
-  await click("#tab-evidence");
+  await act(async () => button("Ver Evidencia Científica").click());
   await waitFor(() => !!document.querySelector("#panel-evidence"), "Evidence not loaded");
+  assert.equal(document.querySelectorAll("nav[role='tablist'] [role='tab']").length, 2);
+  assert.equal(document.getElementById("tab-plan"), null);
+  assert.equal(document.getElementById("tab-learn"), null);
+  await act(async () => button("Cambiar a Modo Estudiante").click());
   await click("#tab-plan");
   await waitFor(() => !!document.querySelector("#panel-plan"), "Planner not restored");
   assert.equal(document.querySelector<HTMLInputElement>("#panel-plan input[type=text]")!.value, "Ensayo de Angelo");
@@ -117,7 +126,7 @@ test("DOM: draft text and equipment survive round trip to Evidence", async () =>
 
 test("DOM: copying reports failure, waits for resolution and exports the edited text", async () => {
   Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText: () => Promise.reject(new Error("Denied")) } });
-  await render("?tab=plan");
+  await render("?tab=plan", "explorer");
   await waitFor(() => !!document.querySelector("#panel-plan input"), "Planner not loaded");
   await input(document.querySelector<HTMLInputElement>("#panel-plan input[type=text]")!, "Ensayo propio");
   await act(async () => button("Copiar ficha").click());
@@ -135,18 +144,53 @@ test("DOM: copying reports failure, waits for resolution and exports the edited 
   assert.equal(button("Copiado").disabled, false);
 });
 
-test("DOM: keyboard tabs move focus and selection together", async () => {
-  await render("?tab=plan");
+test("DOM: keyboard tabs move focus and selection together in both modes", async () => {
+  await render("?tab=plan", "explorer");
   document.getElementById("tab-plan")!.focus();
-  for (const [key, expected] of [["ArrowRight", "evidence"], ["ArrowLeft", "plan"], ["End", "evidence"], ["Home", "compare"], ["ArrowLeft", "evidence"]]) {
+  for (const [key, expected] of [["ArrowRight", "compare"], ["ArrowLeft", "plan"], ["Home", "compare"], ["ArrowRight", "learn"], ["End", "plan"]]) {
+    await act(async () => document.activeElement!.dispatchEvent(new window.KeyboardEvent("keydown", { key, bubbles: true })));
+    assert.equal(document.activeElement?.id, `tab-${expected}`);
+    assert.equal(document.activeElement?.getAttribute("aria-selected"), "true");
+  }
+
+  await act(async () => root.unmount());
+  root = createRoot(document.getElementById("root")!);
+  await render("?mode=mission", "mission");
+  document.getElementById("tab-compare")!.focus();
+  for (const [key, expected] of [["ArrowRight", "evidence"], ["ArrowLeft", "compare"], ["End", "evidence"], ["Home", "compare"], ["ArrowLeft", "evidence"]]) {
     await act(async () => document.activeElement!.dispatchEvent(new window.KeyboardEvent("keydown", { key, bubbles: true })));
     assert.equal(document.activeElement?.id, `tab-${expected}`);
     assert.equal(document.activeElement?.getAttribute("aria-selected"), "true");
   }
 });
 
+test("DOM: scientific mode shows only Compare and Evidence without SDGs in Evidence", async () => {
+  await render("?tab=evidence&mode=mission", "mission");
+  await waitFor(() => !!document.querySelector("#panel-evidence"), "Evidence not loaded");
+  assert.equal(document.querySelectorAll("nav[role='tablist'] [role='tab']").length, 2);
+  assert.ok(document.getElementById("tab-compare"));
+  assert.ok(document.getElementById("tab-evidence"));
+  assert.equal(document.getElementById("tab-learn"), null);
+  assert.equal(document.getElementById("tab-plan"), null);
+  const evidenceText = document.querySelector("#panel-evidence")!.textContent ?? "";
+  assert.ok(evidenceText.includes("NASA"));
+  assert.ok(evidenceText.includes("AI_DISCLOSURE.md"));
+  assert.equal(/\bODS\b|\bSDGs?\b|La Araucana/i.test(evidenceText), false);
+});
+
+test("DOM: scientific mode normalizes ?tab=learn or ?tab=plan back to compare", async () => {
+  await render("?tab=learn", "mission");
+  assert.equal(document.getElementById("tab-compare")?.getAttribute("aria-selected"), "true");
+  assert.equal(document.getElementById("panel-learn"), null);
+  await act(async () => root.unmount());
+  root = createRoot(document.getElementById("root")!);
+  await render("?tab=plan", "mission");
+  assert.equal(document.getElementById("tab-compare")?.getAttribute("aria-selected"), "true");
+  assert.equal(document.getElementById("panel-plan"), null);
+});
+
 test("DOM: language changes update untouched defaults but preserve the user's edits", async () => {
-  await render("?tab=plan");
+  await render("?tab=plan", "explorer");
   await waitFor(() => !!document.querySelector("#panel-plan input"), "Planner not loaded");
   const title = document.querySelector<HTMLInputElement>("#panel-plan input[type=text]")!;
   const spanish = title.value;
@@ -159,7 +203,7 @@ test("DOM: language changes update untouched defaults but preserve the user's ed
 
 test("DOM: the local laboratory remains usable during a catalog failure", async () => {
   globalThis.fetch = (() => Promise.reject(new Error("Offline"))) as typeof fetch;
-  await render("?tab=learn&site=moon_shackleton_pole");
+  await render("?tab=learn&site=moon_shackleton_pole", "explorer");
   await waitFor(() => !!document.querySelector("[role=alert]"), "Missing outage notice");
   await waitFor(() => document.body.textContent!.includes("Tu perfil físico en Luna"), "Local lab unavailable");
 });
@@ -174,27 +218,23 @@ test("DOM: changing sites hides previous measurements and ignores late responses
     }
     return mockApi(url, init);
   }) as typeof fetch;
-  await render("?tab=plan");
-  await waitFor(() => document.querySelector("#panel-plan")?.textContent?.includes("82b227fffffffff") ?? false, "Initial match missing");
-  await click("#tab-compare");
+  await render("?mode=mission", "mission");
+  await waitFor(() => document.querySelector("#section-diagnostics")?.textContent?.includes("82b227fffffffff") ?? false, "Initial match missing");
   await act(async () => {
     const select = document.getElementById("target-site-select") as HTMLSelectElement;
     select.value = "moon_shackleton_pole";
     select.dispatchEvent(new window.Event("change", { bubbles: true }));
   });
-  await click("#tab-plan");
-  assert.ok(!document.querySelector("#panel-plan")?.textContent?.includes("82b227fffffffff"));
+  assert.ok(!document.querySelector("#panel-compare")?.textContent?.includes("82b227fffffffff"));
   await waitFor(() => pending.length === 2, "Moon requests not started");
-  await click("#tab-compare");
   await act(async () => {
     const select = document.getElementById("target-site-select") as HTMLSelectElement;
     select.value = "mars_jezero_crater";
     select.dispatchEvent(new window.Event("change", { bubbles: true }));
   });
-  await click("#tab-plan");
-  await waitFor(() => document.querySelector("#panel-plan")?.textContent?.includes("82b227fffffffff") ?? false, "Mars match not restored");
+  await waitFor(() => document.querySelector("#section-diagnostics")?.textContent?.includes("82b227fffffffff") ?? false, "Mars match not restored");
   await act(async () => { pending.forEach((release) => release()); });
-  assert.ok(document.querySelector("#panel-plan")?.textContent?.includes("82b227fffffffff"));
-  assert.ok(!document.querySelector("#panel-plan")?.textContent?.includes("837b59fffffffff"));
+  assert.ok(document.querySelector("#section-diagnostics")?.textContent?.includes("82b227fffffffff"));
+  assert.ok(!document.querySelector("#panel-compare")?.textContent?.includes("837b59fffffffff"));
   assert.ok(window.location.search.includes("site=mars_jezero_crater"));
 });

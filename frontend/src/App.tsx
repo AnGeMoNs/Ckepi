@@ -39,6 +39,9 @@ function getInitialReadingMode(): ReadingMode {
   const params = new URLSearchParams(window.location.search);
   const fromUrl = parseModeParam(params.get("mode"));
   if (fromUrl) return fromUrl;
+  const tabParam = params.get("tab");
+  if (tabParam === "learn" || tabParam === "plan") return "explorer";
+  if (tabParam === "evidence") return "mission";
   try {
     const stored = parseModeParam(window.localStorage.getItem(MODE_STORAGE_KEY));
     if (stored) return stored;
@@ -46,7 +49,7 @@ function getInitialReadingMode(): ReadingMode {
     // Ignore storage access errors
   }
   // Preserve scientific mode if opening a deep technical query directly
-  if (["tab", "site", "profile", "cell"].some((key) => params.has(key))) {
+  if (["site", "profile", "cell"].some((key) => params.has(key))) {
     return "mission";
   }
   return "explorer";

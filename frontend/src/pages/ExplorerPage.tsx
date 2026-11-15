@@ -132,14 +132,21 @@ export function ExplorerPage({
   const [aiEnabled, setAiEnabled] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState<MissionAiAnalysisResponse | null>(null);
   const toastTimerRef = useRef<number | null>(null);
-  const [activeTab, setActiveTab] = useState<ExplorerTab>(
-    () => readExplorerParams(typeof window !== "undefined" ? window.location.search : "").tab
-  );
+  const [activeTab, setActiveTab] = useState<ExplorerTab>(() => {
+    const initialTab = readExplorerParams(
+      typeof window !== "undefined" ? window.location.search : ""
+    ).tab;
+    if (isStudent && initialTab === "evidence") return "compare";
+    if (!isStudent && (initialTab === "learn" || initialTab === "plan")) return "compare";
+    return initialTab;
+  });
   const [learnView, setLearnView] = useState<LearnSubView>("site_lab");
   const [planDraft, setPlanDraft] = useState(createFieldTrialDraft);
 
   useEffect(() => {
-    if (isStudent && (activeTab === "plan" || activeTab === "evidence")) {
+    if (isStudent && activeTab === "evidence") {
+      setActiveTab("compare");
+    } else if (!isStudent && (activeTab === "learn" || activeTab === "plan")) {
       setActiveTab("compare");
     }
   }, [isStudent, activeTab]);
@@ -197,11 +204,10 @@ export function ExplorerPage({
     ? [
         { id: "compare", label: t("nav.studentCompare"), icon: GitCompareArrows },
         { id: "learn", label: t("nav.learn"), icon: FlaskConical },
+        { id: "plan", label: t("nav.plan"), icon: ClipboardCheck },
       ]
     : [
         { id: "compare", label: t("nav.compare"), icon: GitCompareArrows },
-        { id: "learn", label: t("nav.learn"), icon: FlaskConical },
-        { id: "plan", label: t("nav.plan"), icon: ClipboardCheck },
         { id: "evidence", label: t("nav.evidence"), icon: BookOpen },
       ];
 
@@ -486,10 +492,7 @@ export function ExplorerPage({
                 selectedCell={selectedCell}
                 comparison={analysis.comparison}
                 onGoToCompare={() => setActiveTab("compare")}
-                onGoToPlan={() => {
-                  if (isStudent) onChangeReadingMode?.("mission");
-                  setActiveTab("plan");
-                }}
+                onGoToPlan={() => setActiveTab("plan")}
               />
             )}
 
@@ -504,7 +507,7 @@ export function ExplorerPage({
 
             {learnView === "three_worlds" && (
               <LaAraucanaImpactPanel
-                variant="student"
+                variant="full"
                 comparison={analysis.comparison}
                 selectedH3={analysis.selectedH3}
                 onSelectAntofagastaCell={(h3Index, siteId) => {
@@ -529,7 +532,10 @@ export function ExplorerPage({
               selectedCell={selectedCell}
               comparison={analysis.comparison}
               onGoToCompare={() => setActiveTab("compare")}
-              onGoToEvidence={() => setActiveTab("evidence")}
+              onGoToEvidence={() => {
+                onChangeReadingMode?.("mission");
+                setActiveTab("evidence");
+              }}
             />
           </div>
         )}
@@ -537,19 +543,6 @@ export function ExplorerPage({
         {activeTab === "evidence" && (
           <div id="panel-evidence" role="tabpanel" aria-labelledby="tab-evidence" className="space-y-6">
             <EvidencePanel activeSite={activeSite} comparison={analysis.comparison} />
-            <LaAraucanaImpactPanel
-              variant="impact"
-              comparison={analysis.comparison}
-              selectedH3={analysis.selectedH3}
-              onSelectAntofagastaCell={(h3Index, siteId) => {
-                if (siteId && siteId !== params.selectedSiteId) {
-                  params.setCustomProbedSite(null);
-                  params.setSelectedSiteId(siteId);
-                }
-                analysis.setSelectedH3(h3Index);
-                setActiveTab("compare");
-              }}
-            />
           </div>
         )}
       </Suspense>

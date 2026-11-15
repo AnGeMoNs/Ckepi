@@ -167,33 +167,16 @@ export function EvidencePanel({ activeSite, comparison }: EvidencePanelProps) {
         </CardContent>
       </Card>
 
-      {/* SDGs (ODS) & AI Disclosure */}
+      {/* AI Usage Disclosure */}
       <Card>
         <CardHeader>
-          <CardTitle>{t("evidence.sdgTitle")}</CardTitle>
-          <p className="mt-1 text-xs text-content-muted">{t("evidence.sdgHonestyNote")}</p>
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-accent" aria-hidden="true" />
+            <CardTitle>{t("evidence.aiDisclosureTitle")}</CardTitle>
+          </div>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          <div className="rounded-xl border border-accent/30 bg-accent/5 p-3 text-xs">
-            <p className="font-semibold text-content">{t("evidence.sdg4Title")}</p>
-            <p className="mt-1 text-content-muted">{t("evidence.sdg4Desc")}</p>
-          </div>
-          <div className="rounded-xl border border-accent/30 bg-accent/5 p-3 text-xs">
-            <p className="font-semibold text-content">{t("evidence.sdg9Title")}</p>
-            <p className="mt-1 text-content-muted">{t("evidence.sdg9Desc")}</p>
-          </div>
-          <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
-            <p className="font-semibold text-content">{t("evidence.sdg12Title")}</p>
-            <p className="mt-1 text-content-muted">{t("evidence.sdg12Desc")}</p>
-          </div>
-          <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
-            <p className="font-semibold text-content">{t("evidence.sdg17Title")}</p>
-            <p className="mt-1 text-content-muted">{t("evidence.sdg17Desc")}</p>
-          </div>
-          <div className="rounded-xl border border-border-subtle bg-surface-elevated p-3 text-xs md:col-span-2">
-            <p className="font-semibold text-content">{t("evidence.aiDisclosureTitle")}</p>
-            <p className="mt-1 text-content-muted">{t("evidence.aiDisclosureDesc")}</p>
-          </div>
+        <CardContent>
+          <p className="text-xs text-content-muted sm:text-sm">{t("evidence.aiDisclosureDesc")}</p>
         </CardContent>
       </Card>
     </div>
