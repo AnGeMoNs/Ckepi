@@ -688,6 +688,7 @@ export function ExplorerPage({
                         matches={analysis.searchResult.matches}
                         totalEvaluated={analysis.searchResult.total_evaluated}
                         selectedH3={analysis.selectedH3}
+                        selectedMatchOverride={analysis.comparison?.match ?? null}
                         theme={theme}
                         readingMode={readingMode}
                         probingCoords={analysis.probingCoords}
@@ -868,6 +869,7 @@ export function ExplorerPage({
                 <AnalogComparisonMatrix
                   matches={analysis.searchResult.matches}
                   selectedH3={analysis.selectedH3}
+                  selectedMatchOverride={analysis.comparison?.match ?? null}
                   activeSite={activeSite}
                   aiAnalysis={aiAnalysis}
                   onSelectCell={(h3Index) => {

@@ -195,6 +195,8 @@ class AnalogSearchRequest(_CustomWeightsMixin):
     min_s_dep: float = Field(default=0.0, ge=0.0, le=1.0)
     exclude_benchmarks: bool = False
     limit: int = Field(default=250, ge=1, le=12000)
+    compact_tail: bool = False
+    detail_limit: int = Field(default=250, ge=0, le=12000)
     custom_min_similarity: dict[str, float] | None = None
 
     @field_validator("custom_min_similarity")

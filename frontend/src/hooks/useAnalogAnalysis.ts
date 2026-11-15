@@ -135,7 +135,10 @@ export function useAnalogAnalysis({
 
       try {
         const [decompRes, analogsRes] = await Promise.all([
-          runDecomposition(selectedSiteId, modelType, signal),
+          runDecomposition(selectedSiteId, modelType, signal).then((res) => {
+            if (!signal?.aborted) setDecomposition(res);
+            return res;
+          }),
           searchAnalogs({
             siteId: selectedSiteId,
             modelType,
@@ -146,6 +149,7 @@ export function useAnalogAnalysis({
             excludeBenchmarks,
             penalizeEstimated,
             limit: earthDensity === "global" ? 12000 : 1500,
+            compactTail: true,
             customIvWeights: testProfile === "manual_custom" ? customIvWeights : undefined,
             customDvWeights: testProfile === "manual_custom" ? customDvWeights : undefined,
             customMinSimilarity: testProfile === "manual_custom" ? customMinSimilarity : undefined,

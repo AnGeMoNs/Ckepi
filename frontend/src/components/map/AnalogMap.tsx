@@ -46,6 +46,7 @@ interface AnalogMapProps {
   matches: AnalogMatchItem[];
   totalEvaluated: number;
   selectedH3: string | null;
+  selectedMatchOverride?: AnalogMatchItem | null;
   theme: ThemeMode;
   readingMode?: ReadingMode;
   probingCoords: { lat: number; lon: number } | null;
@@ -158,6 +159,7 @@ export function AnalogMap({
   matches,
   totalEvaluated,
   selectedH3,
+  selectedMatchOverride = null,
   theme,
   readingMode = "mission",
   probingCoords,
@@ -377,8 +379,13 @@ export function AnalogMap({
   };
 
   const selectedMatch = useMemo(
-    () => matches.find((m) => m.earth_cell_h3 === selectedH3) ?? null,
-    [matches, selectedH3]
+    () =>
+      (selectedMatchOverride && selectedMatchOverride.earth_cell_h3 === selectedH3
+        ? selectedMatchOverride
+        : null) ??
+      matches.find((m) => m.earth_cell_h3 === selectedH3) ??
+      null,
+    [selectedMatchOverride, matches, selectedH3]
   );
 
   useEffect(() => {

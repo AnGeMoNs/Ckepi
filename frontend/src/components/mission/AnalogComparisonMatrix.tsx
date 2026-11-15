@@ -21,6 +21,7 @@ import { InfoTooltip } from "../ui/InfoTooltip";
 interface AnalogComparisonMatrixProps {
   matches: AnalogMatchItem[];
   selectedH3: string | null;
+  selectedMatchOverride?: AnalogMatchItem | null;
   activeSite?: PlanetarySite;
   aiAnalysis?: MissionAiAnalysisResponse | null;
   onSelectCell: (h3Index: string) => void;
@@ -33,6 +34,7 @@ type MatrixCategory = "all" | "discovery" | "benchmark" | "pareto";
 export function AnalogComparisonMatrix({
   matches,
   selectedH3,
+  selectedMatchOverride = null,
   activeSite,
   aiAnalysis = null,
   onSelectCell,
@@ -131,7 +133,11 @@ export function AnalogComparisonMatrix({
                   activeSite,
                   matches,
                   (k, p) => t(k, p),
-                  matches.find((m) => m.earth_cell_h3 === selectedH3) ?? matches[0],
+                  (selectedMatchOverride && selectedMatchOverride.earth_cell_h3 === selectedH3
+                    ? selectedMatchOverride
+                    : null) ??
+                    matches.find((m) => m.earth_cell_h3 === selectedH3) ??
+                    matches[0],
                   lang,
                   aiAnalysis
                 );

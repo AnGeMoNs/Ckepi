@@ -139,6 +139,7 @@ export interface SearchAnalogsParams {
   excludeBenchmarks: boolean;
   penalizeEstimated?: boolean;
   limit: number;
+  compactTail?: boolean;
   customIvWeights?: Record<string, number>;
   customDvWeights?: Record<string, number>;
   customMinSimilarity?: Record<string, number>;
@@ -156,6 +157,7 @@ export function searchAnalogs(params: SearchAnalogsParams): Promise<AnalogSearch
     exclude_benchmarks: params.excludeBenchmarks,
     penalize_estimated: params.penalizeEstimated ?? false,
     limit: params.limit,
+    compact_tail: params.compactTail ?? false,
     custom_iv_weights: params.customIvWeights,
     custom_dv_weights: params.customDvWeights,
     custom_min_similarity: params.customMinSimilarity,

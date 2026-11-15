@@ -15,6 +15,7 @@ import h3
 import pandas as pd
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 import httpx
 from PIL import Image
 
@@ -212,6 +213,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(GZipMiddleware, minimum_size=1024)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
@@ -543,14 +545,14 @@ def run_decomposition(payload: DecompositionRequest) -> DecompositionResponse:
 
 
 @app.post("/api/v1/analogs/search", response_model=AnalogSearchResponse)
-def search_analogs(payload: AnalogSearchRequest) -> AnalogSearchResponse:
+def search_analogs(payload: AnalogSearchRequest) -> Response:
     """Run causal decomposition on the planetary site and score Earth H3 cells."""
     site = _get_site_or_404(payload.site_id)
     db_path = _get_duckdb_path()
     decomposition = _get_decomposition_cached(site, db_path, payload.model_type)
 
     df_earth = load_earth_grid(db_path, exclude_benchmarks=payload.exclude_benchmarks)
-    return match_terrestrial_analogs(
+    result = match_terrestrial_analogs(
         site=site,
         causal_weights=decomposition.global_iv_weights,
         df_earth=df_earth,
@@ -562,7 +564,11 @@ def search_analogs(payload: AnalogSearchRequest) -> AnalogSearchResponse:
         custom_min_similarity=payload.custom_min_similarity,
         penalize_estimated=payload.penalize_estimated,
         distance_metric=payload.distance_metric,
+        compact_tail=payload.compact_tail,
+        detail_limit=payload.detail_limit,
     )
+    # Serialize directly with Pydantic v2 Rust engine to avoid FastAPI's slow python jsonable_encoder over 10k+ items.
+    return Response(content=result.model_dump_json(), media_type="application/json")
 
 
 @app.post(
