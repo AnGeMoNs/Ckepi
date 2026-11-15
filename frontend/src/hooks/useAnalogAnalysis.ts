@@ -68,6 +68,7 @@ export function useAnalogAnalysis({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [isRefining, setIsRefining] = useState<boolean>(false);
+  const [earthDensity, setEarthDensity] = useState<"global" | "top">("global");
   const [drilldownState, setDrilldownState] = useState<{
     parentH3: string;
     childIds: string[];
@@ -144,7 +145,7 @@ export function useAnalogAnalysis({
             minSDep,
             excludeBenchmarks,
             penalizeEstimated,
-            limit: 1200,
+            limit: earthDensity === "global" ? 12000 : 1500,
             customIvWeights: testProfile === "manual_custom" ? customIvWeights : undefined,
             customDvWeights: testProfile === "manual_custom" ? customDvWeights : undefined,
             customMinSimilarity: testProfile === "manual_custom" ? customMinSimilarity : undefined,
@@ -185,6 +186,7 @@ export function useAnalogAnalysis({
       minSDep,
       excludeBenchmarks,
       penalizeEstimated,
+      earthDensity,
       selectedH3,
       customIvWeights,
       customDvWeights,
@@ -215,6 +217,7 @@ export function useAnalogAnalysis({
     minSDep,
     excludeBenchmarks,
     penalizeEstimated,
+    earthDensity,
     customIvWeights,
     customDvWeights,
     customMinSimilarity,
@@ -368,7 +371,7 @@ export function useAnalogAnalysis({
           minSInd,
           minSDep,
           excludeBenchmarks,
-          limit: 600,
+          limit: earthDensity === "global" ? 12000 : 1500,
           customIvWeights: testProfile === "manual_custom" ? customIvWeights : undefined,
           customDvWeights: testProfile === "manual_custom" ? customDvWeights : undefined,
           customMinSimilarity: testProfile === "manual_custom" ? customMinSimilarity : undefined,
@@ -394,6 +397,7 @@ export function useAnalogAnalysis({
       minSInd,
       minSDep,
       excludeBenchmarks,
+      earthDensity,
       customIvWeights,
       customDvWeights,
       customMinSimilarity,
@@ -427,6 +431,8 @@ export function useAnalogAnalysis({
     isLoading,
     isRefreshing,
     isRefining,
+    earthDensity,
+    setEarthDensity,
     drilldownState,
     setDrilldownState,
     probingCoords,

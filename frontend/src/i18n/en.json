@@ -399,6 +399,22 @@
     "cellRadiationLabel": "GCR Radiation",
     "validTestsBadge": "{{count}} viable test(s)",
     "jumpToDiagnostics": "View full diagnostics",
+    "hexMetricLabel": "Hexagon color lens",
+    "densityGlobal": "Full globe ({{count}})",
+    "densityTop": "Top {{count}} (fast)",
+    "renderedEvaluatedCount": "{{rendered}} rendered / {{total}} evaluated",
+    "legendLowRisk": "Low breakage risk (≤ 25%)",
+    "legendMidRisk": "Moderate risk (26–45%)",
+    "legendHighRisk": "High breakage risk (> 45%)",
+    "earthProfileTitle": "Earth Physical & Environmental Profile",
+    "cellThermalRoughness": "Roughness / Inertia",
+    "cellOpticsSolar": "Albedo / Solar Flux",
+    "cellHumidityUv": "Humidity / UV Index",
+    "cellWindDust": "Wind / Dust Flux",
+    "cellDiurnalLabel": "Diurnal ΔT",
+    "cellCatalogGeology": "Geology (Macrostrat)",
+    "cellCatalogSimulant": "Simulant / Habitability",
+    "cellCatalogTitle": "Cell Geological & Satellite Context",
     "filters": {
       "searchPlaceholder": "Search region, analog, biome, or H3 cell...",
       "sortByLabel": "Sort by",
@@ -439,7 +455,8 @@
       "jumpButton": "Go",
       "pageOption": "Page {{page}} (#{{start}}–{{end}} · {{score}})",
       "back10": "−10 pages",
-      "forward10": "+10 pages"
+      "forward10": "+10 pages",
+      "pageShort": "Pg. {{page}}"
     }
   },
   "agencies": {

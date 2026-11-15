@@ -194,7 +194,7 @@ class AnalogSearchRequest(_CustomWeightsMixin):
     min_s_ind: float = Field(default=0.0, ge=0.0, le=1.0)
     min_s_dep: float = Field(default=0.0, ge=0.0, le=1.0)
     exclude_benchmarks: bool = False
-    limit: int = Field(default=250, ge=1, le=2500)
+    limit: int = Field(default=250, ge=1, le=12000)
     custom_min_similarity: dict[str, float] | None = None
 
     @field_validator("custom_min_similarity")
@@ -214,7 +214,7 @@ class PlanetaryProbeRequest(_CustomWeightsMixin):
     min_s_ind: float = Field(default=0.0, ge=0.0, le=1.0)
     min_s_dep: float = Field(default=0.0, ge=0.0, le=1.0)
     exclude_benchmarks: bool = False
-    limit: int = Field(default=500, ge=1, le=2500)
+    limit: int = Field(default=500, ge=1, le=12000)
     custom_min_similarity: dict[str, float] | None = None
 
     @field_validator("custom_min_similarity")

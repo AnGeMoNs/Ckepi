@@ -399,6 +399,22 @@
     "cellRadiationLabel": "Radiação GCR",
     "validTestsBadge": "{{count}} ensaio(s) viável(is)",
     "jumpToDiagnostics": "Ver diagnóstico completo",
+    "hexMetricLabel": "Cor dos hexágonos",
+    "densityGlobal": "Globo completo ({{count}})",
+    "densityTop": "Top {{count}} (rápido)",
+    "renderedEvaluatedCount": "{{rendered}} desenhadas / {{total}} avaliadas",
+    "legendLowRisk": "Risco baixo (≤ 25%)",
+    "legendMidRisk": "Risco moderado (26–45%)",
+    "legendHighRisk": "Risco alto (> 45%)",
+    "earthProfileTitle": "Perfil Físico e Ambiental da Terra",
+    "cellThermalRoughness": "Rugosidade / Inércia",
+    "cellOpticsSolar": "Albedo / Fluxo Solar",
+    "cellHumidityUv": "Umidade / Índice UV",
+    "cellWindDust": "Vento / Fluxo de Poeira",
+    "cellDiurnalLabel": "ΔT diurna",
+    "cellCatalogGeology": "Geologia (Macrostrat)",
+    "cellCatalogSimulant": "Simulante / Habitabilidade",
+    "cellCatalogTitle": "Contexto Geológico e Satelital da Célula",
     "filters": {
       "searchPlaceholder": "Buscar região, análogo, bioma ou célula H3...",
       "sortByLabel": "Ordenar por",
@@ -439,7 +455,8 @@
       "jumpButton": "Ir",
       "pageOption": "Pág. {{page}} (#{{start}}–{{end}} · {{score}})",
       "back10": "−10 págs.",
-      "forward10": "+10 págs."
+      "forward10": "+10 págs.",
+      "pageShort": "Pág. {{page}}"
     }
   },
   "agencies": {

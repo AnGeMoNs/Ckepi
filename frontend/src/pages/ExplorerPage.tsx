@@ -526,6 +526,8 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                         theme={theme}
                         probingCoords={analysis.probingCoords}
                         isRefining={analysis.isRefining}
+                        earthDensity={analysis.earthDensity}
+                        onChangeEarthDensity={analysis.setEarthDensity}
                         drilldownState={analysis.drilldownState}
                         onSelectCell={(h3Index) => {
                           setHasExploredMap(true);

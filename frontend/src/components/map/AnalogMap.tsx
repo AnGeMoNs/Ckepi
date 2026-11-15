@@ -6,9 +6,12 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  Database,
+  ExternalLink,
   Filter,
   Globe,
   History,
+  Layers,
   MapPin,
   Mountain,
   RotateCcw,
@@ -22,9 +25,15 @@ import * as maplibregl from "maplibre-gl";
 import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import { useTranslation } from "react-i18next";
 
+import { fetchMultiAgencyDatasets } from "../../api/client";
 import { formatNumber, formatPercent } from "../../i18n";
 import { getMapColors } from "../../theme/mapColors";
-import type { AnalogMatchItem, EarthOverlayLayer, ThemeMode } from "../../types/analog";
+import type {
+  AnalogMatchItem,
+  EarthOverlayLayer,
+  MultiAgencyCatalogResponse,
+  ThemeMode,
+} from "../../types/analog";
 import { Badge } from "../ui/Badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 
@@ -39,6 +48,8 @@ interface AnalogMapProps {
   theme: ThemeMode;
   probingCoords: { lat: number; lon: number } | null;
   isRefining?: boolean;
+  earthDensity?: "global" | "top";
+  onChangeEarthDensity?: (density: "global" | "top") => void;
   drilldownState?: { parentH3: string; childIds: string[] } | null;
   onSelectCell: (h3Index: string) => void;
   onProbeCoordinate: (lat: number, lon: number) => void;
@@ -148,6 +159,8 @@ export function AnalogMap({
   theme,
   probingCoords,
   isRefining = false,
+  earthDensity = "global",
+  onChangeEarthDensity,
   drilldownState = null,
   onSelectCell,
   onProbeCoordinate,
@@ -168,6 +181,9 @@ export function AnalogMap({
   const [overlayLayer, setOverlayLayer] = useState<EarthOverlayLayer>("satellite_hd");
   const [isGlobe, setIsGlobe] = useState(true);
   const [isTerrain3d, setIsTerrain3d] = useState(false);
+  const [hexMetric, setHexMetric] = useState<"combined" | "s_ind" | "s_dep" | "r_break">("combined");
+  const [selectedCatalog, setSelectedCatalog] = useState<MultiAgencyCatalogResponse | null>(null);
+  const [catalogLoading, setCatalogLoading] = useState(false);
   const [hoveredH3, setHoveredH3] = useState<string | null>(null);
   const hoveredH3Ref = useRef<string | null>(null);
   const prevStyleKeyRef = useRef<string>(`${theme}:${overlayLayer}`);
@@ -351,6 +367,30 @@ export function AnalogMap({
     [matches, selectedH3]
   );
 
+  useEffect(() => {
+    const h3Id = selectedMatch?.earth_cell_h3;
+    if (!h3Id) {
+      setSelectedCatalog(null);
+      setCatalogLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setCatalogLoading(true);
+    fetchMultiAgencyDatasets(h3Id)
+      .then((res) => {
+        if (!cancelled) setSelectedCatalog(res);
+      })
+      .catch(() => {
+        if (!cancelled) setSelectedCatalog(null);
+      })
+      .finally(() => {
+        if (!cancelled) setCatalogLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedMatch?.earth_cell_h3]);
+
   const matchLookup = useMemo(() => {
     const map = new Map<string, { match: AnalogMatchItem; rank: number }>();
     displayedMatches.forEach((m, idx) => {
@@ -461,16 +501,27 @@ export function AnalogMap({
     );
     const highCount = Math.max(12, Math.min(45, Math.ceil(visibleList.length * 0.04)));
     const midCount = Math.max(36, Math.min(200, Math.ceil(visibleList.length * 0.18)));
+    const largeGrid = visibleList.length > 2500;
 
     return {
       type: "FeatureCollection" as const,
       features: visibleList.map((m, idx) => {
-        const colorTier =
-          m.combined_score >= 0.72 || idx < highCount
-            ? 2
-            : m.combined_score >= 0.55 || idx < midCount
-            ? 1
-            : 0;
+        let colorTier = 0;
+        if (hexMetric === "r_break") {
+          colorTier = m.r_break_overall <= 0.25 ? 2 : m.r_break_overall <= 0.45 ? 1 : 0;
+        } else if (hexMetric === "s_ind") {
+          colorTier = m.s_ind >= 0.72 ? 2 : m.s_ind >= 0.55 ? 1 : 0;
+        } else if (hexMetric === "s_dep") {
+          colorTier = m.s_dep >= 0.72 ? 2 : m.s_dep >= 0.55 ? 1 : 0;
+        } else {
+          colorTier =
+            m.combined_score >= 0.72 || idx < highCount
+              ? 2
+              : m.combined_score >= 0.55 || idx < midCount
+              ? 1
+              : 0;
+        }
+        const segments = largeGrid ? 1 : m.h3_resolution >= 3 ? 3 : 6;
         return {
           type: "Feature" as const,
           properties: {
@@ -481,18 +532,12 @@ export function AnalogMap({
           },
           geometry: {
             type: "Polygon" as const,
-            coordinates: [
-              densifyRing(
-                m.h3_boundary,
-                m.coordinates.lon,
-                m.h3_resolution >= 3 ? 3 : 6
-              ),
-            ],
+            coordinates: [densifyRing(m.h3_boundary, m.coordinates.lon, segments)],
           },
         };
       }),
     };
-  }, [matches, selectedH3, drilldownState]);
+  }, [matches, selectedH3, drilldownState, hexMetric]);
 
   const latestGeojsonRef = useRef(geojson);
   latestGeojsonRef.current = geojson;
@@ -777,6 +822,44 @@ export function AnalogMap({
             <option value="gibs_aerosol">{t("map.layers.gibs_aerosol")}</option>
             <option value="basemap">{t("map.layers.basemap")}</option>
           </select>
+          <label htmlFor="earth-hex-metric" className="sr-only">
+            {t("map.hexMetricLabel")}
+          </label>
+          <select
+            id="earth-hex-metric"
+            value={hexMetric}
+            onChange={(e) =>
+              setHexMetric(e.target.value as "combined" | "s_ind" | "s_dep" | "r_break")
+            }
+            aria-label={t("map.hexMetricLabel")}
+            className="min-h-11 rounded border border-border-subtle bg-surface px-2.5 py-1.5 text-xs font-medium text-content focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+          >
+            <option value="combined">{t("map.metricCombined")}</option>
+            <option value="s_ind">{t("map.metricSInd")}</option>
+            <option value="s_dep">{t("map.metricSDep")}</option>
+            <option value="r_break">{t("map.metricRBreak")}</option>
+          </select>
+          {onChangeEarthDensity && (
+            <button
+              type="button"
+              aria-pressed={earthDensity === "global"}
+              onClick={() =>
+                onChangeEarthDensity(earthDensity === "global" ? "top" : "global")
+              }
+              className={`inline-flex min-h-11 items-center gap-1.5 rounded border px-2.5 py-1.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-accent/40 ${
+                earthDensity === "global"
+                  ? "border-accent/40 bg-accent/10 text-accent"
+                  : "border-border-subtle bg-surface text-content-muted hover:bg-surface-muted"
+              }`}
+            >
+              <Layers className="h-3.5 w-3.5" aria-hidden="true" />
+              <span>
+                {earthDensity === "global"
+                  ? t("map.densityGlobal", { count: totalEvaluated })
+                  : t("map.densityTop", { count: 1500 })}
+              </span>
+            </button>
+          )}
           <button
             type="button"
             aria-pressed={isGlobe}
@@ -832,7 +915,12 @@ export function AnalogMap({
             </button>
           )}
           <Badge variant="default">
-            {t("map.evaluatedCount", { count: totalEvaluated })}
+            {matches.length < totalEvaluated
+              ? t("map.renderedEvaluatedCount", {
+                  rendered: formatNumber(matches.length, lang, 0),
+                  total: formatNumber(totalEvaluated, lang, 0),
+                })
+              : t("map.evaluatedCount", { count: totalEvaluated })}
           </Badge>
         </div>
       </CardHeader>
@@ -845,15 +933,15 @@ export function AnalogMap({
           <div className="flex flex-wrap items-center gap-3">
             <span className="inline-flex items-center gap-1.5">
               <span className="h-2.5 w-2.5 rounded-full bg-status-valid" />
-              {t("map.legendHigh")}
+              {hexMetric === "r_break" ? t("map.legendLowRisk") : t("map.legendHigh")}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <span className="h-2.5 w-2.5 rounded-full bg-status-warn" />
-              {t("map.legendMid")}
+              {hexMetric === "r_break" ? t("map.legendMidRisk") : t("map.legendMid")}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <span className="h-2.5 w-2.5 rounded-full bg-content-muted" />
-              {t("map.legendLow")}
+              {hexMetric === "r_break" ? t("map.legendHighRisk") : t("map.legendLow")}
             </span>
           </div>
         </div>
@@ -1076,71 +1164,233 @@ export function AnalogMap({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                    <span className="block text-[11px] text-content-muted">
-                      {t("map.metricCombined")}
+                <div className="space-y-2 border-t border-border-subtle pt-2.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-content-muted">
+                      {t("map.earthProfileTitle")}
                     </span>
-                    <span className="text-xs font-bold tabular-nums text-accent">
-                      {formatPercent(selectedMatch.combined_score, lang)} · S_ind{" "}
-                      {formatPercent(selectedMatch.s_ind, lang)} · S_dep{" "}
-                      {formatPercent(selectedMatch.s_dep, lang)}
-                    </span>
-                  </div>
-                  <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                    <span className="block text-[11px] text-content-muted">
-                      {t("map.cellTempLabel")}
-                    </span>
-                    <span className="text-xs font-semibold tabular-nums text-content">
-                      {formatNumber(
-                        (selectedMatch.earth_variables.dependent.mean_surface_temp_k ?? 273.15) -
-                          273.15,
-                        lang,
-                        1
+                    <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-content-muted">
+                      {selectedMatch.provenance?.is_live_probed && (
+                        <Badge variant="accent">{t("provenance.liveProbed")}</Badge>
                       )}
-                      °C (
-                      {formatNumber(
-                        selectedMatch.earth_variables.dependent.mean_surface_temp_k ?? 273.15,
-                        lang,
-                        0
-                      )}{" "}
-                      K)
-                    </span>
-                  </div>
-                  <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                    <span className="block text-[11px] text-content-muted">
-                      {t("map.cellAridityLabel")} / {t("map.cellSlopeLabel")}
-                    </span>
-                    <span className="text-xs font-semibold tabular-nums text-content">
-                      AI{" "}
-                      {formatNumber(
-                        selectedMatch.earth_variables.independent.aridity_index ?? 0,
-                        lang,
-                        3
-                      )}{" "}
-                      ·{" "}
-                      {formatNumber(
-                        selectedMatch.earth_variables.independent.slope_deg ?? 0,
-                        lang,
-                        1
+                      {selectedMatch.provenance?.source_apis?.map((api) => (
+                        <Badge key={api} variant="default">
+                          {api}
+                        </Badge>
+                      ))}
+                      {selectedMatch.provenance?.observation_window && (
+                        <span>· {selectedMatch.provenance.observation_window}</span>
                       )}
-                      °
-                    </span>
+                    </div>
                   </div>
-                  <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                    <span className="block text-[11px] text-content-muted">
-                      {t("map.cellRadiationLabel")} / {t("map.metricRBreak")}
-                    </span>
-                    <span className="text-xs font-semibold tabular-nums text-content">
-                      {formatNumber(
-                        selectedMatch.earth_variables.breakage.radiation_msv_yr ?? 0,
-                        lang,
-                        2
-                      )}{" "}
-                      mSv/yr · {formatPercent(selectedMatch.r_break_overall, lang)}
-                    </span>
+
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                      <span className="block text-[11px] text-content-muted">
+                        {t("map.metricCombined")}
+                      </span>
+                      <span className="text-xs font-bold tabular-nums text-accent">
+                        {formatPercent(selectedMatch.combined_score, lang)} · S_ind{" "}
+                        {formatPercent(selectedMatch.s_ind, lang)} · S_dep{" "}
+                        {formatPercent(selectedMatch.s_dep, lang)}
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                      <span className="block text-[11px] text-content-muted">
+                        {t("map.cellTempLabel")} / {t("map.cellDiurnalLabel")}
+                      </span>
+                      <span className="text-xs font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          (selectedMatch.earth_variables.dependent.mean_surface_temp_k ?? 273.15) -
+                            273.15,
+                          lang,
+                          1
+                        )}
+                        °C · Δ{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.dependent.diurnal_temp_amplitude_k ?? 0,
+                          lang,
+                          1
+                        )}{" "}
+                        K
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                      <span className="block text-[11px] text-content-muted">
+                        {t("map.cellAridityLabel")} / {t("map.cellSlopeLabel")}
+                      </span>
+                      <span className="text-xs font-semibold tabular-nums text-content">
+                        AI{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.aridity_index ?? 0,
+                          lang,
+                          3
+                        )}{" "}
+                        ·{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.slope_deg ?? 0,
+                          lang,
+                          1
+                        )}
+                        °
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                      <span className="block text-[11px] text-content-muted">
+                        {t("map.cellRadiationLabel")} / {t("map.metricRBreak")}
+                      </span>
+                      <span className="text-xs font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          selectedMatch.earth_variables.breakage.radiation_msv_yr ?? 0,
+                          lang,
+                          2
+                        )}{" "}
+                        mSv/yr · {formatPercent(selectedMatch.r_break_overall, lang)}
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                      <span className="block text-[11px] text-content-muted">
+                        {t("map.cellThermalRoughness")}
+                      </span>
+                      <span className="text-xs font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.topographic_roughness ?? 0,
+                          lang,
+                          2
+                        )}{" "}
+                        ·{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.thermal_inertia ?? 0,
+                          lang,
+                          0
+                        )}{" "}
+                        TIU
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                      <span className="block text-[11px] text-content-muted">
+                        {t("map.cellOpticsSolar")}
+                      </span>
+                      <span className="text-xs font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.surface_albedo ?? 0,
+                          lang,
+                          2
+                        )}{" "}
+                        ·{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.solar_flux_wm2 ?? 0,
+                          lang,
+                          0
+                        )}{" "}
+                        W/m²
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                      <span className="block text-[11px] text-content-muted">
+                        {t("map.cellHumidityUv")}
+                      </span>
+                      <span className="text-xs font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.relative_humidity_pct ?? 0,
+                          lang,
+                          0
+                        )}
+                        % · UV{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.uv_irradiance_index ?? 0,
+                          lang,
+                          1
+                        )}
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
+                      <span className="block text-[11px] text-content-muted">
+                        {t("map.cellWindDust")}
+                      </span>
+                      <span className="text-xs font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          selectedMatch.earth_variables.dependent.surface_wind_ms ?? 0,
+                          lang,
+                          1
+                        )}{" "}
+                        m/s ·{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.dependent.aeolian_dust_flux ?? 0,
+                          lang,
+                          2
+                        )}
+                      </span>
+                    </div>
                   </div>
                 </div>
+
+                {/* Geological & Multi-Agency Earth Context */}
+                {(catalogLoading || selectedCatalog) && (
+                  <div className="space-y-2 border-t border-border-subtle pt-2.5">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-content-muted">
+                      <Database className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+                      <span>{t("map.cellCatalogTitle")}</span>
+                    </div>
+                    {catalogLoading && !selectedCatalog ? (
+                      <p className="text-xs text-content-muted">{t("agencies.loading")}</p>
+                    ) : (
+                      selectedCatalog && (
+                        <div className="space-y-2">
+                          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                            {selectedCatalog.geology && (
+                              <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5 text-xs">
+                                <span className="block text-[11px] text-content-muted">
+                                  {t("map.cellCatalogGeology")}
+                                </span>
+                                <span className="font-semibold text-content">
+                                  {selectedCatalog.geology.unit_name} ·{" "}
+                                  {selectedCatalog.geology.lithology} ({selectedCatalog.geology.age})
+                                </span>
+                              </div>
+                            )}
+                            {(selectedCatalog.regolith_simulant || selectedCatalog.habitability) && (
+                              <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5 text-xs">
+                                <span className="block text-[11px] text-content-muted">
+                                  {t("map.cellCatalogSimulant")}
+                                </span>
+                                <span className="font-semibold text-content">
+                                  {selectedCatalog.regolith_simulant
+                                    ? `${selectedCatalog.regolith_simulant.recommended_code} (${formatPercent(selectedCatalog.regolith_simulant.affinity_score, lang)})`
+                                    : ""}
+                                  {selectedCatalog.regolith_simulant && selectedCatalog.habitability
+                                    ? " · "
+                                    : ""}
+                                  {selectedCatalog.habitability
+                                    ? `HI ${formatNumber(selectedCatalog.habitability.habitability_index, lang, 2)}`
+                                    : ""}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          {selectedCatalog.products.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5">
+                              {selectedCatalog.products.slice(0, 4).map((prod) => (
+                                <a
+                                  key={`${prod.agency}-${prod.product_id}`}
+                                  href={prod.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex min-h-9 items-center gap-1 rounded border border-border-subtle bg-surface-elevated px-2 py-1 text-[11px] font-medium text-content transition hover:border-accent hover:text-accent"
+                                >
+                                  <span>
+                                    {prod.agency} · {prod.mission}
+                                  </span>
+                                  <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+                                </a>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -1684,7 +1934,7 @@ export function AnalogMap({
                                   : "border-border-subtle bg-surface text-content hover:border-accent/50 hover:text-accent"
                               }`}
                             >
-                              Pág. {p}
+                              {t("map.nav.pageShort", { page: p })}
                             </button>
                           ))}
                       </div>
