@@ -194,9 +194,9 @@ class AnalogSearchRequest(_CustomWeightsMixin):
     min_s_ind: float = Field(default=0.0, ge=0.0, le=1.0)
     min_s_dep: float = Field(default=0.0, ge=0.0, le=1.0)
     exclude_benchmarks: bool = False
-    limit: int = Field(default=250, ge=1, le=12000)
+    limit: int = Field(default=250, ge=1, le=25000)
     compact_tail: bool = False
-    detail_limit: int = Field(default=250, ge=0, le=12000)
+    detail_limit: int = Field(default=250, ge=0, le=25000)
     custom_min_similarity: dict[str, float] | None = None
 
     @field_validator("custom_min_similarity")
@@ -216,7 +216,7 @@ class PlanetaryProbeRequest(_CustomWeightsMixin):
     min_s_ind: float = Field(default=0.0, ge=0.0, le=1.0)
     min_s_dep: float = Field(default=0.0, ge=0.0, le=1.0)
     exclude_benchmarks: bool = False
-    limit: int = Field(default=500, ge=1, le=12000)
+    limit: int = Field(default=500, ge=1, le=25000)
     custom_min_similarity: dict[str, float] | None = None
 
     @field_validator("custom_min_similarity")
@@ -449,17 +449,19 @@ class MultiAgencyCatalogResponse(BaseModel):
 
 
 class AnalogRefineRequest(_CustomWeightsMixin):
-    """Request to subdivide an Earth H3 cell into 7 finer child cells and score them."""
+    """Request to subdivide an Earth H3 cell (or k-ring neighborhood) into finer child cells."""
 
     earth_cell_h3: str
     site_id: str
     model_type: DecompositionModelType = "ridge"
+    radius_k: int = Field(default=0, ge=0, le=1)
 
 
 class AnalogRefineResponse(BaseModel):
-    """Refined sub-cell analog matches for a parent Earth H3 cell."""
+    """Refined sub-cell analog matches for one or more parent Earth H3 cells."""
 
     parent_h3: str
+    refined_parents: list[str] = Field(default_factory=list)
     child_resolution: int
     matches: list[AnalogMatchItem]
     top_comparison: SiteComparisonResponse | None = None

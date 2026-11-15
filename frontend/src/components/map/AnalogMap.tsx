@@ -53,7 +53,11 @@ interface AnalogMapProps {
   isRefining?: boolean;
   earthDensity?: "global" | "top";
   onChangeEarthDensity?: (density: "global" | "top") => void;
-  drilldownState?: { parentH3: string; childIds: string[] } | null;
+  drilldownState?: { parentH3: string; parentH3s?: string[]; childIds: string[] } | null;
+  hiddenParentH3s?: string[];
+  minSInd?: number;
+  minSDep?: number;
+  onClearThresholds?: () => void;
   onSelectCell: (h3Index: string) => void;
   onProbeCoordinate: (lat: number, lon: number) => void;
   onRefineCell?: (h3Index: string) => void;
@@ -167,6 +171,10 @@ export function AnalogMap({
   earthDensity = "global",
   onChangeEarthDensity,
   drilldownState = null,
+  hiddenParentH3s = [],
+  minSInd = 0,
+  minSDep = 0,
+  onClearThresholds,
   onSelectCell,
   onProbeCoordinate,
   onRefineCell,
@@ -517,9 +525,15 @@ export function AnalogMap({
   };
 
   const geojson = useMemo(() => {
-    const visibleList = matches.filter(
-      (m) => !drilldownState || m.earth_cell_h3 !== drilldownState.parentH3
-    );
+    const hiddenParents = new Set<string>(hiddenParentH3s);
+    if (drilldownState) {
+      for (const p of drilldownState.parentH3s && drilldownState.parentH3s.length > 0
+        ? drilldownState.parentH3s
+        : [drilldownState.parentH3]) {
+        hiddenParents.add(p);
+      }
+    }
+    const visibleList = matches.filter((m) => !hiddenParents.has(m.earth_cell_h3));
     const highCount = Math.max(12, Math.min(45, Math.ceil(visibleList.length * 0.04)));
     const midCount = Math.max(36, Math.min(200, Math.ceil(visibleList.length * 0.18)));
     const largeGrid = visibleList.length > 2500;
@@ -558,7 +572,7 @@ export function AnalogMap({
         };
       }),
     };
-  }, [matches, selectedH3, drilldownState, hexMetric]);
+  }, [matches, selectedH3, drilldownState, hiddenParentH3s, hexMetric]);
 
   const latestGeojsonRef = useRef(geojson);
   latestGeojsonRef.current = geojson;
@@ -601,7 +615,7 @@ export function AnalogMap({
             0.46,
             ["==", ["get", "color_tier"], 1],
             0.30,
-            0.14,
+            0.18,
           ],
         },
       });
@@ -647,7 +661,7 @@ export function AnalogMap({
             0.92,
             ["==", ["get", "color_tier"], 1],
             0.72,
-            0.38,
+            0.45,
           ],
         },
       });
@@ -947,6 +961,17 @@ export function AnalogMap({
                 })
               : t("map.evaluatedCount", { count: totalEvaluated })}
           </Badge>
+          {matches.length < totalEvaluated && (minSInd > 0 || minSDep > 0) && onClearThresholds && (
+            <button
+              type="button"
+              onClick={onClearThresholds}
+              className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-accent/40 bg-accent/10 px-2.5 py-1 text-xs font-medium text-accent hover:bg-accent/20 focus:outline-none focus:ring-2 focus:ring-accent/40"
+            >
+              {t("map.clearThresholdFilter", {
+                hidden: formatNumber(totalEvaluated - matches.length, lang, 0),
+              })}
+            </button>
+          )}
         </div>
       </CardHeader>
 
@@ -1765,15 +1790,28 @@ export function AnalogMap({
           {displayedMatches.length === 0 ? (
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border-subtle bg-surface p-4 text-sm text-content-muted">
               <span>{t("map.emptyResults")}</span>
-              {hasActiveFilters && (
-                <button
-                  type="button"
-                  onClick={clearAllFilters}
-                  className="min-h-11 rounded border border-accent/40 bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent hover:bg-accent/20 focus:outline-none focus:ring-2 focus:ring-accent/40"
-                >
-                  {t("map.filters.clearFilters")}
-                </button>
-              )}
+              <div className="flex flex-wrap items-center gap-2">
+                {(minSInd > 0 || minSDep > 0) && onClearThresholds && (
+                  <button
+                    type="button"
+                    onClick={onClearThresholds}
+                    className="min-h-11 rounded border border-accent/40 bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent hover:bg-accent/20 focus:outline-none focus:ring-2 focus:ring-accent/40"
+                  >
+                    {t("map.clearThresholdFilter", {
+                      hidden: formatNumber(Math.max(0, totalEvaluated - matches.length), lang, 0),
+                    })}
+                  </button>
+                )}
+                {hasActiveFilters && (
+                  <button
+                    type="button"
+                    onClick={clearAllFilters}
+                    className="min-h-11 rounded border border-accent/40 bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent hover:bg-accent/20 focus:outline-none focus:ring-2 focus:ring-accent/40"
+                  >
+                    {t("map.filters.clearFilters")}
+                  </button>
+                )}
+              </div>
             </div>
           ) : (
             <>

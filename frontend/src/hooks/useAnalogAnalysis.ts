@@ -71,8 +71,10 @@ export function useAnalogAnalysis({
   const [earthDensity, setEarthDensity] = useState<"global" | "top">("global");
   const [drilldownState, setDrilldownState] = useState<{
     parentH3: string;
+    parentH3s?: string[];
     childIds: string[];
   } | null>(null);
+  const [hiddenParentH3s, setHiddenParentH3s] = useState<string[]>([]);
   const [probingCoords, setProbingCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [probingPlanetCoords, setProbingPlanetCoords] = useState<{
     lat: number;
@@ -148,7 +150,7 @@ export function useAnalogAnalysis({
             minSDep,
             excludeBenchmarks,
             penalizeEstimated,
-            limit: earthDensity === "global" ? 12000 : 1500,
+            limit: earthDensity === "global" ? 25000 : 1500,
             compactTail: true,
             customIvWeights: testProfile === "manual_custom" ? customIvWeights : undefined,
             customDvWeights: testProfile === "manual_custom" ? customDvWeights : undefined,
@@ -161,6 +163,7 @@ export function useAnalogAnalysis({
         setDecomposition(decompRes);
         setSearchResult(analogsRes);
         setDrilldownState(null);
+        setHiddenParentH3s([]);
         setLastUpdated(new Date());
 
         if (analogsRes.matches.length > 0) {
@@ -311,25 +314,37 @@ export function useAnalogAnalysis({
           penalizeEstimated,
           testProfile,
           manualWeights.customIvWeights,
-          manualWeights.customDvWeights
+          manualWeights.customDvWeights,
+          1
         );
         if (res.matches.length > 0) {
           const childIdList = res.matches.map((m) => m.earth_cell_h3);
+          const refinedParents =
+            res.refined_parents && res.refined_parents.length > 0
+              ? res.refined_parents
+              : [h3Index];
           setSearchResult((prev) => {
             if (!prev) return prev;
             const childIds = new Set(childIdList);
+            const existingIds = new Set(prev.matches.map((m) => m.earth_cell_h3));
+            const newlyAdded = res.matches.filter((m) => !existingIds.has(m.earth_cell_h3)).length;
             const remaining = prev.matches.filter((m) => !childIds.has(m.earth_cell_h3));
             const merged = [...res.matches, ...remaining].sort(
               (a, b) => b.combined_score - a.combined_score
             );
             return {
               ...prev,
-              total_evaluated: prev.total_evaluated + res.matches.length,
+              total_evaluated: prev.total_evaluated + newlyAdded,
               returned_count: merged.length,
               matches: merged,
             };
           });
-          setDrilldownState({ parentH3: h3Index, childIds: childIdList });
+          setDrilldownState({
+            parentH3: h3Index,
+            parentH3s: refinedParents,
+            childIds: childIdList,
+          });
+          setHiddenParentH3s((prev) => Array.from(new Set([...prev, ...refinedParents])));
           if (res.top_comparison) {
             preloadedComparisonKeyRef.current = compareKey(res.matches[0].earth_cell_h3, selectedSiteId);
             setComparison(res.top_comparison);
@@ -375,7 +390,7 @@ export function useAnalogAnalysis({
           minSInd,
           minSDep,
           excludeBenchmarks,
-          limit: earthDensity === "global" ? 12000 : 1500,
+          limit: earthDensity === "global" ? 25000 : 1500,
           customIvWeights: testProfile === "manual_custom" ? customIvWeights : undefined,
           customDvWeights: testProfile === "manual_custom" ? customDvWeights : undefined,
           customMinSimilarity: testProfile === "manual_custom" ? customMinSimilarity : undefined,
@@ -385,6 +400,8 @@ export function useAnalogAnalysis({
         setSelectedSiteId(res.site.site_id);
         setDecomposition(res.decomposition);
         setSearchResult(res.analogs);
+        setDrilldownState(null);
+        setHiddenParentH3s([]);
         setComparison(res.top_comparison);
         setSelectedH3(res.analogs.matches[0]?.earth_cell_h3 ?? null);
         setLastUpdated(new Date());
@@ -439,6 +456,7 @@ export function useAnalogAnalysis({
     setEarthDensity,
     drilldownState,
     setDrilldownState,
+    hiddenParentH3s,
     probingCoords,
     probingPlanetCoords,
     lastUpdated,

@@ -299,6 +299,7 @@ export interface MultiAgencyCatalogResponse {
 
 export interface AnalogRefineResponse {
   parent_h3: string;
+  refined_parents?: string[];
   child_resolution: number;
   matches: AnalogMatchItem[];
   top_comparison: SiteComparisonResponse | null;

@@ -106,8 +106,8 @@ export function ExplorerPage({
     modelType: params.modelType,
     distanceMetric: params.distanceMetric,
     testProfile: params.testProfile,
-    minSInd: params.minSInd,
-    minSDep: params.minSDep,
+    minSInd: isStudent ? 0 : params.minSInd,
+    minSDep: isStudent ? 0 : params.minSDep,
     excludeBenchmarks: params.excludeBenchmarks,
     penalizeEstimated: params.penalizeEstimated,
     customIvWeights: params.customIvWeights,
@@ -696,6 +696,10 @@ export function ExplorerPage({
                         earthDensity={analysis.earthDensity}
                         onChangeEarthDensity={analysis.setEarthDensity}
                         drilldownState={analysis.drilldownState}
+                        hiddenParentH3s={analysis.hiddenParentH3s}
+                        minSInd={isStudent ? 0 : params.minSInd}
+                        minSDep={isStudent ? 0 : params.minSDep}
+                        onClearThresholds={params.clearGlobalThresholds}
                         onSelectCell={(h3Index) => {
                           setHasExploredMap(true);
                           analysis.setSelectedH3(h3Index);

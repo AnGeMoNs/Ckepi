@@ -146,6 +146,7 @@ def test_earth_probe_and_refine_apply_custom_weights_and_reuse_cached_cells(
             )
             assert first_refine.status_code == 200
             assert len(first_refine.json()["matches"]) == 7
+            assert first_refine.json()["refined_parents"] == [sample["earth_cell_h3"]]
 
             # Second refine on same cell must hit DuckDB cache without calling probe_earth_location
             def fail_if_called(**kwargs):
@@ -170,5 +171,29 @@ def test_earth_probe_and_refine_apply_custom_weights_and_reuse_cached_cells(
             }
             assert top_deltas["slope_deg"]["weight"] == 1.0
             assert top_deltas["mean_surface_temp_k"]["weight"] == 1.0
+
+            # Neighborhood refine (radius_k=1) expands center + 6 ring neighbors (up to 49 children)
+            monkeypatch.setattr("app.main.probe_earth_location", fake_probe)
+            nb_refine = client.post(
+                "/api/v1/analogs/refine",
+                json={
+                    "earth_cell_h3": sample["earth_cell_h3"],
+                    "site_id": "mars_jezero_crater",
+                    "model_type": "ridge",
+                    "test_profile": "manual_custom",
+                    "radius_k": 1,
+                    "custom_iv_weights": {"slope_deg": 1.0},
+                    "custom_dv_weights": {"mean_surface_temp_k": 1.0},
+                },
+            )
+            assert nb_refine.status_code == 200
+            nb_json = nb_refine.json()
+            expected_parents = sorted(h3.grid_disk(sample["earth_cell_h3"], 1))
+            assert nb_json["refined_parents"] == expected_parents
+            child_res = min(h3.get_resolution(sample["earth_cell_h3"]) + 1, 5)
+            expected_children = {
+                cid for parent_id in expected_parents for cid in h3.cell_to_children(parent_id, child_res)
+            }
+            assert {m["earth_cell_h3"] for m in nb_json["matches"]} == expected_children
     finally:
         state.duckdb_path = None

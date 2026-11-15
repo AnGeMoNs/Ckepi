@@ -832,15 +832,25 @@ def refine_analog_cell(payload: AnalogRefineRequest) -> AnalogRefineResponse:
     db_path = _get_duckdb_path()
     parent_res = h3.get_resolution(payload.earth_cell_h3)
     child_res = min(parent_res + 1, 5)
-    child_cells = sorted(h3.cell_to_children(payload.earth_cell_h3, child_res))[:7]
+    seed_parents = (
+        sorted(h3.grid_disk(payload.earth_cell_h3, payload.radius_k))
+        if payload.radius_k > 0
+        else [payload.earth_cell_h3]
+    )
+    child_cells_set: set[str] = set()
+    for p_cell in seed_parents:
+        child_cells_set.update(h3.cell_to_children(p_cell, child_res))
+    child_cells = sorted(child_cells_set)
 
     placeholders = ", ".join(["?"] * len(child_cells))
     conn = duckdb.connect(str(db_path), read_only=True)
     try:
-        df_existing = conn.execute(
-            f"SELECT * FROM earth_h3_grid WHERE earth_cell_h3 IN ({placeholders})",
-            child_cells,
-        ).df()
+        df_existing = normalize_earth_grid_metadata(
+            conn.execute(
+                f"SELECT * FROM earth_h3_grid WHERE earth_cell_h3 IN ({placeholders})",
+                child_cells,
+            ).df()
+        )
     finally:
         conn.close()
 
@@ -862,8 +872,9 @@ def refine_analog_cell(payload: AnalogRefineRequest) -> AnalogRefineResponse:
 
     child_records: list[dict[str, object]] = []
     if missing_cells:
+        workers = min(8 if payload.radius_k > 0 else 4, len(missing_cells))
         try:
-            with ThreadPoolExecutor(max_workers=4) as pool:
+            with ThreadPoolExecutor(max_workers=workers) as pool:
                 child_records = list(pool.map(_hydrate_child, missing_cells))
         except Exception as exc:
             logger.exception("H3 cell refinement failed for %s", payload.earth_cell_h3)
@@ -909,6 +920,7 @@ def refine_analog_cell(payload: AnalogRefineRequest) -> AnalogRefineResponse:
     )
     return AnalogRefineResponse(
         parent_h3=payload.earth_cell_h3,
+        refined_parents=seed_parents,
         child_resolution=child_res,
         matches=search_res.matches,
         top_comparison=top_comp,

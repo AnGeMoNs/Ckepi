@@ -74,7 +74,7 @@ export function useExplorerParams() {
   const [distanceMetric, setDistanceMetric] = useState<DistanceMetricType>(initialMetric);
   const [testProfile, setTestProfile] = useState<TestProfileType>(initialProfile);
   const [minSInd, setMinSInd] = useState<number>(() =>
-    parseNumericParam(initialParams, "minInd", 0.2, 0, 0.85)
+    parseNumericParam(initialParams, "minInd", 0, 0, 0.85)
   );
   const [minSDep, setMinSDep] = useState<number>(() =>
     parseNumericParam(initialParams, "minDep", 0.0, 0, 0.85)
@@ -109,7 +109,7 @@ export function useExplorerParams() {
     else url.searchParams.delete("metric");
 
     const roundedMinInd = roundThreshold(minSInd);
-    if (roundedMinInd !== 0.2) url.searchParams.set("minInd", roundedMinInd.toFixed(2));
+    if (roundedMinInd !== 0) url.searchParams.set("minInd", roundedMinInd.toFixed(2));
     else url.searchParams.delete("minInd");
 
     const roundedMinDep = roundThreshold(minSDep);

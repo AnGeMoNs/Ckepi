@@ -314,7 +314,8 @@ export async function refineAnalogCell(
   penalizeEstimated = false,
   testProfile: TestProfileType = "causal_auto",
   customIvWeights?: Record<string, number>,
-  customDvWeights?: Record<string, number>
+  customDvWeights?: Record<string, number>,
+  radiusK = 0
 ): Promise<AnalogRefineResponse> {
   clearApiCache();
   return requestJson<AnalogRefineResponse>("/api/v1/analogs/refine", {
@@ -325,6 +326,7 @@ export async function refineAnalogCell(
       model_type: modelType,
       test_profile: testProfile,
       penalize_estimated: penalizeEstimated,
+      radius_k: radiusK,
       custom_iv_weights: testProfile === "manual_custom" ? customIvWeights : undefined,
       custom_dv_weights: testProfile === "manual_custom" ? customDvWeights : undefined,
     }),
