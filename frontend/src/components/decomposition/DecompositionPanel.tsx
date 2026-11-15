@@ -1,5 +1,5 @@
-import { AlertTriangle, Cpu, Layers, ShieldAlert } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Pictogram } from "../worlds/Pictograms";
 
 import { formatNumber, formatPercent, formatTimestamp } from "../../i18n";
 import type { DecompositionResponse } from "../../types/analog";
@@ -23,7 +23,7 @@ export function DecompositionPanel({ decomposition }: DecompositionPanelProps) {
     <Card>
       <CardHeader className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <Layers className="h-5 w-5 text-accent" aria-hidden="true" />
+          <Pictogram name="hexCell" className="h-5 w-5 text-accent" />
           <CardTitle>{t("decomposition.title")}</CardTitle>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -37,7 +37,7 @@ export function DecompositionPanel({ decomposition }: DecompositionPanelProps) {
       </CardHeader>
 
       <CardContent className="space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded border border-border-subtle bg-surface px-3 py-2 text-xs text-content-muted">
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-border-subtle/50 bg-surface/30 px-3 py-2 text-xs text-content-muted">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="font-semibold text-content">{t("provenance.title")}:</span>
             {decomposition.provenance.source_apis.map((api) => (
@@ -59,7 +59,7 @@ export function DecompositionPanel({ decomposition }: DecompositionPanelProps) {
           {/* Independent Variable Causal Weights */}
           <div className="space-y-3">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-content">
-              <Cpu className="h-4 w-4 text-accent" aria-hidden="true" />
+              <Pictogram name="tune" className="h-4 w-4 text-accent" />
               {t("decomposition.independentTitle")}
             </h3>
             <ul className="space-y-3">
@@ -130,7 +130,7 @@ export function DecompositionPanel({ decomposition }: DecompositionPanelProps) {
                 {decomposition.pca_components.map((pc) => (
                   <div
                     key={pc.component_index}
-                    className="rounded border border-border-subtle bg-surface p-2.5"
+                    className="rounded-2xl border border-border-subtle/50 bg-surface/30 p-2.5"
                   >
                     <div className="flex items-center justify-between text-xs font-semibold text-content">
                       <span>{t("decomposition.componentLabel", { index: pc.component_index })}</span>
@@ -152,10 +152,10 @@ export function DecompositionPanel({ decomposition }: DecompositionPanelProps) {
         </div>
 
         {/* Breakage Boundaries */}
-        <div className="space-y-3 rounded border border-status-break/60 bg-status-break/15 p-4">
+        <div className="space-y-3 rounded-2xl border border-status-break/60 bg-status-break/15 p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-status-break">
-              <ShieldAlert className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <Pictogram name="notSimilar" className="h-4 w-4 shrink-0" />
               {t("decomposition.breakageTitle")}
             </h3>
             <span className="text-xs text-content-muted">
@@ -167,7 +167,7 @@ export function DecompositionPanel({ decomposition }: DecompositionPanelProps) {
             {decomposition.breakage_profile.map((b) => (
               <div
                 key={b.variable}
-                className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-2"
+                className="ckepi-liquid rounded-2xl p-3 space-y-2"
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-semibold text-content">
@@ -186,7 +186,7 @@ export function DecompositionPanel({ decomposition }: DecompositionPanelProps) {
                 </div>
                 {b.is_broken && (
                   <p className="flex items-start gap-1.5 text-xs text-status-break">
-                    <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    <Pictogram name="notSimilar" className="mt-0.5 h-4 w-4 shrink-0" />
                     <span>{t(b.alert_key)}</span>
                   </p>
                 )}

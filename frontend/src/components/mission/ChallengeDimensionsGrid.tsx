@@ -1,16 +1,7 @@
-import {
-  Activity,
-  Compass,
-  Droplets,
-  Layers,
-  Microscope,
-  Mountain,
-  ShieldAlert,
-  Thermometer,
-  Wind,
-} from "lucide-react";
-import { useMemo } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Pictogram, type PictogramName } from "../worlds/Pictograms";
 
 import { formatNumber, formatPercent } from "../../i18n";
 import type {
@@ -18,7 +9,13 @@ import type {
   SiteComparisonResponse,
 } from "../../types/analog";
 import { Badge } from "../ui/Badge";
+import { ParamIcon, type ParamIconName } from "../ui/ParamIcon";
 import { ProgressBar } from "../ui/ProgressBar";
+
+const DIMENSION_ART: Record<string, ParamIconName> = {
+  geology: "soil", terrain: "slope", thermal: "temperature", water: "water",
+  aeolian: "wind", biology: "vegetation", subsurface: "relief", operations: "gravity",
+};
 
 interface ChallengeDimensionsGridProps {
   comparison: SiteComparisonResponse;
@@ -37,6 +34,8 @@ export function ChallengeDimensionsGrid({
 }: ChallengeDimensionsGridProps) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+  const reducedMotion = useReducedMotion();
+  const [expandedDimension, setExpandedDimension] = useState<string | null>(null);
   const { match } = comparison;
   const iv = match.iv_similarity_breakdown;
   const dv = match.dv_similarity_breakdown;
@@ -76,7 +75,7 @@ export function ChallengeDimensionsGrid({
     return [
       {
         id: "geology",
-        icon: Layers,
+        icon: "hexCell" as PictogramName,
         score: geologyScore,
         processKey: "mission.dimensions.geologyProcess",
         detail: catalog?.geology
@@ -95,7 +94,7 @@ export function ChallengeDimensionsGrid({
       },
       {
         id: "terrain",
-        icon: Mountain,
+        icon: "terrain" as PictogramName,
         score: terrainScore,
         processKey: "mission.dimensions.terrainProcess",
         detail: t("mission.dimensions.terrainDetail", {
@@ -107,7 +106,7 @@ export function ChallengeDimensionsGrid({
       },
       {
         id: "thermal",
-        icon: Thermometer,
+        icon: "temperature" as PictogramName,
         score: thermalScore,
         processKey: "mission.dimensions.thermalProcess",
         detail: t("mission.dimensions.thermalDetail", {
@@ -118,7 +117,7 @@ export function ChallengeDimensionsGrid({
       },
       {
         id: "water",
-        icon: Droplets,
+        icon: "pressure" as PictogramName,
         score: waterScore,
         processKey: "mission.dimensions.waterProcess",
         detail: t("mission.dimensions.waterDetail", {
@@ -129,7 +128,7 @@ export function ChallengeDimensionsGrid({
       },
       {
         id: "aeolian",
-        icon: Wind,
+        icon: "pressure" as PictogramName,
         score: aeolianScore,
         processKey: "mission.dimensions.aeolianProcess",
         detail: t("mission.dimensions.aeolianDetail", {
@@ -139,7 +138,7 @@ export function ChallengeDimensionsGrid({
       },
       {
         id: "biology",
-        icon: Microscope,
+        icon: "observe" as PictogramName,
         score: bioScore,
         processKey: "mission.dimensions.biologyProcess",
         detail: catalog?.habitability
@@ -153,7 +152,7 @@ export function ChallengeDimensionsGrid({
       },
       {
         id: "subsurface",
-        icon: Compass,
+        icon: "globe" as PictogramName,
         score: subsurfaceScore,
         processKey: "mission.dimensions.subsurfaceProcess",
         detail: catalog?.subsurface
@@ -164,7 +163,7 @@ export function ChallengeDimensionsGrid({
       },
       {
         id: "operations",
-        icon: ShieldAlert,
+        icon: "notSimilar" as PictogramName,
         score: opsScore,
         processKey: "mission.dimensions.operationsProcess",
         detail: t("mission.dimensions.operationsDetail", {
@@ -177,11 +176,11 @@ export function ChallengeDimensionsGrid({
   }, [catalog, comparison.statistical_distribution, eDv, eIv, iv, dv, lang, match, t]);
 
   return (
-    <div className="space-y-3 rounded-xl border border-border-subtle bg-surface p-4">
+    <div className="space-y-3 rounded-2xl border border-border-subtle/50 bg-surface/30 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="space-y-0.5">
           <h3 className="flex items-center gap-2 text-sm font-semibold text-content">
-            <Activity className="h-4 w-4 text-accent" aria-hidden="true" />
+            <Pictogram name="measure" className="h-4 w-4 text-accent" />
             <span>{t("mission.dimensions.title")}</span>
           </h3>
           <p className="text-xs text-content-muted">{t("mission.dimensions.subtitle")}</p>
@@ -191,23 +190,25 @@ export function ChallengeDimensionsGrid({
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {dimensions.map((dim) => {
-          const Icon = dim.icon;
+          const pictogram = dim.icon;
           const badgeVariant =
             dim.score >= 0.7 ? "valid" : dim.score >= 0.45 ? "warn" : "break";
           const tone = dim.score >= 0.7 ? "valid" : dim.score >= 0.45 ? "warn" : "break";
           return (
-            <div
+            <motion.article
               key={dim.id}
-              className="flex flex-col justify-between space-y-2 rounded-lg border border-border-subtle bg-surface-elevated p-3"
+              whileHover={reducedMotion ? undefined : { y: -3 }}
+              transition={{ type: "spring", stiffness: 380, damping: 28 }}
+              className={`measurement-card flex flex-col justify-between space-y-3 rounded-2xl border p-3 ${expandedDimension === dim.id ? "measurement-card-active" : ""}`}
             >
               <div className="space-y-1.5">
-                <div className="flex items-start justify-between gap-2">
-                  <span className="flex items-center gap-1.5 text-xs font-bold text-content">
-                    <Icon className="h-3.5 w-3.5 shrink-0 text-accent" aria-hidden="true" />
+                <button type="button" aria-expanded={expandedDimension === dim.id} onClick={() => setExpandedDimension((current) => current === dim.id ? null : dim.id)} className="flex min-h-11 w-full items-center justify-between gap-2 rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+                  <span className="flex items-center gap-2 text-xs font-bold text-content">
+                    <ParamIcon name={DIMENSION_ART[dim.id]} className="h-12 w-12" />
                     <span>{t(`mission.dimensions.items.${dim.id}.title`)}</span>
                   </span>
                   <Badge variant={badgeVariant}>{formatPercent(dim.score, lang)}</Badge>
-                </div>
+                </button>
 
                 <ProgressBar
                   value={dim.score}
@@ -215,13 +216,13 @@ export function ChallengeDimensionsGrid({
                   label={t(`mission.dimensions.items.${dim.id}.title`)}
                 />
 
-                <p className="text-[11px] font-medium text-accent">{t(dim.processKey)}</p>
+                <AnimatePresence initial={false}>{expandedDimension === dim.id && <motion.p className="flex items-start gap-1.5 overflow-hidden text-xs leading-relaxed text-accent" initial={reducedMotion ? false : { height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={reducedMotion ? undefined : { height: 0, opacity: 0 }} transition={{ duration: reducedMotion ? 0 : 0.2 }}><Pictogram name={pictogram} className="mt-0.5 h-4 w-4 shrink-0" />{t(dim.processKey)}</motion.p>}</AnimatePresence>
               </div>
 
-              <p className="border-t border-border-subtle pt-1.5 text-[11px] leading-snug text-content-muted">
+              <p className="border-t border-border-subtle pt-2 text-xs leading-relaxed text-content-muted">
                 {dim.detail}
               </p>
-            </div>
+            </motion.article>
           );
         })}
       </div>

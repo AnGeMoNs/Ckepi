@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Compass, Minus, Plus, RotateCcw, Sparkles } from "lucide-react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { useTranslation } from "react-i18next";
+import { Pictogram } from "../worlds/Pictograms";
 
 import { formatNumber } from "../../i18n";
 import { getPlanetMarkerColors } from "../../theme/mapColors";
@@ -13,7 +13,8 @@ import type {
   ThemeMode,
 } from "../../types/analog";
 import { Badge } from "../ui/Badge";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
+import { Card, CardContent } from "../ui/Card";
+import { MAP_OPTION_FIELD, MapCardHeading, MapLegendItem, MapOptionsMenu, MapZoomControls } from "./MapCardParts";
 
 interface PlanetaryMapProps {
   body: PlanetaryBody;
@@ -354,89 +355,56 @@ export function PlanetaryMap({
   };
 
   return (
-    <Card>
-      <CardHeader className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <CardTitle className="flex items-center gap-2">
-            <Compass className="h-5 w-5 text-accent" aria-hidden="true" />
-            {t("planetaryMap.title")}
-          </CardTitle>
-          <p className="mt-1 text-xs text-content-muted">{t("planetaryMap.dragHint")}</p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-1.5">
-          <select
-            aria-label={t("planetaryMap.layerLabel")}
-            value={layer}
-            onChange={(e) => setLayer(e.target.value as PlanetaryOverlayLayer)}
-            className="min-h-11 rounded border border-border-subtle bg-surface px-2.5 py-1 text-xs font-medium text-content focus-visible:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-          >
-            {body === "moon" ? (
-              <>
-                <option value="moon_wac">{t("planetaryMap.layers.moon_wac")}</option>
-                <option value="moon_lola">{t("planetaryMap.layers.moon_lola")}</option>
-              </>
-            ) : (
-              <>
-                <option value="mars_color">{t("planetaryMap.layers.mars_color")}</option>
-                <option value="mars_mola">{t("planetaryMap.layers.mars_mola")}</option>
-              </>
-            )}
-          </select>
-
-          {(["moon", "mars"] as PlanetaryBody[]).map((b) => (
-            <button
-              key={b}
-              type="button"
-              aria-pressed={body === b}
-              onClick={() => onSelectBody(b)}
-              className={`min-h-11 rounded border px-3 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                body === b
-                  ? "border-accent bg-accent text-accent-foreground"
-                  : "border-border-subtle bg-surface text-content hover:bg-surface-muted"
-              }`}
+    <Card variant="liquid" className="map-panel !rounded-[2rem]">
+      <MapCardHeading art={`/img/planets/ckepi-planet-${body}.webp`} title={t("explore.maps.globeTitle")} subtitle={t("explore.maps.globeSubtitle")}>
+        <MapOptionsMenu>
+          <label className="flex flex-col gap-1 text-xs font-semibold text-content-muted">
+            {t("explore.maps.layer")}
+            <select
+              value={layer}
+              onChange={(e) => setLayer(e.target.value as PlanetaryOverlayLayer)}
+              className={MAP_OPTION_FIELD}
             >
-              {t(`bodies.${b}`)}
-            </button>
-          ))}
-        </div>
-      </CardHeader>
+              {body === "moon" ? (
+                <>
+                  <option value="moon_wac">{t("planetaryMap.layers.moon_wac")}</option>
+                  <option value="moon_lola">{t("planetaryMap.layers.moon_lola")}</option>
+                </>
+              ) : (
+                <>
+                  <option value="mars_color">{t("planetaryMap.layers.mars_color")}</option>
+                  <option value="mars_mola">{t("planetaryMap.layers.mars_mola")}</option>
+                </>
+              )}
+            </select>
+          </label>
+          <div role="group" aria-label={t("explore.maps.world")} className="grid grid-cols-2 gap-2">
+            {(["moon", "mars"] as PlanetaryBody[]).map((b) => (
+              <button
+                key={b}
+                type="button"
+                aria-pressed={body === b}
+                onClick={() => onSelectBody(b)}
+                className={`min-h-11 rounded-xl border px-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                  body === b ? "border-accent/60 bg-accent/15 text-content" : "border-border-subtle bg-surface text-content-muted hover:text-content"
+                }`}
+              >
+                {t(`bodies.${b}`)}
+              </button>
+            ))}
+          </div>
+        </MapOptionsMenu>
+      </MapCardHeading>
 
       <CardContent className="space-y-3">
-        <div className="relative h-72 w-full overflow-hidden rounded border border-border-subtle bg-surface-muted sm:h-80">
+        <div className="relative h-[22rem] w-full overflow-hidden rounded-3xl border border-border-subtle/60 bg-ckepi-space sm:h-[30rem]">
           <div ref={containerRef} className="h-full w-full cursor-grab active:cursor-grabbing" />
 
-          {/* Accessible 3D Zoom & Focus Controls */}
-          <div className="absolute right-2 top-2 z-10 flex flex-col gap-1.5">
-            <button
-              type="button"
-              onClick={() => handleZoom(0.78)}
-              aria-label={t("planetaryMap.zoomIn")}
-              className="flex min-h-11 min-w-11 items-center justify-center rounded border border-border-subtle bg-surface-elevated/90 text-content shadow-sm backdrop-blur hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-            >
-              <Plus className="h-4 w-4" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              onClick={() => handleZoom(1.28)}
-              aria-label={t("planetaryMap.zoomOut")}
-              className="flex min-h-11 min-w-11 items-center justify-center rounded border border-border-subtle bg-surface-elevated/90 text-content shadow-sm backdrop-blur hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-            >
-              <Minus className="h-4 w-4" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              onClick={handleFocusTarget}
-              aria-label={t("planetaryMap.resetView")}
-              className="flex min-h-11 min-w-11 items-center justify-center rounded border border-border-subtle bg-surface-elevated/90 text-content shadow-sm backdrop-blur hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-            >
-              <RotateCcw className="h-4 w-4" aria-hidden="true" />
-            </button>
-          </div>
+          <MapZoomControls onZoomIn={() => handleZoom(0.78)} onZoomOut={() => handleZoom(1.28)} onReset={handleFocusTarget} />
 
           {(textureLoading || probingPlanetCoords) && (
             <div className="pointer-events-none absolute bottom-3 left-3 z-10 flex items-center gap-2 rounded border border-accent bg-surface-elevated/95 px-3 py-1.5 text-xs font-medium text-content">
-              <Sparkles className="h-3.5 w-3.5 animate-pulse motion-reduce:animate-none text-accent" aria-hidden="true" />
+              <Pictogram name="observe" className="h-3.5 w-3.5 animate-pulse motion-reduce:animate-none text-accent" />
               {probingPlanetCoords
                 ? t("planetaryMap.probingTarget", {
                     body: t(`bodies.${body}`),
@@ -448,17 +416,10 @@ export function PlanetaryMap({
           )}
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-content-muted">
-          <div className="flex flex-wrap items-center gap-3">
-            <span>{t(`planetaryMap.layers.${layer}`)}</span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full border-2 border-status-valid bg-status-valid/30" />
-              {t("planetaryMap.legendTracked")}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-status-warn" />
-              {t("planetaryMap.legendEstimated")}
-            </span>
+        <div className="flex min-h-12 flex-wrap items-center justify-between gap-2 text-sm text-content-muted">
+          <div className="flex flex-wrap items-center gap-4">
+            <MapLegendItem dotClass="border-2 border-status-valid bg-status-valid/30">{t("planetaryMap.legendTracked")}</MapLegendItem>
+            <MapLegendItem dotClass="bg-status-warn">{t("planetaryMap.legendEstimated")}</MapLegendItem>
           </div>
           {activeTarget && (
             <Badge variant="accent">

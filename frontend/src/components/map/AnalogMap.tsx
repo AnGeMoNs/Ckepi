@@ -1,26 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Activity,
-  ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  Database,
-  ExternalLink,
-  Filter,
-  Globe,
-  History,
-  Layers,
-  MapPin,
-  Mountain,
-  RotateCcw,
-  Search,
-  Sparkles,
-  Star,
-  X,
-  ZoomIn,
-} from "lucide-react";
+import { Activity, ArrowUpDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Database, ExternalLink, Filter, Globe, History, Layers, Mountain, RotateCcw, Search, Sparkles, Star, X, ZoomIn } from "lucide-react";
 import * as maplibregl from "maplibre-gl";
 import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import { useTranslation } from "react-i18next";
@@ -36,7 +15,11 @@ import type {
   ThemeMode,
 } from "../../types/analog";
 import { Badge } from "../ui/Badge";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
+import { Button } from "../ui/Button";
+import { Drawer } from "../ui/Drawer";
+import { Card, CardContent } from "../ui/Card";
+import { Pictogram } from "../worlds/Pictograms";
+import { MAP_OPTION_FIELD, MapCardHeading, MapLegendItem, MapOptionsMenu, MapZoomControls } from "./MapCardParts";
 
 // Explicitly register the bundled MapLibre GL v6 WebWorker so GeoJSON H3 polygons
 // tessellate reliably in production builds (Vite/Rollup + Nginx SPA).
@@ -47,6 +30,8 @@ interface AnalogMapProps {
   totalEvaluated: number;
   selectedH3: string | null;
   selectedMatchOverride?: AnalogMatchItem | null;
+  compact?: boolean;
+  onOpenAnalysis?: () => void;
   theme: ThemeMode;
   readingMode?: ReadingMode;
   probingCoords: { lat: number; lon: number } | null;
@@ -164,6 +149,8 @@ export function AnalogMap({
   totalEvaluated,
   selectedH3,
   selectedMatchOverride = null,
+  compact = false,
+  onOpenAnalysis,
   theme,
   readingMode = "mission",
   probingCoords,
@@ -187,10 +174,11 @@ export function AnalogMap({
   const mapRef = useRef<maplibregl.Map | null>(null);
   const onSelectRef = useRef(onSelectCell);
   const onProbeRef = useRef(onProbeCoordinate);
-  onSelectRef.current = onSelectCell;
+  onSelectRef.current = (h3Index) => { onSelectCell(h3Index); if (compact) setInspectorOpen(true); };
   onProbeRef.current = onProbeCoordinate;
 
   const [mapReady, setMapReady] = useState(false);
+  const [inspectorOpen, setInspectorOpen] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
   const [overlayLayer, setOverlayLayer] = useState<EarthOverlayLayer>("satellite_hd");
   const [isGlobe, setIsGlobe] = useState(true);
@@ -387,18 +375,14 @@ export function AnalogMap({
   };
 
   const selectedMatch = useMemo(
-    () =>
-      (selectedMatchOverride && selectedMatchOverride.earth_cell_h3 === selectedH3
-        ? selectedMatchOverride
-        : null) ??
-      matches.find((m) => m.earth_cell_h3 === selectedH3) ??
-      null,
+    () => (selectedMatchOverride?.earth_cell_h3 === selectedH3 ? selectedMatchOverride : null)
+      ?? matches.find((m) => m.earth_cell_h3 === selectedH3) ?? null,
     [selectedMatchOverride, matches, selectedH3]
   );
 
   useEffect(() => {
     const h3Id = selectedMatch?.earth_cell_h3;
-    if (!h3Id) {
+    if (!h3Id || (compact && !inspectorOpen)) {
       setSelectedCatalog(null);
       setCatalogLoading(false);
       return;
@@ -418,7 +402,7 @@ export function AnalogMap({
     return () => {
       cancelled = true;
     };
-  }, [selectedMatch?.earth_cell_h3]);
+  }, [selectedMatch?.earth_cell_h3, compact, inspectorOpen]);
 
   const matchLookup = useMemo(() => {
     const map = new Map<string, { match: AnalogMatchItem; rank: number }>();
@@ -685,7 +669,6 @@ export function AnalogMap({
         attributionControl: false,
       });
 
-      map.addControl(new maplibregl.NavigationControl({ showCompass: true }), "top-right");
 
       const handleStyleReady = () => {
         attachAnalogLayers(map);
@@ -833,22 +816,383 @@ export function AnalogMap({
     map.setTerrain(isTerrain3d ? { source: "terrarium-dem", exaggeration: 1.5 } : null);
   }, [isTerrain3d, mapReady]);
 
-  return (
-    <Card>
-      <CardHeader className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <MapPin className="h-5 w-5 text-accent" aria-hidden="true" />
-          <CardTitle>{t("map.title")}</CardTitle>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <label htmlFor="earth-gibs-layer" className="sr-only">
-            {t("map.layerLabel")}
+  const inspectorContent = (<>
+            {/* Selected H3 Hexagon Inspector Card */}
+            {selectedMatch && (
+              <div className={compact ? "space-y-3" : "mt-2 space-y-2.5 rounded-lg border border-border-subtle bg-surface/95 p-3 shadow-sm backdrop-blur"}>
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0 space-y-0.5">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="rounded bg-accent/15 px-1.5 py-0.5 text-xs font-semibold text-accent">
+                        {t("map.selectedHudBadge")}
+                      </span>
+                      {selectedRank !== null && (
+                        <span className="rounded bg-accent/20 px-1.5 py-0.5 text-xs font-bold tabular-nums text-accent">
+                          {t("map.rankBadge", { rank: selectedRank })}
+                        </span>
+                      )}
+                      {!isStudent && selectedMatch.is_pareto_optimal && (
+                        <Badge variant="valid">{t("map.paretoBadge")}</Badge>
+                      )}
+                      <Badge variant="default">
+                        {t("map.validTestsBadge", {
+                          count: selectedMatch.engineering_recommendations.valid_tests.length,
+                        })}
+                      </Badge>
+                    </div>
+                    <p className="truncate text-sm font-bold text-content">
+                      {selectedMatch.known_analog_name ?? t(selectedMatch.region_key)}
+                    </p>
+                    <p className="text-xs tabular-nums text-content-muted">
+                      {!isStudent && (
+                        <>
+                          <span className="font-mono">{selectedMatch.earth_cell_h3}</span> ·{" "}
+                          {t("map.resolutionBadge", { res: selectedMatch.h3_resolution })} (
+                          {t("map.scaleLabel", {
+                            km: formatNumber(selectedMatch.effective_scale_km ?? 158.2, lang, 1),
+                          })}
+                          ) ·{" "}
+                        </>
+                      )}
+                      {t(selectedMatch.biome_key)} · {selectedMatch.country_code} ·{" "}
+                      {formatNumber(selectedMatch.coordinates.lat, lang, 2)}°,{" "}
+                      {formatNumber(selectedMatch.coordinates.lon, lang, 2)}°
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    {!isStudent && onRefineCell && (
+                      <button
+                        type="button"
+                        disabled={isRefining || selectedMatch.h3_resolution >= 5}
+                        onClick={() => onRefineCell(selectedMatch.earth_cell_h3)}
+                        className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded border border-accent/40 bg-accent/15 px-3 py-1.5 text-xs font-semibold text-accent hover:bg-accent/25 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-accent/40"
+                      >
+                        <ZoomIn className="h-3.5 w-3.5" aria-hidden="true" />
+                        <span>
+                          {selectedMatch.h3_resolution >= 5
+                            ? t("map.maxResReached")
+                            : isRefining
+                            ? t("map.refiningZone")
+                            : t("map.subdivideAction")}
+                        </span>
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (onOpenAnalysis) { setInspectorOpen(false); onOpenAnalysis(); return; }
+                        document
+                          .getElementById(
+                            isStudent ? "section-student-comparison" : "section-diagnostics"
+                          )
+                          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }}
+                      className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded border border-border-subtle bg-surface-elevated px-3 py-1.5 text-xs font-semibold text-content hover:bg-surface-muted focus:outline-none focus:ring-2 focus:ring-accent/40"
+                    >
+                      <span>
+                        {isStudent
+                          ? t("studentPanel.jumpToComparison")
+                          : t("map.jumpToDiagnostics")}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                {isStudent ? (
+                  <div className="grid grid-cols-2 gap-2 border-t border-border-subtle pt-2.5 sm:grid-cols-4">
+                    <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3">
+                      <span className="block text-xs text-content-muted">
+                        {t("studentPanel.overallLabel")}
+                      </span>
+                      <span className="text-xs font-bold tabular-nums text-accent">
+                        {formatPercent(selectedMatch.combined_score, lang)}
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3">
+                      <span className="block text-xs text-content-muted">
+                        {t("studentPanel.terrainShort")} / {t("studentPanel.climateShort")}
+                      </span>
+                      <span className="text-base font-semibold tabular-nums text-content">
+                        {formatPercent(selectedMatch.s_ind, lang)} ·{" "}
+                        {formatPercent(selectedMatch.s_dep, lang)}
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3">
+                      <span className="block text-xs text-content-muted">
+                        {t("map.cellTempLabel")}
+                      </span>
+                      <span className="text-base font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          (selectedMatch.earth_variables.dependent.mean_surface_temp_k ?? 273.15) -
+                            273.15,
+                          lang,
+                          1
+                        )}
+                        °C
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3">
+                      <span className="block text-xs text-content-muted">
+                        {t("map.cellSlopeLabel")}
+                      </span>
+                      <span className="text-base font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.slope_deg ?? 0,
+                          lang,
+                          1
+                        )}
+                        °
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                <>
+                <div className="space-y-2 border-t border-border-subtle pt-2.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-content-muted">
+                      {t("map.earthProfileTitle")}
+                    </span>
+                    <div className="flex flex-wrap items-center gap-1.5 text-xs text-content-muted">
+                      {selectedMatch.provenance?.is_live_probed && (
+                        <Badge variant="accent">{t("provenance.liveProbed")}</Badge>
+                      )}
+                      {selectedMatch.provenance?.source_apis?.map((api) => (
+                        <Badge key={api} variant="default">
+                          {api}
+                        </Badge>
+                      ))}
+                      {selectedMatch.provenance?.observation_window && (
+                        <span>· {selectedMatch.provenance.observation_window}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3">
+                      <span className="block text-xs text-content-muted">
+                        {t("map.metricCombined")}
+                      </span>
+                      <span className="text-xs font-bold tabular-nums text-accent">
+                        {formatPercent(selectedMatch.combined_score, lang)} · S_ind{" "}
+                        {formatPercent(selectedMatch.s_ind, lang)} · S_dep{" "}
+                        {formatPercent(selectedMatch.s_dep, lang)}
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3">
+                      <span className="block text-xs text-content-muted">
+                        {t("map.cellTempLabel")} / {t("map.cellDiurnalLabel")}
+                      </span>
+                      <span className="text-base font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          (selectedMatch.earth_variables.dependent.mean_surface_temp_k ?? 273.15) -
+                            273.15,
+                          lang,
+                          1
+                        )}
+                        °C · Δ{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.dependent.diurnal_temp_amplitude_k ?? 0,
+                          lang,
+                          1
+                        )}{" "}
+                        K
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3">
+                      <span className="block text-xs text-content-muted">
+                        {t("map.cellAridityLabel")} / {t("map.cellSlopeLabel")}
+                      </span>
+                      <span className="text-base font-semibold tabular-nums text-content">
+                        AI{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.aridity_index ?? 0,
+                          lang,
+                          3
+                        )}{" "}
+                        ·{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.slope_deg ?? 0,
+                          lang,
+                          1
+                        )}
+                        °
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3">
+                      <span className="block text-xs text-content-muted">
+                        {t("map.cellRadiationLabel")} / {t("map.metricRBreak")}
+                      </span>
+                      <span className="text-base font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          selectedMatch.earth_variables.breakage.radiation_msv_yr ?? 0,
+                          lang,
+                          2
+                        )}{" "}
+                        mSv/yr · {formatPercent(selectedMatch.r_break_overall, lang)}
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3">
+                      <span className="block text-xs text-content-muted">
+                        {t("map.cellThermalRoughness")}
+                      </span>
+                      <span className="text-base font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.topographic_roughness ?? 0,
+                          lang,
+                          2
+                        )}{" "}
+                        ·{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.thermal_inertia ?? 0,
+                          lang,
+                          0
+                        )}{" "}
+                        TIU
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3">
+                      <span className="block text-xs text-content-muted">
+                        {t("map.cellOpticsSolar")}
+                      </span>
+                      <span className="text-base font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.surface_albedo ?? 0,
+                          lang,
+                          2
+                        )}{" "}
+                        ·{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.solar_flux_wm2 ?? 0,
+                          lang,
+                          0
+                        )}{" "}
+                        W/m²
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3">
+                      <span className="block text-xs text-content-muted">
+                        {t("map.cellHumidityUv")}
+                      </span>
+                      <span className="text-base font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.relative_humidity_pct ?? 0,
+                          lang,
+                          0
+                        )}
+                        % · UV{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.independent.uv_irradiance_index ?? 0,
+                          lang,
+                          1
+                        )}
+                      </span>
+                    </div>
+                    <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3">
+                      <span className="block text-xs text-content-muted">
+                        {t("map.cellWindDust")}
+                      </span>
+                      <span className="text-base font-semibold tabular-nums text-content">
+                        {formatNumber(
+                          selectedMatch.earth_variables.dependent.surface_wind_ms ?? 0,
+                          lang,
+                          1
+                        )}{" "}
+                        m/s ·{" "}
+                        {formatNumber(
+                          selectedMatch.earth_variables.dependent.aeolian_dust_flux ?? 0,
+                          lang,
+                          2
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Geological & Multi-Agency Earth Context */}
+                {(catalogLoading || selectedCatalog) && (
+                  <div className="space-y-2 border-t border-border-subtle pt-2.5">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-content-muted">
+                      <Database className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+                      <span>{t("map.cellCatalogTitle")}</span>
+                    </div>
+                    {catalogLoading && !selectedCatalog ? (
+                      <p className="text-xs text-content-muted">{t("agencies.loading")}</p>
+                    ) : (
+                      selectedCatalog && (
+                        <div className="space-y-2">
+                          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                            {selectedCatalog.geology && (
+                              <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3 text-xs">
+                                <span className="block text-xs text-content-muted">
+                                  {t("map.cellCatalogGeology")}
+                                </span>
+                                <span className="font-semibold text-content">
+                                  {selectedCatalog.geology.unit_name} ·{" "}
+                                  {selectedCatalog.geology.lithology} ({selectedCatalog.geology.age})
+                                </span>
+                              </div>
+                            )}
+                            {(selectedCatalog.regolith_simulant || selectedCatalog.habitability) && (
+                              <div className="rounded border border-border-subtle measurement-card rounded-xl px-3 py-3 text-xs">
+                                <span className="block text-xs text-content-muted">
+                                  {t("map.cellCatalogSimulant")}
+                                </span>
+                                <span className="font-semibold text-content">
+                                  {selectedCatalog.regolith_simulant
+                                    ? `${selectedCatalog.regolith_simulant.recommended_code} (${formatPercent(selectedCatalog.regolith_simulant.affinity_score, lang)})`
+                                    : ""}
+                                  {selectedCatalog.regolith_simulant && selectedCatalog.habitability
+                                    ? " · "
+                                    : ""}
+                                  {selectedCatalog.habitability
+                                    ? `HI ${formatNumber(selectedCatalog.habitability.habitability_index, lang, 2)}`
+                                    : ""}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          {selectedCatalog.products.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5">
+                              {selectedCatalog.products.filter((product, index, products) => products.findIndex((entry) => entry.agency === product.agency && entry.mission === product.mission) === index).slice(0, 4).map((prod) => (
+                                <a
+                                  key={`${prod.agency}-${prod.product_id}`}
+                                  href={prod.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex min-h-9 items-center gap-1 rounded border border-border-subtle bg-surface-elevated px-2 py-1 text-xs font-medium text-content transition hover:border-accent hover:text-accent"
+                                >
+                                  <span>
+                                    {prod.agency} · {prod.mission}
+                                  </span>
+                                  <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+                                </a>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    )}
+                  </div>
+                )}
+                </>
+                )}
+              </div>
+            )}
+  </>);
+
+  return (<>
+    <Card className="map-panel">
+      <MapCardHeading art="/img/planets/ckepi-planet-earth.webp" title={t("explore.maps.earthTitle")} subtitle={t("explore.maps.earthSubtitle")}>
+        <MapOptionsMenu>
+          <label htmlFor="earth-gibs-layer" className="text-xs font-semibold text-content-muted">
+            {t("explore.maps.layer")}
           </label>
           <select
             id="earth-gibs-layer"
             value={overlayLayer}
             onChange={(e) => setOverlayLayer(e.target.value as EarthOverlayLayer)}
-            className="min-h-11 rounded border border-border-subtle bg-surface px-2.5 py-1.5 text-xs font-medium text-content focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+            className={MAP_OPTION_FIELD}
           >
             <option value="satellite_hd">{t("map.layers.satellite_hd")}</option>
             <option value="sentinel2_cloudless">{t("map.layers.sentinel2_cloudless")}</option>
@@ -869,7 +1213,7 @@ export function AnalogMap({
                   setHexMetric(e.target.value as "combined" | "s_ind" | "s_dep" | "r_break")
                 }
                 aria-label={t("map.hexMetricLabel")}
-                className="min-h-11 rounded border border-border-subtle bg-surface px-2.5 py-1.5 text-xs font-medium text-content focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+                className={MAP_OPTION_FIELD}
               >
                 <option value="combined">{t("map.metricCombined")}</option>
                 <option value="s_ind">{t("map.metricSInd")}</option>
@@ -895,7 +1239,7 @@ export function AnalogMap({
               <span>
                 {earthDensity === "global"
                   ? t("map.densityGlobal", { count: totalEvaluated })
-                  : t("map.densityTop", { count: 1500 })}
+                  : t("map.densityTop", { count: matches.length })}
               </span>
             </button>
           )}
@@ -920,21 +1264,6 @@ export function AnalogMap({
           >
             <Mountain className="h-3.5 w-3.5" aria-hidden="true" />
             <span>{t("map.terrain3d")}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              mapRef.current?.flyTo({
-                center: [0, 15],
-                zoom: 1.45,
-                pitch: isTerrain3d ? 25 : 0,
-                duration: 750,
-              });
-            }}
-            className="inline-flex min-h-11 items-center gap-1.5 rounded border border-border-subtle bg-surface px-2.5 py-1.5 text-xs font-medium text-content hover:bg-surface-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
-          >
-            <RotateCcw className="h-3.5 w-3.5 text-content-muted" aria-hidden="true" />
-            <span>{t("map.resetView")}</span>
           </button>
           {!isStudent && selectedH3 && onRefineCell && (
             <button
@@ -972,30 +1301,10 @@ export function AnalogMap({
               })}
             </button>
           )}
-        </div>
-      </CardHeader>
+        </MapOptionsMenu>
+      </MapCardHeading>
 
-      <CardContent className="space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-content-muted">
-          <span>
-            {t("map.subtitle")} <strong className="text-accent">{t("map.probeHint")}</strong>
-          </span>
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-status-valid" />
-              {hexMetric === "r_break" ? t("map.legendLowRisk") : t("map.legendHigh")}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-status-warn" />
-              {hexMetric === "r_break" ? t("map.legendMidRisk") : t("map.legendMid")}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-content-muted" />
-              {hexMetric === "r_break" ? t("map.legendHighRisk") : t("map.legendLow")}
-            </span>
-          </div>
-        </div>
-
+      <CardContent className="space-y-3">
         {probingCoords && (
           <div
             role="status"
@@ -1013,11 +1322,16 @@ export function AnalogMap({
           <div className="relative">
             <div
               ref={containerRef}
-              className="h-72 w-full overflow-hidden rounded border border-border-subtle bg-surface-muted sm:h-80 lg:h-96"
+              className={compact ? "h-[22rem] w-full overflow-hidden rounded-3xl border border-border-subtle/60 bg-surface-muted sm:h-[30rem]" : "h-80 w-full overflow-hidden rounded-xl border border-border-subtle bg-surface-muted sm:h-96"}
+            />
+            <MapZoomControls
+              onZoomIn={() => mapRef.current?.zoomIn({ duration: 300 })}
+              onZoomOut={() => mapRef.current?.zoomOut({ duration: 300 })}
+              onReset={() => mapRef.current?.flyTo({ center: [0, 15], zoom: 1.45, pitch: isTerrain3d ? 25 : 0, duration: 750 })}
             />
 
             {/* Live Hover Telemetry HUD when moving cursor over any H3 hexagon */}
-            {hoveredEntry && (
+            {!compact && hoveredEntry && (
               <div
                 aria-live="polite"
                 className="pointer-events-none absolute left-3 top-3 z-10 w-72 max-w-[calc(100%-3.5rem)] space-y-2 rounded-lg border border-accent/50 bg-surface/95 p-3 shadow-lg backdrop-blur sm:w-80"
@@ -1187,369 +1501,44 @@ export function AnalogMap({
               </div>
             )}
 
-            {/* Selected H3 Hexagon Inspector Card */}
-            {selectedMatch && (
-              <div className="mt-2 space-y-2.5 rounded-lg border border-border-subtle bg-surface/95 p-3 shadow-sm sm: backdrop-blur">
-                <div className="flex flex-wrap items-start justify-between gap-2">
-                  <div className="min-w-0 space-y-0.5">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <span className="rounded bg-accent/15 px-1.5 py-0.5 text-[11px] font-semibold text-accent">
-                        {t("map.selectedHudBadge")}
-                      </span>
-                      {selectedRank !== null && (
-                        <span className="rounded bg-accent/20 px-1.5 py-0.5 text-xs font-bold tabular-nums text-accent">
-                          {t("map.rankBadge", { rank: selectedRank })}
-                        </span>
-                      )}
-                      {!isStudent && selectedMatch.is_pareto_optimal && (
-                        <Badge variant="valid">{t("map.paretoBadge")}</Badge>
-                      )}
-                      <Badge variant="default">
-                        {t("map.validTestsBadge", {
-                          count: selectedMatch.engineering_recommendations.valid_tests.length,
-                        })}
-                      </Badge>
-                    </div>
-                    <p className="truncate text-sm font-bold text-content">
-                      {selectedMatch.known_analog_name ?? t(selectedMatch.region_key)}
-                    </p>
-                    <p className="text-xs tabular-nums text-content-muted">
-                      {!isStudent && (
-                        <>
-                          <span className="font-mono">{selectedMatch.earth_cell_h3}</span> ·{" "}
-                          {t("map.resolutionBadge", { res: selectedMatch.h3_resolution })} (
-                          {t("map.scaleLabel", {
-                            km: formatNumber(selectedMatch.effective_scale_km ?? 158.2, lang, 1),
-                          })}
-                          ) ·{" "}
-                        </>
-                      )}
-                      {t(selectedMatch.biome_key)} · {selectedMatch.country_code} ·{" "}
-                      {formatNumber(selectedMatch.coordinates.lat, lang, 2)}°,{" "}
-                      {formatNumber(selectedMatch.coordinates.lon, lang, 2)}°
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-2">
-                    {!isStudent && onRefineCell && (
-                      <button
-                        type="button"
-                        disabled={isRefining || selectedMatch.h3_resolution >= 5}
-                        onClick={() => onRefineCell(selectedMatch.earth_cell_h3)}
-                        className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded border border-accent/40 bg-accent/15 px-3 py-1.5 text-xs font-semibold text-accent hover:bg-accent/25 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-accent/40"
-                      >
-                        <ZoomIn className="h-3.5 w-3.5" aria-hidden="true" />
-                        <span>
-                          {selectedMatch.h3_resolution >= 5
-                            ? t("map.maxResReached")
-                            : isRefining
-                            ? t("map.refiningZone")
-                            : t("map.subdivideAction")}
-                        </span>
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        document
-                          .getElementById(
-                            isStudent ? "section-student-comparison" : "section-diagnostics"
-                          )
-                          ?.scrollIntoView({ behavior: "smooth", block: "start" });
-                      }}
-                      className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded border border-border-subtle bg-surface-elevated px-3 py-1.5 text-xs font-semibold text-content hover:bg-surface-muted focus:outline-none focus:ring-2 focus:ring-accent/40"
-                    >
-                      <span>
-                        {isStudent
-                          ? t("studentPanel.jumpToComparison")
-                          : t("map.jumpToDiagnostics")}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-
-                {isStudent ? (
-                  <div className="grid grid-cols-2 gap-2 border-t border-border-subtle pt-2.5 sm:grid-cols-4">
-                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                      <span className="block text-[11px] text-content-muted">
-                        {t("studentPanel.overallLabel")}
-                      </span>
-                      <span className="text-xs font-bold tabular-nums text-accent">
-                        {formatPercent(selectedMatch.combined_score, lang)}
-                      </span>
-                    </div>
-                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                      <span className="block text-[11px] text-content-muted">
-                        {t("studentPanel.terrainShort")} / {t("studentPanel.climateShort")}
-                      </span>
-                      <span className="text-xs font-semibold tabular-nums text-content">
-                        {formatPercent(selectedMatch.s_ind, lang)} ·{" "}
-                        {formatPercent(selectedMatch.s_dep, lang)}
-                      </span>
-                    </div>
-                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                      <span className="block text-[11px] text-content-muted">
-                        {t("map.cellTempLabel")}
-                      </span>
-                      <span className="text-xs font-semibold tabular-nums text-content">
-                        {formatNumber(
-                          (selectedMatch.earth_variables.dependent.mean_surface_temp_k ?? 273.15) -
-                            273.15,
-                          lang,
-                          1
-                        )}
-                        °C
-                      </span>
-                    </div>
-                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                      <span className="block text-[11px] text-content-muted">
-                        {t("map.cellSlopeLabel")}
-                      </span>
-                      <span className="text-xs font-semibold tabular-nums text-content">
-                        {formatNumber(
-                          selectedMatch.earth_variables.independent.slope_deg ?? 0,
-                          lang,
-                          1
-                        )}
-                        °
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                <>
-                <div className="space-y-2 border-t border-border-subtle pt-2.5">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-xs font-semibold uppercase tracking-wide text-content-muted">
-                      {t("map.earthProfileTitle")}
-                    </span>
-                    <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-content-muted">
-                      {selectedMatch.provenance?.is_live_probed && (
-                        <Badge variant="accent">{t("provenance.liveProbed")}</Badge>
-                      )}
-                      {selectedMatch.provenance?.source_apis?.map((api) => (
-                        <Badge key={api} variant="default">
-                          {api}
-                        </Badge>
-                      ))}
-                      {selectedMatch.provenance?.observation_window && (
-                        <span>· {selectedMatch.provenance.observation_window}</span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                      <span className="block text-[11px] text-content-muted">
-                        {t("map.metricCombined")}
-                      </span>
-                      <span className="text-xs font-bold tabular-nums text-accent">
-                        {formatPercent(selectedMatch.combined_score, lang)} · S_ind{" "}
-                        {formatPercent(selectedMatch.s_ind, lang)} · S_dep{" "}
-                        {formatPercent(selectedMatch.s_dep, lang)}
-                      </span>
-                    </div>
-                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                      <span className="block text-[11px] text-content-muted">
-                        {t("map.cellTempLabel")} / {t("map.cellDiurnalLabel")}
-                      </span>
-                      <span className="text-xs font-semibold tabular-nums text-content">
-                        {formatNumber(
-                          (selectedMatch.earth_variables.dependent.mean_surface_temp_k ?? 273.15) -
-                            273.15,
-                          lang,
-                          1
-                        )}
-                        °C · Δ{" "}
-                        {formatNumber(
-                          selectedMatch.earth_variables.dependent.diurnal_temp_amplitude_k ?? 0,
-                          lang,
-                          1
-                        )}{" "}
-                        K
-                      </span>
-                    </div>
-                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                      <span className="block text-[11px] text-content-muted">
-                        {t("map.cellAridityLabel")} / {t("map.cellSlopeLabel")}
-                      </span>
-                      <span className="text-xs font-semibold tabular-nums text-content">
-                        AI{" "}
-                        {formatNumber(
-                          selectedMatch.earth_variables.independent.aridity_index ?? 0,
-                          lang,
-                          3
-                        )}{" "}
-                        ·{" "}
-                        {formatNumber(
-                          selectedMatch.earth_variables.independent.slope_deg ?? 0,
-                          lang,
-                          1
-                        )}
-                        °
-                      </span>
-                    </div>
-                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                      <span className="block text-[11px] text-content-muted">
-                        {t("map.cellRadiationLabel")} / {t("map.metricRBreak")}
-                      </span>
-                      <span className="text-xs font-semibold tabular-nums text-content">
-                        {formatNumber(
-                          selectedMatch.earth_variables.breakage.radiation_msv_yr ?? 0,
-                          lang,
-                          2
-                        )}{" "}
-                        mSv/yr · {formatPercent(selectedMatch.r_break_overall, lang)}
-                      </span>
-                    </div>
-                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                      <span className="block text-[11px] text-content-muted">
-                        {t("map.cellThermalRoughness")}
-                      </span>
-                      <span className="text-xs font-semibold tabular-nums text-content">
-                        {formatNumber(
-                          selectedMatch.earth_variables.independent.topographic_roughness ?? 0,
-                          lang,
-                          2
-                        )}{" "}
-                        ·{" "}
-                        {formatNumber(
-                          selectedMatch.earth_variables.independent.thermal_inertia ?? 0,
-                          lang,
-                          0
-                        )}{" "}
-                        TIU
-                      </span>
-                    </div>
-                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                      <span className="block text-[11px] text-content-muted">
-                        {t("map.cellOpticsSolar")}
-                      </span>
-                      <span className="text-xs font-semibold tabular-nums text-content">
-                        {formatNumber(
-                          selectedMatch.earth_variables.independent.surface_albedo ?? 0,
-                          lang,
-                          2
-                        )}{" "}
-                        ·{" "}
-                        {formatNumber(
-                          selectedMatch.earth_variables.independent.solar_flux_wm2 ?? 0,
-                          lang,
-                          0
-                        )}{" "}
-                        W/m²
-                      </span>
-                    </div>
-                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                      <span className="block text-[11px] text-content-muted">
-                        {t("map.cellHumidityUv")}
-                      </span>
-                      <span className="text-xs font-semibold tabular-nums text-content">
-                        {formatNumber(
-                          selectedMatch.earth_variables.independent.relative_humidity_pct ?? 0,
-                          lang,
-                          0
-                        )}
-                        % · UV{" "}
-                        {formatNumber(
-                          selectedMatch.earth_variables.independent.uv_irradiance_index ?? 0,
-                          lang,
-                          1
-                        )}
-                      </span>
-                    </div>
-                    <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5">
-                      <span className="block text-[11px] text-content-muted">
-                        {t("map.cellWindDust")}
-                      </span>
-                      <span className="text-xs font-semibold tabular-nums text-content">
-                        {formatNumber(
-                          selectedMatch.earth_variables.dependent.surface_wind_ms ?? 0,
-                          lang,
-                          1
-                        )}{" "}
-                        m/s ·{" "}
-                        {formatNumber(
-                          selectedMatch.earth_variables.dependent.aeolian_dust_flux ?? 0,
-                          lang,
-                          2
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Geological & Multi-Agency Earth Context */}
-                {(catalogLoading || selectedCatalog) && (
-                  <div className="space-y-2 border-t border-border-subtle pt-2.5">
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-content-muted">
-                      <Database className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
-                      <span>{t("map.cellCatalogTitle")}</span>
-                    </div>
-                    {catalogLoading && !selectedCatalog ? (
-                      <p className="text-xs text-content-muted">{t("agencies.loading")}</p>
-                    ) : (
-                      selectedCatalog && (
-                        <div className="space-y-2">
-                          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                            {selectedCatalog.geology && (
-                              <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5 text-xs">
-                                <span className="block text-[11px] text-content-muted">
-                                  {t("map.cellCatalogGeology")}
-                                </span>
-                                <span className="font-semibold text-content">
-                                  {selectedCatalog.geology.unit_name} ·{" "}
-                                  {selectedCatalog.geology.lithology} ({selectedCatalog.geology.age})
-                                </span>
-                              </div>
-                            )}
-                            {(selectedCatalog.regolith_simulant || selectedCatalog.habitability) && (
-                              <div className="rounded border border-border-subtle bg-surface-elevated px-2.5 py-1.5 text-xs">
-                                <span className="block text-[11px] text-content-muted">
-                                  {t("map.cellCatalogSimulant")}
-                                </span>
-                                <span className="font-semibold text-content">
-                                  {selectedCatalog.regolith_simulant
-                                    ? `${selectedCatalog.regolith_simulant.recommended_code} (${formatPercent(selectedCatalog.regolith_simulant.affinity_score, lang)})`
-                                    : ""}
-                                  {selectedCatalog.regolith_simulant && selectedCatalog.habitability
-                                    ? " · "
-                                    : ""}
-                                  {selectedCatalog.habitability
-                                    ? `HI ${formatNumber(selectedCatalog.habitability.habitability_index, lang, 2)}`
-                                    : ""}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                          {selectedCatalog.products.length > 0 && (
-                            <div className="flex flex-wrap gap-1.5">
-                              {selectedCatalog.products.slice(0, 4).map((prod) => (
-                                <a
-                                  key={`${prod.agency}-${prod.product_id}`}
-                                  href={prod.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex min-h-9 items-center gap-1 rounded border border-border-subtle bg-surface-elevated px-2 py-1 text-[11px] font-medium text-content transition hover:border-accent hover:text-accent"
-                                >
-                                  <span>
-                                    {prod.agency} · {prod.mission}
-                                  </span>
-                                  <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
-                                </a>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      )
-                    )}
-                  </div>
-                )}
-                </>
-                )}
-              </div>
-            )}
+            {!compact && inspectorContent}
           </div>
         )}
+
+        {compact && (
+          <div className="flex min-h-12 flex-wrap items-center justify-between gap-3 text-sm text-content-muted">
+            <div className="flex flex-wrap items-center gap-4">
+              <MapLegendItem dotClass="bg-status-valid">{hexMetric === "r_break" ? t("map.legendLowRisk") : t("map.legendHigh")}</MapLegendItem>
+              <MapLegendItem dotClass="bg-status-warn">{hexMetric === "r_break" ? t("map.legendMidRisk") : t("map.legendMid")}</MapLegendItem>
+              <MapLegendItem dotClass="bg-content-muted">{hexMetric === "r_break" ? t("map.legendHighRisk") : t("map.legendLow")}</MapLegendItem>
+            </div>
+            <Button variant="primary" disabled={!selectedMatch} onClick={() => setInspectorOpen(true)}>
+              <Pictogram name="hexCell" className="h-5 w-5" />
+              {selectedMatch ? `${selectedMatch.known_analog_name ?? t(selectedMatch.region_key)} · ${formatPercent(selectedMatch.combined_score, lang)}` : t("map.inspectSelected")}
+            </Button>
+          </div>
+        )}
+
+        {!compact && (<>
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-content-muted">
+          <span>
+            {t("map.subtitle")} <strong className="text-accent">{t("map.probeHint")}</strong>
+          </span>
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-status-valid" />
+              {hexMetric === "r_break" ? t("map.legendLowRisk") : t("map.legendHigh")}
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-status-warn" />
+              {hexMetric === "r_break" ? t("map.legendMidRisk") : t("map.legendMid")}
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-content-muted" />
+              {hexMetric === "r_break" ? t("map.legendHighRisk") : t("map.legendLow")}
+            </span>
+          </div>
+        </div>
 
         {/* Accessible, mobile-friendly card selector for ranked H3 matches */}
         <div className="space-y-3.5">
@@ -2130,8 +2119,10 @@ export function AnalogMap({
             </>
           )}
         </div>
+        </>)}
       </CardContent>
     </Card>
-  );
+    {compact && <Drawer variant="center" open={inspectorOpen && Boolean(selectedMatch)} title={t("map.selectedHudBadge")} closeLabel={t("controls.closeSettings")} onClose={() => setInspectorOpen(false)}>{inspectorContent}</Drawer>}
+  </>);
 }
 

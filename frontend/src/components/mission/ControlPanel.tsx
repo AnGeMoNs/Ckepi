@@ -1,28 +1,25 @@
-import { ChevronDown, ChevronUp, SlidersHorizontal, Sparkles } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { Pictogram } from "../worlds/Pictograms";
 
 import { formatPercent } from "../../i18n";
 import type {
   AnalogSearchResponse,
   DecompositionModelType,
   DistanceMetricType,
-  PlanetaryBody,
   PlanetarySite,
   TestProfileType,
 } from "../../types/analog";
-import { Button } from "../ui/Button";
 import { InfoTooltip } from "../ui/InfoTooltip";
 import { Select } from "../ui/Select";
 import { Slider } from "../ui/Slider";
 import { Switch } from "../ui/Switch";
+import { ProfilePicker } from "../explore/ProfilePicker";
 import { ManualVariableControls } from "./ManualVariableControls";
 import { PresetProfileInspector } from "./PresetProfileInspector";
 
 interface ControlPanelProps {
   layout?: "horizontal" | "vertical";
-  sites: PlanetarySite[];
-  selectedSiteId: string;
-  customProbedSite: PlanetarySite | null;
   activeSite?: PlanetarySite;
   testProfile: TestProfileType;
   modelType: DecompositionModelType;
@@ -36,7 +33,6 @@ interface ControlPanelProps {
   customIvWeights: Record<string, number>;
   customDvWeights: Record<string, number>;
   customMinSimilarity: Record<string, number>;
-  onSelectSite: (siteId: string, body?: PlanetaryBody) => void;
   onChangeTestProfile: (profile: TestProfileType) => void;
   onChangeModelType: (model: DecompositionModelType) => void;
   onChangeDistanceMetric: (metric: DistanceMetricType) => void;
@@ -56,9 +52,6 @@ interface ControlPanelProps {
 
 export function ControlPanel({
   layout = "vertical",
-  sites,
-  selectedSiteId,
-  customProbedSite,
   activeSite,
   testProfile,
   modelType,
@@ -72,7 +65,6 @@ export function ControlPanel({
   customIvWeights,
   customDvWeights,
   customMinSimilarity,
-  onSelectSite,
   onChangeTestProfile,
   onChangeModelType,
   onChangeDistanceMetric,
@@ -87,151 +79,74 @@ export function ControlPanel({
 }: ControlPanelProps) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
-
-  const siteOptions = [
-    ...sites.map((s) => ({
-      value: s.site_id,
-      label: t(s.name_key),
-    })),
-    ...(customProbedSite
-      ? [
-          {
-            value: customProbedSite.site_id,
-            label: customProbedSite.planetary_feature
-              ? `${customProbedSite.planetary_feature.feature_name} (${customProbedSite.coordinates.lat}°, ${customProbedSite.coordinates.lon}°)`
-              : `${t(customProbedSite.name_key)} (${customProbedSite.coordinates.lat}, ${customProbedSite.coordinates.lon})`,
-          },
-        ]
-      : []),
-  ];
-  const effectiveOptions =
-    siteOptions.length > 0
-      ? siteOptions
-      : [{ value: selectedSiteId, label: t("controls.loading") }];
-  const effectiveValue = effectiveOptions.some((o) => o.value === selectedSiteId)
-    ? selectedSiteId
-    : effectiveOptions[0].value;
+  const reduceMotion = Boolean(useReducedMotion());
 
   const isHorizontal = layout === "horizontal";
 
   return (
-    <div className="space-y-4">
-      <div
-        className={
-          isHorizontal
-            ? "grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-12 xl:items-end"
-            : "space-y-4"
-        }
-      >
-        <div className={isHorizontal ? "min-w-0 xl:col-span-3" : undefined}>
-          <Select
-            id="target-site-select"
-            label={t("controls.targetSite")}
-            value={effectiveValue}
-            onChange={(e) => {
-              const nextId = e.target.value;
-              const found = sites.find((s) => s.site_id === nextId);
-              onSelectSite(nextId, found?.body);
-            }}
-            options={effectiveOptions}
+    <div className="space-y-4 sm:space-y-5">
+      <ProfilePicker value={testProfile} onChange={onChangeTestProfile} />
+
+      <div className="grid grid-cols-1 items-stretch gap-3 md:grid-cols-2">
+        {/* Discovery mode: a whole card is the switch, so it is easy to find and to press. */}
+        <motion.button
+          id="discovery-mode-toggle"
+          type="button"
+          role="switch"
+          aria-checked={excludeBenchmarks}
+          onClick={() => onChangeExcludeBenchmarks(!excludeBenchmarks)}
+          whileHover={reduceMotion ? undefined : { y: -3 }}
+          whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+          className={`ckepi-liquid flex min-h-[6rem] items-center gap-4 rounded-3xl p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${excludeBenchmarks ? "ckepi-liquid-glow" : ""}`}
+        >
+          <motion.img
+            src="/img/science-accessories/ckepi-pin-location.webp"
+            alt=""
+            width={64}
+            height={64}
+            draggable={false}
+            className="h-14 w-14 shrink-0 object-contain drop-shadow-ckepi-logo"
+            animate={reduceMotion ? undefined : { y: excludeBenchmarks ? -4 : 0, rotate: excludeBenchmarks ? -8 : 0, scale: excludeBenchmarks ? 1.08 : 0.94 }}
+            transition={{ type: "spring", stiffness: 300, damping: 16 }}
           />
-        </div>
+          <span className="min-w-0 flex-1">
+            <span className="block text-base font-bold leading-snug text-content">{t("controls.discoveryOnly")}</span>
+            <span className="mt-0.5 block text-sm leading-snug text-content-muted">{t("explore.mission.discoveryHint")}</span>
+          </span>
+          <span className="flex shrink-0 flex-col items-center gap-1">
+            <span aria-hidden="true" className={`flex h-9 w-16 items-center rounded-full border p-1 shadow-inner transition-colors ${excludeBenchmarks ? "justify-end border-accent/60 bg-accent/80" : "justify-start border-border-subtle bg-ckepi-space/70"}`}>
+              <motion.span layout transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 500, damping: 30 }} className="ckepi-cardboard h-7 w-7 rounded-full" />
+            </span>
+            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-content-muted">{excludeBenchmarks ? t("explore.mission.on") : t("explore.mission.off")}</span>
+          </span>
+        </motion.button>
 
-        <div className={isHorizontal ? "min-w-0 xl:col-span-3" : undefined}>
-          <Select
-            id="test-profile-select"
-            label={t("controls.testProfile")}
-            value={testProfile}
-            onChange={(e) => onChangeTestProfile(e.target.value as TestProfileType)}
-            options={[
-              { value: "causal_auto", label: t("controls.profiles.causal_auto") },
-              { value: "navigation_landing", label: t("controls.profiles.navigation_landing") },
-              { value: "rover_mobility", label: t("controls.profiles.rover_mobility") },
-              { value: "isru_ice_drilling", label: t("controls.profiles.isru_ice_drilling") },
-              { value: "lava_tube_habitat", label: t("controls.profiles.lava_tube_habitat") },
-              { value: "solar_power_thermal", label: t("controls.profiles.solar_power_thermal") },
-              { value: "manual_custom", label: t("controls.profiles.manual_custom") },
-            ]}
-          />
-        </div>
-
-        {isHorizontal ? (
-          <>
-            <div className="min-w-0 xl:col-span-3">
-              <Switch
-                id="discovery-mode-toggle"
-                checked={excludeBenchmarks}
-                onChange={onChangeExcludeBenchmarks}
-                label={t("controls.discoveryOnly")}
-                icon={<Sparkles className="h-4 w-4 text-status-valid" aria-hidden="true" />}
-                trailing={
-                  <InfoTooltip
-                    label={t("controls.discoveryOnly")}
-                    text={t("controls.discoveryHint")}
-                  />
-                }
-              />
-            </div>
-
-            <div className="min-w-0 xl:col-span-3">
-              <Button
-                variant="secondary"
-                onClick={onToggleAdvanced}
-                aria-expanded={showAdvanced}
-                className="w-full justify-between whitespace-normal text-left"
-              >
-                <span className="inline-flex min-w-0 items-center gap-2">
-                  <SlidersHorizontal className="h-4 w-4 shrink-0" aria-hidden="true" />
-                  <span className="leading-snug">{t("controls.advancedToggle")}</span>
-                </span>
-                {showAdvanced ? (
-                  <ChevronUp className="h-4 w-4 shrink-0" aria-hidden="true" />
-                ) : (
-                  <ChevronDown className="h-4 w-4 shrink-0" aria-hidden="true" />
-                )}
-              </Button>
-            </div>
-          </>
-        ) : (
-          <div className="space-y-2.5 border-t border-border-subtle pt-3">
-            <Switch
-              id="discovery-mode-toggle"
-              checked={excludeBenchmarks}
-              onChange={onChangeExcludeBenchmarks}
-              label={t("controls.discoveryOnly")}
-              icon={<Sparkles className="h-4 w-4 text-status-valid" aria-hidden="true" />}
-              trailing={
-                <InfoTooltip
-                  label={t("controls.discoveryOnly")}
-                  text={t("controls.discoveryHint")}
-                />
-              }
-            />
-
-            <Button
-              variant="secondary"
-              onClick={onToggleAdvanced}
-              aria-expanded={showAdvanced}
-              className="w-full justify-between"
-            >
-              <span className="inline-flex items-center gap-2">
-                <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
-                <span>{t("controls.advancedToggle")}</span>
-              </span>
-              {showAdvanced ? (
-                <ChevronUp className="h-4 w-4" aria-hidden="true" />
-              ) : (
-                <ChevronDown className="h-4 w-4" aria-hidden="true" />
-              )}
-            </Button>
-          </div>
-        )}
+        <motion.button
+          type="button"
+          onClick={onToggleAdvanced}
+          aria-expanded={showAdvanced}
+          whileHover={reduceMotion ? undefined : { y: -3 }}
+          whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+          className={`ckepi-liquid flex min-h-[6rem] items-center gap-4 rounded-3xl p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${showAdvanced ? "ckepi-liquid-glow" : ""}`}
+        >
+          <span aria-hidden="true" className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-accent/40 bg-accent/10 text-accent">
+            <Pictogram name="tune" className="h-8 w-8" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-base font-bold leading-snug text-content">{t("controls.advancedToggle")}</span>
+            <span className="mt-0.5 block text-sm leading-snug text-content-muted">{t("explore.mission.advancedHint")}</span>
+          </span>
+          <Pictogram name="chevronDown" className={`h-6 w-6 shrink-0 text-content-muted transition-transform ${showAdvanced ? "rotate-180" : ""}`} />
+        </motion.button>
       </div>
 
       {testProfile !== "manual_custom" && searchResult && (
         <PresetProfileInspector
           testProfile={testProfile}
           weightsUsed={searchResult.causal_weights_used}
+          targetIndependent={activeSite?.variables.independent ?? {}}
+          targetDependent={activeSite?.variables.dependent ?? {}}
+          variableProvenance={activeSite?.confidence?.variable_provenance}
           onCloneToManual={onClonePresetToManual}
         />
       )}
@@ -256,19 +171,16 @@ export function ControlPanel({
         <div
           className={
             isHorizontal
-              ? "grid grid-cols-1 gap-4 rounded-xl border border-border-subtle bg-surface p-3.5 md:grid-cols-2 xl:grid-cols-5 xl:items-start"
-              : "space-y-4 rounded-xl border border-border-subtle bg-surface p-3.5"
+              ? "grid grid-cols-1 items-stretch gap-3 md:grid-cols-2 xl:grid-cols-6"
+              : "grid grid-cols-1 gap-3"
           }
         >
-          <div className="space-y-1">
-            <div className="flex items-center justify-between gap-1">
-              <span className="text-xs font-medium text-content-muted">
-                {t("controls.modelType")}
-              </span>
-              <InfoTooltip
-                label={t("controls.modelType")}
-                text={t("controls.modelTypeHint")}
-              />
+          {/* Every setting is the same glass box: a fixed-height title row, then its control,
+              so all controls sit on one line whatever the title length. */}
+          <div className={`${ADVANCED_CELL} xl:col-span-2`}>
+            <div className={ADVANCED_HEAD}>
+              <span>{t("controls.modelType")}</span>
+              <InfoTooltip label={t("controls.modelType")} text={t("controls.modelTypeHint")} />
             </div>
             <Select
               id="model-type-select"
@@ -281,19 +193,14 @@ export function ControlPanel({
               ]}
             />
             {testProfile !== "causal_auto" && (
-              <p className="text-xs text-status-warn">{t("controls.modelOverriddenNote")}</p>
+              <p className="text-xs leading-relaxed text-status-warn">{t("controls.modelOverriddenNote")}</p>
             )}
           </div>
 
-          <div className="space-y-1">
-            <div className="flex items-center justify-between gap-1">
-              <span className="text-xs font-medium text-content-muted">
-                {t("controls.distanceMetric")}
-              </span>
-              <InfoTooltip
-                label={t("controls.distanceMetric")}
-                text={t("controls.distanceMetricHint")}
-              />
+          <div className={`${ADVANCED_CELL} xl:col-span-2`}>
+            <div className={ADVANCED_HEAD}>
+              <span>{t("controls.distanceMetric")}</span>
+              <InfoTooltip label={t("controls.distanceMetric")} text={t("controls.distanceMetricHint")} />
             </div>
             <Select
               id="distance-metric-select"
@@ -307,46 +214,51 @@ export function ControlPanel({
             />
           </div>
 
-          <Slider
-            id="min-sind-range"
-            label={t("controls.minSInd")}
-            value={minSInd}
-            min={0}
-            max={0.85}
-            step={0.05}
-            formattedValue={formatPercent(minSInd, lang)}
-            onChange={onChangeMinSInd}
-            helpText={t("controls.minSIndHelp")}
-            tooltip={<InfoTooltip label={t("controls.minSInd")} text={t("controls.minSIndHelp")} />}
-          />
+          <div className={`${ADVANCED_CELL} xl:col-span-2`}>
+            <Switch
+              id="penalize-estimated-toggle"
+              checked={penalizeEstimated}
+              onChange={onChangePenalizeEstimated}
+              label={t("controls.penalizeEstimated")}
+              className="h-full items-start border-0 bg-transparent px-0 py-0 text-sm"
+            />
+          </div>
+          <div className={`${ADVANCED_CELL} xl:col-span-3`}>
+            <Slider
+              id="min-sind-range"
+              label={t("controls.minSInd")}
+              value={minSInd}
+              min={0}
+              max={0.85}
+              step={0.05}
+              formattedValue={formatPercent(minSInd, lang)}
+              onChange={onChangeMinSInd}
+              helpText={t("controls.minSIndHelp")}
+              tooltip={<InfoTooltip label={t("controls.minSInd")} text={t("controls.minSIndHelp")} />}
+            />
+          </div>
 
-          <Slider
-            id="min-sdep-range"
-            label={t("controls.minSDep")}
-            value={minSDep}
-            min={0}
-            max={0.85}
-            step={0.05}
-            formattedValue={formatPercent(minSDep, lang)}
-            onChange={onChangeMinSDep}
-            helpText={t("controls.minSDepHelp")}
-          />
+          <div className={`${ADVANCED_CELL} xl:col-span-3`}>
+            <Slider
+              id="min-sdep-range"
+              label={t("controls.minSDep")}
+              value={minSDep}
+              min={0}
+              max={0.85}
+              step={0.05}
+              formattedValue={formatPercent(minSDep, lang)}
+              onChange={onChangeMinSDep}
+              helpText={t("controls.minSDepHelp")}
+              tooltip={<InfoTooltip label={t("controls.minSDep")} text={t("controls.minSDepHelp")} />}
+            />
+          </div>
 
-          <Switch
-            id="penalize-estimated-toggle"
-            checked={penalizeEstimated}
-            onChange={onChangePenalizeEstimated}
-            label={t("controls.penalizeEstimated")}
-            className="bg-surface-elevated text-xs"
-          />
         </div>
       )}
 
-      {activeSite && (
-        <p className="rounded-lg border border-border-subtle bg-surface p-3 text-xs leading-relaxed text-content-muted">
-          {t(activeSite.mission_context_key)}
-        </p>
-      )}
     </div>
   );
 }
+
+const ADVANCED_CELL = "ckepi-liquid flex h-full min-w-0 flex-col gap-2 rounded-2xl p-4";
+const ADVANCED_HEAD = "flex min-h-[2.75rem] items-start justify-between gap-2 text-sm font-semibold leading-snug text-content";

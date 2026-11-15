@@ -1,15 +1,6 @@
-import {
-  AlertCircle,
-  CheckCircle2,
-  ClipboardList,
-  Compass,
-  RefreshCw,
-  ShieldAlert,
-  Sparkles,
-  Wrench,
-} from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Pictogram } from "../worlds/Pictograms";
 
 import { ApiClientError, requestMissionAiAnalysis } from "../../api/client";
 import { formatTimestamp, normalizeSupportedLocale } from "../../i18n";
@@ -189,11 +180,11 @@ export function AiViabilityPanel({
     : null;
 
   return (
-    <div className="rounded border border-border-subtle bg-surface p-4 space-y-4">
+    <div className="rounded-2xl border border-border-subtle/50 bg-surface/30 p-4 space-y-4">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-2">
-          <Sparkles className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+          <Pictogram name="research" className="h-4 w-4 shrink-0 text-accent" />
           <h3 className="text-sm font-semibold text-content">{t("mission.ai.title")}</h3>
           <Badge variant="accent">{t("mission.ai.badge")}</Badge>
           {analysis?.cached && <Badge variant="default">{t("mission.ai.cachedBadge")}</Badge>}
@@ -211,7 +202,7 @@ export function AiViabilityPanel({
               variant="secondary"
               onClick={() => void handleGenerate(true)}
             >
-              <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
+              <Pictogram name="replay" className="h-4 w-4" />
               <span>{t("mission.ai.regenerateButton")}</span>
             </Button>
           )}
@@ -220,14 +211,14 @@ export function AiViabilityPanel({
 
       {/* Disabled notice */}
       {!aiEnabled && !analysis && (
-        <p className="rounded border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted">
+        <p className="ckepi-liquid rounded-2xl p-3 text-xs text-content-muted">
           {t("mission.ai.notConfiguredNote")}
         </p>
       )}
 
       {/* Initial CTA */}
       {aiEnabled && !analysis && !isLoading && !errorKey && (
-        <div className="flex flex-col gap-3 rounded border border-border-subtle bg-surface-elevated p-3.5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 ckepi-liquid rounded-2xl p-3.5 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs leading-relaxed text-content-muted">
             {t("mission.ai.readyDescription")}
           </p>
@@ -236,7 +227,7 @@ export function AiViabilityPanel({
             className="shrink-0"
             onClick={() => void handleGenerate(false)}
           >
-            <Sparkles className="h-4 w-4" aria-hidden="true" />
+            <Pictogram name="research" className="h-4 w-4" />
             <span>{t("mission.ai.generateButton")}</span>
           </Button>
         </div>
@@ -246,10 +237,7 @@ export function AiViabilityPanel({
       {isLoading && (
         <div aria-live="polite" aria-busy="true" className="space-y-3">
           <p className="flex items-center gap-2 text-xs font-medium text-accent">
-            <RefreshCw
-              className="h-3.5 w-3.5 animate-spin motion-reduce:animate-none"
-              aria-hidden="true"
-            />
+            <Pictogram name="replay" className="h-4 w-4 animate-spin motion-reduce:animate-none" />
             <span>{t("mission.ai.generatingButton")}</span>
           </p>
           <Skeleton className="h-16 w-full" />
@@ -264,14 +252,14 @@ export function AiViabilityPanel({
       {errorKey && !isLoading && (
         <div
           role="alert"
-          className="flex flex-wrap items-center justify-between gap-3 rounded border border-status-break/40 bg-status-break/10 p-3 text-xs text-status-break"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-status-break/40 bg-status-break/10 p-3 text-xs text-status-break"
         >
           <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <Pictogram name="notSimilar" className="h-4 w-4 shrink-0" />
             <span>{t(errorKey)}</span>
           </div>
           <Button variant="secondary" onClick={() => void handleGenerate(false)}>
-            <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
+            <Pictogram name="replay" className="h-4 w-4" />
             <span>{t("mission.ai.retryButton")}</span>
           </Button>
         </div>
@@ -281,7 +269,7 @@ export function AiViabilityPanel({
       {analysis && !isLoading && (
         <div className="space-y-4">
           {/* Executive Synthesis & Viability Assessment */}
-          <div className="rounded border border-accent/30 bg-accent/5 p-3.5 space-y-2">
+          <div className="rounded-2xl border border-accent/30 bg-accent/5 p-3.5 space-y-2">
             <h4 className="text-xs font-semibold uppercase tracking-wide text-accent">
               {t("mission.ai.executiveTitle")}
             </h4>
@@ -294,9 +282,9 @@ export function AiViabilityPanel({
           </div>
 
           {/* Uncertainty & H3 Spatial Scale */}
-          <div className="rounded border border-border-subtle bg-surface-elevated p-3.5 space-y-1.5">
+          <div className="ckepi-liquid rounded-2xl p-3.5 space-y-1.5">
             <h4 className="flex items-center gap-1.5 text-xs font-semibold text-content">
-              <Compass className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+              <Pictogram name="globe" className="h-4 w-4 text-accent" />
               <span>{t("mission.ai.scaleConfidenceTitle")}</span>
             </h4>
             <p className="text-xs leading-relaxed text-content-muted">
@@ -306,9 +294,9 @@ export function AiViabilityPanel({
 
           {/* Strengths vs Physical Gaps */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <div className="rounded border border-status-valid/50 bg-status-valid/10 p-3.5 space-y-2.5">
+            <div className="rounded-2xl border border-status-valid/50 bg-status-valid/10 p-3.5 space-y-2.5">
               <h4 className="flex items-center gap-1.5 text-xs font-semibold text-status-valid">
-                <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <Pictogram name="check" className="h-4 w-4 shrink-0" />
                 <span>{t("mission.ai.strengthsTitle")}</span>
               </h4>
               <ul className="space-y-2.5">
@@ -330,9 +318,9 @@ export function AiViabilityPanel({
               </ul>
             </div>
 
-            <div className="rounded border border-status-warn/50 bg-status-warn/10 p-3.5 space-y-2.5">
+            <div className="rounded-2xl border border-status-warn/50 bg-status-warn/10 p-3.5 space-y-2.5">
               <h4 className="flex items-center gap-1.5 text-xs font-semibold text-status-warn">
-                <ShieldAlert className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <Pictogram name="notSimilar" className="h-4 w-4 shrink-0" />
                 <span>{t("mission.ai.limitationsTitle")}</span>
               </h4>
               <ul className="space-y-2.5">
@@ -357,16 +345,16 @@ export function AiViabilityPanel({
 
           {/* Breakage Mitigation Plan */}
           {analysis.breakage_mitigation_plan.length > 0 && (
-            <div className="rounded border border-status-break/40 bg-status-break/5 p-3.5 space-y-2.5">
+            <div className="rounded-2xl border border-status-break/40 bg-status-break/5 p-3.5 space-y-2.5">
               <h4 className="flex items-center gap-1.5 text-xs font-semibold text-status-break">
-                <Wrench className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <Pictogram name="tune" className="h-4 w-4 shrink-0" />
                 <span>{t("mission.ai.mitigationsTitle")}</span>
               </h4>
               <div className="grid grid-cols-1 gap-2.5 md:grid-cols-3">
                 {analysis.breakage_mitigation_plan.map((item, idx) => (
                   <div
                     key={`${item.variable}-${idx}`}
-                    className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1.5 text-xs"
+                    className="ckepi-liquid rounded-2xl p-3 space-y-1.5 text-xs"
                   >
                     <Badge variant="break">{resolveVariableLabel(item.variable)}</Badge>
                     <p className="text-content-muted">
@@ -389,9 +377,9 @@ export function AiViabilityPanel({
 
           {/* Field Considerations & Next Steps */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <div className="rounded border border-border-subtle bg-surface-elevated p-3.5 space-y-2">
+            <div className="ckepi-liquid rounded-2xl p-3.5 space-y-2">
               <h4 className="flex items-center gap-1.5 text-xs font-semibold text-content">
-                <ClipboardList className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+                <Pictogram name="decide" className="h-4 w-4 shrink-0 text-accent" />
                 <span>{t("mission.ai.considerationsTitle")}</span>
               </h4>
               <ul className="list-disc space-y-1.5 pl-4 text-xs leading-relaxed text-content-muted">
@@ -401,9 +389,9 @@ export function AiViabilityPanel({
               </ul>
             </div>
 
-            <div className="rounded border border-border-subtle bg-surface-elevated p-3.5 space-y-2">
+            <div className="ckepi-liquid rounded-2xl p-3.5 space-y-2">
               <h4 className="flex items-center gap-1.5 text-xs font-semibold text-content">
-                <Sparkles className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+                <Pictogram name="research" className="h-4 w-4 shrink-0 text-accent" />
                 <span>{t("mission.ai.nextStepsTitle")}</span>
               </h4>
               <ul className="list-disc space-y-1.5 pl-4 text-xs leading-relaxed text-content-muted">
@@ -414,7 +402,7 @@ export function AiViabilityPanel({
             </div>
           </div>
 
-          <p className="border-t border-border-subtle pt-2 text-[11px] text-content-muted">
+          <p className="border-t border-border-subtle pt-2 text-xs text-content-muted">
             {t("mission.ai.includedInReport")} · {t("mission.ai.disclaimer")}
           </p>
         </div>

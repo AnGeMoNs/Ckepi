@@ -14,6 +14,8 @@
     "mobileMenuLabel": "Preferences"
   },
   "controls": {
+    "analysisErrorDescription": "The service did not return a valid result. Use Retry; this failure does not mean your filters are too strict.",
+    "mapLoadingDescription": "Preparing the map and analysis results…",
     "targetSite": "Planetary Target (ROI)",
     "modelType": "Decomposition Model",
     "modelTypeHint": "Statistical algorithm (Ridge or Random Forest) used to infer which terrain variables drive environmental responses.",
@@ -57,8 +59,8 @@
     "retry": "Retry",
     "dataSources": "Data sources",
     "lastUpdated": "Analysis updated",
-    "refreshApis": "Refresh live APIs",
-    "refreshing": "Syncing with NASA & Open-Meteo...",
+    "refreshApis": "Refresh analysis",
+    "refreshing": "Refreshing the analysis…",
     "shareLink": "Share link",
     "copiedLink": "Copied!",
     "penalizeEstimated": "Penalize estimated planetary targets in ranking (confidence-adjusted score)",
@@ -67,7 +69,7 @@
     "drawerTitle": "Mission configuration",
     "updating": "Updating results…",
     "actionsGroup": "Actions",
-    "refreshedToast": "Datasets and analysis updated.",
+    "refreshedToast": "Analysis refreshed using the available catalogue.",
     "exportedToast": "File exported successfully.",
     "dismissToast": "Dismiss notification",
     "emptyTitle": "No analogs match the current thresholds",
@@ -189,6 +191,7 @@
     "legendEstimated": "Probed point (Estimated)"
   },
   "confidence": {
+    "mars_curated_proxy": "Weather for this target uses Curiosity/REMS observations at Gale as a regional proxy. These are not local Jezero or Arcadia measurements or MEDA data; environmental values are estimates. The Jezero DEM comparison retains its separate source.",
     "title": "Data Confidence & Coverage Transparency",
     "unknownSite": "Nearest tracked site",
     "iauFeatureBadge": "IAU: {{name}} ({{elev}} m)",
@@ -337,6 +340,8 @@
     }
   },
   "map": {
+    "interfaceOptions": "Map options",
+    "inspectSelected": "Inspect selected cell",
     "title": "Global H3 Terrestrial Analog Grid",
     "subtitle": "Click or tap an H3 hexagon or card to inspect its decoupled profile and mission diagnostics.",
     "legendHigh": "High match (≥ 75%)",
@@ -403,7 +408,7 @@
     "densityGlobal": "Full globe ({{count}})",
     "densityTop": "Top {{count}} (fast)",
     "renderedEvaluatedCount": "{{rendered}} rendered / {{total}} evaluated",
-    "clearThresholdFilter": "Show {{hidden}} hidden (clear thresholds)",
+    "clearThresholdFilter": "Show {{hidden}} hidden (clear filters)",
     "legendLowRisk": "Low breakage risk (≤ 25%)",
     "legendMidRisk": "Moderate risk (26–45%)",
     "legendHighRisk": "High breakage risk (> 45%)",
@@ -433,7 +438,7 @@
         "discovery": "Discoveries",
         "benchmark": "Benchmarks",
         "pareto": "Pareto Optimal",
-        "pinned": "Pinned ★"
+        "pinned": "Pinned"
       },
       "scoreBandLabel": "Score tier",
       "scoreBand": {
@@ -450,7 +455,7 @@
     },
     "nav": {
       "returnToPrevPage": "↩ Back to page {{page}}",
-      "goToSelectedCellPage": "📍 Active cell (Page {{page}})",
+      "goToSelectedCellPage": "Active cell (Page {{page}})",
       "recentPagesLabel": "Recent pages:",
       "jumpToPageLabel": "Go to page",
       "jumpButton": "Go",
@@ -535,9 +540,9 @@
       "includedInReport": "Automatically included when exporting Report (.md)"
     },
     "dimensions": {
-      "title": "8 Challenge Dimensions & Physical Processes",
+      "title": "Compare physical variables",
       "subtitle": "How this Earth cell compares across every exploration dimension beyond visual resemblance",
-      "badge": "Multidimensional Audit",
+      "badge": "Data for this cell",
       "geologyProcess": "Regolith weathering & mineralogy",
       "geologyFallback": "Albedo {{albedo}} · TI {{ti}} J·m⁻²·K⁻¹·s⁻¹/²",
       "terrainProcess": "Slope stability, cratering & DEM relief",
@@ -653,6 +658,7 @@
     "probed_location": "Live Satellite Evaluation"
   },
   "errors": {
+    "analysis_server_error": "The analysis service could not complete the request. Try again shortly.",
     "site_not_found": "Planetary site not found: {{site_id}}",
     "timeseries_not_found": "No time-series data found for site: {{site_id}}",
     "cell_not_found": "Earth H3 cell not found: {{h3_index}}",
@@ -718,7 +724,7 @@
     "backToCompare": "Back to Compare",
     "continueToPlan": "Continue to Plan",
     "viewEvidence": "View Scientific Evidence",
-    "focusAtacama": "📍 Compare with Atacama",
+    "focusAtacama": "Compare with Atacama",
     "globalLabel": "Global scope",
     "locationLabel": "Specific location",
     "skipToContent": "Skip to main content",
@@ -959,6 +965,88 @@
       "engineering": "Space engineering",
       "curiosities": "Planetary curiosities"
     },
+    "day": "Day",
+    "night": "Night",
+    "zone": {
+      "pampa": "Antofagasta plain",
+      "yungay": "Yungay"
+    },
+    "scale": {
+      "very": "Very similar",
+      "some": "Somewhat similar",
+      "not": "Not very similar"
+    },
+    "mars": {
+      "what": {
+        "title": "This is Mars",
+        "text": "A robot called Perseverance explores Jezero crater looking for signs of ancient life."
+      },
+      "similar": {
+        "title": "Does its ground look like ours?",
+        "text": "We measured how steep the ground is in Jezero and in Antofagasta, with NASA data. Tap each place.",
+        "pampa": "The Antofagasta plain has ground very similar to Jezero's.",
+        "yungay": "Yungay, the most famous site, is less similar than people thought.",
+        "source": "Slope difference: {{value}}° (NASA and ESA data)"
+      },
+      "different": {
+        "title": "What is different?",
+        "text": "Some things Earth cannot imitate.",
+        "extra": "Also, on Mars the air is very thin and there is much more radiation."
+      },
+      "why": {
+        "title": "Why does it matter?",
+        "text": "Before sending a robot to Mars, it is tested on Earth. Knowing where the ground is similar helps choose the best place to test it.",
+        "items": [
+          "Test robot wheels and cameras here",
+          "Spend less and risk less",
+          "Learn science with our own desert"
+        ]
+      }
+    },
+    "moon": {
+      "what": {
+        "title": "This is the Moon",
+        "text": "Several countries plan to build bases at the Moon's south pole."
+      },
+      "similar": {
+        "title": "What is similar?",
+        "text": "Both places have lots of sun and almost no water. But look at the temperature: tap day and night.",
+        "note": "Approximate temperatures computed from NASA data and Antofagasta's climate."
+      },
+      "different": {
+        "title": "What is different?",
+        "text": "On the Moon there is no air to breathe and everything weighs much less.",
+        "extra": "Also, the Moon has no shield against space radiation."
+      },
+      "why": {
+        "title": "Why does it matter?",
+        "text": "A Moon base will need solar energy and equipment that resists dust and dryness. That can be tested here first.",
+        "items": [
+          "Test solar panels",
+          "Test equipment against dust",
+          "Train before the trip"
+        ]
+      }
+    },
+    "earth": {
+      "what": {
+        "title": "This is Antofagasta",
+        "text": "It is one of the driest deserts in the world. That is why it resembles other worlds."
+      },
+      "zones": {
+        "title": "We measured four areas",
+        "text": "We compared the ground of four areas in the region with Mars. Here is the list, from most to least similar."
+      },
+      "why": {
+        "title": "Why does it matter?",
+        "text": "Learning to measure terrain with NASA data opens jobs the region needs.",
+        "items": [
+          "Read terrain maps",
+          "Work with data and robots",
+          "Show our desert to the world"
+        ]
+      }
+    },
     "hubLabel": "Interactive Science Labs",
     "subtabs": {
       "siteLab": "Gravity & Site Physics Lab",
@@ -970,12 +1058,12 @@
     "title": "Plan — Local Field Trial Sheet & Circular Economy",
     "subtitle": "Turn comparative evidence into a preliminary, responsible field-trial proposal prioritizing reusable equipment and explicit limits.",
     "exportBtn": "Export sheet (.md)",
-    "circularTitle": "Reusable / loaned equipment checklist (SDG 12)",
+    "circularTitle": "Reusable / loaned equipment checklist",
     "circularNote": "Planning checklist to encourage equipment reuse and lending across schools/universities. Does not represent verified live inventory.",
     "noEquipmentSelected": "No equipment selected",
     "limitsTitle": "Irreproducible physical limits & scope",
     "limitsNote": "This sheet is educational/preliminary: it does not certify terrain, replace permits, or validate real space mission readiness.",
-    "collaborationTitle": "Partnerships & local transfer (SDG 17)",
+    "collaborationTitle": "Partnerships & local transfer",
     "collaborationNote": "Designed to be replicated across educational and university nodes without collecting personal data.",
     "costsPending": "Pending local quote",
     "notesPlaceholder": "Record terrain observations, safety precautions, or open questions for the trial...",
@@ -1004,17 +1092,17 @@
     "presetsLabel": "Quick trial templates",
     "presets": {
       "rover": {
-        "label": "🤖 Rover traction",
+        "label": "Rover traction",
         "title": "Arid-soil rover traction and slope trial",
         "objective": "Measure wheel slip and tilt with a reusable IMU comparing an Atacama H3 cell against Jezero slope telemetry."
       },
       "thermal": {
-        "label": "🌡️ Thermal sensors",
+        "label": "Thermal sensors",
         "title": "Diurnal thermal swing and surface albedo logging",
         "objective": "Compare diurnal temperature swings and solar irradiance in hyperarid terrain to calibrate low-cost sensors."
       },
       "steam": {
-        "label": "🎓 STEAM workshop",
+        "label": "STEAM workshop",
         "title": "Hands-on planetary physics and analog activity",
         "objective": "Demonstrate mass vs weight, safe slope limits, and irreproducible planetary boundaries using open NASA data."
       }
@@ -1056,6 +1144,16 @@
       "copernicus": "Elevation, slope, roughness (DEM 90m), and ERA5-Land climate series.",
       "partners": "Soil properties, Macrostrat lithology, and Sentinel/RADARSAT/G-Portal catalogs."
     },
+    "sdgTitle": "SDG Integration (Educational & Scientific Proposal)",
+    "sdgHonestyNote": "Honesty note: the SDGs below reflect product design and target alignment; impact metrics are only reported when actually measured.",
+    "sdg4Title": "SDG 4 — Quality Education (Targets 4.3 & 4.4) [Primary]",
+    "sdg4Desc": "Planetary physics lab, SI units, explicit equations, and STEAM mini-challenges grounded in real data.",
+    "sdg9Title": "SDG 9 — Industry, Innovation & Infrastructure (Target 9.5) [Primary]",
+    "sdg9Desc": "Reproducible geospatial comparison, transparent causal decomposition, and rover/sensor trial planning.",
+    "sdg12Title": "SDG 12 — Responsible Consumption & Production (Target 12.5) [Complementary]",
+    "sdg12Desc": "Circular economy mindset in trial planning through equipment sharing and reuse.",
+    "sdg17Title": "SDG 17 — Partnerships for the Goals (Targets 17.3, 17.16, 17.17) [Complementary]",
+    "sdg17Desc": "Open, replicable architecture across educational communities and regional research.",
     "aiDisclosureTitle": "AI Disclosure (AI_DISCLOSURE.md)",
     "aiDisclosureDesc": "The core scientific concept (X → Y / B decomposition on H3 grid) is human-designed. AI assistants accelerated implementation, refactoring, and es/pt/en translation parity, verified by the team. No NASA logos or synthetic measurements were fabricated."
   },
@@ -1239,7 +1337,7 @@
       "backpack": "A 10 kg backpack feels like 1.7 kg (0.166 g).",
       "air": "Hard vacuum (0 mbar): no sound, no wind, and no aerodynamic parachutes.",
       "dayAndTemp": "Solar day: ~29.5 Earth days · Extreme thermal swings (>260 K).",
-      "radiation": "Unshielded surface radiation: ~380 mSv/yr without magnetosphere."
+      "radiation": "Surface cosmic radiation: ~380 mSv/yr at solar minimum (~110 at maximum), estimated by simulation (Reitz et al. 2012)."
     },
     "mars": {
       "name": "Mars (Jezero / Gale Crater)",
@@ -1301,6 +1399,7 @@
     "dataNote": "Real example: an under-studied area of Antofagasta matches Jezero crater's slopes more closely than the classic Yungay analog (W₁ = 0.54° vs. 3.32°, at 30 m). We pre-select places to study; we do not certify them.",
     "aiBadge": "AI-generated video",
     "credits": "Data: NASA, ESA and partner agencies. Ckepi is not affiliated with or endorsed by NASA.",
+    "aiImageBadge": "AI-generated illustration · Ckepi",
     "ctaStudent": "Explore as Student",
     "ctaScientist": "Scientific Mode"
   },
@@ -1331,6 +1430,655 @@
       "title": "What Earth cannot imitate",
       "body": "On Mars, gravity is 0.38 times Earth's, the air is about 160 times thinner and radiation is much higher. No desert reproduces that. That is why CKEPI pre-selects places for field study; it does not certify them."
     }
+  },
+  "worlds": {
+    "title": "Three worlds, real data",
+    "subtitle": "Earth, the Moon and Mars side by side. Every value comes from the API with its origin.",
+    "earth": "Earth",
+    "moon": "Moon",
+    "mars": "Mars",
+    "rows": {
+      "gravity": "Gravity",
+      "pressure": "Air pressure",
+      "radiation": "Radiation",
+      "temperature": "Mean temperature",
+      "thermalSwing": "Day–night swing",
+      "slope": "Slope"
+    },
+    "notReproducible": "Earth cannot reproduce it",
+    "origin": {
+      "measured": "measured",
+      "derived": "derived",
+      "model": "model",
+      "constant": "constant",
+      "default": "default"
+    },
+    "sourcesNote": "Earth: selected H3 cell (NASA POWER, Copernicus DEM, ERA5-Land). Moon and Mars: NASA PDS (LRO, REMS, MEDA) and reference values; pressure and radiation bars use a log scale.",
+    "terrainTitle": "Terrain measured at 30 m",
+    "terrainLead": "Slope difference with Mars (Wasserstein-1)",
+    "ci": "95% CI: {{low}}°–{{high}}°",
+    "controlCompare": "Yungay, the classic analog: {{value}}°",
+    "legendMars": "Mars",
+    "legendEarth": "Earth (cell)",
+    "legendControl": "Yungay",
+    "terrainSources": "Real DEMs: Jezero CTX (NASA MRO, USGS) and Copernicus GLO-30 (ESA).",
+    "syntheticWarning": "This cell has no real DEM yet: the histogram is a simulation, not a measurement.",
+    "openFull": "See full analysis",
+    "pickCell": "Pick an Earth cell to compare its real terrain with Mars.",
+    "pickAntofagasta": "See the Antofagasta cell"
+  },
+  "worldsHero": {
+    "kicker": "NASA Space Apps 2026 · Antofagasta",
+    "title": "Where on Earth do we rehearse the Moon and Mars?",
+    "subtitle": "Ckepi crosses open NASA data with the Antofagasta desert: what matches, by how much, and what doesn't. Tap a world.",
+    "verdictLabel": {
+      "match": "Yes",
+      "partial": "Partly",
+      "gap": "No"
+    },
+    "verdict": {
+      "dryness": "dry desert and clear sky",
+      "vacuum": "vacuum: no air",
+      "radiation": "space radiation",
+      "realDem": "terrain measured with real DEMs",
+      "local": "local natural laboratory",
+      "network": "network with other regions",
+      "terrain": "terrain slopes",
+      "cold": "cold and day–night swing",
+      "gravityAirRadiation": "gravity, air and radiation"
+    },
+    "moon": {
+      "tag": "Lunar base · south pole",
+      "name": "Moon",
+      "question": "What in Atacama helps prepare a base at the lunar south pole?",
+      "hookLabel": "Moon gravity (Earth = 1 g)",
+      "cta": "Cross Moon ↔ Antofagasta"
+    },
+    "earth": {
+      "tag": "Our laboratory",
+      "name": "Antofagasta",
+      "question": "The world's driest desert as a test site, measured area by area.",
+      "hookLabel": "areas measured with real terrain at 30 m",
+      "cta": "See the local laboratory"
+    },
+    "mars": {
+      "tag": "Jezero crater",
+      "name": "Mars",
+      "question": "Where in Antofagasta does the terrain resemble Jezero?",
+      "hookLabel": "slope difference with Antofagasta (lower is closer)",
+      "cta": "Cross Mars ↔ Antofagasta"
+    }
+  },
+  "crossing": {
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "stepOf": "Step {{n}} of {{total}}",
+    "loading": "Loading real data…",
+    "groups": {
+      "tests": "What it is for",
+      "skills": "What you learn (STEAM)",
+      "jobs": "Where you could work"
+    },
+    "gaps": {
+      "backpack": "A {{kg}} kg backpack would weigh…"
+    },
+    "mars": {
+      "title": "Mars ↔ Antofagasta",
+      "cross": {
+        "title": "Jezero meets Antofagasta",
+        "body": "Perseverance is exploring Jezero crater. We look for the place in Antofagasta whose terrain resembles it most, to rehearse here what will go there."
+      },
+      "match": {
+        "title": "What matches: the slopes",
+        "body": "Using NASA's elevation model of Jezero and real Antofagasta terrain at the same 30 m scale, an under-studied area resembles Jezero more than the classic analog.",
+        "ours": "Antofagasta area (83b224)",
+        "classic": "Yungay, the classic analog",
+        "legend": "Bars: Mars (copper), Antofagasta (salt) and Yungay (grey). Wasserstein-1 distance, lower is closer.",
+        "source": "Data: Jezero CTX DEM (NASA MRO, USGS, 20 m) and Copernicus GLO-30 (ESA), 6 km windows at 30 m. A pre-selection, not a certification."
+      },
+      "gaps": {
+        "title": "What Earth cannot imitate",
+        "body": "No desert reproduces Mars's gravity, thin air or radiation. That is why we say what can be tested and what cannot."
+      },
+      "use": {
+        "title": "What it is for and what you learn",
+        "body": "The slope match supports concrete tests, and the same comparison teaches skills in demand in the region.",
+        "tests": [
+          "Rover wheels and suspension on Jezero-like slopes",
+          "Camera navigation over real terrain",
+          "Route planning before going to the field"
+        ],
+        "skills": [
+          "Reading elevation maps (geomatics)",
+          "Comparing distributions with statistics",
+          "Programming with open NASA data"
+        ],
+        "jobs": [
+          "Mining robotics and automation",
+          "The region's astronomical observatories",
+          "Desert solar energy"
+        ]
+      }
+    },
+    "moon": {
+      "title": "Moon ↔ Antofagasta",
+      "cross": {
+        "title": "The lunar south pole meets Antofagasta",
+        "body": "Future lunar bases target the south pole, with grazing light and extreme cold. We look at which Atacama conditions help prepare them."
+      },
+      "match": {
+        "title": "What partly matches",
+        "body": "Atacama shares extreme dryness and high ultraviolet radiation with the Moon, and has large day–night temperature swings, though much smaller than on the Moon.",
+        "uv": "UV index",
+        "dryness": "Aridity index",
+        "note": "Values from the Ckepi engine (Earth: cell 83b224; Moon: south pole, Shackleton). Some lunar values are modelled, not measured."
+      },
+      "gaps": {
+        "title": "What Earth cannot imitate",
+        "body": "The Moon has no air, gravity is one sixth of Earth's and radiation is much higher. None of that can be tested in a desert."
+      },
+      "use": {
+        "title": "What it is for and what you learn",
+        "body": "Atacama's dryness and clear skies allow testing part of a base's equipment, and teach trades present in the region.",
+        "tests": [
+          "Solar panels under intense light and dust",
+          "Equipment that must withstand extreme dryness",
+          "Communications under clear skies"
+        ],
+        "skills": [
+          "Physics of light and temperature",
+          "Reading probe data (LRO)",
+          "Experiment design"
+        ],
+        "jobs": [
+          "Astronomical observatories",
+          "Solar energy",
+          "Equipment engineering for mining"
+        ]
+      }
+    },
+    "earth": {
+      "title": "Antofagasta, a natural laboratory",
+      "lab": {
+        "title": "Four areas measured with real terrain",
+        "body": "We compare the terrain of four areas of the region with Jezero crater at the same 30 m scale, to see which one to study first.",
+        "cells": {
+          "83b224fffffffff": "Pampa (cell 83b224)",
+          "83b220fffffffff": "Near Yungay (83b220)",
+          "83b225fffffffff": "Salt flat (83b225)",
+          "83b221fffffffff": "High Andes (83b221)"
+        },
+        "control": "Yungay, the classic analog: {{value}}°. Shorter bars = terrain closer to Jezero."
+      },
+      "use": {
+        "title": "What this laboratory is for",
+        "body": "The measured Antofagasta areas help prepare field tests and learn with real mission data.",
+        "tests": [
+          "Choose where to test a rover's mobility",
+          "Compare a new area with Jezero in minutes",
+          "Take the data on a field trip"
+        ],
+        "skills": [
+          "Reading elevation maps (geomatics)",
+          "Statistics with full distributions",
+          "Programming with open NASA data"
+        ],
+        "jobs": [
+          "Mining robotics and automation",
+          "The region's astronomical observatories",
+          "Desert solar energy"
+        ]
+      }
+    }
+  },
+  "local": {
+    "language": "Language",
+    "scienceMode": "Science mode",
+    "title": "Where on Earth do we prepare for the Moon and Mars?",
+    "lead": "Before traveling to space, people practice in places on Earth that look like it. The Antofagasta desert is one of them.",
+    "hint": "Tap a world",
+    "atacama": "Antofagasta",
+    "open": {
+      "moon": "Explore the Moon",
+      "earth": "Explore Antofagasta",
+      "mars": "Explore Mars"
+    },
+    "themeToLight": "Switch to light theme",
+    "themeToDark": "Switch to dark theme"
+  },
+  "legal": {
+    "copernicus": {
+      "produced": "Terrain comparison produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved.",
+      "liability": "The organisations in charge of the Copernicus programme by law or by delegation do not incur any liability for any use of the Copernicus WorldDEM-30."
+    }
+  },
+  "entry": {
+    "choose": "Choose how to enter",
+    "learn": "Learn",
+    "research": "Research",
+    "learnAria": "Learn: a cardboard expedition with real data, for all ages",
+    "researchAria": "Research: science mode with maps and statistics",
+    "challenge": "Which places on Earth resemble the future bases on the Moon and Mars?",
+    "tagline": "From image to evidence"
+  },
+  "expedition": {
+    "kicker": "Cardboard expedition",
+    "title": "From image to evidence, in three steps",
+    "lead": "Look, compare and investigate with real data at 30 m. We start with what you already know: the Antofagasta pampa.",
+    "levelLabel": "Difficulty level",
+    "levels": {
+      "kid": "1 · Simple",
+      "teen": "2 · Intermediate",
+      "adult": "3 · Technical"
+    },
+    "pathLabel": "Expedition route",
+    "stepOf": "Step {{n}} of {{total}}",
+    "prev": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "loading": "Loading real data…",
+    "error": "The data for this expedition could not be loaded.",
+    "preselection": "This is a shortlist for field study, not a certification: no place on Earth is the same as Mars.",
+    "done": {
+      "title": "Expedition complete!",
+      "text": "You looked, compared and investigated. That is how science works: with evidence, and saying what we still do not know.",
+      "science": "Go to science mode",
+      "restart": "Start again"
+    },
+    "steps": {
+      "observe": {
+        "name": "Observe",
+        "title": "Two landscapes, side by side",
+        "text": {
+          "kid": "Have you ever looked at the pampa from a bus window? It is almost flat, with gentle hills. Now look at Jezero Crater on Mars. What looks the same? What looks different?",
+          "teen": "Science starts by looking carefully. Here is a 6 km slice of the pampa, measured by satellite, and one of Jezero Crater, where the Perseverance rover works. Both use the same scale: one point every 30 m.",
+          "adult": "All research starts with observation. Both profiles come from real elevation models at the same 30 m resolution: Copernicus GLO-30 (ESA) for the pampa and the CTX DEM of Jezero (NASA MRO, USGS). Observing before measuring avoids hasty conclusions."
+        },
+        "job": "In real jobs, this step is done by a geologist.",
+        "pampa": "The pampa · cell 83b224 (Copernicus, 30 m)",
+        "jezero": "Jezero Crater, Mars (CTX, 30 m)",
+        "scale": "Real 6 km slices with the same vertical scale (relative height in metres).",
+        "peak": "height range of the cut: {{m}} m"
+      },
+      "measure": {
+        "name": "Measure",
+        "title": "What is a slope?",
+        "text": {
+          "kid": "Tilt the cardboard plank. If you lift it a lot, it is hard to ride a bike up it. That tilt is called slope and it is measured in degrees (°). In Jezero the ground is gentle, like a very low ramp.",
+          "teen": "Slope is the angle of the ground from the horizontal. In Jezero, half of the terrain is below {{jezero}}° (the median); in the pampa cell 83b224, below {{pampa}}°. Move the plank and see how much it rises per metre.",
+          "adult": "Slope is computed on every 30 m pixel of the elevation model. The median summarises the distribution: Jezero {{jezero}}°, cell 83b224 {{pampa}}°. Measuring the same way on both worlds, at the same scale and in degrees, is what makes the result comparable."
+        },
+        "job": "In real jobs, this step is done by a surveyor.",
+        "angle": "Plank tilt: {{deg}}°",
+        "rise": "It rises {{cm}} cm for every metre you move forward",
+        "snapJezero": "Jezero · {{deg}}°",
+        "snapPampa": "Pampa · {{deg}}°",
+        "medianNote": "Median slope at 30 m (real DEMs)."
+      },
+      "compare": {
+        "name": "Compare",
+        "title": "Two piles of slopes",
+        "text": {
+          "kid": "Imagine every bit of ground is a bean. You put it in a column depending on how steep it is. If both piles have the same shape, the places are alike in steepness. The pampa pile looks more like Jezero's than the Yungay one does!",
+          "teen": "We stack all the slopes of each place in columns. The W₁ distance tells how many degrees you would have to “move” to make one pile match the other: fewer degrees, more alike. Cell 83b224 scores {{w1}}°; the classic Yungay, {{yungay}}°.",
+          "adult": "We compare whole distributions, not averages. W₁ (Wasserstein-1) is measured in degrees and its 95 % confidence interval comes from a 2D spatial block bootstrap. Cell 83b224 (W₁ {{w1}}°, 95 % CI {{lo}}–{{hi}}°) is closer to Jezero than the classic analogue Yungay (W₁ {{yungay}}°). Only slope is compared."
+        },
+        "job": "In real jobs, this step is done by a data analyst.",
+        "pampa": "Pampa · 83b224",
+        "yungay": "Yungay (classic)",
+        "legendJezero": "Jezero (Mars)",
+        "legendEarth": "Place on Earth",
+        "axis": "Slope (°) →",
+        "result": "W₁ = {{w1}}° (95 % CI {{lo}}–{{hi}}°)",
+        "resultNoCi": "W₁ = {{w1}}°",
+        "closer": "Fewer degrees = more alike",
+        "winner": "Closest to Jezero in slope at 30 m, among the windows compared: cell 83b224, not the classic Yungay."
+      },
+      "different": {
+        "name": "What is not similar",
+        "title": "What Earth cannot imitate",
+        "text": {
+          "kid": "The pampa looks like Mars on the ground, but not in everything. On Mars your backpack would weigh much less, there is no air to breathe and much more radiation arrives from space. And not all of Antofagasta works: some places are much steeper.",
+          "teen": "A good scientist also says what is NOT similar. Gravity, air, radiation and the temperature swing between day and night cannot be copied outdoors on Earth. Compare Mars and the Moon with the pampa.",
+          "adult": "Negative cases matter as much as positive ones. The irreducible physical gap —gravity, pressure, radiation and thermal swing— is not reproduced outdoors in any desert: it can only be studied separately, and only in part. On terrain, cell 83b221 (labelled “Salar de Pajonales”) is much more rugged than Jezero."
+        },
+        "job": "In real jobs, this step is done by a test engineer.",
+        "worldLabel": "Pick a world",
+        "mars": "Mars",
+        "moon": "Moon",
+        "gravity": {
+          "label": "Gravity",
+          "mars": "0.38 g",
+          "moon": "0.166 g",
+          "why": "A 10 kg backpack would feel like {{kg}} kg."
+        },
+        "pressure": {
+          "label": "Air",
+          "mars": "~0.6 kPa of CO₂ (Mars average)",
+          "moon": "Vacuum: almost 0 kPa",
+          "why": "On the pampa: ~{{kpa}} kPa of breathable air."
+        },
+        "radiation": {
+          "label": "Radiation",
+          "mars": "~230 mSv/yr, measured by Curiosity (Hassler et al. 2014)",
+          "moon": "~380 mSv/yr at solar minimum (~110 at maximum), simulated (Reitz et al. 2012)",
+          "why": "World average on Earth: ~{{msv}} mSv/yr (UNSCEAR); the atmosphere and magnetic field protect us."
+        },
+        "thermal": {
+          "label": "Day and night (ΔT)",
+          "value": "{{dt}} °C difference",
+          "why": "On the pampa: ~{{dt}} °C.",
+          "valueModel": "{{dt}} °C difference (model)"
+        },
+        "lab": "None of this is reproduced outdoors on Earth: it is studied separately, in chambers and labs, and only in part.",
+        "terrainTitle": "Terrain that is not similar either",
+        "terrain": "Cell 83b221 (labelled “Salar de Pajonales”): median slope {{median}}° versus {{jezero}}° in Jezero. W₁ = {{w1}}° (95 % CI {{lo}}–{{hi}}°): much more rugged."
+      },
+      "decide": {
+        "name": "Decide",
+        "title": "What can be tested here?",
+        "text": {
+          "kid": "Now you decide. Tap each card: can it be tested on the pampa, yes or no?",
+          "teen": "With what we measured and what is not similar, we build a protocol: which tests make sense in cell 83b224 and which must be done in special labs.",
+          "adult": "Deciding means turning evidence into a test protocol. The similar slope at 30 m makes cell 83b224 a candidate for studying rover or drone routes in the field; gravity, pressure and radiation require other tests to be studied in chambers and labs."
+        },
+        "job": "In real jobs, this step is done by a drone or rover operator.",
+        "ask": "Can it be tested on the pampa?",
+        "yes": "Yes",
+        "no": "No",
+        "verdictYes": "A candidate to test here (still to be checked in the field)",
+        "verdictNo": "It must be tested somewhere else",
+        "right": "Well reasoned!",
+        "wrong": "Look again:",
+        "routes": "Preparing rover or drone routes over slopes similar to Jezero (30 m shortlist)",
+        "source": "Ckepi engine protocol for cell 83b224 + slope comparison at 30 m.",
+        "reasons": {
+          "routes": "Slopes at 30 m resemble Jezero's (this must be checked in the field).",
+          "baseline_instrument_calibration": "It is a dry, clear desert: useful for checking instruments before more demanding tests.",
+          "parachute_aerodynamics": "Air here is much denser than on Mars: a parachute would brake differently.",
+          "convective_thermal_cooling": "Here the air carries heat away; on Mars there is almost no air to do it.",
+          "reduced_gravity_kinematics": "Gravity here is 1 g, not 0.38 g.",
+          "unshielded_gcr_electronics": "Earth's atmosphere and magnetic field shield us from that radiation.",
+          "electrostatic_vacuum_dust": "There is no vacuum here like on the Moon.",
+          "fallback": "It depends on conditions Earth does not reproduce."
+        }
+      }
+    },
+    "stages": {
+      "look": "Look",
+      "compare": "Compare",
+      "investigate": "Investigate"
+    },
+    "listen": "Listen",
+    "stopListening": "Stop",
+    "noVoice": "This browser has no voice available; the text says the same.",
+    "sourceLabel": "See the source",
+    "retry": "Try again",
+    "questions": {
+      "title": "Investigate: three questions",
+      "q1": {
+        "q": "Which terrain deserves to be investigated?",
+        "a": "Cell 83b224 on the pampa: among the windows compared, it is the closest to Jezero in slope (W₁ = {{w1}}°, against {{yungay}}° for Yungay)."
+      },
+      "q2": {
+        "q": "What preliminary test could it serve?",
+        "a": "Preparing field tests of mobility and instruments on similar slopes, before the tests in chambers and labs."
+      },
+      "q3": {
+        "q": "What information is still missing?",
+        "a": "Going to the site to check it; comparing more variables than slope and relief; using windows larger than 6 km; and studying gravity, air and radiation separately."
+      }
+    },
+    "partOf": "{{stage}}: part {{n}} of {{total}}"
+  },
+  "lab": {
+    "tabs": {
+      "label": "Learn mode",
+      "lab": "Explore the three worlds",
+      "mission": "Mission: find an analog"
+    },
+    "title": "Three worlds on the table",
+    "lead": "Tap Earth, the Moon or Mars. Every value is crossed with the other two worlds, with its unit and its source.",
+    "selected": "Chosen world: {{world}}",
+    "factsTitle": "{{world}} at a glance",
+    "openParam": "Compare {{param}} across the three worlds",
+    "worlds": {
+      "earth": {
+        "name": "Earth",
+        "place": "The Antofagasta pampa"
+      },
+      "moon": {
+        "name": "Moon",
+        "place": "South Pole (Shackleton), future base"
+      },
+      "mars": {
+        "name": "Mars",
+        "place": "Jezero crater"
+      }
+    },
+    "units": {
+      "label": "Unit",
+      "g": "g",
+      "ms2": "m/s²",
+      "kpa": "kPa",
+      "mbar": "mbar",
+      "atm": "atm",
+      "msvYr": "mSv/yr",
+      "msvDay": "mSv/day",
+      "c": "°C",
+      "f": "°F",
+      "h": "h",
+      "days": "days",
+      "cm": "cm",
+      "kg": "kg"
+    },
+    "predict": {
+      "label": "Predict first",
+      "right": "Good prediction!",
+      "wrong": "Close. Look at the result:",
+      "again": "Predict again",
+      "reveal": "See the result"
+    },
+    "params": {
+      "gravity": {
+        "tab": "Gravity",
+        "question": "If you jump 50 cm on Earth, where would you jump highest?",
+        "answer": "moon",
+        "jump": "Jump: {{cm}} cm",
+        "backpack": "A 10 kg backpack feels like {{kg}} kg",
+        "action": "Jump",
+        "why": "No desert changes gravity: wheel traction and jumps are tested separately, in simulators or parabolic flights."
+      },
+      "air": {
+        "tab": "Air",
+        "question": "Where is there at least a little air left?",
+        "answer": "mars",
+        "balloon": "A balloon filled here would expand {{x}} times",
+        "vacuum": "No air: nothing holds the balloon together",
+        "pampa": "On the pampa, at its altitude: {{v}}",
+        "action": "Take the balloon",
+        "why": "With so little air, parachutes, drones and equipment cooling work differently. The pampa does not reproduce that.",
+        "reference": "This is the balloon filled here: the reference"
+      },
+      "radiation": {
+        "tab": "Radiation",
+        "question": "Between the Moon and Mars, where would you receive less radiation in a year?",
+        "answer": "mars",
+        "dots": "Each dot = what a person on Earth receives in a year (~2.4 mSv)",
+        "count": "{{n}} dots",
+        "action": "Measure a year",
+        "why": "The atmosphere and the magnetic field protect us. On the pampa we test cameras and sensors under strong sun, not shielding against space radiation."
+      },
+      "swing": {
+        "tab": "Day and night",
+        "question": "Where does the temperature change most between day and night?",
+        "answer": "moon",
+        "range": "Day–night difference: {{v}}",
+        "model": "(model)",
+        "measured": "(measured)",
+        "action": "Spend a day",
+        "why": "Hot and cold cycles wear out batteries and seals. They are tested in thermal chambers; the pampa gives only part of it."
+      },
+      "day": {
+        "tab": "Length of day",
+        "question": "Which day lasts almost as long as ours?",
+        "answer": "mars",
+        "length": "A day lasts {{v}}",
+        "action": "Turn the clock",
+        "why": "The rhythm of light and shadow decides when a solar panel charges. At the lunar south pole some areas get almost constant sun and others are always in shadow."
+      }
+    },
+    "sources": {
+      "label": "Source",
+      "nssdca": "NASA NSSDCA Planetary Fact Sheets (Williams, 2024)",
+      "hassler2014": "Hassler et al. 2014, Science (Curiosity/RAD, measured)",
+      "reitz2012": "Reitz et al. 2012, Planetary and Space Science (simulated, solar minimum)",
+      "unscear": "UNSCEAR world average",
+      "snapshot": "Ckepi local data: cell 83b224 (ERA5, NASA POWER), Jezero (MEDA/REMS), Shackleton (model)"
+    },
+    "missionCta": "Now, the mission: find a place in Antofagasta that resembles Jezero",
+    "missionButton": "Start the mission"
+  },
+  "ai": {
+    "seal": "AI-Generated",
+    "textures": "Cardboard planets and textures generated with AI (GPT); the data and charts are not."
+  },
+  "science": {
+    "title": "Where to test on Earth for Jezero",
+    "lead": "Only the zones measured at 30 m, one card to decide, and the data to download.",
+    "toLearn": "Learn",
+    "target": {
+      "label": "Target",
+      "mars": "Mars · Jezero",
+      "moon": "Moon · South Pole",
+      "conceptual": "Conceptual cardboard illustrations; the measurements are on the map and the card."
+    },
+    "moon": {
+      "title": "Moon: for now, the physical gap only",
+      "lead": "We have not compared South Pole terrain yet. This is what no place on Earth reproduces outdoors:",
+      "next": "Next step: South Pole terrain with NASA LRO LOLA, using the same 30 m method."
+    },
+    "map": {
+      "label": "Map of the measured cells in Antofagasta",
+      "legend": "Copper: closer to Jezero than the classic Yungay. Red: farther. Each tag is the 30 m slope W₁. Imagery: NASA GIBS (VIIRS).",
+      "yungay": "Yungay",
+      "cellAria": "Cell {{cell}}, W₁ {{w1}} degrees",
+      "failed": "The map did not load. The card and the ranking still work."
+    },
+    "card": {
+      "rank": "Rank {{n}} among the measured cells",
+      "coords": "{{lat}}° S, {{lon}}° W · 6 × 6 km window",
+      "matches": "Matches in 30 m slope (W₁)",
+      "w1": "95% CI {{lo}}–{{hi}}° · KS {{ks}}",
+      "shapeLegend": "Red: Jezero. Yellow: this cell. Same shape = more alike.",
+      "closer": "Closer to Jezero than the classic",
+      "farther": "Farther from Jezero than the classic",
+      "classic": "Yungay (classic control): W₁ {{w1}}°",
+      "breaks": "Does not match in",
+      "breaksWhy": "Gravity, air and radiation: studied separately, and only in part, in vacuum chambers, accelerators or parabolic flights.",
+      "details": "Details and limits",
+      "medians": "Median slope: here {{earth}}°, Jezero {{jezero}}°",
+      "scale": "Sensitivity: W₁ at 60 m {{m60}}°, at 90 m {{m90}}°",
+      "relief": "Local relief (300 m blocks): W₁ {{m}} m",
+      "limits": "One 6 km window does not represent the whole cell. Earth DSM vs. Mars photogrammetric DEM. A field-study shortlist, not a certification.",
+      "gapSource": "Physical gap: NASA NSSDCA Planetary Fact Sheets (Williams, 2024); MSL RAD (Hassler et al., 2014); Reitz et al., 2012 (Moon, simulated)."
+    },
+    "ranking": {
+      "title": "The measured cells, most to least similar",
+      "lead": "Bar: 30 m slope W₁ with its 95% CI. Shorter = more similar.",
+      "legend": "The vertical line marks the classic Yungay ({{w1}}°)."
+    },
+    "download": {
+      "title": "Download for your GIS",
+      "lead": "Each row has W₁, 95% CI, KS, 60 and 90 m sensitivity, medians and the source of each DEM.",
+      "csv": "Download CSV",
+      "geojson": "Download GeoJSON",
+      "note": "Includes the Copernicus licence notice. Open data; generated in your browser."
+    },
+    "machine": {
+      "title": "How that number is made",
+      "lead": "The slope machine: pick a terrain, scan it and see how many degrees separate it from Jezero."
+    },
+    "loading": "Loading the measured cells…",
+    "error": "The measured cells could not be loaded.",
+    "footer": "Data: NASA (MRO CTX, GIBS, NSSDCA, MSL RAD) and ESA (Copernicus). Ckepi is not affiliated with or endorsed by NASA.",
+    "advanced": "Advanced tools (need a server)"
+  },
+  "dashboard": {
+    "railLabel": "Analog research workspace",
+    "navigation": "Ckepi workspace",
+    "nav": {
+      "compare": "Compare terrain",
+      "learn": "Learn · STEAM",
+      "evidence": "Evidence & exports"
+    },
+    "challenge": "Earth · Moon · Mars",
+    "challengeNote": "Locate terrestrial analogs and explain where the comparison stops being useful.",
+    "snapshot": "Precomputed data · no sign-in",
+    "kicker": "From data to a decision",
+    "title": "Where on Earth can we prepare to explore other worlds?",
+    "lead": "Ckepi compares terrain using satellite data, identifies shared characteristics and explains which conditions cannot be reproduced outdoors. Start with measured Antofagasta windows against Jezero.",
+    "workflow": {
+      "question": "Choose a target",
+      "compare": "Compare evidence",
+      "decide": "Choose what to study"
+    },
+    "targetQuestion": "Which world do you want to study?",
+    "targets": {
+      "mars": "Mars · Jezero Crater",
+      "moon": "Moon · polar reference"
+    },
+    "metrics": "Comparison indicators and limitations",
+    "metric": {
+      "slope": "Slope distance · W₁",
+      "relief": "Relief distance · W₁",
+      "gravity": "Target gravity",
+      "atmosphere": "Target mean pressure",
+      "radiation": "Reference radiation",
+      "temperature": "Catalog temperature"
+    },
+    "metricHelp": {
+      "slope": "W₁ compares slope distributions at a common scale. A lower distance means a closer match for this variable; it is not a similarity percentage.",
+      "relief": "Relief distance is expressed in metres. Similar slopes do not guarantee matching obstacles or wheel-scale traversability.",
+      "gravity": "Earth stays near 1 g. Similar terrain does not reproduce another world’s effective weight or dynamics.",
+      "atmosphere": "Pressure and atmospheric composition must be assessed separately from terrain. A desert does not reproduce lunar vacuum or Martian air.",
+      "radiation": "Ionizing radiation reference: not UV or a measurement in this terrestrial cell. The lunar value is a solar-minimum simulation.",
+      "temperature": "Planetary catalog value: may combine telemetry, derived values or models. It is not a temperature measurement obtained from the 30 m DEM."
+    },
+    "notMeasured": "No DEM measurement",
+    "moonSource": "NSSDCA: gravity/pressure. Reitz et al. 2012: simulated lunar radiation at solar minimum (~380 mSv/year); varies with the solar cycle.",
+    "factSource": "Terrain: CTX/Copernicus. Planetary references: NSSDCA; Mars radiation: Curiosity/RAD, Hassler et al. 2014. Catalog and DEM have different provenance.",
+    "referenceOnly": "Physical reference · conceptual illustration",
+    "mapKicker": "Real data · select a window",
+    "mapTitle": "Antofagasta against Jezero",
+    "windowCount": "{{count}} windows · {{m}} m/px",
+    "window": "Window {{n}}",
+    "decisionKicker": "The decision this supports",
+    "candidate": "Candidate for slope-based field study",
+    "counterexample": "Counterexample: more distant slopes",
+    "decisionLimit": "A shortlist among these windows, not certification or a global ranking.",
+    "canDo": "What it supports",
+    "canDoText": "Compare distributions, inspect 30/60/90 m sensitivity and prioritize a characterization visit.",
+    "cannotDo": "Separate validation needed",
+    "cannotDoText": "Small obstacles, site access, real soil, gravity, pressure and radiation. It does not authorize rover deployment.",
+    "learnBridge": "The same evidence, step by step: observe → measure → compare → recognize limits → decide.",
+    "catalogError": "The planetary catalog could not be loaded. You can continue the terrain comparison; retry to complete the references.",
+    "innovation": "Interpretable comparison + counterexamples + physical limits + learning from the same evidence.",
+    "ai": "AI-generated decorative artwork · Terrain charts and results use precomputed data; illustrations are not measured cartography.",
+    "geographicMap": "Geographic schematic with real H3 boundaries and coordinates · not terrain or uniformly scaled distances.",
+    "satellite": "Load satellite map · network required",
+    "schematic": "Return to lightweight schematic",
+    "schematicLegend": "Select a cell: labels show slope W₁ at 30 m. Polygons are H3 boundaries; the analyzed DEM window covers only 6 × 6 km.",
+    "visualWorlds": "Three worlds, one clear comparison",
+    "visualNotice": "Illustrative cardboard reliefs · not measured maps",
+    "earthRole": "Our terrestrial reference",
+    "earthTerrain": "Earth · Atacama Desert",
+    "activeTarget": "Selected target",
+    "chooseTarget": "Choose this target",
+    "environmentTitle": "Environmental context of the Earth window",
+    "environmentNote": "Precomputed catalog values combine sources, derived values and proxies. They are not measurements obtained from the DEM; thermal inertia and vegetation are estimates."
   },
   "physicsLab": {
     "title": "Interactive Gravity & Planetary Physics Lab",
@@ -1539,7 +2287,7 @@
     "earthSectionTitle": "Where to test on Earth? (Field Trial Success)",
     "currentTargetSuccess": "Estimated success at {{site}}",
     "currentEarthSuccess": "Field trial fidelity at {{site}}",
-    "optimalBadge": "★ Most Optimal Site",
+    "optimalBadge": "Most Optimal Site",
     "selectSiteBtn": "Select",
     "activeBadge": "Active",
     "factors": {
@@ -1709,5 +2457,276 @@
     "benchmarksExcludedNote": "Canonical benchmark regions are currently filtered out so your search prioritizes previously unrecognized analogs.",
     "compareBenchmark": "Compare Benchmark Control",
     "moreUnexpectedTitle": "Next Highest-Ranked Unrecognized Candidates"
+  },
+  "scientificHeader": {
+    "home": "Ckepi home",
+    "steam": "STEAM",
+    "languages": {
+      "es": "Español",
+      "pt": "Português",
+      "en": "English"
+    }
+  },
+  "scientificHome": {
+    "earth": "Earth",
+    "eyebrow": "Ckepi · Scientific explorer",
+    "title": "Compare worlds. Choose where to test.",
+    "lead": "Find places on Earth that share characteristics with the Moon or Mars. Compare their data and identify conditions that need separate testing.",
+    "open": "Explore {{body}} analogues",
+    "choose": "Explore {{body}}",
+    "earthRole": "Terrestrial test terrain. The reference for the comparison.",
+    "artNote": "Cardboard illustrations. Open a destination to see its maps and data."
+  },
+  "sciencePages": {
+    "start": "Start",
+    "compare": "Explore",
+    "results": "Results",
+    "analysis": "Analyze",
+    "evidence": "Sources",
+    "target": "Comparison target",
+    "description": {
+      "compare": "Explore the maps and configure the search for Earth analogues.",
+      "results": "Review and select candidates from your search ranking.",
+      "analysis": "Interpret measurements, compare terrain and inspect physical limits.",
+      "evidence": "Inspect data provenance, methods and references."
+    },
+    "groups": {
+      "model": "Statistical model and weights",
+      "engineering": "Possible experiments and limits",
+      "terrain": "Terrain distributions",
+      "variables": "Variable-by-variable comparison",
+      "context": "Geology and additional sources"
+    }
+  },
+  "product": {
+    "kicker": "From data to a field test",
+    "title": "Where on Earth can we test for the Moon and Mars?",
+    "lead": "Ckepi compares planetary conditions with terrestrial locations to guide mobility, sensor and material trials. It identifies useful similarities and shows what cannot be reproduced outdoors.",
+    "chooseTitle": "Choose the destination",
+    "chooseNote": "Moon or Mars and the trial objective.",
+    "discoverTitle": "Find analogs",
+    "discoverNote": "Explore the map and compare conditions and sources.",
+    "decideTitle": "Prepare the trial",
+    "decideNote": "Review physical limits and export evidence or a trial sheet.",
+    "earth": "Earth · Atacama",
+    "artNotice": "Illustrative cardboard maps. Scientific positions, scales and values appear in the analysis maps and results.",
+    "loading": "Loading the scientific catalog…",
+    "evaluated": "{{total}} Earth cells evaluated",
+    "outcome": "View the deliverable",
+    "demoTitle": "Terrain comparison · Jezero → Antofagasta",
+    "demoNote": "Reproducible comparison of 6 × 6 km DEM windows at 30 m: NASA MRO CTX / USGS and Copernicus GLO-30. A slope test, separate from the global multi-variable ranking.",
+    "demo": {
+      "pampa": "Pampa Central · candidate",
+      "yungay": "Yungay · known reference",
+      "negative": "Counterexample"
+    },
+    "demoInterpretation": "Lower W₁ means slopes closer to Jezero. Pampa Central: 95% CI [{{low}}, {{high}}]°. This guides further investigation; it does not certify a site or reproduce gravity, pressure or radiation.",
+    "showEvidence": "View histograms, scale and sources",
+    "hideEvidence": "Close evidence details",
+    "steamWorkshop": "STEAM workshop · Three worlds",
+    "slopeDimension": "Dimension X · Slopes at 30 m · Wasserstein-1",
+    "slopeRatio": "W₁ {{ratio}} times lower",
+    "confidence95": "95% CI",
+    "classicControl": "Classic control",
+    "controlExplanation": "Its steep-slope tail differs from the selected Jezero window.",
+    "negativeCase": "Counterexample",
+    "negativeExplanation": "This window has much steeper slopes than the Jezero reference.",
+    "breakageDimension": "Physical limits · Similar slopes do not reproduce Mars",
+    "versusEarth": "Earth: {{value}}",
+    "radiationUnit": "mSv/year",
+    "thermalGap": "Mars: ΔT ~80–100 K",
+    "physicalLimit": "Planetary reference values, not local measurements. Slopes support preliminary screening for navigation studies; gravity, pressure, radiation and thermal cycles need separate experiments. This does not certify rover traction or safety.",
+    "explainAnalysis": "How does the analysis work?",
+    "scienceScope": "The H3 ranking compares catalogue variables; histograms verify specific DEM windows. Weights combine statistical associations and expert criteria without establishing causality. The score margin is heuristic; only terrain intervals come from spatial block bootstrap.",
+    "measurementHint": "Touch a card to interpret the measurement",
+    "lowerIsCloser": "W₁ measures the difference between slope distributions: fewer degrees means closer slopes, for this variable.",
+    "candidateDetail": "W₁ is {{ratio}} times lower than at Yungay. This supports screening this window, not claiming equivalent terrain.",
+    "gravityDetail": "The same equipment weighs less on Mars. An Earth navigation trial does not reproduce that dynamics.",
+    "atmosphereDetail": "Martian pressure is much lower than on Earth: ventilation, flight and heat transfer require separate experiments.",
+    "radiationDetail": "Desert sunshine does not reproduce the Martian ionizing environment. Sensors and electronics need separate radiation testing.",
+    "temperatureDetail": "These thermal cycles may affect batteries, seals and electronics. Similar slopes do not demonstrate thermal resistance.",
+    "thermalReference": "Daily ΔT · Mars reference",
+    "demoError": "The verified comparison could not be loaded."
+  },
+  "explore": {
+    "destination": {
+      "title": "Where are we going?",
+      "subtitle": "Pick a world and a place. Ckepi will search Earth for areas that resemble it.",
+      "worlds": "Destination world",
+      "places": "Destination place",
+      "probed": "Point picked on the globe"
+    },
+    "mission": {
+      "title": "What do you want to test?",
+      "subtitle": "Each test gives more weight to different terrain and climate conditions.",
+      "profiles": "Test type",
+      "discoveryHint": "Hides the classic analogues to discover little-studied places.",
+      "on": "On",
+      "off": "Off",
+      "advancedHint": "Model, distance metric and minimum thresholds of the engine."
+    },
+    "profiles": {
+      "causal_auto": {
+        "title": "Automatic",
+        "hint": "Ckepi decides what matters most"
+      },
+      "navigation_landing": {
+        "title": "Landing",
+        "hint": "Relief and navigation"
+      },
+      "rover_mobility": {
+        "title": "Rover",
+        "hint": "Slopes and soil"
+      },
+      "isru_ice_drilling": {
+        "title": "Ice",
+        "hint": "Drill and extract water"
+      },
+      "lava_tube_habitat": {
+        "title": "Habitat",
+        "hint": "Caves and shelters"
+      },
+      "solar_power_thermal": {
+        "title": "Solar power",
+        "hint": "Sun, UV and heat"
+      },
+      "manual_custom": {
+        "title": "Manual",
+        "hint": "You tune every variable"
+      }
+    },
+    "maps": {
+      "globeTitle": "Moon and Mars in 3D",
+      "globeSubtitle": "Spin the globe and tap a point to compare it with Earth.",
+      "earthTitle": "Similar places on Earth",
+      "earthSubtitle": "Each hexagon is an area; its colour shows how much it resembles the destination.",
+      "options": "Options",
+      "layer": "Map layer",
+      "world": "World"
+    },
+    "carousel": {
+      "show": "Show {{name}}",
+      "active": "{{active}} of {{total}} active",
+      "groups": "Variable groups"
+    }
+  },
+  "steam": {
+    "tab": "Mission",
+    "hero": {
+      "kicker": "Cadet Mission",
+      "title": "Train like the people who prepare missions to Mars",
+      "lead": "Travel from the Atacama pampa to Jezero Crater. At each station you predict, measure and discover with real data; earn badges and finish with your certificate.",
+      "start": "Start the mission",
+      "lab": "Meet the three worlds"
+    },
+    "route": {
+      "label": "Mission route",
+      "earth": "Earth",
+      "mars": "Mars",
+      "done": "station completed",
+      "finish": "Certificate"
+    },
+    "score": {
+      "points": "science points",
+      "badges": "{{n}} of {{total}} badges"
+    },
+    "predict": {
+      "kicker": "Before you look",
+      "hint": "Bet first. Predicting before measuring is what science does.",
+      "right": "You got it! +{{n}} science points",
+      "wrong": "Not that one, and that is fine: this is how we learn. The data decide.",
+      "skip": "I'd rather see the data without betting",
+      "observe": {
+        "q": "Which of the two 6 km slices has the bigger difference between its highest and lowest point?",
+        "pampa": "The pampa",
+        "jezero": "Jezero, on Mars",
+        "explain": "Height difference along the slice: pampa {{pampa}} m, Jezero {{jezero}} m."
+      },
+      "measure": {
+        "q": "Where is the typical ground steeper (the median slope)?",
+        "pampa": "On the pampa",
+        "jezero": "In Jezero",
+        "explain": "Median slope at 30 m: Jezero {{jezero}}°, pampa {{pampa}}°."
+      },
+      "compare": {
+        "q": "Which place on Earth resembles Jezero's slopes more?",
+        "pampa": "The pampa (cell 83b224)",
+        "yungay": "Yungay, the classic analogue",
+        "explain": "W₁: pampa {{pampa}}°, Yungay {{yungay}}°. Fewer degrees means more alike."
+      },
+      "different": {
+        "q": "On Mars, a backpack that weighs 10 kg here would feel like…",
+        "low": "≈ {{v}} kg",
+        "same": "10 kg, the same as here",
+        "high": "≈ {{v}} kg",
+        "explain": "Mars has {{g}} times Earth's gravity: 10 kg × {{g}} ≈ {{v}} kg."
+      }
+    },
+    "certificate": {
+      "kicker": "Mission certificate",
+      "title": "Planetary analogue explorer",
+      "nameLabel": "Type your name (it is not saved)",
+      "namePlaceholder": "Your name",
+      "defaultExplorer": "Ckepi Explorer",
+      "readyBadge": "Pass to Science mode",
+      "text": "You completed the route from Earth to Mars with real 30 m data. These are the steps of science you practised and the jobs that do them:",
+      "verifiedSummary": "Real evidence: pampa cell 83b224 versus Jezero Crater at 30 m · W₁ = {{w1}}° (95 % CI {{lo}}–{{hi}}°) · Yungay {{yungay}}° · Physical gap B: 0.38 g · ~0.6 kPa CO₂ · ~230 mSv/yr.",
+      "points": "science points (of {{max}})",
+      "badges": "badges",
+      "download": "Download PNG certificate",
+      "downloading": "Generating PNG…",
+      "openScience": "Enter Science mode",
+      "openScienceHint": "You now know slope, the W₁ distance and what Earth cannot imitate. Use the full scientific platform.",
+      "dateLabel": "Mission date",
+      "sealTitle": "CKEPI · OPEN SCIENCE",
+      "sealSubtitle": "30 m Shortlist · Not site certification",
+      "print": "Print certificate",
+      "again": "Play again",
+      "levelDone": "Level completed: {{level}}",
+      "levelUpTitle": "Go one level up",
+      "levelUpHint": "Repeat the route in more detail: the same data, explained in more depth.",
+      "levelUp": "Go up to {{level}}",
+      "pending": "{{n}} stations left to earn your pass"
+    },
+    "missionBrief": {
+      "kicker": "The NASA Space Apps challenge in pictograms",
+      "title": "How we find where on Earth to test before going to the Moon or Mars",
+      "lead": "Choose your reading level (Simple, Intermediate, or Technical) and progress through the 5 scientific stations using the exact same real 30 m data as Science Mode. Graduate with your certificate to enter Science Mode.",
+      "pillars": {
+        "terrain": {
+          "tag": "1. 30 m Terrain (X)",
+          "title": "Observe & measure slopes",
+          "desc": "6 × 6 km satellite windows at 30 m on the pampa (Copernicus) and Jezero (NASA CTX)."
+        },
+        "distribution": {
+          "tag": "2. Distribution (W₁)",
+          "title": "Compare the full shape",
+          "desc": "Measure how many degrees separate two complete histograms (W₁ = 0.54° in cell 83b224)."
+        },
+        "gap": {
+          "tag": "3. Physical gap (B)",
+          "title": "What Earth CANNOT imitate",
+          "desc": "Gravity (0.38 g / 0.166 g), pressure (0.6 kPa / 0 kPa), radiation, and ΔT require test chambers."
+        },
+        "graduate": {
+          "tag": "4. Protocol & Certificate",
+          "title": "Graduate to Science Mode",
+          "desc": "Separate field trials from laboratory tests and print your educational completion certificate, without official accreditation."
+        }
+      }
+    },
+    "anatomy": {
+      "kicker": "Interactive 3D model",
+      "terrainModelsTitle": "30 m Terrain Models: Jezero vs. 4 Antofagasta Zones",
+      "terrainModelsLead": "Switch between Pampa 83b224, Yungay, Salt Flat, and High Andes, rotate the view, and adjust vertical exaggeration to inspect the 30 m steps.",
+      "slopeMachineTitle": "The Slope Machine (Live W₁)",
+      "slopeMachineLead": "Scan each 30 m window, sort slopes into 16 bins, and watch how the W₁ distance is computed.",
+      "gapBenchesTitle": "Interactive Physical Gap Benches (B)",
+      "gapBenchesLead": "Test live why no desert on Earth can copy planetary gravity, vacuum, or space radiation:",
+      "gravityBenchTab": "Gravity bench",
+      "pressureChamberTab": "Pressure chamber",
+      "weatherStationTab": "Radiation & ΔT station"
+    },
+    "worldsTab": "Three worlds"
   }
 }

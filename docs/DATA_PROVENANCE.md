@@ -77,3 +77,9 @@ Compara la distribución de pendientes y relieve local del **Cráter Jezero** (M
    | Control Yungay | — | 3,32° | — | — | Referencia clásica |
 
    **Límites que se declaran siempre:** (a) una ventana de 6 km por sitio no representa toda la región ni todo el cráter; (b) solo se comparan pendiente y relieve: gravedad (0,38 g), presión (~6 mbar, 95 % CO₂), radiación y temperatura no se reproducen en la Tierra; (c) el parecido en pendiente **preselecciona** un lugar para estudiarlo, no lo certifica para ensayos ni dice que sea «seguro»; (d) DSM (Tierra) frente a DEM fotogramétrico (Marte) con resoluciones nativas distintas (≈30 m frente a 20 m).
+
+### 2026-11-15 — Decorative scientific UI controls
+
+`frontend/public/img/controls/ckepi-button-copper-v1.webp` and `ckepi-pin-hex-v1.webp` were generated with OpenAI's image-generation tool at the user's request. Their transparent PNG originals retain embedded `AI-Generated` marks. WebP copies preserve alpha. Button labels and measurement values are rendered from application state rather than embedded in the artwork. These assets are unrelated to DEM/data provenance; see `AI_DISCLOSURE.md`.
+
+The Spanish scientific-home title `frontend/public/img/controls/ckepi-scientific-title-es-v1.webp` was also generated with the OpenAI image-generation tool on 15 November 2026 at the user's request. Its transparent PNG master retains the embedded `AI-Generated` mark. The accessible heading remains localized native text; the Spanish word art is decorative and is replaced by localized text in English and Portuguese.

@@ -7,13 +7,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
 }
 
+// Primary and secondary are the cardboard push buttons from Explorar (copper / ink paper on a
+// thick edge that sinks when pressed), so every tab shares the same physical buttons.
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  primary:
-    "bg-accent text-accent-foreground shadow-sm shadow-accent/20 hover:opacity-95 active:scale-[0.98] border border-transparent",
-  secondary:
-    "bg-surface-muted/90 text-content border border-border-subtle hover:bg-surface-elevated active:scale-[0.98]",
+  primary: "ckepi-push ckepi-push-copper",
+  secondary: "ckepi-push ckepi-push-ink",
   ghost:
-    "bg-transparent text-content-muted border border-transparent hover:bg-surface-muted hover:text-content",
+    "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold bg-transparent text-content-muted border border-transparent hover:bg-surface-muted hover:text-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
 };
 
 export function Button({
@@ -26,7 +26,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={`inline-flex min-h-10 sm:min-h-11 min-w-10 sm:min-w-11 items-center justify-center gap-1.5 sm:gap-2 rounded-xl px-3 py-2 sm:px-4 text-xs font-semibold uppercase tracking-wider transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:opacity-50 ${VARIANT_CLASSES[variant]} ${className}`}
+      className={`ckepi-button min-w-11 text-sm disabled:cursor-not-allowed disabled:opacity-50 ${VARIANT_CLASSES[variant]} ${className}`}
       {...rest}
     >
       {children}

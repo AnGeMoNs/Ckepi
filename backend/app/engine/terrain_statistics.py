@@ -230,11 +230,48 @@ def _block_bootstrap_distances(
     )
 
 
+# Real-DEM comparisons depend only on (site, cell) and take ~10 s (bootstrap over 200×200 px),
+# so they are memoised; surrogate comparisons are cheap and depend on catalog values, so they are not.
+_REAL_COMPARISON_CACHE: dict[tuple[str, str], TerrainDistributionComparison] = {}
+
+
+def warm_real_comparisons(sites: list[PlanetarySite]) -> None:
+    """Precompute every (site, cell) pair that has real DEM windows on both sides."""
+    real_dems, _ = _load_real_windows()
+    for site in sites:
+        if site.site_id not in real_dems:
+            continue
+        for key in real_dems:
+            if key in (site.site_id, REAL_CONTROL_KEY) or not key.startswith("8"):
+                continue
+            stub = AnalogMatchItem.model_construct(
+                earth_cell_h3=key,
+                coordinates=site.coordinates.model_copy(),
+                earth_variables=site.variables.model_copy(),
+            )
+            compute_terrain_distribution_comparison(site, stub)
+
+
 def compute_terrain_distribution_comparison(
     site: PlanetarySite,
     match: AnalogMatchItem,
 ) -> TerrainDistributionComparison:
     """Compute metric DEM distributions, KS/Wasserstein-1 distances, block-bootstrap CIs, and scale sensitivity."""
+    real_dems_for_cache, _ = _load_real_windows()
+    cache_key = (site.site_id, match.earth_cell_h3)
+    both_real = site.site_id in real_dems_for_cache and match.earth_cell_h3 in real_dems_for_cache
+    if both_real and cache_key in _REAL_COMPARISON_CACHE:
+        return _REAL_COMPARISON_CACHE[cache_key].model_copy(deep=True)
+    result = _compute_terrain_distribution_comparison(site, match)
+    if both_real:
+        _REAL_COMPARISON_CACHE[cache_key] = result.model_copy(deep=True)
+    return result
+
+
+def _compute_terrain_distribution_comparison(
+    site: PlanetarySite,
+    match: AnalogMatchItem,
+) -> TerrainDistributionComparison:
     p_slope = float(site.variables.independent.get("slope_deg", 6.4))
     p_rough = float(site.variables.independent.get("topographic_roughness", 0.42))
     e_slope = float(match.earth_variables.independent.get("slope_deg", 2.5))

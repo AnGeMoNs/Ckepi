@@ -103,7 +103,10 @@ def _parse_source_apis_field(values: list[object]) -> list[list[str]]:
 
 def _prepare_earth_grid(df_earth: pd.DataFrame) -> _PreparedEarthGrid:
     n = len(df_earth)
-    if n >= 50:
+    # Store grids are immutable snapshots invalidated by database mtime. Arbitrary
+    # caller-owned frames may be edited in place, so never cache them by identity.
+    cacheable = n >= 50 and any(df_earth is cached for cached in tuple(_EARTH_GRID_CACHE.values()))
+    if cacheable:
         cache_entry = _PREPARED_GRID_BY_ID.get(id(df_earth))
         if cache_entry is not None and cache_entry[0] is df_earth and len(cache_entry[0]) == n:
             _PREPARED_GRID_BY_ID.move_to_end(id(df_earth))
@@ -161,38 +164,41 @@ def _prepare_earth_grid(df_earth: pd.DataFrame) -> _PreparedEarthGrid:
         known_names=_match_known_analog_batch(lats, lons),
     )
 
-    if n >= 50:
+    if cacheable:
         _PREPARED_GRID_BY_ID[id(df_earth)] = (df_earth, grid)
         while len(_PREPARED_GRID_BY_ID) > 8:
             _PREPARED_GRID_BY_ID.popitem(last=False)
     return grid
 
 
-def _compute_pareto_mask(objs: np.ndarray) -> np.ndarray:
+def _compute_pareto_mask(objs: np.ndarray, query_indices: np.ndarray | None = None) -> np.ndarray:
     """Compute exact Pareto non-dominated boolean mask over (s_ind, s_dep, 1 - r_break_overall)."""
     m = len(objs)
     if m == 0:
         return np.zeros(0, dtype=bool)
     uniq_objs, inv = np.unique(objs, axis=0, return_inverse=True)
+    # Rank-limited responses need only those candidates' flags, while dominance
+    # must still be tested against every eligible cell, including the hidden tail.
+    queries = uniq_objs if query_indices is None else uniq_objs[inv[query_indices]]
     u = len(uniq_objs)
     top_k = min(u, 64)
     top_indices = np.argpartition(np.sum(uniq_objs, axis=1), -top_k)[-top_k:]
     anchors = uniq_objs[top_indices]
 
-    ge_top = np.all(anchors[None, :, :] >= uniq_objs[:, None, :] - 1e-6, axis=2)
-    gt_top = np.any(anchors[None, :, :] > uniq_objs[:, None, :] + 0.002, axis=2)
+    ge_top = np.all(anchors[None, :, :] >= queries[:, None, :] - 1e-6, axis=2)
+    gt_top = np.any(anchors[None, :, :] > queries[:, None, :] + 0.002, axis=2)
     dominated = np.any(ge_top & gt_top, axis=1)
 
     survivors = np.flatnonzero(~dominated)
     chunk_size = 128
     for start in range(0, len(survivors), chunk_size):
         chunk_idx = survivors[start : start + chunk_size]
-        chunk = uniq_objs[chunk_idx]
+        chunk = queries[chunk_idx]
         ge_all = np.all(uniq_objs[None, :, :] >= chunk[:, None, :] - 1e-6, axis=2)
         gt_any = np.any(uniq_objs[None, :, :] > chunk[:, None, :] + 0.002, axis=2)
         dominated[chunk_idx] = np.any(ge_all & gt_any, axis=1)
 
-    return (~dominated)[inv]
+    return (~dominated)[inv] if query_indices is None else ~dominated
 
 
 def _normalize_custom_weights(
@@ -449,7 +455,7 @@ def match_terrestrial_analogs(
             np.round(1.0 - np.round(r_break_arr, 4), 4),
         ]
     )
-    pareto_all = _compute_pareto_mask(all_objs)
+    pareto_top = _compute_pareto_mask(all_objs, top_pos)
 
     # Decide which ranked positions receive full diagnostic payloads when compact_tail=True.
     full_detail_ranks: set[int] | None = None
@@ -498,7 +504,7 @@ def match_terrestrial_analogs(
         )
         known_name = grid.known_names[orig]
         effective_is_benchmark = bool(grid.is_benchmarks[orig]) or (known_name is not None)
-        is_pareto = bool(pareto_all[pos])
+        is_pareto = bool(pareto_top[rank_idx])
 
         include_full = full_detail_ranks is None or rank_idx in full_detail_ranks
         if include_full:

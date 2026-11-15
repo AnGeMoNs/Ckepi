@@ -11,7 +11,8 @@ import pandas as pd
 import pytest
 
 from app.config import DEPENDENT_VARIABLES, INDEPENDENT_VARIABLES, settings
-from app.main import app, state
+from app import main
+from app.main import app
 from app.models.schemas import (
     Coordinates,
     DataConfidence,
@@ -162,21 +163,21 @@ def isolated_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Generator[P
     monkeypatch.setattr(settings, "openrouter_model", "openrouter/free")
     monkeypatch.setattr(settings, "ai_rate_limit_per_min", 12)
 
-    state.sites_by_id.clear()
-    state.duckdb_path = None
-    state.decomposition_cache.clear()
-    state.ai_cache.clear()
-    state.ai_inflight.clear()
-    state.ai_timestamps.clear()
+    main.state.sites_by_id.clear()
+    main.state.duckdb_path = None
+    main.state.decomposition_cache.clear()
+    main.state.ai_cache.clear()
+    main.state.ai_inflight.clear()
+    main.state.ai_timestamps.clear()
 
     yield data_dir
 
-    state.sites_by_id.clear()
-    state.duckdb_path = None
-    state.decomposition_cache.clear()
-    state.ai_cache.clear()
-    state.ai_inflight.clear()
-    state.ai_timestamps.clear()
+    main.state.sites_by_id.clear()
+    main.state.duckdb_path = None
+    main.state.decomposition_cache.clear()
+    main.state.ai_cache.clear()
+    main.state.ai_inflight.clear()
+    main.state.ai_timestamps.clear()
 
 
 def test_ai_status_and_unconfigured_behavior(isolated_env: Path) -> None:
@@ -239,7 +240,7 @@ def test_openrouter_grounded_fallback_and_multilevel_cache(
     mock_client = httpx.AsyncClient(transport=httpx.MockTransport(_handler))
 
     with TestClient(app) as client:
-        state.async_http = mock_client
+        main.state.async_http = mock_client
 
         status_on = client.get("/api/v1/ai/status")
         assert status_on.status_code == 200
@@ -302,7 +303,7 @@ def test_openrouter_grounded_fallback_and_multilevel_cache(
         assert call_counter["count"] == 2
 
         # 3. Clear L1 LRU and verify L2 DuckDB cache hit even with cache_only=True
-        state.ai_cache.clear()
+        main.state.ai_cache.clear()
         res3 = client.post(
             "/api/v1/mission/ai-analysis",
             json={
@@ -354,7 +355,7 @@ def test_ai_invalid_response_and_rate_limit(
     mock_client = httpx.AsyncClient(transport=httpx.MockTransport(_bad_handler))
 
     with TestClient(app) as client:
-        state.async_http = mock_client
+        main.state.async_http = mock_client
 
         bad_res = client.post(
             "/api/v1/mission/ai-analysis",

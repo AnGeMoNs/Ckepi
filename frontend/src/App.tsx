@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { AppBackdrop } from "./components/ui/AppBackdrop";
 import { HomePage } from "./pages/HomePage";
 import { IntroStoryPage } from "./pages/IntroStoryPage";
 import type { ReadingMode, ThemeMode } from "./types/analog";
@@ -11,6 +12,9 @@ const Header = lazy(() =>
 );
 const ExplorerPage = lazy(() =>
   import("./pages/ExplorerPage").then((m) => ({ default: m.ExplorerPage }))
+);
+const LearnDialog = lazy(() =>
+  import("./components/worlds/LearnDialog").then((m) => ({ default: m.LearnDialog }))
 );
 
 type View = "home" | "story" | "app";
@@ -74,6 +78,7 @@ export default function App() {
   const [theme, setTheme] = useState<ThemeMode>(getInitialTheme);
   const [readingMode, setReadingMode] = useState<ReadingMode>(getInitialReadingMode);
   const [view, setView] = useState<View>(viewFromLocation);
+  const [showSteamModal, setShowSteamModal] = useState(false);
 
   const handleChangeReadingMode = (nextMode: ReadingMode) => {
     setReadingMode(nextMode);
@@ -137,14 +142,15 @@ export default function App() {
   }, [i18n.language]);
 
   if (view === "home") {
-    return <HomePage onEnter={(chosenMode) => goTo("story", chosenMode)} />;
+    return <HomePage onEnter={(target) => goTo("app", target === "explore" ? "explorer" : "mission")} />;
   }
   if (view === "story") {
     return <IntroStoryPage onEnter={() => goTo("app")} />;
   }
 
   return (
-    <div className="min-h-screen bg-surface text-content transition-colors">
+    <div className="ckepi-product relative isolate min-h-screen bg-surface text-content transition-colors">
+      <AppBackdrop />
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-accent-foreground focus:shadow-lg"
@@ -157,12 +163,20 @@ export default function App() {
           onToggleTheme={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
           readingMode={readingMode}
           onChangeReadingMode={handleChangeReadingMode}
+          onOpenSteamModal={() => setShowSteamModal(true)}
         />
         <ExplorerPage
           theme={theme}
           readingMode={readingMode}
           onChangeReadingMode={handleChangeReadingMode}
         />
+        {showSteamModal && (
+          <LearnDialog
+            world="mars"
+            sites={[]}
+            onClose={() => setShowSteamModal(false)}
+          />
+        )}
       </Suspense>
     </div>
   );

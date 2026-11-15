@@ -7,10 +7,80 @@ import numpy as np
 import pandas as pd
 
 from app.config import DEPENDENT_VARIABLES, INDEPENDENT_VARIABLES
+from app.engine.planetary_physics import _spherical_distance_km
 from app.etl.http_utils import create_http_client
-from app.etl.mars_api import fetch_mars_meda_summary, fetch_mars_rems_timeseries
+from app.etl.mars_api import fetch_mars_rems_timeseries
 from app.etl.moon_api import fetch_moon_lro_timeseries
-from app.models.schemas import Coordinates, DataProvenance, PhysicalVariables, PlanetarySite
+from app.models.schemas import (
+    Coordinates, DataConfidence, DataProvenance, PhysicalVariables, PlanetarySite, VariableOrigin,
+)
+
+
+def normalize_curated_site_provenance(site: PlanetarySite) -> PlanetarySite:
+    """Correct lineage of the five current curated products without changing their physical values.
+
+    Jezero/Arcadia weather is transferred from Gale REMS; LRO metadata only
+    anchors the lunar radiative model. Apply on cache reads too so legacy
+    confidence labels cannot turn those products into local observations.
+    """
+    proxy_ids = {"mars_jezero_crater", "mars_arcadia_planitia"}
+    lunar_ids = {"moon_shackleton_pole", "moon_tranquillitatis_lava"}
+    if site.site_id not in proxy_ids | lunar_ids | {"mars_gale_crater"}:
+        return site
+
+    is_proxy = site.site_id in proxy_ids
+    is_mars = site.body == "mars"
+    origins: dict[str, VariableOrigin] = {
+        key: "constant" for key in (*INDEPENDENT_VARIABLES, *site.variables.breakage)
+    }
+    origins.update({key: "model" for key in DEPENDENT_VARIABLES})
+    origins.update({
+        "thermal_inertia": "model" if is_mars else "constant",
+        "solar_flux_wm2": "derived" if is_mars else "model",
+        "uv_irradiance_index": "derived" if is_mars else "model",
+        "slope_deg": "constant" if is_mars else "model",
+    })
+    if is_mars:
+        origins.update({
+            "mean_surface_temp_k": "model" if is_proxy else "measured",
+            "diurnal_temp_amplitude_k": "model" if is_proxy else "measured",
+            "nocturnal_cooling_k_hr": "model" if is_proxy else "derived",
+            "aeolian_dust_flux": "model" if is_proxy else "derived",
+            "atm_pressure_mbar": "model" if is_proxy else "measured",
+        })
+
+    if is_proxy:
+        label = "NASA MSL Curiosity REMS (Gale) — weather proxy; not local in-situ measurements"
+        site.data_sources = [label, "Regional terrain/ice catalog constants"]
+        if site.site_id == "mars_jezero_crater":
+            site.data_sources.append("NASA MRO CTX / USGS Jezero DEM (separate 30 m terrain comparison)")
+        site.provenance = site.provenance.model_copy(update={"source_apis": [label]})
+
+    measured = [key for key, origin in origins.items() if origin == "measured"]
+    site.confidence = DataConfidence(
+        level="estimated" if is_proxy else ("high" if is_mars else "medium"),
+        # Same conservative proxy tier as planetary_probe; a metadata score, not
+        # a calibrated probability. Existing physical values remain untouched.
+        score=0.38 if is_proxy else (0.78 if is_mars else 0.68),
+        is_tracked_zone=is_mars and not is_proxy,
+        nearest_tracked_site_id="mars_gale_crater" if is_mars else None,
+        distance_to_tracked_km=(
+            round(_spherical_distance_km("mars", site.coordinates.lat, site.coordinates.lon, -5.40, 137.80), 2)
+            if is_mars else None
+        ),
+        # Cached catalog entries contain no verified product count. Never infer
+        # twelve observations from the connector's request limit.
+        pds_products_found=None,
+        real_variables=measured,
+        estimated_variables=[key for key in origins if key not in measured],
+        variable_provenance=origins,
+        notice_key=(
+            "confidence.mars_curated_proxy" if is_proxy
+            else "confidence.tracked_mars_curated" if is_mars
+            else "confidence.tracked_moon_curated"
+        ),
+    )
+    return site
 
 
 def read_pds_product_with_pdr(pds_path: Path) -> pd.DataFrame:
@@ -28,7 +98,7 @@ def read_pds_product_with_pdr(pds_path: Path) -> pd.DataFrame:
 def build_real_planetary_sites_and_timeseries(
     client: httpx.Client | None = None,
 ) -> tuple[list[PlanetarySite], pd.DataFrame]:
-    """Fetch real telemetry from NASA Mars REMS/MEDA and NASA PDS ODE LRO for all 5 ROIs."""
+    """Build Gale observations, regional REMS weather proxies and lunar radiative scenarios."""
     own_client = client is None
     http = client or create_http_client(timeout=25.0)
     try:
@@ -45,8 +115,7 @@ def build_real_planetary_sites_and_timeseries(
             client=http,
         )
 
-        # 2. Mars Jezero Crater (Perseverance MEDA metadata + REMS-calibrated seasonal telemetry)
-        meda_sols = fetch_mars_meda_summary(client=http)
+        # 2. Jezero weather proxy from Gale REMS, not local Perseverance MEDA observations.
         df_jezero, jezero_prov = fetch_mars_rems_timeseries(
             site_id="mars_jezero_crater",
             lat_deg=18.38,
@@ -58,8 +127,6 @@ def build_real_planetary_sites_and_timeseries(
             max_sols=240,
             client=http,
         )
-        if meda_sols:
-            jezero_prov["source_api"] = "NASA Mars 2020 MEDA + MSL REMS API"
 
         # 3. Mars Arcadia Planitia (Northern high-latitude orbital solar/ice regime calibrated to REMS)
         df_arcadia, arcadia_prov = fetch_mars_rems_timeseries(
@@ -73,7 +140,7 @@ def build_real_planetary_sites_and_timeseries(
             max_sols=200,
             client=http,
         )
-        # Compute real ice sublimation from orbital solar flux & subsurface ice fraction
+        # Estimate ice sublimation from orbital solar flux & catalog ice fraction.
         df_arcadia["ice_sublimation_rate"] = np.clip(
             df_arcadia["subsurface_ice_frac"] * (df_arcadia["solar_flux_wm2"] / 450.0) * 0.65,
             0.0,
@@ -204,8 +271,8 @@ def _build_site_from_df(
     breakage: dict[str, float],
     prov: dict[str, str],
 ) -> PlanetarySite:
-    """Aggregate real planetary ROI telemetry dataframe into PlanetarySite summary."""
-    return PlanetarySite(
+    """Aggregate observations or modeled scenarios with their actual source lineage."""
+    return normalize_curated_site_provenance(PlanetarySite(
         site_id=site_id,
         body=body,  # type: ignore[arg-type]
         name_key=name_key,
@@ -229,4 +296,4 @@ def _build_site_from_df(
             fetched_at=prov.get("fetched_at", datetime.now(timezone.utc).isoformat()),
             is_live_probed=False,
         ),
-    )
+    ))

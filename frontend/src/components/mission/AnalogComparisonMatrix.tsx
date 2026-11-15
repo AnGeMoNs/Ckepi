@@ -1,5 +1,6 @@
+import { LayoutGroup, motion } from "framer-motion";
 import { useMemo, useState } from "react";
-import { ArrowUpDown, Download, GitCompareArrows, Search, X } from "lucide-react";
+import { ArrowUpDown, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { formatNumber, formatPercent } from "../../i18n";
@@ -17,6 +18,8 @@ import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 import { InfoTooltip } from "../ui/InfoTooltip";
+import { ScoreGauge, widthClass } from "../explore/ScoreGauge";
+import { Pictogram } from "../worlds/Pictograms";
 
 interface AnalogComparisonMatrixProps {
   matches: AnalogMatchItem[];
@@ -96,12 +99,12 @@ export function AnalogComparisonMatrix({
   return (
     <Card>
       <CardHeader className="flex flex-wrap items-center justify-between gap-2">
-        <div className="space-y-0.5">
-          <div className="flex items-center gap-2">
-            <GitCompareArrows className="h-5 w-5 text-accent" aria-hidden="true" />
+        <div className="flex min-w-0 items-center gap-3">
+          <img src="/img/planets/ckepi-planet-science.webp" alt="" width={64} height={64} draggable={false} className="h-12 w-12 shrink-0 object-contain drop-shadow-ckepi-logo sm:h-14 sm:w-14" />
+          <div className="min-w-0">
             <CardTitle>{t("comparisonMatrix.title")}</CardTitle>
+            <p className="mt-0.5 text-sm text-content-muted">{t("comparisonMatrix.subtitle")}</p>
           </div>
-          <span className="text-xs text-content-muted">{t("comparisonMatrix.subtitle")}</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -112,7 +115,7 @@ export function AnalogComparisonMatrix({
               onExported?.();
             }}
           >
-            <Download className="h-4 w-4" aria-hidden="true" />
+            <Pictogram name="download" className="h-5 w-5" />
             <span>CSV</span>
           </Button>
           <Button
@@ -122,7 +125,7 @@ export function AnalogComparisonMatrix({
               onExported?.();
             }}
           >
-            <Download className="h-4 w-4" aria-hidden="true" />
+            <Pictogram name="download" className="h-5 w-5" />
             <span>GeoJSON</span>
           </Button>
           {activeSite && (
@@ -133,18 +136,15 @@ export function AnalogComparisonMatrix({
                   activeSite,
                   matches,
                   (k, p) => t(k, p),
-                  (selectedMatchOverride && selectedMatchOverride.earth_cell_h3 === selectedH3
-                    ? selectedMatchOverride
-                    : null) ??
-                    matches.find((m) => m.earth_cell_h3 === selectedH3) ??
-                    matches[0],
+                  (selectedMatchOverride?.earth_cell_h3 === selectedH3 ? selectedMatchOverride : null)
+                    ?? matches.find((m) => m.earth_cell_h3 === selectedH3) ?? matches[0],
                   lang,
                   aiAnalysis
                 );
                 onExported?.();
               }}
             >
-              <Download className="h-4 w-4" aria-hidden="true" />
+              <Pictogram name="download" className="h-5 w-5" />
               <span>{t("comparisonMatrix.exportReport")}</span>
             </Button>
           )}
@@ -153,8 +153,9 @@ export function AnalogComparisonMatrix({
 
       <CardContent className="space-y-3.5">
         {/* Filter & Sort Controls */}
-        <div className="flex flex-col gap-2.5 rounded-xl border border-border-subtle bg-surface-muted/30 p-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto pb-0.5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <LayoutGroup id="matrix-category">
+          <div role="group" aria-label={t("comparisonMatrix.title")} className="ckepi-liquid no-scrollbar flex items-center gap-1 overflow-x-auto rounded-full p-1.5">
             {(
               [
                 { id: "all", label: t("map.filters.category.all") },
@@ -168,18 +169,19 @@ export function AnalogComparisonMatrix({
                 <button
                   key={cat.id}
                   type="button"
+                  aria-pressed={active}
                   onClick={() => setCategory(cat.id)}
-                  className={`shrink-0 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-all ${
-                    active
-                      ? "border-accent bg-accent text-accent-foreground shadow-sm"
-                      : "border-border-subtle bg-surface text-content-muted hover:bg-surface-muted hover:text-content"
+                  className={`relative min-h-11 shrink-0 rounded-full px-4 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                    active ? "text-content" : "text-content-muted hover:text-content"
                   }`}
                 >
-                  {cat.label}
+                  {active && <motion.span layoutId="matrix-category-lens" aria-hidden="true" className="ckepi-liquid ckepi-liquid-glow absolute inset-0 rounded-full" transition={{ type: "spring", stiffness: 380, damping: 32 }} />}
+                  <span className="relative">{cat.label}</span>
                 </button>
               );
             })}
           </div>
+          </LayoutGroup>
 
           <div className="flex flex-wrap items-center gap-2">
             <div className="relative flex-1 sm:w-52 sm:flex-initial">
@@ -193,7 +195,7 @@ export function AnalogComparisonMatrix({
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={t("map.filters.searchPlaceholder")}
                 aria-label={t("map.filters.searchPlaceholder")}
-                className="min-h-9 w-full rounded-lg border border-border-subtle bg-surface pl-8 pr-7 py-1 text-xs text-content placeholder:text-content-muted/70 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+                className="ckepi-liquid min-h-11 w-full rounded-full pl-9 pr-8 text-sm text-content placeholder:text-content-muted/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               />
               {query && (
                 <button
@@ -210,7 +212,7 @@ export function AnalogComparisonMatrix({
               aria-label={t("comparisonMatrix.showRows")}
               value={limitCount}
               onChange={(e) => setLimitCount(Number(e.target.value))}
-              className="min-h-9 rounded-lg border border-border-subtle bg-surface px-2.5 py-1 text-xs font-semibold tabular-nums text-content focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
+              className="ckepi-liquid min-h-11 rounded-full px-4 text-sm font-semibold tabular-nums text-content focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               {[4, 10, 25, 50].map((n) => (
                 <option key={n} value={n}>
@@ -231,17 +233,13 @@ export function AnalogComparisonMatrix({
                 key={m.earth_cell_h3}
                 type="button"
                 onClick={() => onSelectCell(m.earth_cell_h3)}
-                className={`min-h-11 w-full rounded-xl border p-3.5 text-left transition ${
-                  isActive
-                    ? "border-accent bg-accent/10"
-                    : "border-border-subtle bg-surface hover:border-accent/60"
-                }`}
+                className={`ckepi-liquid min-h-11 w-full rounded-3xl p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${isActive ? "ckepi-liquid-glow" : ""}`}
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-sm font-semibold text-content">
                     #{rank} · {m.known_analog_name ?? t(m.region_key)}
                   </span>
-                  <span className="tabular-nums text-sm font-bold text-accent">
+                  <span className="font-mono text-xl font-semibold tabular-nums text-content">
                     {formatPercent(m.combined_score, lang)}
                   </span>
                 </div>
@@ -257,25 +255,12 @@ export function AnalogComparisonMatrix({
                   {t(m.biome_key)} · ({formatNumber(m.coordinates.lat, lang, 2)},{" "}
                   {formatNumber(m.coordinates.lon, lang, 2)})
                 </p>
-                <div className="mt-2 grid grid-cols-3 gap-2 text-xs tabular-nums">
-                  <div>
-                    <span className="text-content-muted">S_ind:</span>{" "}
-                    <span className="font-semibold text-accent">{formatPercent(m.s_ind, lang)}</span>
-                  </div>
-                  <div>
-                    <span className="text-content-muted">S_dep:</span>{" "}
-                    <span className="font-semibold text-status-valid">
-                      {formatPercent(m.s_dep, lang)}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-content-muted">R_break:</span>{" "}
-                    <span className="font-semibold text-status-break">
-                      {formatPercent(m.r_break_overall, lang)}
-                    </span>
-                  </div>
+                <div className="mt-3 grid grid-cols-3 gap-2">
+                  <ScoreGauge label="S_ind" value={m.s_ind} />
+                  <ScoreGauge label="S_dep" value={m.s_dep} />
+                  <ScoreGauge label="R_break" value={m.r_break_overall} tone="break" />
                 </div>
-                <p className="mt-2 text-xs text-content">
+                <p className="mt-3 text-sm text-content">
                   {m.engineering_recommendations.valid_tests[0]
                     ? t(m.engineering_recommendations.valid_tests[0])
                     : ""}
@@ -286,9 +271,9 @@ export function AnalogComparisonMatrix({
         </div>
 
         {/* Desktop / Tablet Comparison Table */}
-        <div className="hidden overflow-x-auto rounded-xl border border-border-subtle sm:block">
+        <div className="ckepi-liquid hidden overflow-x-auto rounded-3xl sm:block">
           <table className="w-full border-collapse text-left text-sm">
-            <thead className="bg-surface-muted text-xs uppercase text-content-muted">
+            <thead className="border-b border-border-subtle/50 text-xs uppercase tracking-wider text-content-muted">
               <tr>
                 <th className="px-4 py-3 font-semibold">{t("comparisonMatrix.siteCol")}</th>
                 <th className="px-4 py-3 font-semibold">{t("comparisonMatrix.typeCol")}</th>
@@ -353,8 +338,8 @@ export function AnalogComparisonMatrix({
                   <tr
                     key={m.earth_cell_h3}
                     onClick={() => onSelectCell(m.earth_cell_h3)}
-                    className={`cursor-pointer transition ${
-                      isActive ? "bg-accent/10" : "hover:bg-surface-muted/60"
+                    className={`cursor-pointer border-b border-border-subtle/30 transition-colors last:border-b-0 ${
+                      isActive ? "bg-accent/15" : "hover:bg-surface-muted/40"
                     }`}
                   >
                     <td className="px-4 py-3">
@@ -378,27 +363,24 @@ export function AnalogComparisonMatrix({
                     </td>
                     <td className="px-4 py-3">
                       <div className="space-y-1">
-                        <span className="font-bold tabular-nums text-content">
+                        <span className="font-mono text-base font-semibold tabular-nums text-content">
                           {formatPercent(m.combined_score, lang)}
                         </span>
-                        <div className="h-1.5 w-20 overflow-hidden rounded-full bg-surface-muted">
-                          <div
-                            className="h-full rounded-full bg-accent"
-                            style={{ width: `${Math.min(100, m.combined_score * 100)}%` }}
-                          />
+                        <div className="h-1.5 w-20 overflow-hidden rounded-full bg-surface/60 shadow-inner">
+                          <div className={`h-full rounded-full bg-accent ${widthClass(m.combined_score)}`} />
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 font-semibold tabular-nums text-accent">
+                    <td className="px-4 py-3 font-mono font-semibold tabular-nums text-content">
                       {formatPercent(m.s_ind, lang)}
                     </td>
-                    <td className="px-4 py-3 font-semibold tabular-nums text-status-valid">
+                    <td className="px-4 py-3 font-mono font-semibold tabular-nums text-content">
                       {formatPercent(m.s_dep, lang)}
                     </td>
-                    <td className="px-4 py-3 font-semibold tabular-nums text-status-break">
+                    <td className="px-4 py-3 font-mono font-semibold tabular-nums text-status-break">
                       {formatPercent(m.r_break_overall, lang)}
                     </td>
-                    <td className="px-4 py-3 text-xs text-content">
+                    <td className="px-4 py-3 text-sm text-content">
                       {topTest ? t(topTest) : "—"}
                     </td>
                   </tr>
@@ -407,9 +389,7 @@ export function AnalogComparisonMatrix({
             </tbody>
           </table>
         </div>
-        <p className="mt-3 text-[11px] text-content-muted">
-          {t("mission.nasaAttribution")} · {t("mission.disclaimer")}
-        </p>
+        <p className="mt-4 text-center text-sm text-content-muted">{t("mission.disclaimer")}</p>
       </CardContent>
     </Card>
   );

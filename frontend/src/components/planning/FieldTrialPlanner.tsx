@@ -19,7 +19,6 @@ import type {
   PlanetarySite,
   SiteComparisonResponse,
 } from "../../types/analog";
-import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 
@@ -151,7 +150,6 @@ export function FieldTrialPlanner({
             <div className="flex flex-wrap items-center gap-2">
               <ClipboardCheck className="h-5 w-5 text-accent" aria-hidden="true" />
               <CardTitle>{t("plan.title")}</CardTitle>
-              <Badge variant="accent">ODS 9 · ODS 12 · ODS 17</Badge>
             </div>
             <p className="text-xs text-content-muted sm:text-sm">{t("plan.subtitle")}</p>
           </div>
@@ -183,7 +181,7 @@ export function FieldTrialPlanner({
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
               <p className="font-semibold text-content">
-                <span aria-label={t("nav.locationLabel")}>📍</span> {t("plan.fields.planetarySite")}
+                {t("plan.fields.planetarySite")}
               </p>
               {activeSite ? (
                 <p className="mt-1 text-content-muted">
@@ -199,7 +197,7 @@ export function FieldTrialPlanner({
 
             <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
               <p className="font-semibold text-content">
-                <span aria-label={t("nav.locationLabel")}>📍</span> {t("plan.fields.earthCell")}
+                {t("plan.fields.earthCell")}
               </p>
               {selectedCell ? (
                 <p className="mt-1 text-content-muted">
@@ -269,7 +267,6 @@ export function FieldTrialPlanner({
                 <Recycle className="h-4 w-4 text-status-valid" aria-hidden="true" />
                 <h3 className="text-sm font-semibold text-content">{t("plan.circularTitle")}</h3>
               </div>
-              <Badge variant="valid">ODS 12.5</Badge>
             </div>
             <p className="text-xs text-content-muted">{t("plan.circularNote")}</p>
 

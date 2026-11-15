@@ -1,6 +1,7 @@
 # Software Design Document (SDD) — Ckepi
 
 **Versión:** 1.0  
+**Revisión técnica local:** [Auditoría de arquitectura y seguridad, 14-nov-2026](AUDITORIA_ARQUITECTURA_SEGURIDAD_2026-11-14.md). Incluye correcciones verificadas y riesgos pendientes; las descripciones históricas de este SDD no sustituyen esa evidencia.
 **Proyecto:** Ckepi — Motor de Descubrimiento de Análogos Planetarios Terrestres mediante Descomposición Causal de Variables  
 **Contexto:** NASA Space Apps Challenge 2026 (*Terrestrial Analogs for Moon & Mars*)  
 **Documentos Relacionados:** [README.md](../README.md) · [DATA_PROVENANCE.md](DATA_PROVENANCE.md) · [AI_DISCLOSURE.md](../AI_DISCLOSURE.md) · [REFERENCES.md](../REFERENCES.md)

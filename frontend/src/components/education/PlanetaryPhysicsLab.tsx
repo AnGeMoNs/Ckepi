@@ -1360,31 +1360,31 @@ export function PlanetaryPhysicsLab({
 
                 return (
                   <div key={body.id} className="flex flex-col items-center gap-2">
-                    <div className="relative h-40 w-full overflow-hidden rounded-md border border-border-subtle bg-surface-elevated">
+                    <div className="physics-jump-track relative h-40 w-full overflow-hidden rounded-md border border-border-subtle bg-surface-elevated">
                       {[0.25, 0.5, 0.75, 1].map((frac) => (
                         <div
                           key={frac}
                           className="absolute inset-x-0 border-t border-border-subtle/50 text-[9px] text-content-muted/60 pl-1"
-                          style={{ bottom: `calc(${frac * 82}% + 10px)` }}
+                          style={{ bottom: `calc(${frac * 82}% + var(--jump-ground))` }}
                         >
                           {(maxJumpHeight * frac).toFixed(1)}m
                         </div>
                       ))}
                       <div
                         className="absolute inset-x-1 border-t border-dashed border-accent/70"
-                        style={{ bottom: `calc(${Math.min(86, peakPct * 0.82)}% + 10px)` }}
+                        style={{ bottom: `calc(${Math.min(86, peakPct * 0.82)}% + var(--jump-ground))` }}
                       />
                       <div className="absolute inset-x-0 bottom-0 h-2.5 bg-surface-muted" />
                       <div
                         className="absolute bottom-1 left-1/2 h-1.5 -translate-x-1/2 rounded-full bg-black/25 transition-all"
                         style={{
-                          width: `${Math.max(6, 18 - (heightPct / 100) * 12)}px`,
+                          width: `${Math.max(6, 18 - (heightPct / 100) * 12) / 16}rem`,
                         }}
                       />
                       <div
                         className={`absolute left-1/2 h-4 w-4 -translate-x-1/2 rounded-full shadow-sm ${body.dotClass}`}
                         style={{
-                          bottom: `calc(${Math.min(86, heightPct * 0.82)}% + 10px)`,
+                          bottom: `calc(${Math.min(86, heightPct * 0.82)}% + var(--jump-ground))`,
                         }}
                       />
                     </div>

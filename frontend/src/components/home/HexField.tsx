@@ -80,9 +80,11 @@ function renderCell(cell: Cell, state: "idle" | "exit", reduceMotion: boolean) {
 interface HexFieldProps {
   state: "idle" | "exit";
   reduceMotion: boolean;
+  /** Also fade the dark base on exit, so whatever is underneath shows through. */
+  revealBase?: boolean;
 }
 
-export function HexField({ state, reduceMotion }: HexFieldProps) {
+export function HexField({ state, reduceMotion, revealBase = false }: HexFieldProps) {
   const cells = useMemo(buildCells, []);
 
   return (
@@ -104,7 +106,14 @@ export function HexField({ state, reduceMotion }: HexFieldProps) {
           </feMerge>
         </filter>
       </defs>
-      <rect width={VIEW_W} height={VIEW_H} className="fill-ckepi-hex-bg" />
+      <motion.rect
+        width={VIEW_W}
+        height={VIEW_H}
+        className="fill-ckepi-hex-bg"
+        initial={false}
+        animate={{ opacity: revealBase && state === "exit" ? 0 : 1 }}
+        transition={{ duration: reduceMotion ? 0.15 : 0.45, delay: reduceMotion ? 0 : 0.15 }}
+      />
       {/* One filter per layer (not per cell) keeps the field cheap on phones. */}
       <g filter="url(#hex-paper-shadow)">
         {cells.filter((cell) => !cell.glow).map((cell) => renderCell(cell, state, reduceMotion))}

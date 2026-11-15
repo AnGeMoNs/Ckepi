@@ -1,7 +1,8 @@
 # DOSSIER MAESTRO COMPLETO PARA NEHE — Ckepi (NASA Space Apps 2026 · Lattices Team)
 
 > **Documento Todo-en-Uno (Global + Local + Ciencia 30 m + Caja La Araucana y ODS + PPTX/PDF EN y ES + Pitch 3 min + Video 30 s + Q&A)**  
-> **Rama Activa:** `dani` (`origin/dani`) · **Última actualización:** Sábado 14 de noviembre de 2026 (`18:48 CLT` · sincronizado hasta commit `375bf7e` + `b4295e9`)  
+> **Rama Activa:** `dani` (`origin/dani`) · **Última actualización:** Sábado 14 de noviembre de 2026 (`20:25 CLT` · sincronizado hasta commits `bc9bd35`, `c735fc9` y `d4238af`)  
+> **🎯 ENFOQUE CONCRETO TRAS FEEDBACK DE MENTORES:** Lee primero **[`SOLUCION_CONCRETA_FEEDBACK_MENTORES.md`](SOLUCION_CONCRETA_FEEDBACK_MENTORES.md)** y **[`FUNCIONAMIENTO_PASO_A_PASO_APP.md`](FUNCIONAMIENTO_PASO_A_PASO_APP.md)** — Cero sobrecarga de datos sueltos; todo el pitch y la app se centran en **cruzar la Luna (Polo Sur) y Marte (Cráter Jezero) con las 4 zonas reales medidas a 30 m en la Región de Antofagasta (`83b224` Pampa $0,54^\circ$ vs. Yungay $3,32^\circ$ vs. Salar `83b225` $1,71^\circ$ vs. Alta Cordillera `83b221` $6,92^\circ$)**, mostrando qué se parece, qué jamás puede imitar la Tierra ($0,38\text{ g}$, aire de $\text{CO}_2$, radiación) y cómo sirve hoy a la comunidad, la educación STEAM y los empleos locales de Antofagasta (robótica minera, observatorios y energía solar).  
 > **Desafío Oficial:** *Identify Earth Locations that Analog the Permanent Moon Base Locations and Mars*  
 > **Sede:** Antofagasta, Chile (Universidad Católica del Norte · Organizado en Chile por **Caja La Araucana** junto a American Spaces)
 
@@ -103,15 +104,16 @@ Fuente verificada: **NASA NSSDCA Planetary Fact Sheets** (`https://nssdc.gsfc.na
 
 ---
 
-## PARTE 5 · NOVEDADES DE LA DEMO EN LA RAMA `dani` (`commits 375bf7e` y `69b64f7`)
+## PARTE 5 · NOVEDADES DE LA DEMO EN LA RAMA `dani` TRAS EL FEEDBACK DE MENTORES (`commits c735fc9`, `bc9bd35`, `d4238af`)
 
-1. **Home Intro (`#/` · `HomePage.tsx` + `HexField.tsx`):**
-   - Pantalla inicial con la palabra **CKEPI** en estilo de capas de papel recortadas (*paper-cut*), siluetas de Antofagasta (La Portada, pampa y volcán andino) y video decorativo con marca de agua visible **`«Video generado con IA» / «AI-generated video»`**.
-   - **4 pasos de presentación interactiva** con botón de lectura por voz (`speechSynthesis`): 1) El problema, 2) Qué hace Ckepi, 3) El hallazgo real (`83b224` $W_1 = 0,54^\circ$ vs. Yungay $3,32^\circ$), y 4) El límite honesto ($0,38\text{ g}$, presión y radiación).
-   - Botón principal **«Explorar los tres mundos»** ($\ge 44\times 44\text{ px}$) que abre el Explorador con transición hexagonal (`HexField.tsx`).
-2. **Globos 3D y Mapa H3 en Vivo (`ExplorerPage.tsx`):**
-   - WebWorker de MapLibre GL v6 empaquetado localmente (sin fallos de CSP), HUD en vivo al pasar el cursor sobre cualquier hexágono H3 e inspector de las 7 celdas hijas.
-   - Paridad trilingüe completa: **842 claves** en `es.json`, `pt.json` y `en.json`.
+1. **Modo Explorar para la Entrega Local (`?view=explore` · `LocalExplorePage.tsx` + `LearnDialog.tsx` — Commit `c735fc9`):**
+   - Creado en respuesta directa al feedback de mentores (*«demasiada información»*): a la izquierda una sola pregunta (*«¿Dónde en la Tierra nos preparamos para la Luna y Marte?»*) y una frase; a la derecha **3 mundos de cartón flotando (Luna · Antofagasta · Marte)** sin recuadros ni ruido visual.
+   - Al tocar un mundo, abre una lección de **3–4 pasos con un pictograma grande (`Pictograms.tsx`), una frase simple, un elemento interactivo para tocar** (medidor *«Muy parecido / Algo parecido / Poco parecido»* con el dato real Pampa $0,54^\circ$ vs. Yungay $3,32^\circ$, día vs. noche en la Luna y Atacama, simulador de mochila de $10\text{ kg} \to 1,7\text{ kg}$ en la Luna y $3,8\text{ kg}$ en Marte, y ranking de las 4 zonas de Antofagasta) y botón **«Escuchar» (`Web Speech API`)**.
+2. **Pantalla Principal de Cruce Interactivo (`?view=app` · `WorldsHero.tsx` + `CrossingDialog.tsx` — Commit `bc9bd35`):**
+   - Presenta **Luna · Antofagasta · Marte** como tarjetas vivas de cristal (`.ckepi-glass`) con planetas de papel dibujados por código (0 % IA) y veredictos inmediatos **Sí / En parte / No**.
+   - `CrossingDialog`: ventana con motion que cruza cada mundo con Antofagasta mostrando: 1) el cruce, 2) lo que sí se parece (pendientes reales a 30 m: `83b224` $W_1 = 0,535^\circ$ vs. Yungay $3,32^\circ$), 3) lo que la Tierra no puede imitar (mochila, aire y radiación), y 4) **para qué sirve hoy, qué aprendes en STEAM y en qué podrías trabajar en Antofagasta (robótica y automatización minera, observatorios astronómicos y energía solar del desierto)**.
+   - Tipografías autoalojadas **`Public Sans` (USWDS / SIL OFL 1.1)** e **`IBM Plex Mono` (SIL OFL 1.1)**, pictogramas SVG propios y **1.052 claves trilingües (`ES / PT / EN`)**.
+   - **Backend memoizado (< 0,4 s):** Las comparaciones sobre DEM reales a 30 m se precalculan al arrancar el servidor (bajando de ~10 s a $< 0,4\text{ s}$) con límites de tasa atómicos y transacciones seguras en DuckDB (`commit d4238af`).
 
 ---
 

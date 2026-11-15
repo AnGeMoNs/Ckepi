@@ -1,4 +1,4 @@
-import { HelpCircle } from "lucide-react";
+import { Pictogram } from "../worlds/Pictograms";
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 
 interface InfoTooltipProps {
@@ -126,7 +126,7 @@ export function InfoTooltip({ text, label }: InfoTooltipProps) {
         aria-describedby={open ? tooltipId : undefined}
         className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-content-muted transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
       >
-        <HelpCircle className="h-4 w-4" aria-hidden="true" />
+        <Pictogram name="info" className="h-5 w-5" />
       </button>
 
       <span

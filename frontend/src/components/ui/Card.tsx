@@ -1,3 +1,4 @@
+import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
 
 interface CardProps {
@@ -5,20 +6,31 @@ interface CardProps {
   className?: string;
 }
 
-export function Card({ children, className = "" }: CardProps) {
+interface SectionCardProps extends CardProps {
+  /** "frame": cardboard-framed glass (default). "liquid": layered liquid glass used in Explorar. */
+  variant?: "frame" | "liquid";
+}
+
+/** Glass card that rises in like a paper layer the first time it scrolls into view. */
+export function Card({ children, className = "", variant = "liquid" }: SectionCardProps) {
+  const reduceMotion = useReducedMotion();
   return (
-    <section
-      className={`ckepi-glass rounded-xl border border-border-subtle ${className}`}
+    <motion.section
+      className={`${variant === "liquid" ? "ckepi-liquid rounded-[2rem]" : "ckepi-glass ckepi-product-card rounded-xl border border-border-subtle"} ${className}`}
+      initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ type: "spring", stiffness: 170, damping: 26 }}
     >
       {children}
-    </section>
+    </motion.section>
   );
 }
 
 export function CardHeader({ children, className = "" }: CardProps) {
   return (
     <div
-      className={`border-b border-border-subtle/80 bg-surface-muted/20 px-3.5 py-3 sm:px-5 sm:py-3.5 rounded-t-2xl ${className}`}
+      className={`px-5 pb-2 pt-5 sm:px-6 sm:pt-6 ${className}`}
     >
       {children}
     </div>
@@ -27,12 +39,12 @@ export function CardHeader({ children, className = "" }: CardProps) {
 
 export function CardTitle({ children, className = "" }: CardProps) {
   return (
-    <h2 className={`text-sm font-bold tracking-tight text-content sm:text-base ${className}`}>
+    <h2 className={`text-lg font-bold tracking-tight text-content sm:text-xl ${className}`}>
       {children}
     </h2>
   );
 }
 
 export function CardContent({ children, className = "" }: CardProps) {
-  return <div className={`p-3.5 sm:p-5 ${className}`}>{children}</div>;
+  return <div className={`p-4 sm:p-6 ${className}`}>{children}</div>;
 }

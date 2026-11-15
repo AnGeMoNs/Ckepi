@@ -6,8 +6,9 @@ import shutil
 from fastapi.testclient import TestClient
 import h3
 
+from app import main
 from app.config import settings
-from app.main import app, state
+from app.main import app
 
 
 def test_health_reports_duckdb_grid_and_site_counts() -> None:
@@ -76,9 +77,11 @@ def test_earth_probe_and_refine_apply_custom_weights_and_reuse_cached_cells(
 ) -> None:
     """Earth probe and cell refinement propagate custom weights and avoid re-fetching cached children."""
     orig_data_dir = settings.data_dir
-    shutil.copytree(orig_data_dir, tmp_path / "data")
+    # conftest.py may already have isolated the data store in tmp_path / "data".
+    if Path(orig_data_dir).resolve() != (tmp_path / "data").resolve():
+        shutil.copytree(orig_data_dir, tmp_path / "data", dirs_exist_ok=True)
     monkeypatch.setattr(settings, "data_dir", tmp_path / "data")
-    monkeypatch.setattr(state, "duckdb_path", None)
+    monkeypatch.setattr(main.state, "duckdb_path", None)
 
     try:
         with TestClient(app) as client:
@@ -196,4 +199,4 @@ def test_earth_probe_and_refine_apply_custom_weights_and_reuse_cached_cells(
             }
             assert {m["earth_cell_h3"] for m in nb_json["matches"]} == expected_children
     finally:
-        state.duckdb_path = None
+        main.state.duckdb_path = None

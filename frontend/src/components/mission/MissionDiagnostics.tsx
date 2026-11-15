@@ -1,19 +1,6 @@
-import {
-  CheckCircle2,
-  Compass,
-  Download,
-  ExternalLink,
-  Globe2,
-  Layers,
-  Microscope,
-  Mountain,
-  Rocket,
-  Satellite,
-  ShieldAlert,
-  XCircle,
-} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Pictogram } from "../worlds/Pictograms";
 
 import { fetchMultiAgencyDatasets } from "../../api/client";
 import { formatNumber, formatPercent } from "../../i18n";
@@ -29,7 +16,7 @@ import type {
 import { exportReportMarkdown } from "../../utils/exportResults";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
+import { CardHeader, CardTitle } from "../ui/Card";
 import { InfoTooltip } from "../ui/InfoTooltip";
 import { ProgressBar } from "../ui/ProgressBar";
 import { AiViabilityPanel } from "./AiViabilityPanel";
@@ -105,11 +92,11 @@ export function MissionDiagnostics({
       : "break";
 
   return (
-    <Card>
-      <CardHeader className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <Compass className="h-5 w-5 text-accent" aria-hidden="true" />
-          <CardTitle>{t("mission.title")}</CardTitle>
+    <section className="space-y-5">
+      <CardHeader className="flex flex-wrap items-center justify-between gap-3 px-0">
+        <div className="flex items-center gap-3">
+          <img src="/img/science-accessories/ckepi-pin-location.webp" alt="" width={64} height={64} className="h-12 w-12 object-contain drop-shadow-ckepi-logo sm:h-14 sm:w-14" />
+          <CardTitle className="!text-2xl sm:!text-3xl">{t("mission.title")}</CardTitle>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button
@@ -127,7 +114,7 @@ export function MissionDiagnostics({
               onExported?.();
             }}
           >
-            <Download className="h-4 w-4" aria-hidden="true" />
+            <Pictogram name="download" className="h-4 w-4" />
             <span>{t("comparisonMatrix.exportReport")}</span>
           </Button>
           <Badge variant={tierVariant}>
@@ -136,9 +123,9 @@ export function MissionDiagnostics({
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <div className="space-y-5">
         {/* Executive Plain-Language Verdict */}
-        <div className="rounded border border-accent/30 bg-accent/5 p-4 text-sm text-content">
+        <div className="rounded-2xl border border-accent/30 bg-accent/5 p-4 text-sm text-content">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="font-semibold text-accent">
               {readingMode === "explorer"
@@ -184,9 +171,7 @@ export function MissionDiagnostics({
                       .join(", ") || t("mission.noneBroken"),
                 })}
           </p>
-          <p className="mt-2 border-t border-border-subtle pt-2 text-[11px] text-content-muted">
-            {t("mission.nasaAttribution")} · {t("mission.disclaimer")}
-          </p>
+          <p className="mt-3 border-t border-border-subtle/40 pt-3 text-sm text-content-muted">{t("mission.disclaimer")}</p>
         </div>
 
         {/* OpenRouter AI Viability & Operational Considerations */}
@@ -209,7 +194,7 @@ export function MissionDiagnostics({
         )}
 
         {/* Selected Cell Header & Decoupled Metrics */}
-        <div className="rounded border border-border-subtle bg-surface p-4 space-y-4">
+        <div className="rounded-2xl border border-border-subtle/50 bg-surface/30 p-4 space-y-4">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-content-muted">
@@ -257,7 +242,7 @@ export function MissionDiagnostics({
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1.5">
+            <div className="ckepi-liquid rounded-2xl p-3 space-y-1.5">
               <div className="flex items-center justify-between gap-1">
                 <span className="text-xs text-content-muted">{t("mission.sIndLabel")}</span>
                 <InfoTooltip label={t("mission.sIndLabel")} text={t("controls.minSIndHelp")} />
@@ -268,7 +253,7 @@ export function MissionDiagnostics({
               <ProgressBar value={match.s_ind} tone="accent" label={t("mission.sIndLabel")} />
             </div>
 
-            <div className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1.5">
+            <div className="ckepi-liquid rounded-2xl p-3 space-y-1.5">
               <div className="flex items-center justify-between gap-1">
                 <span className="text-xs text-content-muted">{t("mission.sDepLabel")}</span>
                 <InfoTooltip label={t("mission.sDepLabel")} text={t("controls.minSDepHelp")} />
@@ -279,7 +264,7 @@ export function MissionDiagnostics({
               <ProgressBar value={match.s_dep} tone="valid" label={t("mission.sDepLabel")} />
             </div>
 
-            <div className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1.5">
+            <div className="ckepi-liquid rounded-2xl p-3 space-y-1.5">
               <div className="flex items-center justify-between gap-1">
                 <span className="text-xs text-content-muted">{t("mission.rBreakLabel")}</span>
                 <InfoTooltip label={t("mission.rBreakLabel")} text={t("mission.rBreakHelp")} />
@@ -294,7 +279,7 @@ export function MissionDiagnostics({
               />
             </div>
 
-            <div className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1.5">
+            <div className="ckepi-liquid rounded-2xl p-3 space-y-1.5">
               <span className="text-xs text-content-muted">{t("mission.combinedLabel")}</span>
               <p className="text-lg font-bold tabular-nums text-content">
                 {formatPercent(match.combined_score, lang)}
@@ -313,41 +298,44 @@ export function MissionDiagnostics({
           </div>
         </div>
 
+        <details className="ckepi-liquid group rounded-[2rem] p-5 sm:p-6">
+          <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 text-lg font-bold text-content sm:text-xl [&::-webkit-details-marker]:hidden"><img src="/img/science-accessories/ckepi-icon-atmosphere.webp" alt="" width={48} height={48} className="h-11 w-11 object-contain drop-shadow-ckepi-logo" /><span className="flex-1">{t("mission.dimensions.title")}</span><Pictogram name="chevronDown" className="h-6 w-6 text-content-muted transition-transform group-open:rotate-180" /></summary>
+          <div className="mt-4 space-y-5">
         {/* 8 Challenge Dimensions & Physical Processes */}
         <ChallengeDimensionsGrid comparison={comparison} catalog={catalog} />
 
+        <details className="ckepi-liquid group rounded-[2rem] p-5 sm:p-6">
+          <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 text-lg font-bold text-content sm:text-xl [&::-webkit-details-marker]:hidden"><img src="/img/science-accessories/ckepi-icon-gravity.webp" alt="" width={48} height={48} className="h-11 w-11 object-contain drop-shadow-ckepi-logo" /><span className="flex-1">{t("sciencePages.groups.engineering")}</span><Pictogram name="chevronDown" className="h-6 w-6 text-content-muted transition-transform group-open:rotate-180" /></summary>
+          <div className="mt-4 space-y-5">
+          </div>
+        </details>
+
         {/* Engineering Valid vs Invalid Tests */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="rounded border border-status-valid/60 bg-status-valid/15 p-4 space-y-2.5">
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-status-valid">
-              <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <div className="rounded-2xl border border-status-valid/60 bg-status-valid/15 p-4 space-y-2.5">
+            <h3 className="flex items-center gap-2 text-base font-bold text-status-valid">
+              <Pictogram name="check" className="h-4 w-4 shrink-0" />
               {t("mission.validTestsTitle")}
             </h3>
             <ul className="space-y-2">
               {recs.valid_tests.map((testKey) => (
                 <li key={testKey} className="flex items-start gap-2 text-sm text-content">
-                  <CheckCircle2
-                    className="mt-0.5 h-4 w-4 shrink-0 text-status-valid"
-                    aria-hidden="true"
-                  />
+                  <Pictogram name="check" className="mt-0.5 h-4 w-4 shrink-0 text-status-valid" />
                   <span>{t(testKey)}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="rounded border border-status-break/60 bg-status-break/15 p-4 space-y-2.5">
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-status-break">
-              <ShieldAlert className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <div className="rounded-2xl border border-status-break/60 bg-status-break/15 p-4 space-y-2.5">
+            <h3 className="flex items-center gap-2 text-base font-bold text-status-break">
+              <Pictogram name="notSimilar" className="h-4 w-4 shrink-0" />
               {t("mission.invalidTestsTitle")}
             </h3>
             <ul className="space-y-2">
               {recs.invalid_tests.map((testKey) => (
                 <li key={testKey} className="flex items-start gap-2 text-sm text-content">
-                  <XCircle
-                    className="mt-0.5 h-4 w-4 shrink-0 text-status-break"
-                    aria-hidden="true"
-                  />
+                  <Pictogram name="close" className="mt-0.5 h-4 w-4 shrink-0 text-status-break" />
                   <span>{t(testKey)}</span>
                 </li>
               ))}
@@ -357,9 +345,9 @@ export function MissionDiagnostics({
 
         {/* Earth's Limits & Exploration Connection */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <div className="rounded border border-border-subtle bg-surface p-4 space-y-2.5">
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-content">
-              <Globe2 className="h-4 w-4 shrink-0 text-status-warn" aria-hidden="true" />
+          <div className="rounded-2xl border border-border-subtle/50 bg-surface/30 p-4 space-y-2.5">
+            <h3 className="flex items-center gap-2 text-base font-bold text-content">
+              <Pictogram name="globe" className="h-4 w-4 shrink-0 text-status-warn" />
               {t("mission.earthLimitsTitle")}
             </h3>
             <p className="text-xs leading-relaxed text-content-muted">
@@ -388,9 +376,9 @@ export function MissionDiagnostics({
             </p>
           </div>
 
-          <div className="rounded border border-accent/30 bg-accent/5 p-4 space-y-2.5">
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-accent">
-              <Rocket className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <div className="rounded-2xl border border-accent/30 bg-accent/5 p-4 space-y-2.5">
+            <h3 className="flex items-center gap-2 text-base font-bold text-accent">
+              <Pictogram name="rover" className="h-4 w-4 shrink-0" />
               {t("mission.explorationUseTitle")}
             </h3>
             <p className="text-xs leading-relaxed text-content">
@@ -406,6 +394,12 @@ export function MissionDiagnostics({
           </div>
         </div>
 
+        <details className="ckepi-liquid group rounded-[2rem] p-5 sm:p-6">
+          <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 text-lg font-bold text-content sm:text-xl [&::-webkit-details-marker]:hidden"><img src="/img/science-accessories/ckepi-icon-slope.webp" alt="" width={48} height={48} className="h-11 w-11 object-contain drop-shadow-ckepi-logo" /><span className="flex-1">{t("sciencePages.groups.terrain")}</span><Pictogram name="chevronDown" className="h-6 w-6 text-content-muted transition-transform group-open:rotate-180" /></summary>
+          <div className="mt-4 space-y-5">
+          </div>
+        </details>
+
         {/* Common-Scale (30 m) Statistical Distribution Comparison (Wasserstein-1 & KS) */}
         {comparison.statistical_distribution && (
           <TerrainDistributionPanel
@@ -416,10 +410,16 @@ export function MissionDiagnostics({
           />
         )}
 
+        <details className="ckepi-liquid group rounded-[2rem] p-5 sm:p-6">
+          <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 text-lg font-bold text-content sm:text-xl [&::-webkit-details-marker]:hidden"><img src="/img/science-accessories/ckepi-icon-temperature.webp" alt="" width={48} height={48} className="h-11 w-11 object-contain drop-shadow-ckepi-logo" /><span className="flex-1">{t("sciencePages.groups.variables")}</span><Pictogram name="chevronDown" className="h-6 w-6 text-content-muted transition-transform group-open:rotate-180" /></summary>
+          <div className="mt-4 space-y-5">
+          </div>
+        </details>
+
         {/* Variable-by-Variable Comparison: Cards on mobile (<640px), Table on sm+ */}
         <div className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold text-content">
+            <h3 className="text-base font-bold text-content">
               {t("mission.comparisonTitle")} ({filteredDeltas.length})
             </h3>
             <div className="flex flex-wrap items-center gap-1.5">
@@ -428,7 +428,7 @@ export function MissionDiagnostics({
                   key={layer}
                   type="button"
                   onClick={() => setLayerFilter(layer)}
-                  className={`min-h-11 rounded border px-2.5 py-1 text-xs font-medium transition ${
+                  className={`min-h-11 rounded-2xl border px-2.5 py-1 text-xs font-medium transition ${
                     layerFilter === layer
                       ? "border-accent bg-accent text-white"
                       : "border-border-subtle bg-surface text-content-muted hover:text-content"
@@ -445,7 +445,7 @@ export function MissionDiagnostics({
             {filteredDeltas.map((d) => (
               <div
                 key={d.variable}
-                className="rounded border border-border-subtle bg-surface p-3 space-y-1.5"
+                className="rounded-2xl border border-border-subtle/50 bg-surface/30 p-3 space-y-1.5"
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-sm font-medium text-content">
@@ -479,7 +479,7 @@ export function MissionDiagnostics({
           </div>
 
           {/* Desktop/Tablet Controlled Table */}
-          <div className="hidden overflow-x-auto rounded border border-border-subtle sm:block">
+          <div className="hidden overflow-x-auto rounded-2xl border border-border-subtle sm:block">
             <table className="w-full border-collapse text-left text-sm">
               <thead className="bg-surface-muted text-xs uppercase text-content-muted">
                 <tr>
@@ -547,12 +547,18 @@ export function MissionDiagnostics({
           </div>
         </div>
 
+        <details className="ckepi-liquid group rounded-[2rem] p-5 sm:p-6">
+          <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 text-lg font-bold text-content sm:text-xl [&::-webkit-details-marker]:hidden"><img src="/img/science-accessories/ckepi-icon-soil.webp" alt="" width={48} height={48} className="h-11 w-11 object-contain drop-shadow-ckepi-logo" /><span className="flex-1">{t("sciencePages.groups.context")}</span><Pictogram name="chevronDown" className="h-6 w-6 text-content-muted transition-transform group-open:rotate-180" /></summary>
+          <div className="mt-4 space-y-5">
+          </div>
+        </details>
+
         {/* Geology, Subsurface Caves/Lava Tubes & Extremophile Habitability */}
         {catalog && (catalog.geology || catalog.subsurface || catalog.habitability) && (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="rounded border border-border-subtle bg-surface p-4 space-y-2">
-              <h3 className="flex items-center gap-2 text-sm font-semibold text-content">
-                <Layers className="h-4 w-4 text-accent" aria-hidden="true" />
+            <div className="rounded-2xl border border-border-subtle/50 bg-surface/30 p-4 space-y-2">
+              <h3 className="flex items-center gap-2 text-base font-bold text-content">
+                <Pictogram name="hexCell" className="h-4 w-4 text-accent" />
                 {t("geology.title")}
               </h3>
               {catalog.geology ? (
@@ -570,9 +576,9 @@ export function MissionDiagnostics({
               )}
             </div>
 
-            <div className="rounded border border-border-subtle bg-surface p-4 space-y-2">
-              <h3 className="flex items-center gap-2 text-sm font-semibold text-content">
-                <Mountain className="h-4 w-4 text-status-warn" aria-hidden="true" />
+            <div className="rounded-2xl border border-border-subtle/50 bg-surface/30 p-4 space-y-2">
+              <h3 className="flex items-center gap-2 text-base font-bold text-content">
+                <Pictogram name="terrain" className="h-4 w-4 text-status-warn" />
                 {t("subsurface.title")}
               </h3>
               {catalog.subsurface && (
@@ -590,9 +596,9 @@ export function MissionDiagnostics({
               )}
             </div>
 
-            <div className="rounded border border-border-subtle bg-surface p-4 space-y-2">
-              <h3 className="flex items-center gap-2 text-sm font-semibold text-content">
-                <Microscope className="h-4 w-4 text-status-valid" aria-hidden="true" />
+            <div className="rounded-2xl border border-border-subtle/50 bg-surface/30 p-4 space-y-2">
+              <h3 className="flex items-center gap-2 text-base font-bold text-content">
+                <Pictogram name="observe" className="h-4 w-4 text-status-valid" />
                 {t("habitability.title")}
               </h3>
               {catalog.habitability && (
@@ -618,11 +624,11 @@ export function MissionDiagnostics({
 
         {/* NASA / ESA Regolith Simulant Affinity & ISRU / Astrobiological Purity */}
         {catalog?.regolith_simulant && (
-          <div className="rounded border border-border-subtle bg-surface p-4 space-y-3">
+          <div className="rounded-2xl border border-border-subtle/50 bg-surface/30 p-4 space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <Layers className="h-4 w-4 text-accent" aria-hidden="true" />
-                <h3 className="text-sm font-semibold text-content">{t("simulants.title")}</h3>
+                <Pictogram name="hexCell" className="h-4 w-4 text-accent" />
+                <h3 className="text-base font-bold text-content">{t("simulants.title")}</h3>
                 <InfoTooltip label={t("simulants.title")} text={t("simulants.tooltip")} />
               </div>
               <Badge variant="valid">
@@ -632,7 +638,7 @@ export function MissionDiagnostics({
             </div>
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1">
+              <div className="ckepi-liquid rounded-2xl p-3 space-y-1">
                 <span className="text-xs text-content-muted">{t("simulants.bestMatchTitle")}</span>
                 <p className="text-sm font-bold text-content">
                   {t(catalog.regolith_simulant.recommended_name_key)}
@@ -645,7 +651,7 @@ export function MissionDiagnostics({
                 </p>
               </div>
 
-              <div className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1.5">
+              <div className="ckepi-liquid rounded-2xl p-3 space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-content-muted">{t("simulants.isruIndexLabel")}</span>
                   <span className="font-semibold tabular-nums text-accent">
@@ -670,7 +676,7 @@ export function MissionDiagnostics({
                 />
               </div>
 
-              <div className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1 text-xs text-content-muted">
+              <div className="ckepi-liquid rounded-2xl p-3 space-y-1 text-xs text-content-muted">
                 <span className="font-semibold text-content">{t("simulants.granulometryTitle")}</span>
                 <p>
                   {t("simulants.sandClaySilt", {
@@ -691,10 +697,10 @@ export function MissionDiagnostics({
         )}
 
         {/* Multi-Agency Space Catalog (NASA, ESA, CSA, JAXA) */}
-        <div className="rounded border border-border-subtle bg-surface p-4 space-y-3">
+        <div className="rounded-2xl border border-border-subtle/50 bg-surface/30 p-4 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-content">
-              <Satellite className="h-4 w-4 text-accent" aria-hidden="true" />
+            <h3 className="flex items-center gap-2 text-base font-bold text-content">
+              <Pictogram name="observe" className="h-4 w-4 text-accent" />
               {t("agencies.title")}
             </h3>
             <span className="text-xs text-content-muted">{t("agencies.subtitle")}</span>
@@ -710,7 +716,7 @@ export function MissionDiagnostics({
                   href={prod.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex min-h-11 items-center justify-between gap-2 rounded border border-border-subtle bg-surface-elevated p-3 text-xs transition hover:border-accent"
+                  className="flex min-h-11 items-center justify-between gap-2 ckepi-liquid rounded-2xl p-3 text-xs transition hover:border-accent"
                 >
                   <div className="min-w-0 space-y-0.5">
                     <div className="flex items-center gap-1.5">
@@ -723,15 +729,18 @@ export function MissionDiagnostics({
                   </div>
                   <span className="inline-flex shrink-0 items-center gap-1 font-medium text-accent">
                     {t("agencies.openPortal")}
-                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                    <Pictogram name="share" className="h-4 w-4" />
                   </span>
                 </a>
               ))}
             </div>
           )}
         </div>
-      </CardContent>
-    </Card>
+          </div>
+        </details>
+
+      </div>
+    </section>
   );
 }
 

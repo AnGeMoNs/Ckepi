@@ -6,6 +6,7 @@ import httpx
 import pandas as pd
 
 from app.etl.earth_api import probe_earth_location
+from app.etl.http_utils import create_http_client
 
 
 @dataclass(frozen=True)
@@ -69,7 +70,7 @@ def _hydrate_anchor(anchor: EarthAnchor, h3_resolution: int, client: httpx.Clien
 def build_real_earth_h3_grid(h3_resolution: int = 3) -> pd.DataFrame:
     """Hydrate all terrestrial H3 anchor cells concurrently from live open APIs."""
     records: list[dict[str, object]] = []
-    with httpx.Client(timeout=30.0) as client:
+    with create_http_client(timeout=30.0) as client:
         with ThreadPoolExecutor(max_workers=2) as pool:
             futures = {
                 pool.submit(_hydrate_anchor, anchor, h3_resolution, client): anchor

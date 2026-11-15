@@ -2,11 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   compareCellWithSite,
+  clearApiCache,
   fetchPlanetarySites,
   probeEarthCoordinate,
   probePlanetaryLocation,
   refineAnalogCell,
-  refreshDatasets,
   runDecomposition,
   searchAnalogs,
 } from "../api/client";
@@ -58,6 +58,11 @@ export function useAnalogAnalysis({
   customMinSimilarity,
 }: UseAnalogAnalysisParams) {
   const { errorState, captureError, clearError } = useApiError();
+  const {
+    errorState: catalogErrorState,
+    captureError: captureCatalogError,
+    clearError: clearCatalogError,
+  } = useApiError();
 
   const [sites, setSites] = useState<PlanetarySite[]>([]);
   const [decomposition, setDecomposition] = useState<DecompositionResponse | null>(null);
@@ -68,7 +73,8 @@ export function useAnalogAnalysis({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [isRefining, setIsRefining] = useState<boolean>(false);
-  const [earthDensity, setEarthDensity] = useState<"global" | "top">("global");
+  // Start with a bounded payload; the complete globe remains an explicit map option.
+  const [earthDensity, setEarthDensity] = useState<"global" | "top">("top");
   const [drilldownState, setDrilldownState] = useState<{
     parentH3: string;
     parentH3s?: string[];
@@ -99,8 +105,9 @@ export function useAnalogAnalysis({
   const loadSites = useCallback(async (): Promise<PlanetarySite[]> => {
     const list = await fetchPlanetarySites();
     setSites(list);
+    clearCatalogError();
     return list;
-  }, []);
+  }, [clearCatalogError]);
 
   // Load the catalog once on mount. Validating the initial site here (and not on every
   // selectedSiteId change) keeps custom probed sites from being reverted to the first one.
@@ -118,7 +125,7 @@ export function useAnalogAnalysis({
         }
       })
       .catch((err) => {
-        if (!cancelled) captureError(err);
+        if (!cancelled) captureCatalogError(err);
       });
     return () => {
       cancelled = true;
@@ -136,10 +143,12 @@ export function useAnalogAnalysis({
       clearError();
 
       try {
+        // Retry a failed catalog load without allowing another request to erase its error.
+        if (sites.length === 0) await loadSites();
         const [decompRes, analogsRes] = await Promise.all([
-          runDecomposition(selectedSiteId, modelType, signal).then((res) => {
-            if (!signal?.aborted) setDecomposition(res);
-            return res;
+          runDecomposition(selectedSiteId, modelType, signal).then((result) => {
+            if (!signal?.aborted) setDecomposition(result);
+            return result;
           }),
           searchAnalogs({
             siteId: selectedSiteId,
@@ -150,7 +159,7 @@ export function useAnalogAnalysis({
             minSDep,
             excludeBenchmarks,
             penalizeEstimated,
-            limit: earthDensity === "global" ? 25000 : 1500,
+            limit: earthDensity === "global" ? 25000 : 250,
             compactTail: true,
             customIvWeights: testProfile === "manual_custom" ? customIvWeights : undefined,
             customDvWeights: testProfile === "manual_custom" ? customDvWeights : undefined,
@@ -199,6 +208,8 @@ export function useAnalogAnalysis({
       customDvWeights,
       customMinSimilarity,
       customProbedSite,
+      sites.length,
+      loadSites,
       clearError,
       captureError,
     ]
@@ -364,7 +375,7 @@ export function useAnalogAnalysis({
     setIsRefreshing(true);
     clearError();
     try {
-      await refreshDatasets();
+      clearApiCache();
       await loadSites();
       return await runAnalysis();
     } catch (err) {
@@ -390,7 +401,7 @@ export function useAnalogAnalysis({
           minSInd,
           minSDep,
           excludeBenchmarks,
-          limit: earthDensity === "global" ? 25000 : 1500,
+          limit: earthDensity === "global" ? 25000 : 250,
           customIvWeights: testProfile === "manual_custom" ? customIvWeights : undefined,
           customDvWeights: testProfile === "manual_custom" ? customDvWeights : undefined,
           customMinSimilarity: testProfile === "manual_custom" ? customMinSimilarity : undefined,
@@ -460,7 +471,8 @@ export function useAnalogAnalysis({
     probingCoords,
     probingPlanetCoords,
     lastUpdated,
-    errorState,
+    errorState: errorState ?? catalogErrorState,
+    catalogErrorState,
     runAnalysis,
     handleProbeCoordinate,
     handleRefineCell,

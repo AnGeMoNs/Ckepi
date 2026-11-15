@@ -59,7 +59,7 @@ export function SectionNav({ visibleSections }: SectionNavProps) {
   return (
     <nav
       aria-label={t("nav.label")}
-      className="no-scrollbar sticky top-[var(--header-h,4.25rem)] z-20 flex items-center gap-1.5 overflow-x-auto rounded-2xl border border-border-subtle/90 bg-surface-elevated/90 p-1.5 shadow-sm backdrop-blur-md"
+      className="no-scrollbar sticky top-2 z-20 flex items-center gap-1.5 overflow-x-auto rounded-2xl border border-border-subtle/90 bg-surface-elevated/90 p-1.5 shadow-sm backdrop-blur-md"
     >
       {availableItems.map((item) => {
         const Icon = item.icon;

@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>CKEPI — NASA Space Apps Challenge 2026 · Identify Earth Locations that Analog Moon & Mars · Lattices Team</title>
+<title>CKEPI — NASA Space Apps 2026 · Moon & Mars Analog Challenge · Antofagasta, Chile</title>
 <style>
   @page { size: 13.333in 7.5in; margin: 0; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: #101F24;
     color: #FFF2D7;
   }
@@ -32,26 +32,17 @@
     align-items: center;
     margin-bottom: 4px;
   }
-  .brand-logo-sm {
-    height: 36px;
-    width: auto;
-    object-fit: contain;
-  }
-  .brand-logo-lg {
-    height: 68px;
-    width: auto;
-    object-fit: contain;
-    margin-bottom: 10px;
-  }
+  .brand-logo-sm { height: 36px; width: auto; object-fit: contain; }
+  .brand-logo-lg { height: 72px; width: auto; object-fit: contain; margin-bottom: 10px; }
   .kicker {
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: #E4ED83;
     margin-bottom: 4px;
   }
-  h1 { font-size: 48px; font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; color: #FFF2D7; }
+  h1 { font-size: 50px; font-weight: 800; line-height: 1.05; color: #FFF2D7; }
   h2 { font-size: 27px; font-weight: 750; line-height: 1.16; margin-bottom: 10px; color: #FFF2D7; }
   .pill {
     display: inline-block;
@@ -70,25 +61,25 @@
     background: rgba(16, 31, 36, 0.92);
     border: 1px solid rgba(255, 242, 215, 0.22);
     border-radius: 14px;
-    padding: 14px 18px;
+    padding: 15px 18px;
     box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38);
   }
-  .card-title { font-size: 15.5px; font-weight: 700; margin-bottom: 6px; color: #FFF2D7; }
+  .card-title { font-size: 16.5px; font-weight: 700; margin-bottom: 6px; color: #FFF2D7; }
   .copper { color: #E8A080; }
   .sulfur { color: #E4ED83; }
   .danger { color: #fca5a5; }
   .ok { color: #86efac; }
-  p, li { font-size: 13.2px; line-height: 1.43; color: #EBE4D5; }
+  p, li { font-size: 14px; line-height: 1.45; color: #EBE4D5; }
   ul { padding-left: 18px; }
-  li { margin-bottom: 7px; }
+  li { margin-bottom: 8px; }
   .tagline {
-    font-size: 16.5px;
+    font-size: 17.5px;
     line-height: 1.42;
     color: #FFF2D7;
-    background: rgba(24, 58, 58, 0.78);
+    background: rgba(24, 58, 58, 0.82);
     border-left: 4px solid #E4ED83;
     border-radius: 8px;
-    padding: 12px 16px;
+    padding: 14px 18px;
     margin: 14px 0;
   }
   .shot {
@@ -116,45 +107,45 @@
     background: rgba(232, 160, 128, 0.2);
     color: #E8A080;
     font-weight: 700;
-    font-size: 11.5px;
+    font-size: 12px;
     margin-right: 10px;
     white-space: nowrap;
   }
-  .source-row { display: flex; align-items: baseline; margin-top: 7px; font-size: 12.8px; color: #EBE4D5; }
+  .source-row { display: flex; align-items: baseline; margin-top: 8px; font-size: 13.5px; color: #EBE4D5; }
   .formula {
-    margin-top: 9px;
-    padding: 9px 14px;
+    margin-top: 10px;
+    padding: 10px 14px;
     border-radius: 10px;
     background: rgba(24, 58, 58, 0.9);
     border: 1px solid rgba(228, 237, 131, 0.4);
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 12.5px;
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
     color: #E4ED83;
   }
   .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
   .metric {
     background: rgba(24, 58, 58, 0.78);
     border-radius: 9px;
-    padding: 7px 10px;
+    padding: 8px 10px;
     border: 1px solid rgba(255, 242, 215, 0.18);
   }
-  .m-label { font-size: 11px; color: #BAC6C3; font-weight: 600; }
-  .m-val { font-size: 13px; font-weight: 750; color: #E4ED83; margin-top: 2px; }
-  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12.2px; }
-  th, td { padding: 6px 8px; border-bottom: 1px solid rgba(255, 242, 215, 0.16); text-align: left; color: #EBE4D5; }
+  .m-label { font-size: 11.5px; color: #BAC6C3; font-weight: 600; }
+  .m-val { font-size: 13.2px; font-weight: 750; color: #E4ED83; margin-top: 2px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+  th, td { padding: 7px 8px; border-bottom: 1px solid rgba(255, 242, 215, 0.16); text-align: left; color: #EBE4D5; }
   th { color: #FFF2D7; }
   td.warn { color: #E8A080; font-weight: 700; }
   .honesty-box {
     margin-top: 9px;
-    padding: 9px 14px;
+    padding: 10px 14px;
     border-radius: 10px;
     background: rgba(24, 58, 58, 0.92);
     border: 1px solid rgba(232, 160, 128, 0.5);
-    font-size: 12.2px;
+    font-size: 13px;
     color: #FFF2D7;
   }
   .closing {
-    font-size: 18px;
+    font-size: 18.5px;
     font-weight: 700;
     text-align: center;
     color: #FFF2D7;
@@ -170,19 +161,19 @@
 <!-- SLIDE 1 -->
 <section class="slide" style="background-image: url('file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/slide1_home_ppt_bg.png');">
   <div class="topbar">
-    <span class="pill">NASA Space Apps Challenge 2026 · Identify Earth Locations that Analog Moon & Mars · Lattices Team</span>
+    <span class="pill">NASA Space Apps 2026 · Moon & Mars Analog Challenge · Antofagasta, Chile</span>
     <img class="brand-logo-sm" src="file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/ckepi-horizontal-color-dark.png" alt="CKEPI Brand V2 Logo" />
   </div>
   <div class="grid-hero">
     <div>
       <img class="brand-logo-lg" src="file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/ckepi-horizontal-color-dark.png" alt="CKEPI Logo" />
-      <p style="font-size:17.5px; color:#E8A080; margin-top:4px; font-weight:650;">Terrestrial Planetary Analog Discovery Engine via Causal Decomposition (X → Y ∥ B) & 30 m Common-Scale Spatial Statistics</p>
-      <div class="tagline">“We do not seek to prove that Atacama is identical to Mars. We seek to show which characteristics it shares, which differences exist, and which new locations deserve to be studied using scientific evidence.”</div>
-      <p style="font-size:12.5px; color:#E4ED83; font-weight:600;">Open-Source · Apache License 2.0 · Brand V2: Salt, Copper & Sulfur · Zero NASA Logos</p>
+      <p style="font-size:21px; color:#E8A080; margin-top:4px; font-weight:700;">Where in Antofagasta Do We Prepare for the Moon and Mars?</p>
+      <div class="tagline">“We do not seek to prove that Atacama is identical to Mars. We show what it shares, what differs, and which new places in Antofagasta deserve to be studied with scientific evidence.”</div>
+      <p style="font-size:13.5px; color:#E4ED83; font-weight:600;">Open-Source (Apache 2.0) · Free & No Login · Zero NASA Logos</p>
     </div>
     <div>
       <img class="shot shot-tall" src="file:///home/dani/proyectos/Ckepi/docs/nehe/shot_explorer_mars.png" alt="Ckepi 3D Explorer" />
-      <div class="caption">Live prototype: 3D Mars/Moon WMTS globes + live H3 hover HUD + 30 m CTX/Copernicus DEM comparison</div>
+      <div class="caption">Live App: 3 cardboard worlds (Moon · Antofagasta · Mars) + 3D globes + 30 m NASA/ESA DEM proof</div>
     </div>
   </div>
   <div class="footer"><span>Ckepi · 1 / 7 · Brand V2 (Salt · Copper · Sulfur)</span><span>NASA Space Apps Challenge 2026</span></div>
@@ -192,24 +183,24 @@
 <section class="slide" style="background-image: url('file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/slide2_problema_ppt_bg.png');">
   <div class="topbar">
     <div>
-      <div class="kicker">01 · REAL PROBLEM, HUMAN IMPORTANCE & VALUE PROPOSITION</div>
-      <h2>Is the problem real and does it affect people? Yes—with scientific and educational impact</h2>
+      <div class="kicker">01 · THE PROBLEM</div>
+      <h2>Space missions test in deserts—but choose by sight and leave citizens out</h2>
     </div>
     <img class="brand-logo-sm" src="file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/ckepi-horizontal-color-dark.png" alt="CKEPI Logo" />
   </div>
   <div class="grid-2" style="flex:1; align-items:center;">
-    <div style="display:flex; flex-direction:column; gap:11px;">
+    <div style="display:flex; flex-direction:column; gap:12px;">
       <div class="card">
-        <div class="card-title copper">1. Is the Problem Real? (Scientific Gap)</div>
-        <p>Yes. NASA recognizes terrestrial analogs are not fully characterized and opportunities exist to identify new sites. Visual resemblance or simple means mask critical differences in slope distributions, thermal inertia, radiation, pressure, and gravity.</p>
+        <div class="card-title copper">1. Visual Bias in Field Tests</div>
+        <p>Missions keep repeating the same famous site (Yungay), while the rest of Antofagasta remains unmeasured at 30 m.</p>
       </div>
       <div class="card">
-        <div class="card-title sulfur">2. Does It Affect People? (Engineering & Educational Gap)</div>
-        <p>Yes. It directly affects researchers and engineers preparing field trials, while specialist GIS tools exclude students, teachers, families, and people without scientific training or advanced digital literacy.</p>
+        <div class="card-title sulfur">2. Closed to the Community</div>
+        <p>Planetary GIS tools are built only for specialists—excluding students, teachers, and families.</p>
       </div>
       <div class="card">
-        <div class="card-title ok">3. Ckepi Value Proposition & Innovation Thesis</div>
-        <p>Facilitate transparent scientific comparisons, guide preliminary screening, study under-characterized sectors of Antofagasta and other regions, and empower anyone to learn with real space data.</p>
+        <div class="card-title ok">3. Our Value Proposition</div>
+        <p>Cross Moon & Mars landing sites with 4 real zones of Antofagasta at 30 m—for engineers and for every citizen.</p>
       </div>
     </div>
     <div>
@@ -217,130 +208,130 @@
       <div class="caption">Moon South Pole (Shackleton Crater) · NASA LRO WAC / LOLA Trek WMTS</div>
     </div>
   </div>
-  <div class="footer"><span>Ckepi · 2 / 7</span><span>01 · REAL PROBLEM, HUMAN IMPORTANCE & VALUE PROPOSITION</span></div>
+  <div class="footer"><span>Ckepi · 2 / 7</span><span>01 · THE PROBLEM</span></div>
 </section>
 
 <!-- SLIDE 3 -->
 <section class="slide" style="background-image: url('file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/slide3_solucion_ppt_bg.png');">
   <div class="topbar">
     <div>
-      <div class="kicker">02 · DUAL-MODE INTERACTIVE SOLUTION & MOBILE-FIRST DEMO</div>
-      <h2>One scientific engine, two tailored experiences (320px Mobile to 4K Desktop)</h2>
+      <div class="kicker">02 · HOW CKEPI WORKS (STEP BY STEP)</div>
+      <h2>Simple for the community, rigorous for the scientist</h2>
     </div>
     <img class="brand-logo-sm" src="file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/ckepi-horizontal-color-dark.png" alt="CKEPI Logo" />
   </div>
-  <div class="grid-3"><div class="card"><div class="card-title copper">1. Explore 3D Globes & Intro</div><p>Layered paper-cut intro & hexagonal transition (HexField) into 3D Moon/Mars WMTS globes with live H3 hover HUD and 5 NASA ROIs.</p></div><div class="card"><div class="card-title copper">2. Compare X → Y & 30 m DEMs</div><p>Rank 12,193 cached Earth H3 cells (Res 2 & Res 3 + 7-child refinement) and inspect real 30 m slope/relief distributions.</p></div><div class="card"><div class="card-title copper">3. Explorer Mode & Voice Access</div><p>‘Three Worlds in Your Hand’ (Look → Compare → Investigate), Web Speech API voice readout, >= 44 px touch targets, ES/PT/EN (842 keys).</p></div></div>
+  <div class="grid-3"><div class="card"><div class="card-title copper">Step 1 · Explore Mode (Community)</div><p>3 floating cardboard worlds (Moon · Antofagasta · Mars). Tap one: pictograms, 10 kg backpack, and voice readout (ES/PT/EN).</p></div><div class="card"><div class="card-title copper">Step 2 · Interactive Crossing</div><p>Crosses Jezero (Mars) & Shackleton (Moon) with 4 Antofagasta zones: clear Yes / Partial / No verdicts in < 0.4 s.</p></div><div class="card"><div class="card-title copper">Step 3 · Deep Science & 3D Map</div><p>3D NASA Trek globes, 12,193 H3 cells, 30 m slope histograms, physics lab, and field-trial sheet export (.md / .csv).</p></div></div>
   <div class="grid-2" style="margin-top:12px; align-items:center;">
     <img class="shot shot-med" src="file:///home/dani/proyectos/Ckepi/docs/nehe/shot_atacama_analysis.png" alt="Causal Decomposition & Matrix" />
     <div class="card" style="height:100%; display:flex; flex-direction:column; justify-content:center;">
-      <div class="card-title sulfur">Verified Mobile-First UI & Brand V2 ('Salt, Copper & Sulfur')</div>
-      <p>React 18 + TypeScript + MapLibre GL v6 (bundled WebWorker) + FastAPI + DuckDB (1,757 cached H3 cells: 790 Res-2 & 11,403 Res-3) + SciPy 30 m DEM engine. Mineral Night (#101F24), Warm Salt (#FFF2D7), Pale Sulfur (#E4ED83) & Light Copper (#E8A080) glass UI (.ckepi-glass, WCAG AA verified in contrast-v2.json), 842 i18n keys, and CSV / GeoJSON / Markdown export.</p>
+      <div class="card-title sulfur">Works Anywhere (320px Mobile to 4K · Offline-Ready Local Mode)</div>
+      <p>• Local Explore Mode (?view=explore) runs 100% static (< 50 ms) with voice (Web Speech API) and >= 44 px buttons.<br/><br/>• Science Mode (?view=app) runs on FastAPI + DuckDB (1,757 H3 cells) + MapLibre 3D + 1,052 i18n keys.</p>
     </div>
   </div>
-  <div class="footer"><span>Ckepi · 3 / 7</span><span>02 · DUAL-MODE INTERACTIVE SOLUTION & MOBILE-FIRST DEMO</span></div>
+  <div class="footer"><span>Ckepi · 3 / 7</span><span>02 · HOW CKEPI WORKS (STEP BY STEP)</span></div>
 </section>
 
 <!-- SLIDE 4 -->
 <section class="slide" style="background-image: url('file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/slide4_ciencia_ppt_bg.png');">
   <div class="topbar">
     <div>
-      <div class="kicker">03 · CAUSAL DECOMPOSITION (X → Y ∥ B) & PRECISION NASA OPEN DATA</div>
-      <h2>Separating geological substrate (X), climate response (Y), and irreducible boundaries (B)</h2>
+      <div class="kicker">03 · THE METHOD & REAL NASA DATA</div>
+      <h2>We never say '87% Mars': we separate Terrain (X), Climate (Y), and Limits (B)</h2>
     </div>
     <img class="brand-logo-sm" src="file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/ckepi-horizontal-color-dark.png" alt="CKEPI Logo" />
   </div>
   <div class="grid-3">
     <div class="card">
-      <div class="card-title sulfur">10 Independent Forcings (X · 0.60)</div>
-      <p>Roughness, slope (°), thermal inertia (TIU), albedo, solar flux, subsurface ice, aridity, RH, UV index, LAI.</p>
+      <div class="card-title sulfur">1. Terrain We CAN Test (X)</div>
+      <p>30 m slope (°), local relief (m), roughness, albedo, solar/UV flux, hyper-aridity (10 variables).</p>
     </div>
     <div class="card">
-      <div class="card-title copper">6 Dependent Responses (Y · 0.40)</div>
-      <p>Diurnal ΔT (K), nocturnal cooling (K/hr), mean surface temp (°C), wind speed (m/s), aeolian dust, ice sublimation.</p>
+      <div class="card-title copper">2. Climate Response (Y)</div>
+      <p>Day–night temperature swing ΔT (K), cooling rate, wind speed, dust (6 variables).</p>
     </div>
     <div class="card">
-      <div class="card-title danger">3 Irreducible Boundaries (B · R_break)</div>
-      <p>Surface gravity (g), atmospheric pressure & composition (kPa CO2 / vacuum), and ionizing cosmic radiation (mSv/yr).</p>
+      <div class="card-title danger">3. What Earth CANNOT Imitate (B)</div>
+      <p>Gravity (0.38 g / 0.166 g), thin CO2 air (~0.6 kPa) or vacuum (0 kPa), cosmic radiation (~230–380 mSv/yr).</p>
     </div>
   </div>
-  <div class="formula">Combined = 0.60·S_ind + 0.40·S_dep (RidgeCV / RandomForest / PCA + 95% CI)  |  30 m Scale: W1 (m, °) + D_KS + 2D Block Bootstrap (95% CI)</div>
+  <div class="formula">30 m Comparison: Wasserstein-1 (W1 in ° & m) + Kolmogorov–Smirnov (D_KS) + 2D Block Bootstrap (95% CI)</div>
   <div class="card" style="margin-top:8px;">
-    <div class="card-title">Precision NASA & Partner Open Datasets (SPD-41a / FAIR Compliant)</div>
-    <div class="source-row"><span class="badge">NASA Planetary (Measured & Orbital)</span><span>NASA MRO CTX / USGS Mars 2020 TRN CTX DEM Mosaic (20 m → 30 m), Perseverance MEDA, Curiosity REMS & RAD (~230 mSv/yr), LRO LOLA & Diviner, MGS MOLA, NASA Trek WMTS, NSSDCA Fact Sheet.</span></div><div class="source-row"><span class="badge">NASA & Earth Partners (30 m & Global)</span><span>ESA Copernicus DEM GLO-30 (30 m UTM 19S · DLR/Airbus/ESA), NASA POWER v2.5, Earthdata CMR/GIBS, Open-Meteo ERA5-Land, ISRIC SoilGrids v2.0, Macrostrat, CSA RADARSAT, JAXA.</span></div>
+    <div class="card-title">Official Open Data Used (NASA & Partners)</div>
+    <div class="source-row"><span class="badge">Mars & Moon</span><span>NASA MRO CTX DEM (Jezero 20m→30m), Perseverance MEDA, Curiosity REMS/RAD, LRO LOLA/Diviner, Trek WMTS, NSSDCA.</span></div><div class="source-row"><span class="badge">Antofagasta</span><span>ESA Copernicus DEM GLO-30 (UTM 19S at 30 m · DLR/Airbus/EU/ESA), NASA POWER v2.5, ERA5-Land, SoilGrids, Macrostrat.</span></div>
   </div>
-  <div class="footer"><span>Ckepi · 4 / 7</span><span>03 · CAUSAL DECOMPOSITION (X → Y ∥ B) & PRECISION NASA OPEN DATA</span></div>
+  <div class="footer"><span>Ckepi · 4 / 7</span><span>03 · THE METHOD & REAL NASA DATA</span></div>
 </section>
 
 <!-- SLIDE 5 -->
 <section class="slide" style="background-image: url('file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/slide5_hallazgo_ppt_bg.png');">
   <div class="topbar">
     <div>
-      <div class="kicker">04 · REAL 30 m DEM PROOF: WHAT MATCHES, WHAT FAILS & WHY (B)</div>
-      <h2>Real 30 m Comparison: Jezero Crater (Mars CTX DEM) ↔ Antofagasta (Copernicus GLO-30)</h2>
+      <div class="kicker">04 · THE FINDING IN ANTOFAGASTA (REAL 30 m DATA)</div>
+      <h2>Jezero Crater (Mars, 1.70° slope) vs. 4 Real Zones in Antofagasta (6×6 km at 30 m)</h2>
     </div>
     <img class="brand-logo-sm" src="file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/ckepi-horizontal-color-dark.png" alt="CKEPI Logo" />
   </div>
   <div class="grid-2">
     <div class="card">
-      <div class="card-title ok">Real 30 m DEM (6×6 km, 2D Block Bootstrap) & H3 Verification</div>
-      <div class="metrics-grid"><div class="metric"><div class="m-label">✅ Positive Match (Cell 83b224fffffffff)</div><div class="m-val">W1 = 0.54° [95% CI 0.40°–0.65°], D_KS = 0.15</div></div><div class="metric"><div class="m-label">✅ Scale Sensitivity (30 m → 60 m → 90 m)</div><div class="m-val">W1 = 0.54° (30m) · 0.40° (60m) · 0.27° (90m)</div></div><div class="metric"><div class="m-label">✅ Local Relief Match (30 m Window)</div><div class="m-val">W1 = 1.8 m [95% CI 1.3–2.3 m], D_KS = 0.13</div></div><div class="metric"><div class="m-label">⚖️ Beats Classic Yungay Control (30 m)</div><div class="m-val">Yungay W1 = 3.32° (P90 = 15.11° vs Jezero 4.74°)</div></div><div class="metric"><div class="m-label">❌ Counterexample 1: 83b221fffffffff</div><div class="m-val">W1 = 6.92°, D_KS = 0.67 (Too steep: P50 = 7.89°)</div></div><div class="metric"><div class="m-label">❌ Counterexample 2: 83b225fffffffff</div><div class="m-val">W1 = 1.71°, D_KS = 0.82 (Too flat: P50 = 0.19°)</div></div></div>
+      <div class="card-title ok">What Matches & What Fails at 30 m (Slope W1)</div>
+      <div class="metrics-grid"><div class="metric"><div class="m-label">1. ✅ Pampa Central (Cell 83b224)</div><div class="m-val">W1 = 0.54° [CI 0.40°–0.65°] · 6× closer than Yungay!</div></div><div class="metric"><div class="m-label">   ↳ Multiscale & Relief</div><div class="m-val">Relief W1 = 1.8 m · Holds at 60 m (0.40°) & 90 m (0.27°)</div></div><div class="metric"><div class="m-label">2. ⚖️ Classic Yungay Control</div><div class="m-val">W1 = 3.32° (Steep hills P90 = 15.1°; best for hyper-aridity)</div></div><div class="metric"><div class="m-label">3. ⚠️ Near Yungay (Cell 83b220)</div><div class="m-val">W1 = 3.70° · KS = 0.52 (Hillier than Jezero floor)</div></div><div class="metric"><div class="m-label">4. ❌ Salar Salt Flat (Cell 83b225)</div><div class="m-val">W1 = 1.71° · KS = 0.82 (FAILS: Too flat, P50 = 0.19°)</div></div><div class="metric"><div class="m-label">5. ❌ High Andes / Pajonales (83b221)</div><div class="m-val">W1 = 6.92° · KS = 0.67 (FAILS: Too steep, P50 = 7.89°)</div></div></div>
     </div>
     <div class="card">
-      <div class="card-title copper">Irreducible Physical Gap B (Never Reproducible on Earth · R_break = 0.866)</div>
+      <div class="card-title copper">Physical Limits B (Never Reproducible on Earth)</div>
       <table>
-        <thead><tr><th>Variable</th><th>Mars / Moon</th><th>Earth (Atacama)</th></tr></thead>
-        <tbody><tr><td>Surface Gravity</td><td class="warn">0.38 g (Mars) / 0.166 g (Moon)</td><td>1.00 g (Earth · 2.6× Mars / 6× Moon)</td></tr><tr><td>Atmosphere / Pressure</td><td class="warn">~0.6 kPa CO2 (~6–8 mbar) / 0 kPa</td><td>101.3 kPa N2/O2 (~80.7 kPa at 2,450 m)</td></tr><tr><td>Ionizing Radiation</td><td class="warn">~230 mSv/yr (Mars RAD) / ~380 (Moon)</td><td>~2.4 mSv/yr Earth (~96×–158× higher)</td></tr><tr><td>Thermal Swing (ΔT)</td><td class="warn">-59 to -65 °C Mars / ΔT ~290 K Moon</td><td>15 °C mean Earth (ΔT ~28 K Atacama)</td></tr></tbody>
+        <thead><tr><th>Variable</th><th>Mars / Moon</th><th>Antofagasta (Earth)</th></tr></thead>
+        <tbody><tr><td>10 kg Backpack</td><td class="warn">3.8 kg Mars (0.38 g) / 1.7 kg Moon (0.166 g)</td><td>10.0 kg Earth (1.00 g)</td></tr><tr><td>Air Pressure</td><td class="warn">~0.6 kPa CO2 Mars / 0 kPa Moon</td><td>101.3 kPa Earth</td></tr><tr><td>Radiation</td><td class="warn">~230 mSv/yr Mars / ~380 Moon</td><td>~2.4 mSv/yr Earth</td></tr><tr><td>Temperature</td><td class="warn">-59 to -65 °C Mars / ΔT ~290 K Moon</td><td>15 °C Earth mean</td></tr></tbody>
       </table>
     </div>
   </div>
-  <div class="honesty-box">H3 Macro Match (Yungay 82b227fffffffff): Aridity 0.982, Albedo 0.766, Combined 0.319 [0.255–0.383]. Valid in Atacama: optical/albedo calibration & 30 m rover mobility. Invalid outdoors: parachutes, convective heat, GCR shielding. Pre-selection only, not safety certification.</div>
-  <div class="footer"><span>Ckepi · 5 / 7</span><span>04 · REAL 30 m DEM PROOF: WHAT MATCHES, WHAT FAILS & WHY (B)</span></div>
+  <div class="honesty-box">Result: Pampa Central (83b224) is pre-selected to test rover wheels, suspension & cameras on Jezero-like slopes. Yungay remains best for hyper-arid astrobiology. We pre-select sites for field study; we never certify mission safety.</div>
+  <div class="footer"><span>Ckepi · 5 / 7</span><span>04 · THE FINDING IN ANTOFAGASTA (REAL 30 m DATA)</span></div>
 </section>
 
 <!-- SLIDE 6 -->
 <section class="slide" style="background-image: url('file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/slide6_araucana_ppt_bg.png');">
   <div class="topbar">
     <div>
-      <div class="kicker">05 · CAJA LA ARAUCANA 4 STRATEGIC AXES, UN SDGs & SUSTAINABILITY</div>
-      <h2>Territorial Impact from Antofagasta & Open-Science Sustainability Hypothesis</h2>
+      <div class="kicker">05 · LOCAL IMPACT IN ANTOFAGASTA · CAJA LA ARAUCANA & UN SDGs</div>
+      <h2>4 Caja La Araucana Pillars, Regional Jobs & Open Sustainability</h2>
     </div>
     <img class="brand-logo-sm" src="file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/ckepi-horizontal-color-dark.png" alt="CKEPI Logo" />
   </div>
   <div class="grid-2" style="flex:1; align-items:center;">
     <div class="card" style="height:100%;">
-      <div class="card-title sulfur">4 Caja La Araucana Objectives & Verified UN SDGs</div>
-      <ul><li>1. Democratize Frontier Science (SDG 4.3): Free browser access + voice-guided ‘Three Worlds for Everyone’ mode for students, families, and seniors.</li><li>2. STEAM Skills & Employability (SDG 4.4, 8): Open Python/FastAPI/DuckDB/H3/React stack with real orbital telemetry for technical & university training.</li><li>3. Local Territorial Application (SDG 9.5, 10, 13): Identifies new under-characterized Antofagasta sites (Cell 83b224fffffffff beats classic Yungay at 30 m).</li><li>4. Interregional Innovation Network ‘Lattices’ (SDG 17.3, 17.16, 17.17): Connects Antofagasta with universities, schools, libraries, and global open science.</li></ul>
+      <div class="card-title sulfur">4 Caja La Araucana Axes & Antofagasta Jobs</div>
+      <ul><li>1. Science for All (SDG 4.3): Free cardboard-worlds mode with pictograms and voice for schools, families, and seniors.</li><li>2. STEAM & Local Jobs (SDG 4.4, 8): Trains geomatics, statistics, and NASA data skills for 3 real Antofagasta sectors: Mining Robotics, Astronomical Observatories, and Solar Energy.</li><li>3. Local Application (SDG 9.5, 10, 13): Puts 4 Antofagasta zones on the map and discovers Pampa 83b224 at 30 m.</li><li>4. Interregional Network ‘Lattices’ (SDG 17.3, 17.16, 17.17): Connects Antofagasta (UCN, UA, schools) with other regions.</li></ul>
     </div>
     <div class="card" style="height:100%;">
-      <div class="card-title copper">Sustainability Model (Hypothesis to Validate) & Roadmap</div>
-      <ul><li>100% Free & Open Core (Apache License 2.0): Web platform, datasets, and educational mode remain permanently free without login.</li><li>Institutional Hypothesis (To Validate): Municipalities, libraries, universities, and social funds sponsor guided STEAM workshops, print card kits, and regional site reports (no unverified revenue or signed contracts claimed).</li><li>Engineering Roadmap: Complete remaining 1,403 Res-3 ERA5 cells (10,000/11,403 cached), expand 30 m CTX/LOLA strips, and run school/community trials.</li></ul>
+      <div class="card-title copper">Sustainability (Hypothesis to Validate)</div>
+      <ul><li>100% Free Public Core (Apache 2.0): Web app and educational mode stay permanently free with no login.</li><li>Institutional Hypothesis: Municipalities, libraries, and universities fund guided STEAM workshops, printable kits, and regional terrain reports (no unverified revenue claimed).</li><li>Next Step: Field-validate Pampa 83b224 with university rover prototypes and local schools.</li></ul>
     </div>
   </div>
-  <div class="footer"><span>Ckepi · 6 / 7</span><span>05 · CAJA LA ARAUCANA 4 STRATEGIC AXES, UN SDGs & SUSTAINABILITY</span></div>
+  <div class="footer"><span>Ckepi · 6 / 7</span><span>05 · LOCAL IMPACT IN ANTOFAGASTA · CAJA LA ARAUCANA & UN SDGs</span></div>
 </section>
 
 <!-- SLIDE 7 -->
 <section class="slide" style="background-image: url('file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/slide7_creditos_ppt_bg.png');">
   <div class="topbar">
     <div>
-      <div class="kicker">06 · OPEN SCIENCE LEGAL CREDITS, BRAND V2 & MANDATORY AI DISCLOSURE</div>
-      <h2>Full Legal Attribution (SPD-41a / FAIR), Brand V2 & AI Watermarking</h2>
+      <div class="kicker">06 · OPEN SCIENCE CREDITS, BRAND V2 & AI DISCLOSURE</div>
+      <h2>Legal Attribution (SPD-41a / FAIR) & Transparent AI Watermarking</h2>
     </div>
     <img class="brand-logo-sm" src="file:///home/dani/proyectos/Ckepi/docs/nehe/brand_and_backgrounds/ckepi-horizontal-color-dark.png" alt="CKEPI Logo" />
   </div>
   <div class="grid-2">
     <div class="card">
-      <div class="card-title sulfur">Legal Open Science Citations & Brand Identity V2 ('Salt, Copper & Sulfur')</div>
-      <p style="font-size:12px; line-height:1.4;">• Code License: Apache License 2.0 (OSI-approved).<br/>• NASA Open Data (17 U.S.C. § 105 Public Domain, text credit only, zero NASA logos): MRO CTX / USGS Mars 2020 TRN DEM (20 m), Mars 2020 MEDA, MSL REMS/RAD, LRO LOLA/Diviner, MGS MOLA, NASA POWER v2.5, NASA Trek WMTS, NSSDCA.<br/>• Partner Data: ESA Copernicus DEM GLO-30 (© DLR e.V. 2010-2014 & Airbus Defence and Space GmbH 2014-2018 under COPERNICUS by EU & ESA), ERA5-Land, ISRIC SoilGrids v2.0 (CC BY 4.0), Macrostrat (CC BY 4.0).<br/>• Typography, Icons & Brand V2: System UI Stack + JetBrains Mono (SIL OFL 1.1) + Lucide Icons (ISC/MIT). Brand V2 Palette: Mineral Night #101F24, Rock Ink #183A3A, Warm Salt #FFF2D7, Pale Sulfur #E4ED83, Light Copper #E8A080.</p>
+      <div class="card-title sulfur">Open Science Legal Credits & Brand V2 ('Salt, Copper & Sulfur')</div>
+      <p style="font-size:12.5px; line-height:1.42;">• Code: Apache License 2.0 · Zero NASA or third-party logos.<br/>• NASA Open Data (17 U.S.C. § 105): MRO CTX DEM (USGS 20m), Mars 2020 MEDA, MSL REMS/RAD, LRO LOLA/Diviner, MGS MOLA, NASA POWER v2.5, Trek WMTS, NSSDCA.<br/>• Partner Data: ESA Copernicus DEM GLO-30 (© DLR 2010-2014 & Airbus 2014-2018 under COPERNICUS by EU & ESA), ERA5-Land, SoilGrids (CC BY 4.0), Macrostrat (CC BY 4.0).<br/>• Fonts & Brand V2: Self-hosted Public Sans (USWDS/OFL) & IBM Plex Mono (OFL) + custom SVG pictograms. Colors: #101F24, #183A3A, #FFF2D7, #E4ED83, #E8A080.</p>
     </div>
     <div class="card">
-      <div class="card-title copper">Complete AI (Super Intelligence) & Watermark Declaration (AI_DISCLOSURE.md)</div>
-      <p style="font-size:12px; line-height:1.4;">• 100% Human Scientific Conception: Causal decomposition (X → Y ∥ B), 30 m DEM statistical pipeline, and territorial thesis are 100% original human work.<br/>• Code & i18n Assistance: Claude Code, OpenAI Codex/GPT, and Gemini assisted with code, tests, docs, and ES/PT/EN parity (842 keys) under human verification.<br/>• Visual AI & Mandatory Visible Watermarks: Scientific maps, 3D globes, DEM plots, and the app's vector logo (ckepi-*-vector-dark.svg) contain ZERO generative AI. The 12 decorative paper-cut backgrounds & raster paper symbol (OpenAI image_gen via Codex) display ‘AI-generated · Ckepi’, and the Home intro video (Google Gemini) displays a persistent ‘AI-generated video’ watermark.</p>
+      <div class="card-title copper">Super Intelligence (AI) & Watermark Disclosure (AI_DISCLOSURE.md)</div>
+      <p style="font-size:12.5px; line-height:1.42;">• 100% Human Scientific Conception: X → Y ∥ B model, 30 m DEM statistical proof, and Antofagasta findings are 100% human work.<br/>• Code & i18n Assistance: Claude Code, OpenAI Codex/GPT, and Google Antigravity assisted with code, tests, and ES/PT/EN parity (1,052 keys) under human review.<br/>• Visual AI & Mandatory Watermarks: Scientific maps, 3D globes, DEM plots, and the in-app vector logo contain ZERO generative AI. Decorative paper-cut backgrounds/symbol display ‘AI-generated · Ckepi’, and the Home intro video displays ‘AI-generated video’.</p>
     </div>
   </div>
-  <div class="card" style="text-align:center; font-size:13px; color:#FFF2D7; padding:9px 14px;">Public Repo: https://github.com/AnGeMoNs/Ckepi  ·  Docs & 30 m Proof: docs/nehe/ & docs/RESULTADOS_TERRENO_REALES.md  ·  Team: Lattices (Antofagasta)</div>
-  <div class="closing">“With Ckepi, a resemblance sparks curiosity; 30-meter scientific evidence teaches us how far it truly goes.”</div>
-  <div class="footer"><span>Ckepi · 7 / 7</span><span>06 · OPEN SCIENCE LEGAL CREDITS, BRAND V2 & MANDATORY AI DISCLOSURE</span></div>
+  <div class="card" style="text-align:center; font-size:13.5px; color:#FFF2D7; padding:9px 14px;">GitHub: https://github.com/AnGeMoNs/Ckepi  ·  Docs & 30 m Proof: docs/nehe/  ·  Lattices Team (Antofagasta, Chile)</div>
+  <div class="closing">“With Ckepi, a resemblance sparks curiosity; 30-meter evidence in Antofagasta teaches us how far it goes.”</div>
+  <div class="footer"><span>Ckepi · 7 / 7</span><span>06 · OPEN SCIENCE CREDITS, BRAND V2 & AI DISCLOSURE</span></div>
 </section>
 
 </body>

@@ -81,7 +81,7 @@ async function fetchApiResponse(url: string, init?: RequestInit): Promise<Respon
         throw err;
       }
     }
-    throw new ApiClientError("errors.unknown_error");
+    throw new ApiClientError(response.status >= 500 ? "errors.analysis_server_error" : "errors.unknown_error");
   }
 
   return response;

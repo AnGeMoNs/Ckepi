@@ -14,6 +14,8 @@
     "mobileMenuLabel": "Preferências"
   },
   "controls": {
+    "analysisErrorDescription": "O serviço não retornou um resultado válido. Use Tentar novamente; a falha não indica filtros muito restritivos.",
+    "mapLoadingDescription": "Preparando o mapa e os resultados da análise…",
     "targetSite": "Alvo Planetário (ROI)",
     "modelType": "Modelo de Decomposição",
     "modelTypeHint": "Algoritmo estatístico (Ridge ou Random Forest) que infere quais variáveis do terreno dirigem as respostas ambientais.",
@@ -57,8 +59,8 @@
     "retry": "Tentar novamente",
     "dataSources": "Fontes de dados",
     "lastUpdated": "Análise atualizada",
-    "refreshApis": "Atualizar APIs ao vivo",
-    "refreshing": "Sincronizando com NASA e Open-Meteo...",
+    "refreshApis": "Atualizar análise",
+    "refreshing": "Atualizando a análise…",
     "shareLink": "Compartilhar link",
     "copiedLink": "Copiado!",
     "penalizeEstimated": "Penalizar alvos planetários estimados no ranking (pontuação ajustada por confiança)",
@@ -67,7 +69,7 @@
     "drawerTitle": "Configuração da missão",
     "updating": "Atualizando resultados…",
     "actionsGroup": "Ações",
-    "refreshedToast": "Datasets e análise atualizados.",
+    "refreshedToast": "Análise atualizada com o catálogo disponível.",
     "exportedToast": "Arquivo exportado com sucesso.",
     "dismissToast": "Fechar notificação",
     "emptyTitle": "Nenhum análogo atende aos limites atuais",
@@ -189,6 +191,7 @@
     "legendEstimated": "Ponto sondado (Estimado)"
   },
   "confidence": {
+    "mars_curated_proxy": "A meteorologia deste destino usa observações de Curiosity/REMS em Gale como proxy regional. Não são medições locais de Jezero ou Arcadia nem dados MEDA; os valores ambientais são estimativas. A comparação DEM de Jezero mantém a sua fonte própria.",
     "title": "Confiança dos Dados e Cobertura Instrumental",
     "unknownSite": "Local rastreado mais próximo",
     "iauFeatureBadge": "UAI: {{name}} ({{elev}} m)",
@@ -337,6 +340,8 @@
     }
   },
   "map": {
+    "interfaceOptions": "Opções do mapa",
+    "inspectSelected": "Ver ficha da célula",
     "title": "Malha Global H3 de Análogos Terrestres",
     "subtitle": "Clique ou toque em um hexágono H3 ou cartão para inspecionar seu perfil desacoplado e diagnóstico de missão.",
     "legendHigh": "Alta similaridade (≥ 75%)",
@@ -433,7 +438,7 @@
         "discovery": "Descobertas",
         "benchmark": "Benchmarks",
         "pareto": "Ótimos Pareto",
-        "pinned": "Fixadas ★"
+        "pinned": "Fixadas"
       },
       "scoreBandLabel": "Faixa de %",
       "scoreBand": {
@@ -450,7 +455,7 @@
     },
     "nav": {
       "returnToPrevPage": "↩ Voltar à pág. {{page}}",
-      "goToSelectedCellPage": "📍 Ir à célula ativa (Pág. {{page}})",
+      "goToSelectedCellPage": "Ir à célula ativa (Pág. {{page}})",
       "recentPagesLabel": "Vistas recém:",
       "jumpToPageLabel": "Ir à pág.",
       "jumpButton": "Ir",
@@ -535,9 +540,9 @@
       "includedInReport": "Incluído automaticamente ao exportar Relatório (.md)"
     },
     "dimensions": {
-      "title": "8 Dimensões do Desafio e Processos Físicos",
+      "title": "Comparação por variáveis físicas",
       "subtitle": "Como esta célula terrestre se compara em cada dimensão de exploração além da aparência visual",
-      "badge": "Auditoria Multidimensional",
+      "badge": "Dados desta célula",
       "geologyProcess": "Intemperismo do regolito e mineralogia",
       "geologyFallback": "Albedo {{albedo}} · IT {{ti}} J·m⁻²·K⁻¹·s⁻¹/²",
       "terrainProcess": "Estabilidade de encostas, crateras e relevo DEM",
@@ -653,6 +658,7 @@
     "probed_location": "Avaliação Satelital ao Vivo"
   },
   "errors": {
+    "analysis_server_error": "O serviço de análise não conseguiu concluir a solicitação. Tente novamente em instantes.",
     "site_not_found": "Local planetário não encontrado: {{site_id}}",
     "timeseries_not_found": "Nenhuma série temporal encontrada para: {{site_id}}",
     "cell_not_found": "Célula terrestre H3 não encontrada: {{h3_index}}",
@@ -718,7 +724,7 @@
     "backToCompare": "Voltar para Comparar",
     "continueToPlan": "Ir para Planejar",
     "viewEvidence": "Ver Evidência Científica",
-    "focusAtacama": "📍 Comparar com Atacama",
+    "focusAtacama": "Comparar com Atacama",
     "globalLabel": "Alcance global",
     "locationLabel": "Localização específica",
     "skipToContent": "Pular para o conteúdo principal",
@@ -959,6 +965,88 @@
       "engineering": "Engenharia espacial",
       "curiosities": "Curiosidades planetárias"
     },
+    "day": "De dia",
+    "night": "De noite",
+    "zone": {
+      "pampa": "Pampa de Antofagasta",
+      "yungay": "Yungay"
+    },
+    "scale": {
+      "very": "Muito parecido",
+      "some": "Algo parecido",
+      "not": "Pouco parecido"
+    },
+    "mars": {
+      "what": {
+        "title": "Isto é Marte",
+        "text": "Um robô chamado Perseverance percorre a cratera Jezero buscando sinais de vida antiga."
+      },
+      "similar": {
+        "title": "O solo se parece com o nosso?",
+        "text": "Medimos o quão inclinado é o solo em Jezero e em Antofagasta, com dados da NASA. Toque cada lugar.",
+        "pampa": "A pampa de Antofagasta tem um solo muito parecido com o de Jezero.",
+        "yungay": "Yungay, o lugar mais famoso, se parece menos do que se pensava.",
+        "source": "Diferença de inclinação: {{value}}° (dados da NASA e da ESA)"
+      },
+      "different": {
+        "title": "O que é diferente?",
+        "text": "Há coisas que a Terra não consegue imitar.",
+        "extra": "Além disso, em Marte o ar é muito rarefeito e há muito mais radiação."
+      },
+      "why": {
+        "title": "Para que serve saber isso?",
+        "text": "Antes de mandar um robô a Marte, ele é testado na Terra. Saber onde o solo se parece ajuda a escolher o melhor lugar para testá-lo.",
+        "items": [
+          "Testar rodas e câmeras de robôs aqui",
+          "Gastar menos e arriscar menos",
+          "Aprender ciência com o nosso deserto"
+        ]
+      }
+    },
+    "moon": {
+      "what": {
+        "title": "Isto é a Lua",
+        "text": "Vários países planejam construir bases no polo sul da Lua."
+      },
+      "similar": {
+        "title": "O que se parece?",
+        "text": "Nos dois lugares há muito sol e quase nada de água. Mas veja a temperatura: toque dia e noite.",
+        "note": "Temperaturas aproximadas calculadas com dados da NASA e do clima de Antofagasta."
+      },
+      "different": {
+        "title": "O que é diferente?",
+        "text": "Na Lua não há ar para respirar e tudo pesa muito menos.",
+        "extra": "Além disso, a Lua não tem um escudo contra a radiação do espaço."
+      },
+      "why": {
+        "title": "Para que serve saber isso?",
+        "text": "Uma base na Lua vai precisar de energia do sol e de equipamentos que aguentem a poeira e a secura. Isso pode ser testado aqui primeiro.",
+        "items": [
+          "Testar painéis solares",
+          "Testar equipamentos contra a poeira",
+          "Treinar antes da viagem"
+        ]
+      }
+    },
+    "earth": {
+      "what": {
+        "title": "Isto é Antofagasta",
+        "text": "É um dos desertos mais secos do mundo. Por isso se parece com outros mundos."
+      },
+      "zones": {
+        "title": "Medimos quatro áreas",
+        "text": "Comparamos o solo de quatro áreas da região com o de Marte. Esta é a lista, da mais à menos parecida."
+      },
+      "why": {
+        "title": "Para que serve?",
+        "text": "Aprender a medir o terreno com dados da NASA abre ofícios de que a região precisa.",
+        "items": [
+          "Ler mapas do terreno",
+          "Trabalhar com dados e robôs",
+          "Mostrar o nosso deserto ao mundo"
+        ]
+      }
+    },
     "hubLabel": "Laboratórios Interativos",
     "subtabs": {
       "siteLab": "Lab. Física do Local e Gravidade",
@@ -970,12 +1058,12 @@
     "title": "Planejar — Ficha de Ensaio Local e Economia Circular",
     "subtitle": "Transforme a evidência comparativa em uma proposta preliminar de ensaio responsável, priorizando equipamentos reutilizáveis e limites explícitos.",
     "exportBtn": "Exportar ficha (.md)",
-    "circularTitle": "Lista de equipamentos reutilizáveis / empréstimo (ODS 12)",
+    "circularTitle": "Lista de equipamentos reutilizáveis / empréstimo",
     "circularNote": "Lista de planejamento para incentivar reutilização e empréstimo entre escolas/universidades. Não representa inventário verificado.",
     "noEquipmentSelected": "Nenhum equipamento selecionado",
     "limitsTitle": "Limites físicos irreproduzíveis e alcance",
     "limitsNote": "Esta ficha é educativa/preliminar: não certifica terrenos, não substitui licenças nem valida viabilidade de missão espacial real.",
-    "collaborationTitle": "Parcerias e transferência local (ODS 17)",
+    "collaborationTitle": "Parcerias e transferência local",
     "collaborationNote": "Projetado para replicação em nós educativos e universitários sem coletar dados pessoais.",
     "costsPending": "Pendente de cotação local",
     "notesPlaceholder": "Registre observações de campo, precauções de segurança ou dúvidas para o ensaio...",
@@ -1004,17 +1092,17 @@
     "presetsLabel": "Modelos rápidos de ensaio",
     "presets": {
       "rover": {
-        "label": "🤖 Tração de rover",
+        "label": "Tração de rover",
         "title": "Ensaio de tração e inclinação em solo árido",
         "objective": "Medir deslizamento de rodas e inclinação com IMU comparando uma célula H3 do Atacama com as inclinações de Jezero."
       },
       "thermal": {
-        "label": "🌡️ Sensores térmicos",
+        "label": "Sensores térmicos",
         "title": "Registro de amplitude térmica e albedo superficial",
         "objective": "Comparar a variação térmica diurna e radiação solar em terreno hiperárido para calibrar sensores de baixo custo."
       },
       "steam": {
-        "label": "🎓 Oficina escolar STEAM",
+        "label": "Oficina escolar STEAM",
         "title": "Atividade prática de física planetária e análogos",
         "objective": "Demonstrar massa vs peso, inclinação segura e limites físicos irreproduzíveis usando dados abertos da NASA."
       }
@@ -1056,6 +1144,16 @@
       "copernicus": "Elevação, inclinação, rugosidade (DEM 90m) e séries climáticas ERA5-Land.",
       "partners": "Propriedades de solo, litologia Macrostrat e catálogos Sentinel/RADARSAT/G-Portal."
     },
+    "sdgTitle": "Integração de ODS (Proposta educativa e científica)",
+    "sdgHonestyNote": "Nota de rigor: os ODS abaixo refletem a proposta de produto e metas de referência; indicadores de impacto só são reportados quando medidos.",
+    "sdg4Title": "ODS 4 — Educação de qualidade (Metas 4.3 e 4.4) [Principal]",
+    "sdg4Desc": "Laboratório de física planetária, unidades SI, equações explícitas e minidesafios STEAM conectados a dados reais.",
+    "sdg9Title": "ODS 9 — Indústria, inovação e infraestrutura (Meta 9.5) [Principal]",
+    "sdg9Desc": "Comparação geoespacial reproduzível, decomposição causal transparente e planejamento de ensaios de rovers/sensores.",
+    "sdg12Title": "ODS 12 — Consumo e produção responsáveis (Meta 12.5) [Complementar]",
+    "sdg12Desc": "Abordagem de economia circular no planejamento de ensaios via empréstimo e reutilização de equipamentos.",
+    "sdg17Title": "ODS 17 — Parcerias e meios de implementação (Metas 17.3, 17.16, 17.17) [Complementar]",
+    "sdg17Desc": "Arquitetura aberta e replicável entre comunidades educativas e pesquisa regional.",
     "aiDisclosureTitle": "Declaração de uso de IA (AI_DISCLOSURE.md)",
     "aiDisclosureDesc": "A concepção científica (decomposição X → Y / B em malha H3) é humana. Assistentes de IA apoiaram implementação, refatoração e paridade trilíngue es/pt/en, revisadas pela equipe."
   },
@@ -1239,7 +1337,7 @@
       "backpack": "Mochila de 10 kg parece pesar 1,7 kg (0,166 g).",
       "air": "Vácuo extremo (0 mbar): sem som, sem vento e sem paraquedas possíveis.",
       "dayAndTemp": "Dia solar: ~29,5 dias terrestres · Amplitude térmica extrema (>260 K).",
-      "radiation": "Radiação superficial: ~380 mSv/ano sem escudo magnético."
+      "radiation": "Radiação cósmica na superfície: ~380 mSv/ano no mínimo solar (~110 no máximo), estimada por simulação (Reitz et al. 2012)."
     },
     "mars": {
       "name": "Marte (Cratera Jezero / Gale)",
@@ -1301,6 +1399,7 @@
     "dataNote": "Exemplo real: uma área pouco estudada de Antofagasta se parece com as encostas da cratera Jezero mais do que o análogo clássico, Yungay (W₁ = 0,54° vs. 3,32°, a 30 m). Pré-selecionamos lugares para estudar; não os certificamos.",
     "aiBadge": "Vídeo gerado com IA",
     "credits": "Dados: NASA, ESA e agências parceiras. O Ckepi não é afiliado nem endossado pela NASA.",
+    "aiImageBadge": "Ilustração gerada com IA · Ckepi",
     "ctaStudent": "Explorar como Estudante",
     "ctaScientist": "Modo Científico"
   },
@@ -1331,6 +1430,655 @@
       "title": "O que a Terra não consegue imitar",
       "body": "Em Marte a gravidade é 0,38 vez a da Terra, o ar é cerca de 160 vezes mais rarefeito e a radiação é muito maior. Nenhum deserto reproduz isso. Por isso o CKEPI pré-seleciona lugares para estudo em campo; não os certifica."
     }
+  },
+  "worlds": {
+    "title": "Três mundos, dados reais",
+    "subtitle": "Terra, Lua e Marte lado a lado. Cada valor vem da API com sua origem.",
+    "earth": "Terra",
+    "moon": "Lua",
+    "mars": "Marte",
+    "rows": {
+      "gravity": "Gravidade",
+      "pressure": "Pressão do ar",
+      "radiation": "Radiação",
+      "temperature": "Temperatura média",
+      "thermalSwing": "Variação dia–noite",
+      "slope": "Declividade"
+    },
+    "notReproducible": "A Terra não reproduz",
+    "origin": {
+      "measured": "medido",
+      "derived": "derivado",
+      "model": "modelo",
+      "constant": "constante",
+      "default": "padrão"
+    },
+    "sourcesNote": "Terra: célula H3 selecionada (NASA POWER, Copernicus DEM, ERA5-Land). Lua e Marte: NASA PDS (LRO, REMS, MEDA) e valores de referência; as barras de pressão e radiação usam escala logarítmica.",
+    "terrainTitle": "Terreno medido a 30 m",
+    "terrainLead": "Diferença de declividades com Marte (Wasserstein-1)",
+    "ci": "IC 95 %: {{low}}°–{{high}}°",
+    "controlCompare": "Yungay, o análogo clássico: {{value}}°",
+    "legendMars": "Marte",
+    "legendEarth": "Terra (célula)",
+    "legendControl": "Yungay",
+    "terrainSources": "DEMs reais: CTX de Jezero (NASA MRO, USGS) e Copernicus GLO-30 (ESA).",
+    "syntheticWarning": "Esta célula ainda não tem DEM real: o histograma é uma simulação, não uma medição.",
+    "openFull": "Ver análise completa",
+    "pickCell": "Escolha uma célula da Terra para comparar seu terreno real com Marte.",
+    "pickAntofagasta": "Ver a célula de Antofagasta"
+  },
+  "worldsHero": {
+    "kicker": "NASA Space Apps 2026 · Antofagasta",
+    "title": "Onde na Terra ensaiamos a Lua e Marte?",
+    "subtitle": "O Ckepi cruza dados abertos da NASA com o deserto de Antofagasta: o que se parece, quanto e o que não. Toque um mundo.",
+    "verdictLabel": {
+      "match": "Sim",
+      "partial": "Em parte",
+      "gap": "Não"
+    },
+    "verdict": {
+      "dryness": "deserto seco e céu limpo",
+      "vacuum": "vácuo: sem ar",
+      "radiation": "radiação espacial",
+      "realDem": "terreno medido com DEMs reais",
+      "local": "laboratório natural local",
+      "network": "rede com outras regiões",
+      "terrain": "declividades do terreno",
+      "cold": "frio e variação dia–noite",
+      "gravityAirRadiation": "gravidade, ar e radiação"
+    },
+    "moon": {
+      "tag": "Base lunar · polo sul",
+      "name": "Lua",
+      "question": "O que do Atacama ajuda a preparar uma base no polo sul lunar?",
+      "hookLabel": "gravidade da Lua (Terra = 1 g)",
+      "cta": "Cruzar Lua ↔ Antofagasta"
+    },
+    "earth": {
+      "tag": "Nosso laboratório",
+      "name": "Antofagasta",
+      "question": "O deserto mais seco do mundo como local de ensaio, medido área por área.",
+      "hookLabel": "áreas medidas com terreno real a 30 m",
+      "cta": "Ver o laboratório local"
+    },
+    "mars": {
+      "tag": "Cratera Jezero",
+      "name": "Marte",
+      "question": "Onde em Antofagasta o terreno se parece com o de Jezero?",
+      "hookLabel": "diferença de declividades com Antofagasta (menor é mais parecido)",
+      "cta": "Cruzar Marte ↔ Antofagasta"
+    }
+  },
+  "crossing": {
+    "close": "Fechar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "done": "Pronto",
+    "stepOf": "Etapa {{n}} de {{total}}",
+    "loading": "Carregando dados reais…",
+    "groups": {
+      "tests": "Para que serve",
+      "skills": "O que você aprende (STEAM)",
+      "jobs": "Onde você poderia trabalhar"
+    },
+    "gaps": {
+      "backpack": "Uma mochila de {{kg}} kg pesaria…"
+    },
+    "mars": {
+      "title": "Marte ↔ Antofagasta",
+      "cross": {
+        "title": "Jezero encontra Antofagasta",
+        "body": "O Perseverance explora a cratera Jezero. Buscamos o lugar de Antofagasta cujo terreno mais se parece com ela, para ensaiar aqui o que irá para lá."
+      },
+      "match": {
+        "title": "O que se parece: as declividades",
+        "body": "Com o modelo de elevação da NASA de Jezero e o terreno real de Antofagasta, na mesma escala de 30 m, uma área pouco estudada se parece mais com Jezero do que o análogo clássico.",
+        "ours": "Área de Antofagasta (83b224)",
+        "classic": "Yungay, o análogo clássico",
+        "legend": "Barras: Marte (cobre), Antofagasta (sal) e Yungay (cinza). Distância Wasserstein-1, menor é mais parecido.",
+        "source": "Dados: CTX DEM de Jezero (NASA MRO, USGS, 20 m) e Copernicus GLO-30 (ESA), janelas de 6 km a 30 m. Uma pré-seleção, não uma certificação."
+      },
+      "gaps": {
+        "title": "O que a Terra não consegue imitar",
+        "body": "Nenhum deserto reproduz a gravidade, o ar rarefeito nem a radiação de Marte. Por isso dizemos o que serve para testar e o que não."
+      },
+      "use": {
+        "title": "Para que serve e o que você aprende",
+        "body": "A semelhança nas declividades permite preparar ensaios concretos, e a mesma comparação ensina habilidades procuradas na região.",
+        "tests": [
+          "Rodas e suspensão de um rover em declividades como as de Jezero",
+          "Navegação com câmeras sobre terreno real",
+          "Planejar rotas antes de ir a campo"
+        ],
+        "skills": [
+          "Ler mapas de elevação (geomática)",
+          "Comparar distribuições com estatística",
+          "Programar com dados abertos da NASA"
+        ],
+        "jobs": [
+          "Robótica e automação na mineração",
+          "Observatórios astronômicos da região",
+          "Energia solar do deserto"
+        ]
+      }
+    },
+    "moon": {
+      "title": "Lua ↔ Antofagasta",
+      "cross": {
+        "title": "O polo sul lunar encontra Antofagasta",
+        "body": "As futuras bases lunares miram o polo sul, com luz rasante e frio extremo. Vemos quais condições do Atacama ajudam a prepará-las."
+      },
+      "match": {
+        "title": "O que se parece em parte",
+        "body": "O Atacama compartilha com a Lua a aridez extrema e a radiação ultravioleta alta, e tem grandes variações de temperatura entre o dia e a noite, embora muito menores que na Lua.",
+        "uv": "Índice UV",
+        "dryness": "Índice de aridez",
+        "note": "Valores do motor do Ckepi (Terra: célula 83b224; Lua: polo sul, Shackleton). Alguns valores lunares são de modelo, não medidos."
+      },
+      "gaps": {
+        "title": "O que a Terra não consegue imitar",
+        "body": "Na Lua não há ar, a gravidade é um sexto da terrestre e a radiação é muito maior. Isso não se ensaia em um deserto."
+      },
+      "use": {
+        "title": "Para que serve e o que você aprende",
+        "body": "A aridez e o céu limpo do Atacama permitem testar parte do equipamento de uma base e ensinam ofícios presentes na região.",
+        "tests": [
+          "Painéis solares com luz intensa e poeira",
+          "Equipamentos que devem resistir à secura extrema",
+          "Comunicações sob céu limpo"
+        ],
+        "skills": [
+          "Física da luz e da temperatura",
+          "Leitura de dados de sondas (LRO)",
+          "Desenho de experimentos"
+        ],
+        "jobs": [
+          "Observatórios astronômicos",
+          "Energia solar",
+          "Engenharia de equipamentos para mineração"
+        ]
+      }
+    },
+    "earth": {
+      "title": "Antofagasta, laboratório natural",
+      "lab": {
+        "title": "Quatro áreas medidas com terreno real",
+        "body": "Comparamos o terreno de quatro áreas da região com a cratera Jezero, na mesma escala de 30 m, para ver qual estudar primeiro.",
+        "cells": {
+          "83b224fffffffff": "Pampa (célula 83b224)",
+          "83b220fffffffff": "Perto de Yungay (83b220)",
+          "83b225fffffffff": "Salar (83b225)",
+          "83b221fffffffff": "Alta cordilheira (83b221)"
+        },
+        "control": "Yungay, o análogo clássico: {{value}}°. Barras menores = terreno mais parecido com Jezero."
+      },
+      "use": {
+        "title": "Para que serve este laboratório",
+        "body": "As áreas medidas de Antofagasta ajudam a preparar ensaios em campo e a aprender com dados reais de missões.",
+        "tests": [
+          "Escolher onde testar a mobilidade de um rover",
+          "Comparar uma área nova com Jezero em minutos",
+          "Levar os dados para uma saída de campo"
+        ],
+        "skills": [
+          "Ler mapas de elevação (geomática)",
+          "Estatística com distribuições completas",
+          "Programar com dados abertos da NASA"
+        ],
+        "jobs": [
+          "Robótica e automação na mineração",
+          "Observatórios astronômicos da região",
+          "Energia solar do deserto"
+        ]
+      }
+    }
+  },
+  "local": {
+    "language": "Idioma",
+    "scienceMode": "Modo ciência",
+    "title": "Onde na Terra nos preparamos para a Lua e Marte?",
+    "lead": "Antes de viajar ao espaço, pratica-se em lugares da Terra parecidos com ele. O deserto de Antofagasta é um deles.",
+    "hint": "Toque um mundo",
+    "atacama": "Antofagasta",
+    "open": {
+      "moon": "Explorar a Lua",
+      "earth": "Explorar Antofagasta",
+      "mars": "Explorar Marte"
+    },
+    "themeToLight": "Mudar para tema claro",
+    "themeToDark": "Mudar para tema escuro"
+  },
+  "legal": {
+    "copernicus": {
+      "produced": "Terrain comparison produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved.",
+      "liability": "The organisations in charge of the Copernicus programme by law or by delegation do not incur any liability for any use of the Copernicus WorldDEM-30."
+    }
+  },
+  "entry": {
+    "choose": "Escolha como entrar",
+    "learn": "Aprender",
+    "research": "Investigar",
+    "learnAria": "Aprender: expedição de papelão com dados reais, para todas as idades",
+    "researchAria": "Investigar: modo ciência com mapas e estatística",
+    "challenge": "Que lugares da Terra se parecem com as futuras bases na Lua e em Marte?",
+    "tagline": "Da imagem à evidência"
+  },
+  "expedition": {
+    "kicker": "Expedição de papelão",
+    "title": "Da imagem à evidência, em três passos",
+    "lead": "Olhar, comparar e investigar com dados reais a 30 m. Começamos pelo que você já conhece: a pampa de Antofagasta.",
+    "levelLabel": "Nível de dificuldade",
+    "levels": {
+      "kid": "1 · Simples",
+      "teen": "2 · Intermediário",
+      "adult": "3 · Técnico"
+    },
+    "pathLabel": "Rota da expedição",
+    "stepOf": "Passo {{n}} de {{total}}",
+    "prev": "Anterior",
+    "next": "Próximo",
+    "finish": "Terminar",
+    "loading": "Carregando dados reais…",
+    "error": "Não foi possível carregar os dados desta expedição.",
+    "preselection": "É uma pré-seleção para estudar em campo, não uma certificação: nenhum lugar da Terra é igual a Marte.",
+    "done": {
+      "title": "Expedição completa!",
+      "text": "Você olhou, comparou e investigou. É assim que a ciência trabalha: com evidência e dizendo também o que ainda não sabemos.",
+      "science": "Ir para o modo ciência",
+      "restart": "Começar de novo"
+    },
+    "steps": {
+      "observe": {
+        "name": "Observar",
+        "title": "Duas paisagens, lado a lado",
+        "text": {
+          "kid": "Você já olhou a pampa pela janela do ônibus? Ela é quase plana, com colinas suaves. Agora olhe a cratera Jezero, em Marte. O que parece igual? O que é diferente?",
+          "teen": "A ciência começa observando com calma. Aqui está um corte de 6 km da pampa, medido por satélite, e outro da cratera Jezero, onde trabalha o rover Perseverance. Os dois usam a mesma escala: um ponto a cada 30 m.",
+          "adult": "Toda pesquisa começa pela observação. Os dois perfis vêm de modelos de elevação reais na mesma resolução de 30 m: Copernicus GLO-30 (ESA) para a pampa e o DEM CTX de Jezero (NASA MRO, USGS). Observar antes de medir evita conclusões precipitadas."
+        },
+        "job": "No trabalho, este passo é feito por um/a geólogo/a.",
+        "pampa": "A pampa · célula 83b224 (Copernicus, 30 m)",
+        "jezero": "Cratera Jezero, Marte (CTX, 30 m)",
+        "scale": "Cortes reais de 6 km com a mesma escala vertical (altura relativa em metros).",
+        "peak": "desnível do corte: {{m}} m"
+      },
+      "measure": {
+        "name": "Medir",
+        "title": "O que é uma declividade?",
+        "text": {
+          "kid": "Incline a tábua de papelão. Se você levantar muito, fica difícil subir de bicicleta. Essa inclinação se chama declividade e se mede em graus (°). Em Jezero o chão é suave, como uma rampa bem baixinha.",
+          "teen": "A declividade é o ângulo do chão em relação à horizontal. Em Jezero, metade do terreno tem menos de {{jezero}}° (a mediana); na célula 83b224 da pampa, menos de {{pampa}}°. Mova a tábua e veja quanto ela sobe a cada metro.",
+          "adult": "A declividade é calculada em cada célula de 30 m do modelo de elevação. A mediana resume a distribuição: Jezero {{jezero}}°, célula 83b224 {{pampa}}°. Medir igual nos dois mundos, na mesma escala e em graus, é o que torna o resultado comparável."
+        },
+        "job": "No trabalho, este passo é feito por um/a topógrafo/a.",
+        "angle": "Inclinação da tábua: {{deg}}°",
+        "rise": "Sobe {{cm}} cm a cada metro que você avança",
+        "snapJezero": "Jezero · {{deg}}°",
+        "snapPampa": "Pampa · {{deg}}°",
+        "medianNote": "Mediana da declividade a 30 m (DEM reais)."
+      },
+      "compare": {
+        "name": "Comparar",
+        "title": "Dois montes de declividades",
+        "text": {
+          "kid": "Imagine que cada pedacinho de chão é um feijão. Você coloca cada um numa coluna conforme ele é inclinado. Se os dois montes têm a mesma forma, os lugares se parecem na inclinação. O da pampa se parece mais do que o de Yungay!",
+          "teen": "Juntamos todas as declividades de cada lugar em colunas. A distância W₁ diz quantos graus seria preciso «mover» para que um monte fique igual ao outro: menos graus, mais parecido. A célula 83b224 dá {{w1}}°; o clássico Yungay, {{yungay}}°.",
+          "adult": "Comparamos distribuições completas, não médias. W₁ (Wasserstein-1) é medida em graus e seu intervalo de confiança de 95 % vem de um bootstrap espacial por blocos 2D. A célula 83b224 (W₁ {{w1}}°, IC 95 % {{lo}}–{{hi}}°) se parece mais com Jezero do que o análogo clássico Yungay (W₁ {{yungay}}°). Só comparamos declividade."
+        },
+        "job": "No trabalho, este passo é feito por um/a analista de dados.",
+        "pampa": "Pampa · 83b224",
+        "yungay": "Yungay (clássico)",
+        "legendJezero": "Jezero (Marte)",
+        "legendEarth": "Lugar da Terra",
+        "axis": "Declividade (°) →",
+        "result": "W₁ = {{w1}}° (IC 95 % {{lo}}–{{hi}}°)",
+        "resultNoCi": "W₁ = {{w1}}°",
+        "closer": "Menos graus = mais parecido",
+        "winner": "Mais parecida com Jezero em declividade a 30 m, entre as janelas comparadas: a célula 83b224, não o clássico Yungay."
+      },
+      "different": {
+        "name": "O que não se parece",
+        "title": "O que a Terra não consegue imitar",
+        "text": {
+          "kid": "A pampa se parece com Marte no chão, mas não em tudo. Em Marte sua mochila pesaria muito menos, não há ar para respirar e chega muito mais radiação do espaço. E nem toda Antofagasta serve: há lugares muito mais íngremes.",
+          "teen": "Um bom cientista também diz o que NÃO se parece. A gravidade, o ar, a radiação e a variação de temperatura entre o dia e a noite não podem ser copiados ao ar livre na Terra. Compare Marte e a Lua com a pampa.",
+          "adult": "Os casos negativos importam tanto quanto os positivos. A lacuna física irredutível —gravidade, pressão, radiação e oscilação térmica— não se reproduz ao ar livre em nenhum deserto: só pode ser estudada à parte, e em parte. Em terreno, a célula 83b221 (rotulada «Salar de Pajonales») é muito mais acidentada que Jezero."
+        },
+        "job": "No trabalho, este passo é feito por um/a engenheiro/a de ensaios.",
+        "worldLabel": "Escolha um mundo",
+        "mars": "Marte",
+        "moon": "Lua",
+        "gravity": {
+          "label": "Gravidade",
+          "mars": "0,38 g",
+          "moon": "0,166 g",
+          "why": "Uma mochila de 10 kg pareceria ter {{kg}} kg."
+        },
+        "pressure": {
+          "label": "Ar",
+          "mars": "~0,6 kPa de CO₂ (média em Marte)",
+          "moon": "Vácuo: quase 0 kPa",
+          "why": "Na pampa: ~{{kpa}} kPa de ar respirável."
+        },
+        "radiation": {
+          "label": "Radiação",
+          "mars": "~230 mSv/ano, medida pelo Curiosity (Hassler et al. 2014)",
+          "moon": "~380 mSv/ano no mínimo solar (~110 no máximo), simulada (Reitz et al. 2012)",
+          "why": "Média mundial na Terra: ~{{msv}} mSv/ano (UNSCEAR); a atmosfera e o campo magnético nos protegem."
+        },
+        "thermal": {
+          "label": "Dia e noite (ΔT)",
+          "value": "{{dt}} °C de diferença",
+          "why": "Na pampa: ~{{dt}} °C.",
+          "valueModel": "{{dt}} °C de diferença (modelo)"
+        },
+        "lab": "Nada disso se reproduz ao ar livre na Terra: é estudado à parte, em câmaras e laboratórios, e só em parte.",
+        "terrainTitle": "Terreno que também não se parece",
+        "terrain": "Célula 83b221 (rotulada «Salar de Pajonales»): declividade mediana {{median}}° contra {{jezero}}° em Jezero. W₁ = {{w1}}° (IC 95 % {{lo}}–{{hi}}°): muito mais acidentada."
+      },
+      "decide": {
+        "name": "Decidir",
+        "title": "O que dá para testar aqui?",
+        "text": {
+          "kid": "Agora você decide. Toque em cada cartão: dá para testar na pampa, sim ou não?",
+          "teen": "Com o que medimos e o que não se parece, montamos um protocolo: quais testes fazem sentido na célula 83b224 e quais precisam ser feitos em laboratórios especiais.",
+          "adult": "Decidir é transformar evidência em um protocolo de ensaio. A declividade parecida a 30 m faz da célula 83b224 uma candidata para estudar em campo rotas de rover ou drone; a gravidade, a pressão e a radiação obrigam a estudar outros testes em câmaras e laboratórios."
+        },
+        "job": "No trabalho, este passo é feito por um/a operador/a de drones ou de rovers.",
+        "ask": "Dá para testar na pampa?",
+        "yes": "Sim",
+        "no": "Não",
+        "verdictYes": "Candidata para testar aqui (falta verificar em campo)",
+        "verdictNo": "Precisa ser testado em outro lugar",
+        "right": "Bem pensado!",
+        "wrong": "Veja bem:",
+        "routes": "Preparar rotas de rover ou drone sobre declividades parecidas com as de Jezero (pré-seleção a 30 m)",
+        "source": "Protocolo do motor Ckepi para a célula 83b224 + comparação de declividade a 30 m.",
+        "reasons": {
+          "routes": "As declividades a 30 m se parecem com as de Jezero (é preciso verificar em campo).",
+          "baseline_instrument_calibration": "É um deserto seco e limpo: serve para verificar instrumentos antes de ensaios mais exigentes.",
+          "parachute_aerodynamics": "Aqui o ar é muito mais denso que em Marte: um paraquedas frearia de outro jeito.",
+          "convective_thermal_cooling": "Aqui o ar leva o calor embora; em Marte quase não há ar para fazer isso.",
+          "reduced_gravity_kinematics": "Aqui a gravidade é 1 g, não 0,38 g.",
+          "unshielded_gcr_electronics": "A atmosfera e o campo magnético da Terra nos protegem dessa radiação.",
+          "electrostatic_vacuum_dust": "Aqui não há vácuo como na Lua.",
+          "fallback": "Depende de condições que a Terra não reproduz."
+        }
+      }
+    },
+    "stages": {
+      "look": "Olhar",
+      "compare": "Comparar",
+      "investigate": "Investigar"
+    },
+    "listen": "Ouvir",
+    "stopListening": "Parar",
+    "noVoice": "Este navegador não tem voz disponível; o texto diz o mesmo.",
+    "sourceLabel": "Ver a fonte",
+    "retry": "Tentar de novo",
+    "questions": {
+      "title": "Investigar: três perguntas",
+      "q1": {
+        "q": "Que terreno merece ser investigado?",
+        "a": "A célula 83b224 da pampa: entre as janelas comparadas, é a mais parecida com Jezero em declividade (W₁ = {{w1}}°, contra {{yungay}}° de Yungay)."
+      },
+      "q2": {
+        "q": "Para que ensaio preliminar poderia servir?",
+        "a": "Para preparar em campo testes de mobilidade e de instrumentos sobre declividades parecidas, antes dos ensaios em câmaras e laboratórios."
+      },
+      "q3": {
+        "q": "Que informação ainda falta?",
+        "a": "Ir ao local para verificar; comparar mais variáveis além de declividade e relevo; usar janelas maiores que 6 km; e estudar à parte a gravidade, o ar e a radiação."
+      }
+    },
+    "partOf": "{{stage}}: parte {{n}} de {{total}}"
+  },
+  "lab": {
+    "tabs": {
+      "label": "Modo Aprender",
+      "lab": "Explore os três mundos",
+      "mission": "Missão: encontre um análogo"
+    },
+    "title": "Três mundos sobre a mesa",
+    "lead": "Toque na Terra, na Lua ou em Marte. Cada dado é cruzado com os outros dois mundos, com sua unidade e sua fonte.",
+    "selected": "Mundo escolhido: {{world}}",
+    "factsTitle": "A ficha de {{world}}",
+    "openParam": "Comparar {{param}} nos três mundos",
+    "worlds": {
+      "earth": {
+        "name": "Terra",
+        "place": "A pampa de Antofagasta"
+      },
+      "moon": {
+        "name": "Lua",
+        "place": "Polo Sul (Shackleton), futura base"
+      },
+      "mars": {
+        "name": "Marte",
+        "place": "Cratera Jezero"
+      }
+    },
+    "units": {
+      "label": "Unidade",
+      "g": "g",
+      "ms2": "m/s²",
+      "kpa": "kPa",
+      "mbar": "mbar",
+      "atm": "atm",
+      "msvYr": "mSv/ano",
+      "msvDay": "mSv/dia",
+      "c": "°C",
+      "f": "°F",
+      "h": "h",
+      "days": "dias",
+      "cm": "cm",
+      "kg": "kg"
+    },
+    "predict": {
+      "label": "Preveja primeiro",
+      "right": "Boa previsão!",
+      "wrong": "Quase. Veja o resultado:",
+      "again": "Prever de novo",
+      "reveal": "Ver o resultado"
+    },
+    "params": {
+      "gravity": {
+        "tab": "Gravidade",
+        "question": "Se você pula 50 cm na Terra, onde pularia mais alto?",
+        "answer": "moon",
+        "jump": "Pulo: {{cm}} cm",
+        "backpack": "Mochila de 10 kg: parece ter {{kg}} kg",
+        "action": "Pular",
+        "why": "Nenhum deserto muda a gravidade: a tração das rodas e os pulos são testados à parte, em simuladores ou voos parabólicos."
+      },
+      "air": {
+        "tab": "Ar",
+        "question": "Onde resta pelo menos um pouco de ar?",
+        "answer": "mars",
+        "balloon": "Um balão cheio aqui se expandiria {{x}} vezes",
+        "vacuum": "Sem ar: nada segura o balão",
+        "pampa": "Na pampa, na sua altitude: {{v}}",
+        "action": "Levar o balão",
+        "why": "Com tão pouco ar, paraquedas, drones e o resfriamento de equipamentos funcionam de outro jeito. A pampa não reproduz isso.",
+        "reference": "Assim fica o balão cheio aqui: é a referência"
+      },
+      "radiation": {
+        "tab": "Radiação",
+        "question": "Entre a Lua e Marte, onde você receberia menos radiação em um ano?",
+        "answer": "mars",
+        "dots": "Cada ponto = o que uma pessoa recebe na Terra em um ano (~2,4 mSv)",
+        "count": "{{n}} pontos",
+        "action": "Medir um ano",
+        "why": "A atmosfera e o campo magnético nos protegem. Na pampa se testam câmeras e sensores sob sol forte, não a blindagem contra radiação espacial."
+      },
+      "swing": {
+        "tab": "Dia e noite",
+        "question": "Onde a temperatura muda mais entre o dia e a noite?",
+        "answer": "moon",
+        "range": "Diferença dia–noite: {{v}}",
+        "model": "(modelo)",
+        "measured": "(medido)",
+        "action": "Passar um dia",
+        "why": "Os ciclos de calor e frio desgastam baterias e vedações. São testados em câmaras térmicas; a pampa só oferece uma parte."
+      },
+      "day": {
+        "tab": "Duração do dia",
+        "question": "Que dia dura quase o mesmo que o nosso?",
+        "answer": "mars",
+        "length": "Um dia dura {{v}}",
+        "action": "Girar o relógio",
+        "why": "O ritmo de luz e sombra decide quando um painel solar carrega. No polo sul lunar há zonas com sol quase constante e outras sempre na sombra."
+      }
+    },
+    "sources": {
+      "label": "Fonte",
+      "nssdca": "NASA NSSDCA Planetary Fact Sheets (Williams, 2024)",
+      "hassler2014": "Hassler et al. 2014, Science (Curiosity/RAD, medido)",
+      "reitz2012": "Reitz et al. 2012, Planetary and Space Science (simulado, mínimo solar)",
+      "unscear": "Média mundial UNSCEAR",
+      "snapshot": "Dados locais do Ckepi: célula 83b224 (ERA5, NASA POWER), Jezero (MEDA/REMS), Shackleton (modelo)"
+    },
+    "missionCta": "Agora, a missão: encontrar em Antofagasta um lugar parecido com Jezero",
+    "missionButton": "Começar a missão"
+  },
+  "ai": {
+    "seal": "AI-Generated",
+    "textures": "Planetas e texturas de papelão gerados com IA (GPT); os dados e gráficos não."
+  },
+  "science": {
+    "title": "Onde testar na Terra para Jezero",
+    "lead": "Só as zonas medidas a 30 m, um cartão para decidir e os dados para baixar.",
+    "toLearn": "Aprender",
+    "target": {
+      "label": "Destino",
+      "mars": "Marte · Jezero",
+      "moon": "Lua · Polo Sul",
+      "conceptual": "Ilustrações conceituais de papelão; as medições estão no mapa e no cartão."
+    },
+    "moon": {
+      "title": "Lua: por enquanto, só a lacuna física",
+      "lead": "Ainda não comparamos o terreno do Polo Sul. Isto é o que nenhum lugar da Terra reproduz ao ar livre:",
+      "next": "Próximo passo: terreno do Polo Sul com NASA LRO LOLA, com o mesmo método a 30 m."
+    },
+    "map": {
+      "label": "Mapa das células medidas em Antofagasta",
+      "legend": "Cobre: mais perto de Jezero que o clássico Yungay. Vermelho: mais longe. Cada etiqueta é o W₁ de declividade a 30 m. Imagem: NASA GIBS (VIIRS).",
+      "yungay": "Yungay",
+      "cellAria": "Célula {{cell}}, W₁ {{w1}} graus",
+      "failed": "O mapa não carregou. O cartão e o ranking continuam funcionando."
+    },
+    "card": {
+      "rank": "Posição {{n}} entre as células medidas",
+      "coords": "{{lat}}° S, {{lon}}° O · janela de 6 × 6 km",
+      "matches": "Parece em declividade a 30 m (W₁)",
+      "w1": "IC 95 % {{lo}}–{{hi}}° · KS {{ks}}",
+      "shapeLegend": "Vermelho: Jezero. Amarelo: esta célula. Mesma forma = mais parecido.",
+      "closer": "Mais perto de Jezero que o clássico",
+      "farther": "Mais longe de Jezero que o clássico",
+      "classic": "Yungay (controle clássico): W₁ {{w1}}°",
+      "breaks": "Não se parece em",
+      "breaksWhy": "Gravidade, ar e radiação: estudados à parte, e só em parte, em câmaras de vácuo, aceleradores ou voos parabólicos.",
+      "details": "Detalhes e limites",
+      "medians": "Declividade mediana: aqui {{earth}}°, Jezero {{jezero}}°",
+      "scale": "Sensibilidade: W₁ a 60 m {{m60}}°, a 90 m {{m90}}°",
+      "relief": "Relevo local (blocos de 300 m): W₁ {{m}} m",
+      "limits": "Uma janela de 6 km não representa a célula inteira. DSM na Terra frente a DEM fotogramétrico em Marte. Pré-seleção para ir a campo, não certificação.",
+      "gapSource": "Lacuna física: NASA NSSDCA Planetary Fact Sheets (Williams, 2024); MSL RAD (Hassler et al., 2014); Reitz et al., 2012 (Lua, simulado)."
+    },
+    "ranking": {
+      "title": "As células medidas, da mais à menos parecida",
+      "lead": "Barra: W₁ de declividade a 30 m com seu IC 95 %. Mais curta = mais parecida.",
+      "legend": "A linha vertical marca o clássico Yungay ({{w1}}°)."
+    },
+    "download": {
+      "title": "Baixar para o seu SIG",
+      "lead": "Cada linha traz W₁, IC 95 %, KS, sensibilidade a 60 e 90 m, medianas e a fonte de cada DEM.",
+      "csv": "Baixar CSV",
+      "geojson": "Baixar GeoJSON",
+      "note": "Inclui o aviso de licença do Copernicus. Dados abertos; gerados no seu navegador."
+    },
+    "machine": {
+      "title": "Como esse número é calculado",
+      "lead": "A máquina de declividades: escolha um terreno, escaneie e veja quantos graus o separam de Jezero."
+    },
+    "loading": "Carregando as células medidas…",
+    "error": "Não foi possível carregar as células medidas.",
+    "footer": "Dados: NASA (MRO CTX, GIBS, NSSDCA, MSL RAD) e ESA (Copernicus). O Ckepi não é afiliado nem endossado pela NASA.",
+    "advanced": "Ferramentas avançadas (requerem servidor)"
+  },
+  "dashboard": {
+    "railLabel": "Laboratório de análogos",
+    "navigation": "Espaço de trabalho Ckepi",
+    "nav": {
+      "compare": "Comparar terrenos",
+      "learn": "Aprender · STEAM",
+      "evidence": "Evidências e exportação"
+    },
+    "challenge": "Terra · Lua · Marte",
+    "challengeNote": "Localizar análogos terrestres e explicar até onde a comparação é útil.",
+    "snapshot": "Dados pré-calculados · sem cadastro",
+    "kicker": "Dos dados à decisão",
+    "title": "Onde na Terra preparar a exploração de outros mundos?",
+    "lead": "Ckepi compara terrenos com dados de satélite, identifica características comuns e explica quais condições não podem ser reproduzidas ao ar livre. Comece pelas janelas medidas de Antofagasta em relação a Jezero.",
+    "workflow": {
+      "question": "Escolha um destino",
+      "compare": "Compare evidências",
+      "decide": "Decida o que estudar"
+    },
+    "targetQuestion": "Qual mundo você quer estudar?",
+    "targets": {
+      "mars": "Marte · cratera Jezero",
+      "moon": "Lua · referência polar"
+    },
+    "metrics": "Indicadores e limites da comparação",
+    "metric": {
+      "slope": "Distância de inclinação · W₁",
+      "relief": "Distância de relevo · W₁",
+      "gravity": "Gravidade do destino",
+      "atmosphere": "Pressão média do destino",
+      "radiation": "Radiação de referência",
+      "temperature": "Temperatura do catálogo"
+    },
+    "metricHelp": {
+      "slope": "W₁ compara distribuições de inclinação na mesma escala. Distância menor significa maior semelhança nesta variável; não é uma porcentagem.",
+      "relief": "A distância de relevo é expressa em metros. Inclinações semelhantes não garantem os mesmos obstáculos ou mobilidade na escala da roda.",
+      "gravity": "A Terra mantém aproximadamente 1 g. Um terreno semelhante não reproduz o peso efetivo ou a dinâmica de outro mundo.",
+      "atmosphere": "Pressão e composição atmosférica devem ser avaliadas separadamente do terreno. Um deserto não reproduz o vácuo lunar ou o ar marciano.",
+      "radiation": "Referência de radiação ionizante: não equivale a UV nem a uma medição nesta célula terrestre. O valor lunar é uma simulação em mínimo solar.",
+      "temperature": "Valor do catálogo planetário: pode combinar telemetria, valores derivados ou modelos. Não é uma medição de temperatura obtida do DEM de 30 m."
+    },
+    "notMeasured": "Sem medição DEM",
+    "moonSource": "NSSDCA: gravidade/pressão. Reitz et al. 2012: radiação lunar simulada em mínimo solar (~380 mSv/ano); varia com o ciclo solar.",
+    "factSource": "Terreno: CTX/Copernicus. Referências planetárias: NSSDCA; radiação marciana: Curiosity/RAD, Hassler et al. 2014. Catálogo e DEM têm procedências distintas.",
+    "referenceOnly": "Referência física · ilustração conceitual",
+    "mapKicker": "Dados reais · selecione uma janela",
+    "mapTitle": "Antofagasta em relação a Jezero",
+    "windowCount": "{{count}} janelas · {{m}} m/px",
+    "window": "Janela {{n}}",
+    "decisionKicker": "Qual decisão isso permite tomar",
+    "candidate": "Candidato para estudo de campo por inclinação",
+    "counterexample": "Contraexemplo: inclinações mais distantes",
+    "decisionLimit": "Uma pré-seleção entre estas janelas, não uma certificação nem um ranking mundial.",
+    "canDo": "O que permite",
+    "canDoText": "Comparar distribuições, examinar a sensibilidade a 30/60/90 m e priorizar uma visita de caracterização.",
+    "cannotDo": "Exige validação separada",
+    "cannotDoText": "Obstáculos pequenos, acesso ao local, solo real, gravidade, pressão e radiação. Não autoriza o uso de um rover.",
+    "learnBridge": "A mesma evidência, passo a passo: observar → medir → comparar → reconhecer limites → decidir.",
+    "catalogError": "Não foi possível carregar o catálogo planetário. Você pode continuar comparando terrenos; tente novamente para completar as referências.",
+    "innovation": "Comparação interpretável + contraexemplos + limites físicos + aprendizagem com a mesma evidência.",
+    "ai": "Arte decorativa gerada por IA · Gráficos e resultados do terreno usam dados pré-calculados; as ilustrações não são cartografia medida.",
+    "geographicMap": "Esquema geográfico com limites H3 e coordenadas reais · não representa relevo nem distâncias em escala uniforme.",
+    "satellite": "Ver mapa de satélite · requer rede",
+    "schematic": "Voltar ao esquema leve",
+    "schematicLegend": "Selecione uma célula: cada etiqueta mostra W₁ de inclinação a 30 m. Os polígonos representam limites H3; a janela DEM analisada cobre apenas 6 × 6 km.",
+    "visualWorlds": "Três mundos, uma comparação clara",
+    "visualNotice": "Relevos de cartão ilustrativos · não são mapas medidos",
+    "earthRole": "Nosso terreno de referência",
+    "earthTerrain": "Terra · deserto do Atacama",
+    "activeTarget": "Destino selecionado",
+    "chooseTarget": "Escolher como destino",
+    "environmentTitle": "Contexto ambiental da janela terrestre",
+    "environmentNote": "Valores do catálogo pré-calculado combinam fontes, valores derivados e proxies. Não são medições obtidas do DEM; inércia térmica e vegetação são estimativas."
   },
   "physicsLab": {
     "title": "Laboratório Interativo de Gravidade e Física Planetária",
@@ -1539,7 +2287,7 @@
     "earthSectionTitle": "Onde testar na Terra? (Sucesso de Teste de Campo)",
     "currentTargetSuccess": "Sucesso estimado em {{site}}",
     "currentEarthSuccess": "Fidelidade de teste em {{site}}",
-    "optimalBadge": "★ Local Mais Ideal",
+    "optimalBadge": "Local Mais Ideal",
     "selectSiteBtn": "Selecionar",
     "activeBadge": "Ativo",
     "factors": {
@@ -1709,5 +2457,276 @@
     "benchmarksExcludedNote": "Sítios clássicos estão ocultos no momento para priorizar a descoberta de análogos ainda não reconhecidos.",
     "compareBenchmark": "Comparar Controle Clássico",
     "moreUnexpectedTitle": "Outros Candidatos Pouco Estudados em Destaque"
+  },
+  "scientificHeader": {
+    "home": "Início do Ckepi",
+    "steam": "STEAM",
+    "languages": {
+      "es": "Español",
+      "pt": "Português",
+      "en": "English"
+    }
+  },
+  "scientificHome": {
+    "earth": "Terra",
+    "eyebrow": "Ckepi · Explorador científico",
+    "title": "Compare mundos. Escolha onde ensaiar.",
+    "lead": "Encontre lugares na Terra que compartilham características com a Lua ou Marte. Compare os dados e identifique condições que exigem ensaios separados.",
+    "open": "Explorar análogos de {{body}}",
+    "choose": "Explorar {{body}}",
+    "earthRole": "Terreno de ensaio terrestre. A referência da comparação.",
+    "artNote": "Ilustrações de papelão. Abra um destino para ver os mapas e dados."
+  },
+  "sciencePages": {
+    "start": "Início",
+    "compare": "Explorar",
+    "results": "Resultados",
+    "analysis": "Analisar",
+    "evidence": "Fontes",
+    "target": "Destino da comparação",
+    "description": {
+      "compare": "Explore os mapas e configure a busca de análogos terrestres.",
+      "results": "Revise e selecione candidatos do ranking da sua busca.",
+      "analysis": "Interprete as medidas, compare terrenos e consulte os limites físicos.",
+      "evidence": "Consulte a procedência, os métodos e as referências dos dados."
+    },
+    "groups": {
+      "model": "Modelo estatístico e pesos",
+      "engineering": "Ensaios possíveis e limites",
+      "terrain": "Distribuições do terreno",
+      "variables": "Comparação variável por variável",
+      "context": "Geologia e fontes adicionais"
+    }
+  },
+  "product": {
+    "kicker": "Dos dados a um ensaio em campo",
+    "title": "Onde testar na Terra para explorar a Lua e Marte?",
+    "lead": "Ckepi compara condições planetárias com locais terrestres para orientar ensaios de mobilidade, sensores e materiais. Identifica semelhanças úteis e mostra o que não pode ser reproduzido ao ar livre.",
+    "chooseTitle": "Escolha o destino",
+    "chooseNote": "Lua ou Marte e o objetivo do ensaio.",
+    "discoverTitle": "Encontre análogos",
+    "discoverNote": "Explore o mapa e compare condições e fontes.",
+    "decideTitle": "Prepare o ensaio",
+    "decideNote": "Revise limites físicos e exporte evidências ou uma ficha.",
+    "earth": "Terra · Atacama",
+    "artNotice": "Mapas de papelão ilustrativos. As posições, escalas e valores científicos aparecem nos mapas e resultados da análise.",
+    "loading": "Carregando o catálogo científico…",
+    "evaluated": "{{total}} células terrestres avaliadas",
+    "outcome": "Ver a entrega",
+    "demoTitle": "Comparação de terreno · Jezero → Antofagasta",
+    "demoNote": "Comparação reproduzível de janelas DEM de 6 × 6 km a 30 m: NASA MRO CTX / USGS e Copernicus GLO-30. É um teste de declives, separado do ranking multivariável global.",
+    "demo": {
+      "pampa": "Pampa Central · candidato",
+      "yungay": "Yungay · referência conhecida",
+      "negative": "Contraexemplo"
+    },
+    "demoInterpretation": "Menor W₁ significa declives mais próximos de Jezero. Pampa Central: IC 95 % [{{low}}, {{high}}]°. Isso orienta onde investigar; não certifica um local nem reproduz gravidade, pressão ou radiação.",
+    "showEvidence": "Ver histogramas, escala e fontes",
+    "hideEvidence": "Fechar detalhes da evidência",
+    "steamWorkshop": "Oficina STEAM · Três mundos",
+    "slopeDimension": "Dimensão X · Declives a 30 m · Wasserstein-1",
+    "slopeRatio": "W₁ {{ratio}} vezes menor",
+    "confidence95": "IC 95%",
+    "classicControl": "Controle clássico",
+    "controlExplanation": "A cauda de declives acentuados difere da janela selecionada de Jezero.",
+    "negativeCase": "Contraexemplo",
+    "negativeExplanation": "Esta janela apresenta declives muito mais acentuados que a referência de Jezero.",
+    "breakageDimension": "Limites físicos · Declives semelhantes não reproduzem Marte",
+    "versusEarth": "Terra: {{value}}",
+    "radiationUnit": "mSv/ano",
+    "thermalGap": "Marte: ΔT ~80–100 K",
+    "physicalLimit": "Valores planetários de referência, não medições locais. O declive orienta uma pré-seleção para estudar navegação; gravidade, pressão, radiação e ciclos térmicos exigem ensaios específicos. Não certifica tração nem segurança de um rover.",
+    "explainAnalysis": "Como funciona a análise?",
+    "scienceScope": "O ranking H3 compara variáveis de catálogo; os histogramas verificam janelas DEM específicas. Os pesos combinam associações estatísticas e critérios de especialistas, sem demonstrar causalidade. A margem do score é heurística; apenas os intervalos de terreno resultam de bootstrap espacial.",
+    "measurementHint": "Toque em um cartão para interpretar o dado",
+    "lowerIsCloser": "W₁ mede a diferença entre distribuições de declives: menos graus significa maior semelhança nesta variável.",
+    "candidateDetail": "A distância W₁ é {{ratio}} vezes menor que em Yungay. Isso orienta a pré-seleção desta janela, não demonstra terrenos equivalentes.",
+    "gravityDetail": "O mesmo equipamento pesa menos em Marte. Um ensaio de navegação terrestre não reproduz essa dinâmica.",
+    "atmosphereDetail": "A pressão marciana é muito menor que a terrestre: ventilação, voo e transferência de calor exigem ensaios separados.",
+    "radiationDetail": "O sol do deserto não reproduz o ambiente ionizante de Marte. Sensores e eletrônica exigem ensaios específicos de radiação.",
+    "temperatureDetail": "Esses ciclos térmicos podem afetar baterias, juntas e eletrônica. Declives semelhantes não demonstram resistência térmica.",
+    "thermalReference": "ΔT diário · referência de Marte",
+    "demoError": "Não foi possível carregar a comparação verificada."
+  },
+  "explore": {
+    "destination": {
+      "title": "Para onde vamos?",
+      "subtitle": "Escolha um mundo e um lugar. Ckepi vai procurar na Terra zonas parecidas.",
+      "worlds": "Mundo de destino",
+      "places": "Lugar de destino",
+      "probed": "Ponto escolhido no globo"
+    },
+    "mission": {
+      "title": "O que você quer testar?",
+      "subtitle": "Cada ensaio dá mais importância a diferentes condições do terreno e do clima.",
+      "profiles": "Tipo de ensaio",
+      "discoveryHint": "Oculta os análogos clássicos para descobrir lugares pouco estudados.",
+      "on": "Ativado",
+      "off": "Desativado",
+      "advancedHint": "Modelo, métrica de distância e limiares mínimos do motor."
+    },
+    "profiles": {
+      "causal_auto": {
+        "title": "Automático",
+        "hint": "Ckepi decide o que pesa mais"
+      },
+      "navigation_landing": {
+        "title": "Pouso",
+        "hint": "Relevo e navegação"
+      },
+      "rover_mobility": {
+        "title": "Rover",
+        "hint": "Declives e solo"
+      },
+      "isru_ice_drilling": {
+        "title": "Gelo",
+        "hint": "Perfurar e extrair água"
+      },
+      "lava_tube_habitat": {
+        "title": "Habitat",
+        "hint": "Cavernas e abrigos"
+      },
+      "solar_power_thermal": {
+        "title": "Energia solar",
+        "hint": "Sol, UV e calor"
+      },
+      "manual_custom": {
+        "title": "Manual",
+        "hint": "Você ajusta cada variável"
+      }
+    },
+    "maps": {
+      "globeTitle": "Lua e Marte em 3D",
+      "globeSubtitle": "Gire o globo e toque num ponto para compará-lo com a Terra.",
+      "earthTitle": "Lugares parecidos na Terra",
+      "earthSubtitle": "Cada hexágono é uma zona; a cor diz o quanto se parece com o destino.",
+      "options": "Opções",
+      "layer": "Camada do mapa",
+      "world": "Mundo"
+    },
+    "carousel": {
+      "show": "Mostrar {{name}}",
+      "active": "{{active}} de {{total}} ativas",
+      "groups": "Grupos de variáveis"
+    }
+  },
+  "steam": {
+    "tab": "Missão",
+    "hero": {
+      "kicker": "Missão Cadete",
+      "title": "Treine como quem prepara missões para Marte",
+      "lead": "Viaje da pampa até a cratera Jezero. Em cada estação você prevê, mede e descobre com dados reais; ganha insígnias e termina com o seu certificado.",
+      "start": "Começar a missão",
+      "lab": "Conhecer os três mundos"
+    },
+    "route": {
+      "label": "Rota da missão",
+      "earth": "Terra",
+      "mars": "Marte",
+      "done": "estação concluída",
+      "finish": "Certificado"
+    },
+    "score": {
+      "points": "pontos de ciência",
+      "badges": "{{n}} de {{total}} insígnias"
+    },
+    "predict": {
+      "kicker": "Antes de olhar",
+      "hint": "Aposte primeiro. Prever antes de medir é o que a ciência faz.",
+      "right": "Acertou! +{{n}} pontos de ciência",
+      "wrong": "Não era essa, e tudo bem: é assim que se aprende. Os dados decidem.",
+      "skip": "Prefiro ver os dados sem apostar",
+      "observe": {
+        "q": "Qual dos dois cortes de 6 km tem mais diferença entre o ponto mais alto e o mais baixo?",
+        "pampa": "A pampa",
+        "jezero": "Jezero, em Marte",
+        "explain": "Diferença de altura no corte: pampa {{pampa}} m, Jezero {{jezero}} m."
+      },
+      "measure": {
+        "q": "Onde o terreno típico é mais inclinado (a declividade mediana)?",
+        "pampa": "Na pampa",
+        "jezero": "Em Jezero",
+        "explain": "Declividade mediana a 30 m: Jezero {{jezero}}°, pampa {{pampa}}°."
+      },
+      "compare": {
+        "q": "Que lugar da Terra se parece mais com Jezero nas declividades?",
+        "pampa": "A pampa (célula 83b224)",
+        "yungay": "Yungay, o análogo clássico",
+        "explain": "W₁: pampa {{pampa}}°, Yungay {{yungay}}°. Menos graus é mais parecido."
+      },
+      "different": {
+        "q": "Em Marte, uma mochila que aqui pesa 10 kg pareceria ter…",
+        "low": "≈ {{v}} kg",
+        "same": "10 kg, igual aqui",
+        "high": "≈ {{v}} kg",
+        "explain": "Marte tem {{g}} vezes a gravidade da Terra: 10 kg × {{g}} ≈ {{v}} kg."
+      }
+    },
+    "certificate": {
+      "kicker": "Certificado de missão",
+      "title": "Exploradora ou explorador de análogos planetários",
+      "nameLabel": "Escreva o seu nome (não é salvo)",
+      "namePlaceholder": "Seu nome",
+      "defaultExplorer": "Explorador/a Ckepi",
+      "readyBadge": "Passe para o Modo Ciência",
+      "text": "Você completou a rota da Terra a Marte com dados reais a 30 m. Estes são os passos da ciência que praticou e as profissões que os fazem:",
+      "verifiedSummary": "Evidência real: pampa 83b224 frente à cratera Jezero a 30 m · W₁ = {{w1}}° (IC 95 % {{lo}}–{{hi}}°) · Yungay {{yungay}}° · Lacuna física B: 0,38 g · ~0,6 kPa de CO₂ · ~230 mSv/ano.",
+      "points": "pontos de ciência (de {{max}})",
+      "badges": "insígnias",
+      "download": "Baixar certificado PNG",
+      "downloading": "Gerando PNG…",
+      "openScience": "Entrar no Modo Ciência",
+      "openScienceHint": "Você já conhece a declividade, a distância W₁ e o que a Terra não consegue imitar. Use a plataforma científica completa.",
+      "dateLabel": "Data da missão",
+      "sealTitle": "CKEPI · CIÊNCIA ABERTA",
+      "sealSubtitle": "Pré-seleção 30 m · Não certifica terreno",
+      "print": "Imprimir certificado",
+      "again": "Jogar de novo",
+      "levelDone": "Nível concluído: {{level}}",
+      "levelUpTitle": "Suba um nível",
+      "levelUpHint": "Repita a rota com mais detalhe: os mesmos dados, explicados com mais profundidade.",
+      "levelUp": "Subir para {{level}}",
+      "pending": "Faltam {{n}} estações para o seu passe"
+    },
+    "missionBrief": {
+      "kicker": "O desafio NASA Space Apps em pictogramas",
+      "title": "Como descobrimos onde testar na Terra antes de ir para a Lua ou Marte",
+      "lead": "Adapte o nível de leitura (Simples, Intermediário ou Técnico) e avance pelas 5 estações científicas com os mesmos dados reais a 30 m do Modo Ciência. Ao concluir, receba seu certificado para passar ao Modo Ciência.",
+      "pillars": {
+        "terrain": {
+          "tag": "1. Terreno 30 m (X)",
+          "title": "Observar e medir declividades",
+          "desc": "Recortes de satélite de 6 × 6 km a 30 m na pampa (Copernicus) e em Jezero (NASA CTX)."
+        },
+        "distribution": {
+          "tag": "2. Distribuição (W₁)",
+          "title": "Comparar toda a forma",
+          "desc": "Medimos quantos graus separam dois histogramas completos (W₁ = 0,54° na célula 83b224)."
+        },
+        "gap": {
+          "tag": "3. Lacuna física (B)",
+          "title": "O que a Terra NÃO imita",
+          "desc": "Gravidade (0,38 g / 0,166 g), pressão (0,6 kPa / 0 kPa), radiação e ΔT vão para câmaras de ensaio."
+        },
+        "graduate": {
+          "tag": "4. Protocolo e Certificado",
+          "title": "Graduar-se para o Modo Ciência",
+          "desc": "Separe testes de campo e de laboratório e imprima seu reconhecimento educativo, sem acreditação oficial."
+        }
+      }
+    },
+    "anatomy": {
+      "kicker": "Maquete interativa 3D",
+      "terrainModelsTitle": "Maquetes de terreno a 30 m: Jezero vs. 4 zonas de Antofagasta",
+      "terrainModelsLead": "Alterne entre Pampa 83b224, Yungay, Salar e Alta Cordilheira, gire a vista e ajuste o exagero vertical para ver os degraus de 30 m.",
+      "slopeMachineTitle": "A máquina de declividades (W₁ ao vivo)",
+      "slopeMachineLead": "Escaneie cada janela a 30 m, agrupe as declividades em 16 colunas e veja como a distância W₁ é calculada.",
+      "gapBenchesTitle": "Bancadas interativas da lacuna física (B)",
+      "gapBenchesLead": "Teste ao vivo por que nenhum deserto terrestre consegue copiar a gravidade, o vácuo ou a radiação espacial:",
+      "gravityBenchTab": "Bancada de gravidade",
+      "pressureChamberTab": "Câmara de pressão",
+      "weatherStationTab": "Estação de radiação e ΔT"
+    },
+    "worldsTab": "Três mundos"
   }
 }

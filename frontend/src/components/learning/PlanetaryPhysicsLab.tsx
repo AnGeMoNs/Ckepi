@@ -1,20 +1,6 @@
 import { useMemo, useState } from "react";
-import {
-  Activity,
-  AlertTriangle,
-  ArrowRight,
-  Award,
-  CheckCircle2,
-  Compass,
-  Droplets,
-  FlaskConical,
-  HelpCircle,
-  Scale,
-  Waves,
-  Wind,
-  XCircle,
-} from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Pictogram, type PictogramName } from "../worlds/Pictograms";
 
 import { formatNumber } from "../../i18n";
 import type {
@@ -62,11 +48,11 @@ const BODIES: PhysicsBody[] = ["earth", "mars", "moon"];
 
 type CategoryId = "body" | "physics" | "engineering" | "curiosities";
 
-const CATEGORIES: { id: CategoryId; emoji: string }[] = [
-  { id: "body", emoji: "🧑‍🚀" },
-  { id: "physics", emoji: "🌊" },
-  { id: "engineering", emoji: "🤖" },
-  { id: "curiosities", emoji: "🪐" },
+const CATEGORIES: { id: CategoryId; pictogram: PictogramName }[] = [
+  { id: "body", pictogram: "gravity" },
+  { id: "physics", pictogram: "pressure" },
+  { id: "engineering", pictogram: "rover" },
+  { id: "curiosities", pictogram: "globe" },
 ];
 
 export function PlanetaryPhysicsLab({
@@ -235,21 +221,20 @@ export function PlanetaryPhysicsLab({
         <CardHeader className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2">
-              <FlaskConical className="h-5 w-5 text-accent" aria-hidden="true" />
+              <Pictogram name="observe" className="h-5 w-5 text-accent" />
               <CardTitle>{t("learn.title")}</CardTitle>
-              <Badge variant="accent">ODS 4 · STEAM</Badge>
             </div>
             <p className="text-xs text-content-muted sm:text-sm">{t("learn.subtitle")}</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {activeSite && (
               <Badge variant="default">
-                <span aria-label={t("nav.locationLabel")}>📍</span> {t(activeSite.name_key)}
+                {t(activeSite.name_key)}
               </Badge>
             )}
             {selectedCell && (
               <Badge variant="valid">
-                <span aria-label={t("nav.locationLabel")}>📍</span> {t(selectedCell.region_key)} (
+                {t(selectedCell.region_key)} (
                 {selectedCell.earth_cell_h3.slice(0, 7)}…)
               </Badge>
             )}
@@ -278,9 +263,7 @@ export function PlanetaryPhysicsLab({
                         : "border-border-subtle bg-surface hover:border-accent/40 hover:bg-surface-muted"
                     }`}
                   >
-                    <span className="text-2xl leading-none" aria-hidden="true">
-                      {cat.emoji}
-                    </span>
+                    <Pictogram name={cat.pictogram} className="h-8 w-8 text-accent" />
                     <span className="text-sm font-semibold text-content">
                       {t(`learnHub.categories.${cat.id}.title`)}
                     </span>
@@ -292,7 +275,7 @@ export function PlanetaryPhysicsLab({
               })}
             </div>
             <p className="text-xs italic text-content-muted" aria-live="polite">
-              💭 {t(`learnHub.categories.${category}.teaser`)}
+              {t(`learnHub.categories.${category}.teaser`)}
             </p>
           </div>
 
@@ -300,7 +283,7 @@ export function PlanetaryPhysicsLab({
           {category === "body" && (
             <div className="rounded-xl border border-accent/30 bg-gradient-to-br from-accent/10 to-transparent p-4">
               <p className="flex items-center gap-2 text-sm font-semibold text-content">
-                <span aria-hidden="true">🧑‍🚀</span>
+                <Pictogram name="gravity" className="h-5 w-5 text-accent" />
                 <span>{t("learnHub.astronautCard.title", { body: t(`bodies.${targetBody}`) })}</span>
               </p>
               <ul className="mt-2 grid grid-cols-1 gap-2 text-xs sm:grid-cols-2 lg:grid-cols-4">
@@ -402,7 +385,7 @@ export function PlanetaryPhysicsLab({
                   onClick={() => setShowScienceDetails((prev) => !prev)}
                   className="min-h-11 rounded-lg border border-border-subtle bg-surface px-3 py-1.5 text-xs font-medium text-content-muted transition-colors hover:bg-surface-muted hover:text-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 >
-                  🔬{" "}
+                  <Pictogram name="observe" className="mr-1 inline h-4 w-4" />
                   {showScienceDetails
                     ? t("learn.hideScienceDetails")
                     : t("learn.showScienceDetails")}
@@ -426,7 +409,7 @@ export function PlanetaryPhysicsLab({
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <h3 className="flex items-center gap-2 text-base font-semibold text-content">
-                    <Scale className="h-4 w-4 text-accent" aria-hidden="true" />
+                    <Pictogram name="gravity" className="h-5 w-5 text-accent" />
                     {t("learn.experiments.weight.question")}
                   </h3>
                   <p className="mt-1 text-xs text-content-muted">
@@ -518,7 +501,7 @@ export function PlanetaryPhysicsLab({
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <h3 className="flex items-center gap-2 text-base font-semibold text-content">
-                    <Activity className="h-4 w-4 text-accent" aria-hidden="true" />
+                    <Pictogram name="gravity" className="h-5 w-5 text-accent" />
                     {t("learn.experiments.jump.question")}
                   </h3>
                   <p className="mt-1 text-xs text-content-muted">
@@ -596,7 +579,7 @@ export function PlanetaryPhysicsLab({
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <h3 className="flex items-center gap-2 text-base font-semibold text-content">
-                    <Compass className="h-4 w-4 text-accent" aria-hidden="true" />
+                    <Pictogram name="measure" className="h-5 w-5 text-accent" />
                     {t("learn.experiments.projectile.question")}
                   </h3>
                   <p className="mt-1 text-xs text-content-muted">
@@ -712,7 +695,7 @@ export function PlanetaryPhysicsLab({
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <h3 className="flex items-center gap-2 text-base font-semibold text-content">
-                    <Waves className="h-4 w-4 text-accent" aria-hidden="true" />
+                    <Pictogram name="pressure" className="h-5 w-5 text-accent" />
                     {t("learn.experiments.waves.question")}
                   </h3>
                   <p className="mt-1 text-xs text-content-muted">
@@ -782,7 +765,7 @@ export function PlanetaryPhysicsLab({
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <h3 className="flex items-center gap-2 text-base font-semibold text-content">
-                    <Scale className="h-4 w-4 text-accent" aria-hidden="true" />
+                    <Pictogram name="gravity" className="h-5 w-5 text-accent" />
                     {t("learn.experiments.rocks.question")}
                   </h3>
                   <p className="mt-1 text-xs text-content-muted">
@@ -882,7 +865,7 @@ export function PlanetaryPhysicsLab({
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <h3 className="flex items-center gap-2 text-base font-semibold text-content">
-                    <Compass className="h-4 w-4 text-accent" aria-hidden="true" />
+                    <Pictogram name="rover" className="h-5 w-5 text-accent" />
                     {t("learn.experiments.rover.question")}
                   </h3>
                   <p className="mt-1 text-xs text-content-muted">
@@ -1088,7 +1071,7 @@ export function PlanetaryPhysicsLab({
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <h3 className="flex items-center gap-2 text-base font-semibold text-content">
-                    <Wind className="h-4 w-4 text-accent" aria-hidden="true" />
+                    <Pictogram name="pressure" className="h-5 w-5 text-accent" />
                     {t("learn.experiments.wind.question")}
                   </h3>
                   <p className="mt-1 text-xs text-content-muted">
@@ -1161,7 +1144,7 @@ export function PlanetaryPhysicsLab({
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <h3 className="flex items-center gap-2 text-base font-semibold text-content">
-                    <Droplets className="h-4 w-4 text-accent" aria-hidden="true" />
+                    <Pictogram name="temperature" className="h-5 w-5 text-accent" />
                     {t("learn.experiments.water.question")}
                   </h3>
                   <p className="mt-1 text-xs text-content-muted">
@@ -1235,7 +1218,7 @@ export function PlanetaryPhysicsLab({
       <Card>
         <CardHeader className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2">
-            <Award className="h-5 w-5 text-accent" aria-hidden="true" />
+            <Pictogram name="decide" className="h-5 w-5 text-accent" />
             <CardTitle>{t("learn.challengesTitle")}</CardTitle>
             <span aria-live="polite">
               <Badge variant={correctCount === challenges.length ? "valid" : "accent"}>
@@ -1245,12 +1228,12 @@ export function PlanetaryPhysicsLab({
           </div>
           <div className="flex flex-wrap gap-2">
             <Button variant="secondary" onClick={onGoToCompare}>
-              <HelpCircle className="h-4 w-4" aria-hidden="true" />
+              <Pictogram name="observe" className="h-4 w-4" />
               <span>{t("nav.backToCompare")}</span>
             </Button>
             <Button variant="primary" onClick={onGoToPlan}>
               <span>{t("nav.continueToPlan")}</span>
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <Pictogram name="compare" className="h-4 w-4" />
             </Button>
           </div>
         </CardHeader>
@@ -1300,9 +1283,9 @@ export function PlanetaryPhysicsLab({
                     }`}
                   >
                     {isCorrect ? (
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-status-valid" aria-hidden="true" />
+                      <Pictogram name="check" className="mt-0.5 h-4 w-4 shrink-0 text-status-valid" />
                     ) : (
-                      <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-status-break" aria-hidden="true" />
+                      <Pictogram name="close" className="mt-0.5 h-4 w-4 shrink-0 text-status-break" />
                     )}
                     <div>
                       <p className="font-semibold">
@@ -1321,9 +1304,7 @@ export function PlanetaryPhysicsLab({
               role="status"
               className="flex items-center gap-3 rounded-xl border border-status-valid/40 bg-status-valid/10 p-4 text-sm text-content md:col-span-2"
             >
-              <span className="text-3xl leading-none" aria-hidden="true">
-                🏅
-              </span>
+              <Pictogram name="check" className="h-9 w-9 shrink-0 text-status-valid" />
               <div>
                 <p className="font-semibold">{t("learnHub.badgeTitle")}</p>
                 <p className="text-xs text-content-muted">{t("learnHub.badgeDesc")}</p>
@@ -1333,7 +1314,7 @@ export function PlanetaryPhysicsLab({
 
           {!comparison && (
             <div className="flex items-center gap-2 rounded-xl border border-border-subtle bg-surface-elevated p-3 text-xs text-content-muted md:col-span-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-status-warn" aria-hidden="true" />
+              <Pictogram name="observe" className="h-4 w-4 shrink-0 text-status-warn" />
               <span>{t("learn.noComparisonHint")}</span>
             </div>
           )}
