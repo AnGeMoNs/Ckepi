@@ -65,6 +65,7 @@ export function PlanetaryMap({
   const controlsRef = useRef<OrbitControls | null>(null);
   const sphereMeshRef = useRef<THREE.Mesh | null>(null);
   const markersGroupRef = useRef<THREE.Group | null>(null);
+  const focusGoalRef = useRef<THREE.Vector3 | null>(null);
 
   const bodyRef = useRef(body);
   const onSelectSiteRef = useRef(onSelectSite);
@@ -132,6 +133,11 @@ export function PlanetaryMap({
     controls.zoomSpeed = 0.85;
     controlsRef.current = controls;
 
+    const handleControlsStart = () => {
+      focusGoalRef.current = null;
+    };
+    controls.addEventListener("start", handleControlsStart);
+
     // Click vs drag raycasting
     const raycaster = new THREE.Raycaster();
     let downX = 0;
@@ -178,6 +184,22 @@ export function PlanetaryMap({
     let animId = 0;
     const animate = () => {
       animId = requestAnimationFrame(animate);
+      const goalDir = focusGoalRef.current;
+      if (goalDir) {
+        const dist = camera.position.length() || 2.6;
+        const currentDir = camera.position.clone().normalize();
+        if (currentDir.distanceTo(goalDir) < 0.015) {
+          camera.position.copy(goalDir).multiplyScalar(dist);
+          focusGoalRef.current = null;
+        } else {
+          if (currentDir.dot(goalDir) < -0.98) {
+            currentDir.x += 0.05;
+            currentDir.normalize();
+          }
+          currentDir.lerp(goalDir, 0.08).normalize().multiplyScalar(dist);
+          camera.position.copy(currentDir);
+        }
+      }
       controls.update();
       renderer.render(scene, camera);
     };
@@ -197,6 +219,7 @@ export function PlanetaryMap({
       observer.disconnect();
       renderer.domElement.removeEventListener("pointerdown", handlePointerDown);
       renderer.domElement.removeEventListener("pointerup", handlePointerUp);
+      controls.removeEventListener("start", handleControlsStart);
       controls.dispose();
       geometry.dispose();
       material.dispose();
@@ -298,6 +321,10 @@ export function PlanetaryMap({
       );
       group.add(customPin);
     }
+
+    focusGoalRef.current = activeTarget
+      ? latLonToVector3(activeTarget.lat, activeTarget.lon, 1.0).normalize()
+      : null;
   }, [sites, body, activeTarget, theme]);
 
   const handleZoom = (factor: number) => {
@@ -315,6 +342,7 @@ export function PlanetaryMap({
     const cam = cameraRef.current;
     const ctrl = controlsRef.current;
     if (!cam || !ctrl) return;
+    focusGoalRef.current = null;
     const dist = cam.position.length() || 2.6;
     if (activeTarget) {
       const dir = latLonToVector3(activeTarget.lat, activeTarget.lon, dist);
@@ -341,7 +369,7 @@ export function PlanetaryMap({
             aria-label={t("planetaryMap.layerLabel")}
             value={layer}
             onChange={(e) => setLayer(e.target.value as PlanetaryOverlayLayer)}
-            className="min-h-11 rounded border border-border-subtle bg-surface px-2.5 py-1 text-xs font-medium text-content focus:border-accent focus:outline-none"
+            className="min-h-11 rounded border border-border-subtle bg-surface px-2.5 py-1 text-xs font-medium text-content focus-visible:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             {body === "moon" ? (
               <>
@@ -360,10 +388,11 @@ export function PlanetaryMap({
             <button
               key={b}
               type="button"
+              aria-pressed={body === b}
               onClick={() => onSelectBody(b)}
-              className={`min-h-11 rounded border px-3 py-1.5 text-xs font-semibold transition ${
+              className={`min-h-11 rounded border px-3 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
                 body === b
-                  ? "border-accent bg-accent text-white"
+                  ? "border-accent bg-accent text-accent-foreground"
                   : "border-border-subtle bg-surface text-content hover:bg-surface-muted"
               }`}
             >
@@ -383,7 +412,7 @@ export function PlanetaryMap({
               type="button"
               onClick={() => handleZoom(0.78)}
               aria-label={t("planetaryMap.zoomIn")}
-              className="flex min-h-11 min-w-11 items-center justify-center rounded border border-border-subtle bg-surface-elevated/90 text-content shadow-sm backdrop-blur hover:border-accent"
+              className="flex min-h-11 min-w-11 items-center justify-center rounded border border-border-subtle bg-surface-elevated/90 text-content shadow-sm backdrop-blur hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
             </button>
@@ -391,7 +420,7 @@ export function PlanetaryMap({
               type="button"
               onClick={() => handleZoom(1.28)}
               aria-label={t("planetaryMap.zoomOut")}
-              className="flex min-h-11 min-w-11 items-center justify-center rounded border border-border-subtle bg-surface-elevated/90 text-content shadow-sm backdrop-blur hover:border-accent"
+              className="flex min-h-11 min-w-11 items-center justify-center rounded border border-border-subtle bg-surface-elevated/90 text-content shadow-sm backdrop-blur hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               <Minus className="h-4 w-4" aria-hidden="true" />
             </button>
@@ -399,7 +428,7 @@ export function PlanetaryMap({
               type="button"
               onClick={handleFocusTarget}
               aria-label={t("planetaryMap.resetView")}
-              className="flex min-h-11 min-w-11 items-center justify-center rounded border border-border-subtle bg-surface-elevated/90 text-content shadow-sm backdrop-blur hover:border-accent"
+              className="flex min-h-11 min-w-11 items-center justify-center rounded border border-border-subtle bg-surface-elevated/90 text-content shadow-sm backdrop-blur hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               <RotateCcw className="h-4 w-4" aria-hidden="true" />
             </button>

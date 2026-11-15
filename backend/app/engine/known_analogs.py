@@ -16,8 +16,8 @@ class KnownAnalogSite(TypedDict):
 
 
 KNOWN_ANALOG_SITES: tuple[KnownAnalogSite, ...] = (
-    {"name": "Atacama Desert (Yungay)", "lat": -24.08, "lon": -69.91, "radius_km": 220.0},
-    {"name": "Puna de Atacama / Altiplano", "lat": -25.10, "lon": -67.50, "radius_km": 200.0},
+    {"name": "Atacama Desert (Yungay)", "lat": -24.08, "lon": -69.91, "radius_km": 85.0},
+    {"name": "Puna de Atacama / Altiplano", "lat": -25.80, "lon": -67.50, "radius_km": 95.0},
     {"name": "Salar de Uyuni", "lat": -20.13, "lon": -67.49, "radius_km": 180.0},
     {"name": "Haughton Impact Crater (Devon Island)", "lat": 75.38, "lon": -89.68, "radius_km": 200.0},
     {"name": "Axel Heiberg Island", "lat": 79.42, "lon": -90.75, "radius_km": 180.0},

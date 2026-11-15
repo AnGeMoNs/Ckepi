@@ -33,6 +33,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 import { InfoTooltip } from "../ui/InfoTooltip";
 import { ProgressBar } from "../ui/ProgressBar";
 import { AiViabilityPanel } from "./AiViabilityPanel";
+import { ChallengeDimensionsGrid } from "./ChallengeDimensionsGrid";
+import { TerrainDistributionPanel } from "./TerrainDistributionPanel";
 
 interface MissionDiagnosticsProps {
   comparison: SiteComparisonResponse;
@@ -119,7 +121,8 @@ export function MissionDiagnostics({
                 (k, p) => t(k, p),
                 match,
                 lang,
-                aiAnalysis
+                aiAnalysis,
+                comparison.statistical_distribution
               );
               onExported?.();
             }}
@@ -169,6 +172,9 @@ export function MissionDiagnostics({
               : t("mission.quickVerdictBody", {
                   earthSite: t(match.region_key),
                   score: formatPercent(match.combined_score, lang),
+                  uncertainty: formatPercent(match.score_uncertainty ?? 0.05, lang),
+                  sInd: formatPercent(match.s_ind, lang),
+                  sDep: formatPercent(match.s_dep, lang),
                   targetSite: t(comparison.site.name_key),
                   validCount: String(recs.valid_tests.length),
                   brokenVars:
@@ -307,6 +313,9 @@ export function MissionDiagnostics({
           </div>
         </div>
 
+        {/* 8 Challenge Dimensions & Physical Processes */}
+        <ChallengeDimensionsGrid comparison={comparison} catalog={catalog} />
+
         {/* Engineering Valid vs Invalid Tests */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="rounded border border-status-valid/60 bg-status-valid/15 p-4 space-y-2.5">
@@ -396,6 +405,16 @@ export function MissionDiagnostics({
             </p>
           </div>
         </div>
+
+        {/* Common-Scale (30 m) Statistical Distribution Comparison (Wasserstein-1 & KS) */}
+        {comparison.statistical_distribution && (
+          <TerrainDistributionPanel
+            distribution={comparison.statistical_distribution}
+            body={comparison.site.body}
+            targetName={t(comparison.site.name_key)}
+            earthName={match.known_analog_name ?? t(match.region_key)}
+          />
+        )}
 
         {/* Variable-by-Variable Comparison: Cards on mobile (<640px), Table on sm+ */}
         <div className="space-y-3">

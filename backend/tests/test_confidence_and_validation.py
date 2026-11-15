@@ -162,3 +162,43 @@ def test_mars_meda_and_pds_multi_instrument_probe() -> None:
     assert site.confidence is not None
     assert site.confidence.is_tracked_zone is True
 
+
+def test_compact_tail_preserves_scores_and_hover_telemetry() -> None:
+    """Compact tail mode omits bulky breakdowns past detail_limit while keeping ranking & telemetry."""
+    site = _make_dummy_site()
+    base_df = _make_earth_df()
+    # Create 5 distinct cells by cloning and slightly shifting slope/temp
+    rows = []
+    for i in range(5):
+        row = base_df.iloc[i % len(base_df)].copy()
+        row["earth_cell_h3"] = f"837b5{i}fffffffff"
+        row["slope_deg"] = float(row["slope_deg"]) + i * 1.5
+        rows.append(row)
+    df = pd.DataFrame(rows)
+
+    full = match_terrestrial_analogs(
+        site=site,
+        causal_weights={k: 1.0 for k in INDEPENDENT_VARIABLES},
+        df_earth=df,
+        limit=10,
+        compact_tail=False,
+    )
+    compact = match_terrestrial_analogs(
+        site=site,
+        causal_weights={k: 1.0 for k in INDEPENDENT_VARIABLES},
+        df_earth=df,
+        limit=10,
+        compact_tail=True,
+        detail_limit=1,
+    )
+
+    assert [m.earth_cell_h3 for m in compact.matches] == [m.earth_cell_h3 for m in full.matches]
+    assert [m.combined_score for m in compact.matches] == [m.combined_score for m in full.matches]
+    assert [m.is_pareto_optimal for m in compact.matches] == [m.is_pareto_optimal for m in full.matches]
+    assert compact.matches[0].breakage_alerts != []
+    tail = compact.matches[-1]
+    assert "slope_deg" in tail.earth_variables.independent
+    assert "mean_surface_temp_k" in tail.earth_variables.dependent
+    assert "radiation_msv_yr" in tail.earth_variables.breakage
+
+

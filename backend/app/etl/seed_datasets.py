@@ -123,7 +123,7 @@ def load_cached_planetary_sites(data_dir: Path | None = None) -> list[PlanetaryS
     target_dir = data_dir or settings.data_dir
     sites_json_path = target_dir / "planetary_sites.json"
     if not sites_json_path.exists():
-        ensure_datasets_built(target_dir=target_dir)
+        ensure_datasets_built(data_dir=target_dir)
     raw = json.loads(sites_json_path.read_text(encoding="utf-8"))
     sites: list[PlanetarySite] = []
     for item in raw:
@@ -176,7 +176,16 @@ def load_cached_planetary_sites(data_dir: Path | None = None) -> list[PlanetaryS
 
 def upsert_earth_cell(duckdb_path: Path, cell_record: dict[str, object]) -> None:
     """Insert or replace a live-probed Earth H3 cell into DuckDB."""
+    from app.engine.analog_matcher import CURATED_CELL_METADATA
+
     row = dict(cell_record)
+    cell_id = str(row["earth_cell_h3"])
+    if cell_id in CURATED_CELL_METADATA:
+        reg_key, country, biome, is_bench = CURATED_CELL_METADATA[cell_id]
+        row["region_key"] = reg_key
+        row["country_code"] = country
+        row["biome_key"] = biome
+        row["is_benchmark"] = is_bench
     row["h3_boundary_json"] = json.dumps(row["h3_boundary_json"])
     row["source_apis_json"] = json.dumps(row["source_apis_json"])
     df_row = pd.DataFrame([row])
@@ -188,7 +197,7 @@ def upsert_earth_cell(duckdb_path: Path, cell_record: dict[str, object]) -> None
             [str(row["earth_cell_h3"])],
         )
         conn.register("new_cell_df", df_row)
-        conn.execute("INSERT INTO earth_h3_grid SELECT * FROM new_cell_df")
+        conn.execute("INSERT INTO earth_h3_grid BY NAME SELECT * FROM new_cell_df")
         conn.unregister("new_cell_df")
     finally:
         conn.close()

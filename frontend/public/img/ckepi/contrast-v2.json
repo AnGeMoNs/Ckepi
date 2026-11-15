@@ -1,0 +1,366 @@
+[
+  {
+    "theme": "light",
+    "foreground": "content",
+    "background": "surface",
+    "ratio": 10.94,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "content",
+    "background": "surface-elevated",
+    "ratio": 11.74,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "content",
+    "background": "surface-muted",
+    "ratio": 9.55,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "content-muted",
+    "background": "surface",
+    "ratio": 6.37,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "content-muted",
+    "background": "surface-elevated",
+    "ratio": 6.83,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "content-muted",
+    "background": "surface-muted",
+    "ratio": 5.56,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "status-valid",
+    "background": "surface",
+    "ratio": 6.09,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "status-valid",
+    "background": "surface-elevated",
+    "ratio": 6.54,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "status-valid",
+    "background": "surface-muted",
+    "ratio": 5.32,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "status-warn",
+    "background": "surface",
+    "ratio": 6.06,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "status-warn",
+    "background": "surface-elevated",
+    "ratio": 6.51,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "status-warn",
+    "background": "surface-muted",
+    "ratio": 5.29,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "status-break",
+    "background": "surface",
+    "ratio": 6.06,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "status-break",
+    "background": "surface-elevated",
+    "ratio": 6.51,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "status-break",
+    "background": "surface-muted",
+    "ratio": 5.29,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "planet-mars",
+    "background": "surface",
+    "ratio": 5.77,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "planet-mars",
+    "background": "surface-elevated",
+    "ratio": 6.2,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "planet-mars",
+    "background": "surface-muted",
+    "ratio": 5.04,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "planet-moon",
+    "background": "surface",
+    "ratio": 5.55,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "planet-moon",
+    "background": "surface-elevated",
+    "ratio": 5.96,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "planet-moon",
+    "background": "surface-muted",
+    "ratio": 4.84,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "accent-foreground",
+    "background": "accent",
+    "ratio": 7.06,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "content",
+    "background": "glass over (255, 255, 255)",
+    "ratio": 11.78,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "content-muted",
+    "background": "glass over (255, 255, 255)",
+    "ratio": 6.85,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "content",
+    "background": "glass over (0, 0, 0)",
+    "ratio": 10.28,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "light",
+    "foreground": "content-muted",
+    "background": "glass over (0, 0, 0)",
+    "ratio": 5.98,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "content",
+    "background": "surface",
+    "ratio": 15.23,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "content",
+    "background": "surface-elevated",
+    "ratio": 12.96,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "content",
+    "background": "surface-muted",
+    "ratio": 10.88,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "content-muted",
+    "background": "surface",
+    "ratio": 9.51,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "content-muted",
+    "background": "surface-elevated",
+    "ratio": 8.09,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "content-muted",
+    "background": "surface-muted",
+    "ratio": 6.8,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "status-valid",
+    "background": "surface",
+    "ratio": 9.71,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "status-valid",
+    "background": "surface-elevated",
+    "ratio": 8.27,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "status-valid",
+    "background": "surface-muted",
+    "ratio": 6.94,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "status-warn",
+    "background": "surface",
+    "ratio": 10.0,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "status-warn",
+    "background": "surface-elevated",
+    "ratio": 8.51,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "status-warn",
+    "background": "surface-muted",
+    "ratio": 7.15,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "status-break",
+    "background": "surface",
+    "ratio": 8.61,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "status-break",
+    "background": "surface-elevated",
+    "ratio": 7.33,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "status-break",
+    "background": "surface-muted",
+    "ratio": 6.15,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "planet-mars",
+    "background": "surface",
+    "ratio": 7.86,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "planet-mars",
+    "background": "surface-elevated",
+    "ratio": 6.69,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "planet-mars",
+    "background": "surface-muted",
+    "ratio": 5.62,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "planet-moon",
+    "background": "surface",
+    "ratio": 12.06,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "planet-moon",
+    "background": "surface-elevated",
+    "ratio": 10.26,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "planet-moon",
+    "background": "surface-muted",
+    "ratio": 8.62,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "accent-foreground",
+    "background": "accent",
+    "ratio": 9.82,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "content",
+    "background": "glass over (255, 255, 255)",
+    "ratio": 12.9,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "content-muted",
+    "background": "glass over (255, 255, 255)",
+    "ratio": 8.06,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "content",
+    "background": "glass over (0, 0, 0)",
+    "ratio": 15.51,
+    "passes_normal_text": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "content-muted",
+    "background": "glass over (0, 0, 0)",
+    "ratio": 9.69,
+    "passes_normal_text": true
+  }
+]

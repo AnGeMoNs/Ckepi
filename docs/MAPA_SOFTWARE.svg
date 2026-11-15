@@ -1,0 +1,715 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0.0 -10.0 2920.0 2140.0" width="100%" style="background:#ffffff;font-family:Inter,system-ui,-apple-system,sans-serif;">
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1 L 8 5 L 0 9 z" fill="#495057"/>
+  </marker>
+</defs>
+<rect x="0.0" y="-10.0" width="2920.0" height="2140.0" fill="#ffffff"/>
+<text x="40.0" y="54.0" fill="#1e1e1e" font-size="34.0" font-weight="700" text-anchor="start">
+  <tspan x="40.0" dy="0">CKEPI · Mapa completo del software</tspan>
+</text>
+<text x="40.0" y="82.0" fill="#495057" font-size="16.0" font-weight="500" text-anchor="start">
+  <tspan x="40.0" dy="0">Motor de análogos planetarios terrestres (X → Y y brecha B) · NASA Space Apps 2026 · sede Antofagasta · rama dani</tspan>
+</text>
+<rect x="40.0" y="100.0" width="215.0" height="34.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="147.5" y="121.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="147.5" dy="0">Existe y funciona</tspan>
+</text>
+<rect x="270.0" y="100.0" width="215.0" height="34.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="377.5" y="121.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="377.5" dy="0">Por construir (P0 hoy)</tspan>
+</text>
+<rect x="500.0" y="100.0" width="215.0" height="34.0" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.0"/>
+<text x="607.5" y="121.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="607.5" dy="0">Datos / almacenamiento</tspan>
+</text>
+<rect x="730.0" y="100.0" width="215.0" height="34.0" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2.0"/>
+<text x="837.5" y="121.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="837.5" dy="0">Motor científico</tspan>
+</text>
+<rect x="960.0" y="100.0" width="215.0" height="34.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1067.5" y="121.9" fill="#1e1e1e" font-size="13.0" font-weight="700" text-anchor="middle">
+  <tspan x="1067.5" dy="0">API</tspan>
+</text>
+<rect x="1190.0" y="100.0" width="215.0" height="34.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="1297.5" y="121.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1297.5" dy="0">Externo (agencias)</tspan>
+</text>
+<rect x="1420.0" y="100.0" width="215.0" height="34.0" rx="10" fill="#fcc2d7" stroke="#c2255c" stroke-width="2.0"/>
+<text x="1527.5" y="121.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1527.5" dy="0">Documentación / envío</tspan>
+</text>
+<rect x="30.0" y="170.0" width="470.0" height="1130.0" rx="10" fill="none" stroke="#2f9e44" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="46.0" y="202.0" fill="#2f9e44" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="46.0" dy="0">1 · FRONTEND  (frontend/src · React 18 + TS + Vite + Tailwind)</tspan>
+</text>
+<rect x="55.0" y="225.0" width="420.0" height="44.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="265.0" y="252.6" fill="#1e1e1e" font-size="15.0" font-weight="500" text-anchor="middle">
+  <tspan x="265.0" dy="0">main.tsx → App.tsx  (tema claro/oscuro, i18n)</tspan>
+</text>
+<rect x="55.0" y="280.0" width="200.0" height="44.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="155.0" y="298.5" fill="#1e1e1e" font-size="14.0" font-weight="500" text-anchor="middle">
+  <tspan x="155.0" dy="0">Header</tspan>
+  <tspan x="155.0" dy="17.5">(idioma, tema)</tspan>
+</text>
+<rect x="275.0" y="280.0" width="200.0" height="44.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="375.0" y="307.2" fill="#1e1e1e" font-size="14.0" font-weight="500" text-anchor="middle">
+  <tspan x="375.0" dy="0">GuidedStepsBanner</tspan>
+</text>
+<rect x="55.0" y="340.0" width="420.0" height="70.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="265.0" y="363.6" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="265.0" dy="0">pages/ExplorerPage.tsx</tspan>
+  <tspan x="265.0" dy="16.2">Orquestador de estado: cuerpo, ROI, perfil Luna/Marte,</tspan>
+  <tspan x="265.0" dy="16.2">pesos manuales, sondeo, Modo Misión / Explorador STEAM</tspan>
+</text>
+<rect x="55.0" y="430.0" width="200.0" height="70.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="155.0" y="454.5" fill="#1e1e1e" font-size="12.0" font-weight="500" text-anchor="middle">
+  <tspan x="155.0" dy="0">map/AnalogMap</tspan>
+  <tspan x="155.0" dy="15.0">globo Tierra + hexágonos H3</tspan>
+  <tspan x="155.0" dy="15.0">paginación + drill-down</tspan>
+</text>
+<rect x="275.0" y="430.0" width="200.0" height="70.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="375.0" y="453.6" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="375.0" dy="0">map/PlanetaryMap</tspan>
+  <tspan x="375.0" dy="16.2">globo Luna/Marte</tspan>
+  <tspan x="375.0" dy="16.2">NASA Trek WMTS + sondeo</tspan>
+</text>
+<rect x="55.0" y="515.0" width="200.0" height="58.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="155.0" y="540.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="155.0" dy="0">decomposition/</tspan>
+  <tspan x="155.0" dy="16.2">DecompositionPanel</tspan>
+</text>
+<rect x="275.0" y="515.0" width="200.0" height="58.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="375.0" y="540.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="375.0" dy="0">mission/</tspan>
+  <tspan x="375.0" dy="16.2">AnalogComparisonMatrix</tspan>
+</text>
+<rect x="55.0" y="585.0" width="200.0" height="58.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="155.0" y="610.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="155.0" dy="0">mission/</tspan>
+  <tspan x="155.0" dy="16.2">MissionDiagnostics</tspan>
+</text>
+<rect x="275.0" y="585.0" width="200.0" height="58.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="375.0" y="610.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="375.0" dy="0">mission/</tspan>
+  <tspan x="375.0" dy="16.2">PresetProfileInspector</tspan>
+</text>
+<rect x="55.0" y="655.0" width="200.0" height="58.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="155.0" y="680.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="155.0" dy="0">mission/</tspan>
+  <tspan x="155.0" dy="16.2">ManualVariableControls</tspan>
+</text>
+<rect x="275.0" y="655.0" width="200.0" height="58.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="375.0" y="680.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="375.0" dy="0">mission/</tspan>
+  <tspan x="375.0" dy="16.2">DataConfidenceBanner</tspan>
+</text>
+<rect x="55.0" y="730.0" width="420.0" height="50.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="265.0" y="751.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="265.0" dy="0">components/ui: Badge · Button · Card · InfoTooltip</tspan>
+  <tspan x="265.0" dy="16.2">ProgressBar · Select  (tokens Tailwind, ≥44 px)</tspan>
+</text>
+<rect x="55.0" y="792.0" width="200.0" height="58.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="155.0" y="817.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="155.0" dy="0">i18n/ es · pt · en</tspan>
+  <tspan x="155.0" dy="16.2">(381 claves, paridad)</tspan>
+</text>
+<rect x="275.0" y="792.0" width="200.0" height="58.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="375.0" y="818.0" fill="#1e1e1e" font-size="12.0" font-weight="500" text-anchor="middle">
+  <tspan x="375.0" dy="0">utils/exportResults</tspan>
+  <tspan x="375.0" dy="15.0">CSV · GeoJSON · Informe .md</tspan>
+</text>
+<rect x="55.0" y="862.0" width="200.0" height="44.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="155.0" y="888.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="155.0" dy="0">theme/mapColors.ts</tspan>
+</text>
+<rect x="275.0" y="862.0" width="200.0" height="44.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="375.0" y="888.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="375.0" dy="0">types/analog.ts</tspan>
+</text>
+<rect x="55.0" y="930.0" width="420.0" height="105.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="265.0" y="964.5" fill="#1e1e1e" font-size="12.0" font-weight="700" text-anchor="middle">
+  <tspan x="265.0" dy="0">★ MODO APRENDER · «Tres mundos para todos»  (Argon)</tspan>
+  <tspan x="265.0" dy="15.0">Tierra · Luna · Marte, una idea por pantalla, voz + imagen,</tspan>
+  <tspan x="265.0" dy="15.0">3 niveles: Mirar → Comparar → Investigar. Datos con fuente</tspan>
+  <tspan x="265.0" dy="15.0">visible. Extiende el modo STEAM existente, no es paralelo.</tspan>
+</text>
+<rect x="55.0" y="1050.0" width="420.0" height="70.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="265.0" y="1075.4" fill="#1e1e1e" font-size="11.0" font-weight="700" text-anchor="middle">
+  <tspan x="265.0" dy="0">★ Vista Atacama vs. Jezero (Argon)</tspan>
+  <tspan x="265.0" dy="13.8">histograma de pendientes + KS/Wasserstein + IC 95 %</tspan>
+  <tspan x="265.0" dy="13.8">(nunca «87 % igual»; siempre «qué se parece, cuánto, qué no»)</tspan>
+</text>
+<rect x="55.0" y="1135.0" width="420.0" height="50.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="265.0" y="1164.5" fill="#1e1e1e" font-size="12.0" font-weight="700" text-anchor="middle">
+  <tspan x="265.0" dy="0">★ Opcional: PWA offline · versión imprimible de tarjetas</tspan>
+</text>
+<rect x="55.0" y="1200.0" width="420.0" height="70.0" rx="10" fill="#fcc2d7" stroke="#c2255c" stroke-width="2.0"/>
+<text x="265.0" y="1231.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="265.0" dy="0">Reglas UI: sin any · sin style={{}} · sin texto suelto</tspan>
+  <tspan x="265.0" dy="16.2">WCAG AA · prefers-reduced-motion · 320 px → 4K</tspan>
+</text>
+<rect x="540.0" y="170.0" width="330.0" height="1130.0" rx="10" fill="none" stroke="#868e96" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="556.0" y="202.0" fill="#868e96" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="556.0" dy="0">2 · ACCESO (api/client.ts)</tspan>
+</text>
+<rect x="565.0" y="230.0" width="280.0" height="60.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="705.0" y="248.6" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="705.0" dy="0">api/client.ts</tspan>
+  <tspan x="705.0" dy="16.2">fachada única al backend</tspan>
+  <tspan x="705.0" dy="16.2">ApiClientError</tspan>
+</text>
+<rect x="565.0" y="310.0" width="280.0" height="40.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="705.0" y="334.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="705.0" dy="0">fetchPlanetarySites()</tspan>
+</text>
+<rect x="565.0" y="362.0" width="280.0" height="40.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="705.0" y="386.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="705.0" dy="0">runDecomposition()</tspan>
+</text>
+<rect x="565.0" y="414.0" width="280.0" height="40.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="705.0" y="438.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="705.0" dy="0">searchAnalogs()</tspan>
+</text>
+<rect x="565.0" y="466.0" width="280.0" height="40.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="705.0" y="490.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="705.0" dy="0">refineAnalogCell()</tspan>
+</text>
+<rect x="565.0" y="518.0" width="280.0" height="40.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="705.0" y="542.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="705.0" dy="0">compareCellWithSite()</tspan>
+</text>
+<rect x="565.0" y="570.0" width="280.0" height="40.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="705.0" y="594.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="705.0" dy="0">probeEarthCoordinate()</tspan>
+</text>
+<rect x="565.0" y="622.0" width="280.0" height="40.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="705.0" y="646.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="705.0" dy="0">probePlanetaryLocation()</tspan>
+</text>
+<rect x="565.0" y="674.0" width="280.0" height="40.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="705.0" y="698.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="705.0" dy="0">fetchMultiAgencyDatasets()</tspan>
+</text>
+<rect x="565.0" y="726.0" width="280.0" height="40.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="705.0" y="750.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="705.0" dy="0">refreshDatasets()</tspan>
+</text>
+<rect x="565.0" y="790.0" width="280.0" height="70.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="705.0" y="821.5" fill="#1e1e1e" font-size="14.0" font-weight="700" text-anchor="middle">
+  <tspan x="705.0" dy="0">★ función nueva del cliente</tspan>
+  <tspan x="705.0" dy="17.5">(nombre por definir con Argon)</tspan>
+</text>
+<rect x="565.0" y="880.0" width="280.0" height="60.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="705.0" y="906.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="705.0" dy="0">URLs de tiles y texturas</tspan>
+  <tspan x="705.0" dy="16.2">(proxy del backend)</tspan>
+</text>
+<rect x="910.0" y="170.0" width="380.0" height="1130.0" rx="10" fill="none" stroke="#f08c00" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="926.0" y="202.0" fill="#f08c00" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="926.0" dy="0">3 · API  (backend/app/main.py · FastAPI + Pydantic v2)</tspan>
+</text>
+<rect x="935.0" y="225.0" width="330.0" height="40.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="249.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">GET  /api/v1/health</tspan>
+</text>
+<rect x="935.0" y="270.0" width="330.0" height="40.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="294.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">GET  /api/v1/planetary-sites</tspan>
+</text>
+<rect x="935.0" y="315.0" width="330.0" height="40.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="339.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">POST /api/v1/decompose</tspan>
+</text>
+<rect x="935.0" y="360.0" width="330.0" height="40.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="384.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">POST /api/v1/analogs/search</tspan>
+</text>
+<rect x="935.0" y="405.0" width="330.0" height="40.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="429.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">POST /api/v1/analogs/refine   (rate limit)</tspan>
+</text>
+<rect x="935.0" y="450.0" width="330.0" height="40.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="474.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">GET  /api/v1/analogs/{h3}/compare/{site}</tspan>
+</text>
+<rect x="935.0" y="495.0" width="330.0" height="40.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="519.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">POST /api/v1/earth/probe   (30/min)</tspan>
+</text>
+<rect x="935.0" y="540.0" width="330.0" height="40.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="564.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">POST /api/v1/planetary/probe   (30/min)</tspan>
+</text>
+<rect x="935.0" y="585.0" width="330.0" height="40.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="609.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">GET  /api/v1/earth/{h3}/datasets</tspan>
+</text>
+<rect x="935.0" y="630.0" width="330.0" height="40.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="654.5" fill="#1e1e1e" font-size="12.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">POST /api/v1/datasets/refresh   (admin token)</tspan>
+</text>
+<rect x="935.0" y="675.0" width="330.0" height="40.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="692.0" fill="#1e1e1e" font-size="12.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">GET  /tiles/trek/{body}/{z}/{y}/{x}.jpg</tspan>
+  <tspan x="1100.0" dy="15.0">GET  /textures/planet/{body}[/{layer}].jpg</tspan>
+</text>
+<rect x="935.0" y="730.0" width="330.0" height="70.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="1100.0" y="756.2" fill="#1e1e1e" font-size="10.0" font-weight="700" text-anchor="middle">
+  <tspan x="1100.0" dy="0">★ endpoint Atacama vs. Jezero (Astra; ruta por definir)</tspan>
+  <tspan x="1100.0" dy="12.5">JSON con fuentes: NASADEM + CTX DEM 20 m</tspan>
+  <tspan x="1100.0" dy="12.5">remuestreo 30 m · pendiente · relieve · bootstrap</tspan>
+</text>
+<rect x="935.0" y="820.0" width="330.0" height="60.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="847.0" fill="#1e1e1e" font-size="12.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">models/schemas.py</tspan>
+  <tspan x="1100.0" dy="15.0">esquemas Pydantic v2 (frontera de validación)</tspan>
+</text>
+<rect x="935.0" y="895.0" width="330.0" height="105.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="929.5" fill="#1e1e1e" font-size="12.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">config.py  — fuente única de verdad</tspan>
+  <tspan x="1100.0" dy="15.0">X (10) · Y (6) · B (3) = gravedad, presión,</tspan>
+  <tspan x="1100.0" dy="15.0">radiación · umbral de ruptura 0,60</tspan>
+  <tspan x="1100.0" dy="15.0">FEATURE_SCALES: sigma física por variable</tspan>
+</text>
+<rect x="935.0" y="1015.0" width="330.0" height="70.0" rx="10" fill="#ffec99" stroke="#f08c00" stroke-width="2.0"/>
+<text x="1100.0" y="1047.0" fill="#1e1e1e" font-size="12.0" font-weight="500" text-anchor="middle">
+  <tspan x="1100.0" dy="0">Protecciones: rate limit · _verify_admin_token</tspan>
+  <tspan x="1100.0" dy="15.0">validación H3 · consultas DuckDB parametrizadas</tspan>
+</text>
+<rect x="1330.0" y="170.0" width="370.0" height="1130.0" rx="10" fill="none" stroke="#6741d9" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="1346.0" y="202.0" fill="#6741d9" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="1346.0" dy="0">4 · MOTOR CIENTÍFICO  (backend/app/engine)</tspan>
+</text>
+<rect x="1355.0" y="230.0" width="320.0" height="120.0" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2.0"/>
+<text x="1515.0" y="275.0" fill="#1e1e1e" font-size="10.0" font-weight="500" text-anchor="middle">
+  <tspan x="1515.0" dy="0">causal_decomposer.py</tspan>
+  <tspan x="1515.0" dy="12.5">decompose_planetary_site()</tspan>
+  <tspan x="1515.0" dy="12.5">X→Y con RidgeCV · RandomForest · PCA</tspan>
+  <tspan x="1515.0" dy="12.5">build_breakage_profile() · compute_breakage_index()</tspan>
+</text>
+<rect x="1355.0" y="370.0" width="320.0" height="130.0" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2.0"/>
+<text x="1515.0" y="407.4" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1515.0" dy="0">analog_matcher.py</tspan>
+  <tspan x="1515.0" dy="16.2">match_terrestrial_analogs()</tspan>
+  <tspan x="1515.0" dy="16.2">S_ind · S_dep · R_break desacoplados</tspan>
+  <tspan x="1515.0" dy="16.2">load_earth_grid() · modo Descubrimiento</tspan>
+  <tspan x="1515.0" dy="16.2">pesos auto / perfil / manual</tspan>
+</text>
+<rect x="1355.0" y="520.0" width="320.0" height="110.0" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2.0"/>
+<text x="1515.0" y="558.5" fill="#1e1e1e" font-size="11.0" font-weight="500" text-anchor="middle">
+  <tspan x="1515.0" dy="0">mission_advisor.py</tspan>
+  <tspan x="1515.0" dy="13.8">evaluate_mission_recommendations()</tspan>
+  <tspan x="1515.0" dy="13.8">resolve_profile_weights()</tspan>
+  <tspan x="1515.0" dy="13.8">pruebas válidas/inválidas · límites terrestres</tspan>
+</text>
+<rect x="1355.0" y="650.0" width="320.0" height="90.0" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2.0"/>
+<text x="1515.0" y="675.5" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1515.0" dy="0">known_analogs.py</tspan>
+  <tspan x="1515.0" dy="16.2">~25 sitios clásicos (Yungay, McMurdo,</tspan>
+  <tspan x="1515.0" dy="16.2">Haughton, Krafla, Río Tinto, Svalbard…)</tspan>
+  <tspan x="1515.0" dy="16.2">match_known_analog()</tspan>
+</text>
+<rect x="1355.0" y="760.0" width="320.0" height="100.0" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2.0"/>
+<text x="1515.0" y="798.6" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1515.0" dy="0">etl/geology_and_habitability.py</tspan>
+  <tspan x="1515.0" dy="16.2">Macrostrat · tubos de lava / cuevas</tspan>
+  <tspan x="1515.0" dy="16.2">habitabilidad extremófila</tspan>
+</text>
+<rect x="1355.0" y="880.0" width="320.0" height="130.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="1515.0" y="923.8" fill="#1e1e1e" font-size="10.0" font-weight="700" text-anchor="middle">
+  <tspan x="1515.0" dy="0">engine/terrain_statistics.py  (Astra, en curso)</tspan>
+  <tspan x="1515.0" dy="12.5">compute_terrain_distribution_comparison(): KS ·</tspan>
+  <tspan x="1515.0" dy="12.5">Wasserstein-1 · bootstrap por bloques · 30/60/90 m</tspan>
+  <tspan x="1515.0" dy="12.5">⚠ HOY usa un DEM SINTÉTICO calibrado: falta leer</tspan>
+  <tspan x="1515.0" dy="12.5">los DEM reales (NASADEM / CTX) antes de publicar</tspan>
+</text>
+<rect x="1355.0" y="1030.0" width="320.0" height="110.0" rx="10" fill="#fcc2d7" stroke="#c2255c" stroke-width="2.0"/>
+<text x="1515.0" y="1068.5" fill="#1e1e1e" font-size="11.0" font-weight="500" text-anchor="middle">
+  <tspan x="1515.0" dy="0">Contrato de honestidad:</tspan>
+  <tspan x="1515.0" dy="13.8">cada puntaje trae incertidumbre, resolución H3,</tspan>
+  <tspan x="1515.0" dy="13.8">brecha B y fuente. Se preselecciona,</tspan>
+  <tspan x="1515.0" dy="13.8">no se certifica seguridad operativa.</tspan>
+</text>
+<rect x="1740.0" y="170.0" width="350.0" height="1130.0" rx="10" fill="none" stroke="#1971c2" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="1756.0" y="202.0" fill="#1971c2" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="1756.0" dy="0">5 · CAPAS DE DATOS</tspan>
+</text>
+<rect x="1765.0" y="230.0" width="300.0" height="80.0" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.0"/>
+<text x="1915.0" y="258.6" fill="#1e1e1e" font-size="13.0" font-weight="700" text-anchor="middle">
+  <tspan x="1915.0" dy="0">L0 · Crudo / caché</tspan>
+  <tspan x="1915.0" dy="16.2">respuestas de APIs + http_utils</tspan>
+  <tspan x="1915.0" dy="16.2">era5_res3_checkpoint.jsonl</tspan>
+</text>
+<rect x="1765.0" y="330.0" width="300.0" height="90.0" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.0"/>
+<text x="1915.0" y="363.6" fill="#1e1e1e" font-size="13.0" font-weight="700" text-anchor="middle">
+  <tspan x="1915.0" dy="0">L1 · DuckDB  ckepi.duckdb</tspan>
+  <tspan x="1915.0" dy="16.2">celdas H3 res 2–5 + marcas de</tspan>
+  <tspan x="1915.0" dy="16.2">actualización (upsert_earth_cell)</tspan>
+</text>
+<rect x="1765.0" y="440.0" width="300.0" height="60.0" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.0"/>
+<text x="1915.0" y="474.9" fill="#1e1e1e" font-size="13.0" font-weight="700" text-anchor="middle">
+  <tspan x="1915.0" dy="0">L1 · earth_h3_grid.parquet (GeoParquet)</tspan>
+</text>
+<rect x="1765.0" y="520.0" width="300.0" height="75.0" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.0"/>
+<text x="1915.0" y="546.1" fill="#1e1e1e" font-size="13.0" font-weight="700" text-anchor="middle">
+  <tspan x="1915.0" dy="0">L1 · planetary_sites.json</tspan>
+  <tspan x="1915.0" dy="16.2">planetary_timeseries.parquet</tspan>
+  <tspan x="1915.0" dy="16.2">Luna / Marte (LRO · REMS · MEDA)</tspan>
+</text>
+<rect x="1765.0" y="615.0" width="300.0" height="60.0" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.0"/>
+<text x="1915.0" y="641.8" fill="#1e1e1e" font-size="13.0" font-weight="700" text-anchor="middle">
+  <tspan x="1915.0" dy="0">L2 · Características X / Y / B</tspan>
+  <tspan x="1915.0" dy="16.2">(+ FEATURE_SCALES)</tspan>
+</text>
+<rect x="1765.0" y="695.0" width="300.0" height="60.0" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.0"/>
+<text x="1915.0" y="721.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1915.0" dy="0">L3 · Resultados: S_ind · S_dep ·</tspan>
+  <tspan x="1915.0" dy="16.2">R_break · ranking · incertidumbre</tspan>
+</text>
+<rect x="1765.0" y="775.0" width="300.0" height="70.0" rx="10" fill="#fcc2d7" stroke="#c2255c" stroke-width="2.0"/>
+<text x="1915.0" y="798.6" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1915.0" dy="0">L4 · Procedencia</tspan>
+  <tspan x="1915.0" dy="16.2">DATA_PROVENANCE.md · REFERENCES.md</tspan>
+  <tspan x="1915.0" dy="16.2">(fuente, resolución, licencia)</tspan>
+</text>
+<rect x="1765.0" y="865.0" width="300.0" height="50.0" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.0"/>
+<text x="1915.0" y="894.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1915.0" dy="0">L5 · Salidas: CSV · GeoJSON · .md</tspan>
+</text>
+<rect x="1765.0" y="935.0" width="300.0" height="130.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="1915.0" y="983.5" fill="#1e1e1e" font-size="11.0" font-weight="700" text-anchor="middle">
+  <tspan x="1915.0" dy="0">★ Datos nuevos (derivados, sin tocar .duckdb)</tspan>
+  <tspan x="1915.0" dy="13.8">NASADEM s23w069 · s25w070 (Earthdata)</tspan>
+  <tspan x="1915.0" dy="13.8">CTX DEM Jezero 20 m (USGS, dominio público)</tspan>
+  <tspan x="1915.0" dy="13.8">→ data/derived/*.json con sources[]</tspan>
+</text>
+<rect x="1765.0" y="1085.0" width="300.0" height="70.0" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.0"/>
+<text x="1915.0" y="1117.0" fill="#1e1e1e" font-size="12.0" font-weight="500" text-anchor="middle">
+  <tspan x="1915.0" dy="0">seed_datasets.py</tspan>
+  <tspan x="1915.0" dy="15.0">ensure_datasets_built() · caché de sitios</tspan>
+</text>
+<rect x="2130.0" y="170.0" width="380.0" height="1130.0" rx="10" fill="none" stroke="#e67700" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="2146.0" y="202.0" fill="#e67700" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="2146.0" dy="0">6 · ETL / ADAPTADORES  (backend/app/etl)</tspan>
+</text>
+<rect x="2155.0" y="225.0" width="330.0" height="60.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="2320.0" y="252.0" fill="#1e1e1e" font-size="12.0" font-weight="500" text-anchor="middle">
+  <tspan x="2320.0" dy="0">http_utils.py</tspan>
+  <tspan x="2320.0" dy="15.0">create_http_client() · certifi SSL · reintentos</tspan>
+</text>
+<rect x="2155.0" y="300.0" width="330.0" height="100.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="2320.0" y="335.0" fill="#1e1e1e" font-size="10.0" font-weight="500" text-anchor="middle">
+  <tspan x="2320.0" dy="0">earth_api.py</tspan>
+  <tspan x="2320.0" dy="12.5">fetch_nasa_power_metrics · climatology</tspan>
+  <tspan x="2320.0" dy="12.5">fetch_copernicus_terrain_metrics · SoilGrids</tspan>
+  <tspan x="2320.0" dy="12.5">fetch_open_meteo_thermal_metrics · probe_earth_location</tspan>
+</text>
+<rect x="2155.0" y="415.0" width="330.0" height="80.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="2320.0" y="444.5" fill="#1e1e1e" font-size="12.0" font-weight="500" text-anchor="middle">
+  <tspan x="2320.0" dy="0">global_earth_etl.py · earth_etl.py</tspan>
+  <tspan x="2320.0" dy="15.0">build_global_earth_land_grid() · res 2→3</tspan>
+  <tspan x="2320.0" dy="15.0">batch elevación + ERA5 · checkpoint</tspan>
+</text>
+<rect x="2155.0" y="510.0" width="330.0" height="70.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="2320.0" y="541.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2320.0" dy="0">moon_api.py</tspan>
+  <tspan x="2320.0" dy="16.2">PDS ODE: LRO Diviner · cobertura LOLA</tspan>
+</text>
+<rect x="2155.0" y="595.0" width="330.0" height="80.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="2320.0" y="623.6" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2320.0" dy="0">mars_api.py</tspan>
+  <tspan x="2320.0" dy="16.2">Curiosity REMS · Perseverance MEDA</tspan>
+  <tspan x="2320.0" dy="16.2">cobertura PDS ODE</tspan>
+</text>
+<rect x="2155.0" y="690.0" width="330.0" height="70.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="2320.0" y="713.6" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2320.0" dy="0">planetary_probe.py</tspan>
+  <tspan x="2320.0" dy="16.2">probe_planetary_coordinate()</tspan>
+  <tspan x="2320.0" dy="16.2">DEM 3×3 LOLA/MOLA</tspan>
+</text>
+<rect x="2155.0" y="775.0" width="330.0" height="60.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="2320.0" y="801.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2320.0" dy="0">planetary_etl.py</tspan>
+  <tspan x="2320.0" dy="16.2">lector PDS con pdr</tspan>
+</text>
+<rect x="2155.0" y="850.0" width="330.0" height="90.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="2320.0" y="883.6" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2320.0" dy="0">space_agencies_api.py</tspan>
+  <tspan x="2320.0" dy="16.2">discover_space_agency_datasets()</tspan>
+  <tspan x="2320.0" dy="16.2">CMR · Copernicus OData · CSA · JAXA</tspan>
+</text>
+<rect x="2155.0" y="960.0" width="330.0" height="90.0" rx="10" fill="#fcc2d7" stroke="#c2255c" stroke-width="2.0"/>
+<text x="2320.0" y="994.5" fill="#1e1e1e" font-size="12.0" font-weight="500" text-anchor="middle">
+  <tspan x="2320.0" dy="0">Reglas: caché agresiva · checkpoint incremental</tspan>
+  <tspan x="2320.0" dy="15.0">tolerar HTTP 429 · un solo cliente HTTP</tspan>
+  <tspan x="2320.0" dy="15.0">nada de CNSA</tspan>
+</text>
+<rect x="2155.0" y="1065.0" width="330.0" height="80.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="2320.0" y="1096.2" fill="#1e1e1e" font-size="10.0" font-weight="700" text-anchor="middle">
+  <tspan x="2320.0" dy="0">★ etl/ lector de DEM reales (Astra; nombre por definir)</tspan>
+  <tspan x="2320.0" dy="12.5">descarga/recorta NASADEM y CTX DEM,</tspan>
+  <tspan x="2320.0" dy="12.5">metadatos PDS4 (verificar escala E-O ~19 m)</tspan>
+</text>
+<rect x="2550.0" y="170.0" width="330.0" height="1130.0" rx="10" fill="none" stroke="#495057" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="2566.0" y="202.0" fill="#495057" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="2566.0" dy="0">7 · FUENTES EXTERNAS</tspan>
+</text>
+<rect x="2575.0" y="225.0" width="280.0" height="68.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="2715.0" y="255.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2715.0" dy="0">NASA POWER</tspan>
+  <tspan x="2715.0" dy="16.2">irradiancia · albedo</tspan>
+</text>
+<rect x="2575.0" y="307.0" width="280.0" height="68.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="2715.0" y="337.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2715.0" dy="0">Open-Meteo</tspan>
+  <tspan x="2715.0" dy="16.2">ERA5-Land archivo</tspan>
+</text>
+<rect x="2575.0" y="389.0" width="280.0" height="68.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="2715.0" y="419.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2715.0" dy="0">Copernicus DEM 90 m</tspan>
+  <tspan x="2715.0" dy="16.2">elevación · pendiente</tspan>
+</text>
+<rect x="2575.0" y="471.0" width="280.0" height="68.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="2715.0" y="509.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2715.0" dy="0">ISRIC SoilGrids</tspan>
+</text>
+<rect x="2575.0" y="553.0" width="280.0" height="68.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="2715.0" y="583.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2715.0" dy="0">NASA PDS ODE</tspan>
+  <tspan x="2715.0" dy="16.2">LRO · REMS · MEDA</tspan>
+</text>
+<rect x="2575.0" y="635.0" width="280.0" height="68.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="2715.0" y="665.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2715.0" dy="0">NASA Trek WMTS</tspan>
+  <tspan x="2715.0" dy="16.2">Luna LRO WAC/LOLA · Marte MOLA</tspan>
+</text>
+<rect x="2575.0" y="717.0" width="280.0" height="68.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="2715.0" y="747.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2715.0" dy="0">NASA Earthdata CMR · GIBS</tspan>
+  <tspan x="2715.0" dy="16.2">MODIS · SMAP · Worldview</tspan>
+</text>
+<rect x="2575.0" y="799.0" width="280.0" height="68.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="2715.0" y="829.8" fill="#1e1e1e" font-size="13.0" font-weight="700" text-anchor="middle">
+  <tspan x="2715.0" dy="0">ESA Copernicus Data Space</tspan>
+  <tspan x="2715.0" dy="16.2">Sentinel-1/2 · Open Science Catalog</tspan>
+</text>
+<rect x="2575.0" y="881.0" width="280.0" height="68.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="2715.0" y="919.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2715.0" dy="0">CSA RADARSAT · JAXA G-Portal</tspan>
+</text>
+<rect x="2575.0" y="963.0" width="280.0" height="68.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="2715.0" y="993.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2715.0" dy="0">Macrostrat</tspan>
+  <tspan x="2715.0" dy="16.2">unidades geológicas</tspan>
+</text>
+<rect x="2575.0" y="1045.0" width="280.0" height="68.0" rx="10" fill="#e9ecef" stroke="#495057" stroke-width="2.0"/>
+<text x="2715.0" y="1075.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="2715.0" dy="0">NASA Planetary Fact Sheets</tspan>
+  <tspan x="2715.0" dy="16.2">(valores de «Tres mundos»)</tspan>
+</text>
+<rect x="2575.0" y="1127.0" width="280.0" height="68.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="2715.0" y="1157.8" fill="#1e1e1e" font-size="13.0" font-weight="700" text-anchor="middle">
+  <tspan x="2715.0" dy="0">★ NASADEM_HGT v001 (Earthdata)</tspan>
+  <tspan x="2715.0" dy="16.2">★ USGS CTX DEM Jezero 20 m</tspan>
+</text>
+<polyline points="475.0,375.0 565.0,260.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<text x="490.6" y="308.5" fill="#343a40" font-size="13.0" font-weight="500" text-anchor="start">
+  <tspan x="490.6" dy="0">llama a</tspan>
+</text>
+<polyline points="475.0,982.5 565.0,825.0" fill="none" stroke="#e8590c" stroke-width="2.0" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<text x="499.0" y="894.8" fill="#e8590c" font-size="13.0" font-weight="500" text-anchor="start">
+  <tspan x="499.0" dy="0">datos</tspan>
+</text>
+<polyline points="475.0,1085.0 565.0,825.0" fill="none" stroke="#e8590c" stroke-width="2.0" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<polyline points="845.0,260.0 935.0,380.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<text x="822.8" y="311.0" fill="#343a40" font-size="13.0" font-weight="500" text-anchor="start">
+  <tspan x="822.8" dy="0">HTTP JSON tipado</tspan>
+</text>
+<polyline points="845.0,825.0 935.0,765.0" fill="none" stroke="#e8590c" stroke-width="2.0" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<polyline points="845.0,910.0 935.0,695.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<polyline points="1265.0,335.0 1355.0,290.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<polyline points="1265.0,380.0 1355.0,435.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<polyline points="1265.0,470.0 1355.0,575.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<polyline points="1265.0,605.0 1355.0,810.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<polyline points="1265.0,765.0 1355.0,945.0" fill="none" stroke="#e8590c" stroke-width="2.0" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<polyline points="1515.0,500.0 1515.0,650.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<text x="1422.6" y="566.0" fill="#343a40" font-size="13.0" font-weight="500" text-anchor="start">
+  <tspan x="1422.6" dy="0">filtra descubrimientos</tspan>
+</text>
+<polyline points="1675.0,435.0 1765.0,375.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<text x="1678.0" y="396.0" fill="#343a40" font-size="13.0" font-weight="500" text-anchor="start">
+  <tspan x="1678.0" dy="0">lee celdas</tspan>
+</text>
+<polyline points="1675.0,290.0 1765.0,557.5" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<polyline points="1675.0,945.0 1765.0,1000.0" fill="none" stroke="#e8590c" stroke-width="2.0" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<polyline points="1265.0,515.0 2155.0,350.0" fill="none" stroke="#e67700" stroke-width="2.0" marker-end="url(#arrow)"/>
+<text x="1663.8" y="423.5" fill="#e67700" font-size="13.0" font-weight="700" text-anchor="start">
+  <tspan x="1663.8" dy="0">ETL en vivo</tspan>
+</text>
+<polyline points="1265.0,425.0 2155.0,455.0" fill="none" stroke="#e67700" stroke-width="2.0" marker-end="url(#arrow)"/>
+<text x="1668.0" y="431.0" fill="#e67700" font-size="13.0" font-weight="500" text-anchor="start">
+  <tspan x="1668.0" dy="0">7 hijos H3</tspan>
+</text>
+<polyline points="1265.0,560.0 2155.0,725.0" fill="none" stroke="#e67700" stroke-width="2.0" marker-end="url(#arrow)"/>
+<polyline points="2155.0,350.0 2065.0,375.0" fill="none" stroke="#e67700" stroke-width="2.0" marker-end="url(#arrow)"/>
+<text x="2084.8" y="353.5" fill="#e67700" font-size="13.0" font-weight="500" text-anchor="start">
+  <tspan x="2084.8" dy="0">upsert</tspan>
+</text>
+<polyline points="2155.0,455.0 2065.0,270.0" fill="none" stroke="#e67700" stroke-width="2.0" marker-end="url(#arrow)"/>
+<text x="2068.0" y="353.5" fill="#e67700" font-size="13.0" font-weight="500" text-anchor="start">
+  <tspan x="2068.0" dy="0">checkpoint</tspan>
+</text>
+<polyline points="2485.0,350.0 2575.0,259.0" fill="none" stroke="#868e96" stroke-width="2.0" marker-end="url(#arrow)"/>
+<polyline points="2485.0,545.0 2575.0,587.0" fill="none" stroke="#868e96" stroke-width="2.0" marker-end="url(#arrow)"/>
+<polyline points="2485.0,895.0 2575.0,833.0" fill="none" stroke="#868e96" stroke-width="2.0" marker-end="url(#arrow)"/>
+<polyline points="2485.0,1105.0 2575.0,1161.0" fill="none" stroke="#e8590c" stroke-width="2.0" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<polyline points="2065.0,1000.0 2155.0,1105.0" fill="none" stroke="#e8590c" stroke-width="2.0" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<rect x="30.0" y="1350.0" width="2850.0" height="380.0" rx="10" fill="none" stroke="#1e1e1e" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="46.0" y="1382.0" fill="#1e1e1e" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="46.0" dy="0">FLUJOS CLAVE (cómo viaja un dato)</tspan>
+</text>
+<text x="55.0" y="1416.0" fill="#343a40" font-size="16.0" font-weight="500" text-anchor="start">
+  <tspan x="55.0" dy="0">A · Buscar análogos (Modo Misión)</tspan>
+</text>
+<rect x="55.0" y="1428.0" width="300.0" height="56.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="205.0" y="1453.0" fill="#1e1e1e" font-size="12.0" font-weight="500" text-anchor="middle">
+  <tspan x="205.0" dy="0">Usuario elige Luna/Marte + sitio + perfil</tspan>
+  <tspan x="205.0" dy="15.0">(ExplorerPage)</tspan>
+</text>
+<rect x="405.0" y="1428.0" width="300.0" height="56.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="555.0" y="1452.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="555.0" dy="0">searchAnalogs()</tspan>
+  <tspan x="555.0" dy="16.2">POST /analogs/search</tspan>
+</text>
+<polyline points="355.0,1456.0 405.0,1456.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<rect x="755.0" y="1428.0" width="300.0" height="56.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="905.0" y="1452.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="905.0" dy="0">analog_matcher: S_ind · S_dep · R_break</tspan>
+  <tspan x="905.0" dy="16.2">(DuckDB, sin red)</tspan>
+</text>
+<polyline points="705.0,1456.0 755.0,1456.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<rect x="1105.0" y="1428.0" width="300.0" height="56.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="1255.0" y="1452.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1255.0" dy="0">mission_advisor: veredicto,</tspan>
+  <tspan x="1255.0" dy="16.2">límites de la Tierra</tspan>
+</text>
+<polyline points="1055.0,1456.0 1105.0,1456.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<rect x="1455.0" y="1428.0" width="300.0" height="56.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="1605.0" y="1452.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1605.0" dy="0">AnalogMap + Matrix + Diagnostics</tspan>
+  <tspan x="1605.0" dy="16.2">+ exportación</tspan>
+</text>
+<polyline points="1405.0,1456.0 1455.0,1456.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<text x="55.0" y="1516.0" fill="#343a40" font-size="16.0" font-weight="500" text-anchor="start">
+  <tspan x="55.0" dy="0">B · Drill-down H3 (res 3 → 5)</tspan>
+</text>
+<rect x="55.0" y="1528.0" width="300.0" height="56.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="205.0" y="1560.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="205.0" dy="0">Clic en hexágono terrestre</tspan>
+</text>
+<rect x="405.0" y="1528.0" width="300.0" height="56.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="555.0" y="1552.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="555.0" dy="0">refineAnalogCell()</tspan>
+  <tspan x="555.0" dy="16.2">POST /analogs/refine</tspan>
+</text>
+<polyline points="355.0,1556.0 405.0,1556.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<rect x="755.0" y="1528.0" width="300.0" height="56.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="905.0" y="1560.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="905.0" dy="0">h3.cell_to_children → 7 hijos</tspan>
+</text>
+<polyline points="705.0,1556.0 755.0,1556.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<rect x="1105.0" y="1528.0" width="300.0" height="56.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="1255.0" y="1552.8" fill="#1e1e1e" font-size="13.0" font-weight="700" text-anchor="middle">
+  <tspan x="1255.0" dy="0">ETL en vivo: POWER · DEM · ERA5-Land</tspan>
+  <tspan x="1255.0" dy="16.2">(caché + 429)</tspan>
+</text>
+<polyline points="1055.0,1556.0 1105.0,1556.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<rect x="1455.0" y="1528.0" width="300.0" height="56.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="1605.0" y="1560.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1605.0" dy="0">upsert DuckDB → re-ranking</tspan>
+</text>
+<polyline points="1405.0,1556.0 1455.0,1556.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<text x="55.0" y="1616.0" fill="#343a40" font-size="16.0" font-weight="700" text-anchor="start">
+  <tspan x="55.0" dy="0">C · ★ Atacama vs. Jezero (P0 científico, nuevo)</tspan>
+</text>
+<rect x="55.0" y="1628.0" width="300.0" height="56.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="205.0" y="1652.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="205.0" dy="0">NASADEM + CTX DEM 20 m</tspan>
+  <tspan x="205.0" dy="16.2">(áreas de igual extensión)</tspan>
+</text>
+<rect x="405.0" y="1628.0" width="300.0" height="56.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="555.0" y="1652.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="555.0" dy="0">reproyectar a metros → remuestrear</tspan>
+  <tspan x="555.0" dy="16.2">a 30 m → pendiente y relieve</tspan>
+</text>
+<polyline points="355.0,1656.0 405.0,1656.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<rect x="755.0" y="1628.0" width="300.0" height="56.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="905.0" y="1652.8" fill="#1e1e1e" font-size="13.0" font-weight="700" text-anchor="middle">
+  <tspan x="905.0" dy="0">KS · Wasserstein-1 ·</tspan>
+  <tspan x="905.0" dy="16.2">bootstrap por bloques (IC 95 %)</tspan>
+</text>
+<polyline points="705.0,1656.0 755.0,1656.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<rect x="1105.0" y="1628.0" width="300.0" height="56.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="1255.0" y="1660.9" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1255.0" dy="0">JSON con sources[] + límites</tspan>
+</text>
+<polyline points="1055.0,1656.0 1105.0,1656.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<rect x="1455.0" y="1628.0" width="300.0" height="56.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="1605.0" y="1652.8" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1605.0" dy="0">Vista Argon: histograma + «qué se</tspan>
+  <tspan x="1605.0" dy="16.2">parece, cuánto y qué no»</tspan>
+</text>
+<polyline points="1405.0,1656.0 1455.0,1656.0" fill="none" stroke="#343a40" stroke-width="2.0" marker-end="url(#arrow)"/>
+<rect x="30.0" y="1760.0" width="2850.0" height="330.0" rx="10" fill="none" stroke="#c2255c" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="46.0" y="1792.0" fill="#c2255c" font-size="22.0" font-weight="700" text-anchor="start">
+  <tspan x="46.0" dy="0">EQUIPO, REGLAS Y COMPUERTAS</tspan>
+</text>
+<rect x="55.0" y="1820.0" width="400.0" height="120.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="255.0" y="1859.0" fill="#1e1e1e" font-size="14.0" font-weight="500" text-anchor="middle">
+  <tspan x="255.0" dy="0">ASTRA</tspan>
+  <tspan x="255.0" dy="17.5">solo backend/ (+ datos derivados nuevos)</tspan>
+  <tspan x="255.0" dy="17.5">Atacama vs. Jezero + endpoint con fuentes</tspan>
+  <tspan x="255.0" dy="17.5">no tocar *.duckdb ni checkpoints</tspan>
+</text>
+<rect x="480.0" y="1820.0" width="400.0" height="120.0" rx="10" fill="#ffd8a8" stroke="#e8590c" stroke-width="2.0"/>
+<text x="680.0" y="1859.0" fill="#1e1e1e" font-size="14.0" font-weight="500" text-anchor="middle">
+  <tspan x="680.0" dy="0">ARGON</tspan>
+  <tspan x="680.0" dy="17.5">solo frontend/</tspan>
+  <tspan x="680.0" dy="17.5">Modo Aprender «Tres mundos» + vista Jezero</tspan>
+  <tspan x="680.0" dy="17.5">tokens Tailwind · components/ui · i18n es/pt/en</tspan>
+</text>
+<rect x="905.0" y="1820.0" width="400.0" height="120.0" rx="10" fill="#fcc2d7" stroke="#c2255c" stroke-width="2.0"/>
+<text x="1105.0" y="1860.5" fill="#1e1e1e" font-size="13.0" font-weight="500" text-anchor="middle">
+  <tspan x="1105.0" dy="0">CLAUDE</tspan>
+  <tspan x="1105.0" dy="16.2">docs/ · README · AI_DISCLOSURE · REFERENCES · tests</tspan>
+  <tspan x="1105.0" dy="16.2">fuentes, página de proyecto en inglés,</tspan>
+  <tspan x="1105.0" dy="16.2">revisión con juez-validador</tspan>
+</text>
+<rect x="1330.0" y="1820.0" width="420.0" height="120.0" rx="10" fill="#fcc2d7" stroke="#c2255c" stroke-width="2.0"/>
+<text x="1540.0" y="1859.0" fill="#1e1e1e" font-size="14.0" font-weight="500" text-anchor="middle">
+  <tspan x="1540.0" dy="0">GIT</tspan>
+  <tspan x="1540.0" dy="17.5">solo `git add` de tu carpeta (nunca -A / .)</tspan>
+  <tspan x="1540.0" dy="17.5">commits pequeños · pull --rebase antes de push</tspan>
+  <tspan x="1540.0" dy="17.5">nunca push a main · entrega por PR dani → main</tspan>
+</text>
+<rect x="1775.0" y="1820.0" width="560.0" height="120.0" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.0"/>
+<text x="2055.0" y="1859.0" fill="#1e1e1e" font-size="14.0" font-weight="500" text-anchor="middle">
+  <tspan x="2055.0" dy="0">DEFINITION OF DONE  (skill ckepi-verify)</tspan>
+  <tspan x="2055.0" dy="17.5">pytest -q (backend) · npm run build (tsc + vite)</tspan>
+  <tspan x="2055.0" dy="17.5">paridad i18n es/pt/en · revisión 320 px / 1280 px+</tspan>
+  <tspan x="2055.0" dy="17.5">sin any · sin style={{}}</tspan>
+</text>
+<rect x="2360.0" y="1820.0" width="495.0" height="120.0" rx="10" fill="#fcc2d7" stroke="#c2255c" stroke-width="2.0"/>
+<text x="2607.5" y="1859.0" fill="#1e1e1e" font-size="14.0" font-weight="500" text-anchor="middle">
+  <tspan x="2607.5" dy="0">PUERTAS NASA</tspan>
+  <tspan x="2607.5" dy="17.5">página y demo en inglés · video ≤30 s o ≤7 slides</tspan>
+  <tspan x="2607.5" dy="17.5">links públicos · ≥1 dato NASA · fuentes citadas · IA</tspan>
+  <tspan x="2607.5" dy="17.5">declarada · sin logos NASA ni menores · licencia OSI</tspan>
+</text>
+<rect x="55.0" y="1960.0" width="2800.0" height="100.0" rx="10" fill="#fcc2d7" stroke="#c2255c" stroke-width="2.0"/>
+<text x="1455.0" y="2006.2" fill="#1e1e1e" font-size="15.0" font-weight="500" text-anchor="middle">
+  <tspan x="1455.0" dy="0">SÁB 18:00 corte de alcance (si el P0 no está, se recorta todo lo demás)  →  DOM ≤ 20:00 envío interno  →  DOM 23:59 (Chile) cierre oficial de NASA</tspan>
+  <tspan x="1455.0" dy="18.8">Orden: línea base → tokens de identidad → honestidad científica visible → Atacama vs. Jezero → Tres mundos → motion → ciencia abierta → envío</tspan>
+</text>
+</svg>

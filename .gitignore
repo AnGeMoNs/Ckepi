@@ -35,3 +35,8 @@ build/
 
 # Large ETL checkpoints (>100 MB GitHub limit; tracked as .gz)
 backend/app/data/era5_res3_checkpoint.jsonl
+# Browser test output
+playwright-report/
+test-results/
+
+.ckepi-tests-*/

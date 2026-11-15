@@ -168,10 +168,63 @@ export interface VariableDelta {
   is_breakage: boolean;
 }
 
+export interface ScaleSensitivityPoint {
+  resolution_m: number;
+  slope_wasserstein_deg: number;
+  slope_w1_ci_low: number;
+  slope_w1_ci_high: number;
+  slope_ks_stat: number;
+  slope_ks_ci_low: number;
+  slope_ks_ci_high: number;
+  relief_wasserstein_m: number;
+  relief_w1_ci_low: number;
+  relief_w1_ci_high: number;
+  relief_ks_stat: number;
+  planetary_slope_median_deg: number;
+  earth_slope_median_deg: number;
+  planetary_slope_p90_deg: number;
+  earth_slope_p90_deg: number;
+}
+
+export interface DistributionHistogram {
+  metric: "slope_deg" | "local_relief_m";
+  unit: string;
+  bin_centers: number[];
+  planetary_density: number[];
+  earth_density: number[];
+  control_yungay_density: number[];
+  wasserstein_distance: number;
+  w1_ci_95: [number, number];
+  ks_statistic: number;
+  ks_ci_95: [number, number];
+  control_yungay_w1: number;
+  control_yungay_ks: number;
+}
+
+export interface TerrainDistributionComparison {
+  common_resolution_m: number;
+  window_size_km: number;
+  block_bootstrap_size_px: number;
+  bootstrap_iterations: number;
+  earth_projection: string;
+  planetary_projection: string;
+  planetary_dem_source: string;
+  earth_dem_source: string;
+  control_benchmark_name: string;
+  slope_distribution: DistributionHistogram;
+  relief_distribution: DistributionHistogram;
+  scale_sensitivity: ScaleSensitivityPoint[];
+  profile_distance_m: number[];
+  planetary_profile_elev_m: number[];
+  earth_profile_elev_m: number[];
+  control_yungay_profile_elev_m: number[];
+}
+
 export interface SiteComparisonResponse {
   site: PlanetarySite;
   match: AnalogMatchItem;
   variable_deltas: VariableDelta[];
+  statistical_distribution?: TerrainDistributionComparison | null;
 }
 
 export interface PlanetaryProbeResponse {
