@@ -20,7 +20,8 @@ test("scientific pages show one task at a time and preserve the target through h
   await expect(page.locator("#panel-start")).toBeVisible();
   await expect(page.locator("#section-maps")).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Comparación de terreno · Jezero → Antofagasta" })).toHaveCount(0);
-  await page.locator("#tab-compare").click();
+  await expect(page.getByRole("tablist")).toHaveCount(0);
+  await page.locator("#portal-compare").click();
   await expect(page.locator("#section-maps")).toBeVisible();
   await expect(page).toHaveURL(/tab=compare/);
   await expect(page).toHaveURL(/profile=isru_ice_drilling/);
@@ -38,6 +39,14 @@ test("scientific pages show one task at a time and preserve the target through h
   await expect(page.locator("#panel-analysis")).toBeVisible();
   await expect(page.getByRole("button", { name: "Cráter Jezero (Delta Lacustre)", exact: true })).toHaveAttribute("aria-pressed", "true");
   await expect(page).toHaveURL(/site=mars_jezero_crater/);
+  await page.locator("#tab-start").click();
+  await expect(page.getByRole("tablist")).toHaveCount(0);
+  await expect(page.locator("#portal-compare")).toBeFocused();
+  await page.screenshot({ path: "/tmp/ckepi-inicio-sin-barra-desktop.png", fullPage: true });
+  await page.setViewportSize({ width: 320, height: 900 });
+  await expect(page.getByRole("tablist")).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+  await page.screenshot({ path: "/tmp/ckepi-inicio-sin-barra-mobile.png", fullPage: true });
 });
 
 test("the original shared map link opens only the exploration page", async ({ page }) => {

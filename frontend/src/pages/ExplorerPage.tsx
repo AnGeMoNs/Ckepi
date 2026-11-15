@@ -179,6 +179,9 @@ export function ExplorerPage({
     url.hash = "";
     window.history.pushState({}, "", url.toString());
     setActiveTab(next);
+    if (next === "start") {
+      window.requestAnimationFrame(() => document.getElementById("portal-compare")?.focus());
+    }
     window.scrollTo({ top: 0, behavior: "instant" });
   };
 
@@ -238,7 +241,11 @@ export function ExplorerPage({
     e.preventDefault();
     const nextTab = navTabs[nextIndex].id;
     setActiveTab(nextTab);
-    document.getElementById(`tab-${nextTab}`)?.focus();
+    if (nextTab === "start") {
+      window.requestAnimationFrame(() => document.getElementById("portal-compare")?.focus());
+    } else {
+      document.getElementById(`tab-${nextTab}`)?.focus();
+    }
   };
 
   const hasResults = Boolean(analysis.searchResult || analysis.decomposition);
@@ -357,7 +364,7 @@ export function ExplorerPage({
       {!isStudent && activeTab === "start" && <ScientificHome body={params.selectedBody} evaluated={analysis.searchResult?.total_evaluated} onEarth={() => { setMobileMapTab("earth"); navigatePage("compare"); }} onChoose={(body) => { params.setCustomProbedSite(null); params.setSelectedBody(body); params.setSelectedSiteId(body === "moon" ? "moon_shackleton_pole" : "mars_jezero_crater"); navigatePage("compare"); }} />}
 
       {/* Primary journey tabs (mode-aware) */}
-      {<nav
+      {(isStudent || activeTab !== "start") && <nav
         aria-label={t("nav.tabsLabel")}
         role="tablist"
         className={`ckepi-liquid grid gap-1 rounded-3xl p-1.5 ${isStudent ? "grid-cols-3" : "grid-cols-5"}`}

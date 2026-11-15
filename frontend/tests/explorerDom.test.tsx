@@ -172,11 +172,16 @@ test("DOM: keyboard tabs move focus and selection together in both modes", async
   root = createRoot(document.getElementById("root")!);
   await render("?tab=compare&mode=mission", "mission");
   document.getElementById("tab-compare")!.focus();
-  for (const [key, expected] of [["ArrowRight", "results"], ["ArrowLeft", "compare"], ["End", "evidence"], ["Home", "start"], ["ArrowLeft", "evidence"]]) {
+  for (const [key, expected] of [["ArrowRight", "results"], ["ArrowLeft", "compare"], ["End", "evidence"]]) {
     await act(async () => document.activeElement!.dispatchEvent(new window.KeyboardEvent("keydown", { key, bubbles: true })));
     assert.equal(document.activeElement?.id, `tab-${expected}`);
     assert.equal(document.activeElement?.getAttribute("aria-selected"), "true");
   }
+  await act(async () => document.activeElement!.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Home", bubbles: true })));
+  await waitFor(() => document.activeElement?.id === "portal-compare", "Home must focus the first start portal");
+  assert.equal(document.querySelector("nav[role='tablist']"), null);
+  await click("#portal-compare");
+  assert.ok(document.querySelector("nav[role='tablist']"));
 });
 
 test("DOM: scientific pages separate the workspace without SDGs in Sources", async () => {
