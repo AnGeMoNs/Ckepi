@@ -1,35 +1,35 @@
 # Registro de Progreso ETL — Malla Global H3 Resolución 3
 
-**Fecha de pausa:** 2026-11-14  
-**Estado:** Pausado por límite diario gratuito de Open-Meteo (`10,000` requests/día)  
-**Progreso guardado:** `10,000 / 11,403` celdas H3 Res 3 (`87.7%`)  
-**Pendientes:** `1,403` celdas  
-**Archivo de checkpoint:** `backend/app/data/era5_res3_checkpoint.jsonl` (respaldado comprimido en [era5_res3_checkpoint.jsonl.gz](../backend/app/data/era5_res3_checkpoint.jsonl.gz) para cumplir el límite de 100 MB de GitHub)
+**Última actualización:** 2026-11-14  
+**Rama:** `kevin`
+
+## Estado por Fase (`enrich_global_grid.py`)
+
+| Fase | Fuente / API | Estado | Progreso |
+|---|---|---|---|
+| Base H3 Res-3 | Open-Meteo ERA5-Land (`2024-03-01..07`) | Completada | `10,660 / 10,660` (`100%`) |
+| Fase 1 (`--phase dem`) | Open-Meteo Copernicus 90m DEM + ASTER 30m (stencil 5 puntos) | Completada | `10,660 / 10,660` (`100%`) |
+| Fase 2 (`--phase nasa_power`) | NASA POWER Climatology (20+ años `ANN`) | Completada | `10,660 / 10,660` (`100%`) |
+| Fase 3 (`--phase consolidate`) | Física Planetaria (`Hertz-Knudsen` + `PARMA`) | Completada | `10,679` filas en DuckDB |
+| Fase 4 (`--phase soil_geo`) | ISRIC SoilGrids v2.0 + Macrostrat | **Pausada** | **`2,440 / 7,676`** (`31.8%` prioritarias) |
 
 ---
 
-## Cómo Retomar
+## Cómo Retomar la Fase 4 (SoilGrids + Macrostrat)
 
-Si retomas en otra máquina (donde solo está el `.gz`), primero descomprime el checkpoint:
-```bash
-gunzip -k backend/app/data/era5_res3_checkpoint.jsonl.gz
-```
+El progreso de Fase 4 está guardado en `backend/app/data/ckpt_soil_geo_res3.jsonl` (y respaldado comprimido en [ckpt_soil_geo_res3.jsonl.gz](../backend/app/data/ckpt_soil_geo_res3.jsonl.gz)).
 
-Cuando se renueve la cuota diaria de Open-Meteo (o desde otra red/IP), ejecutar:
-
-### macOS / Linux
-```bash
-cd /Users/kevin/Downloads/nasa/backend
-SSL_CERT_FILE=$(.venv/bin/python -c "import certifi; print(certifi.where())") .venv/bin/python -m app.etl.global_earth_etl
-```
-
-### Windows (PowerShell)
+Si retomas en otra máquina (donde solo está el `.gz`), descomprime primero el checkpoint:
 ```powershell
 cd backend
-.\.venv\Scripts\python.exe -m app.etl.global_earth_etl
+.\.venv\Scripts\python.exe -c "import gzip, shutil; shutil.copyfileobj(gzip.open('app/data/ckpt_soil_geo_res3.jsonl.gz', 'rb'), open('app/data/ckpt_soil_geo_res3.jsonl', 'wb'))"
 ```
 
-Al finalizar las `1,403` celdas restantes, el script actualizará automáticamente:
-- `backend/app/data/earth_h3_grid.parquet`
-- `backend/app/data/ckepi.duckdb`
-- Y eliminará `era5_res3_checkpoint.jsonl`.
+Luego ejecuta para continuar desde `2,440 / 7,676` y consolidar al terminar:
+```powershell
+cd backend
+.\.venv\Scripts\python.exe -m app.etl.enrich_global_grid --phase soil_geo --soil-geo-mode priority
+.\.venv\Scripts\python.exe -m app.etl.enrich_global_grid --phase consolidate
+```
+
+Al finalizar, `earth_h3_grid` y la tabla auxiliar `earth_cell_enrichment` en `ckepi.duckdb` quedarán actualizadas con las `7,676` celdas prioritarias.
