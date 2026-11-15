@@ -1,6 +1,7 @@
 # Software Design Document (SDD) — Ckepi
 
 **Versión:** 1.0  
+**Revisión técnica local:** [Auditoría de arquitectura y seguridad, 14-nov-2026](AUDITORIA_ARQUITECTURA_SEGURIDAD_2026-11-14.md). Incluye correcciones verificadas y riesgos pendientes; las descripciones históricas de este SDD no sustituyen esa evidencia.
 **Proyecto:** Ckepi — Motor de Descubrimiento de Análogos Planetarios Terrestres mediante Descomposición Causal de Variables  
 **Contexto:** NASA Space Apps Challenge 2026 (*Terrestrial Analogs for Moon & Mars*)  
 **Documentos Relacionados:** [README.md](../README.md) · [DATA_PROVENANCE.md](DATA_PROVENANCE.md) · [AI_DISCLOSURE.md](../AI_DISCLOSURE.md) · [REFERENCES.md](../REFERENCES.md)
@@ -101,6 +102,8 @@ Definido en [config.py](../backend/app/config.py) y documentado en [DATA_PROVENA
 | `POST /api/v1/earth/probe` | Sondeo libre terrestre e inserción en DuckDB | Rate Limit (`30/min`) |
 | `GET /api/v1/analogs/{h3_index}/compare/{site_id}` | Comparación variable por variable | Validación H3 + 404 ROI |
 | `GET /api/v1/earth/{h3_index}/datasets` | Catálogo NASA/ESA/CSA/JAXA + Macrostrat + tubos de lava + habitabilidad | Validación H3 |
+| `GET /api/v1/ai/status` | Disponibilidad de síntesis IA vía OpenRouter (sin exponer secretos) | Lectura pública |
+| `POST /api/v1/mission/ai-analysis` | Síntesis estructurada de viabilidad y mitigación de rupturas vía OpenRouter + caché DuckDB | Pydantic v2 + Rate Limit (`12/min`) |
 | `POST /api/v1/datasets/refresh` | Re-materialización de datasets | Dependencia `_verify_admin_token` |
 
 ---

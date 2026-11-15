@@ -1,7 +1,12 @@
 """Fast unit tests for confidence scoring, manual variable filters, validation, and tile security."""
 
 from fastapi.testclient import TestClient
+import asyncio
+import httpx
+import math
+import numpy as np
 import pandas as pd
+import pytest
 
 from app.config import DEPENDENT_VARIABLES, INDEPENDENT_VARIABLES
 from app.engine.analog_matcher import match_terrestrial_analogs
@@ -162,3 +167,110 @@ def test_mars_meda_and_pds_multi_instrument_probe() -> None:
     assert site.confidence is not None
     assert site.confidence.is_tracked_zone is True
 
+
+def test_compact_tail_preserves_scores_and_hover_telemetry() -> None:
+    """Compact tail mode omits bulky breakdowns past detail_limit while keeping ranking & telemetry."""
+    site = _make_dummy_site()
+    base_df = _make_earth_df()
+    # More than ten discoveries are needed to exercise the actual compact tail;
+    # the first ten discoveries and five benchmarks always retain full detail.
+    rows = []
+    for i in range(25):
+        row = base_df.iloc[i % len(base_df)].copy()
+        row["earth_cell_h3"] = f"fixture_cell_{i}"
+        row["lat"], row["lon"] = 0.0, 0.0
+        row["is_benchmark"] = False
+        row["slope_deg"] = float(row["slope_deg"]) + i * 1.5
+        rows.append(row)
+    df = pd.DataFrame(rows)
+
+    full = match_terrestrial_analogs(
+        site=site,
+        causal_weights={k: 1.0 for k in INDEPENDENT_VARIABLES},
+        df_earth=df,
+        limit=25,
+        compact_tail=False,
+    )
+    compact = match_terrestrial_analogs(
+        site=site,
+        causal_weights={k: 1.0 for k in INDEPENDENT_VARIABLES},
+        df_earth=df,
+        limit=25,
+        compact_tail=True,
+        detail_limit=1,
+    )
+
+    assert [m.earth_cell_h3 for m in compact.matches] == [m.earth_cell_h3 for m in full.matches]
+    assert [m.combined_score for m in compact.matches] == [m.combined_score for m in full.matches]
+    assert [m.is_pareto_optimal for m in compact.matches] == [m.is_pareto_optimal for m in full.matches]
+    assert compact.matches[0].breakage_alerts != []
+    tail = compact.matches[-1]
+    assert tail.iv_similarity_breakdown == {}
+    assert tail.dv_similarity_breakdown == {}
+    assert tail.breakage_alerts == []
+    assert tail.engineering_recommendations.valid_tests == []
+    assert "slope_deg" in tail.earth_variables.independent
+    assert "mean_surface_temp_k" in tail.earth_variables.dependent
+    assert "radiation_msv_yr" in tail.earth_variables.breakage
+
+
+@pytest.mark.parametrize("metric", ["euclidean", "mahalanobis"])
+def test_vectorized_scores_preserve_scalar_single_variable_result(metric: str) -> None:
+    site = _make_dummy_site()
+    result = match_terrestrial_analogs(
+        site, {key: 1.0 for key in INDEPENDENT_VARIABLES}, _make_earth_df(),
+        custom_weights={"slope_deg": 1.0}, custom_dv_weights={"mean_surface_temp_k": 1.0},
+        distance_metric=metric,
+    )
+    assert [item.earth_cell_h3 for item in result.matches] == ["837b59fffffffff", "837b58fffffffff"]
+    exact, different = result.matches
+    assert exact.s_ind == exact.s_dep == exact.combined_score == 1.0
+    expected_ind = math.exp(-24.5 / 10.0)
+    expected_dep = math.exp(-89.5 / 38.0)
+    assert different.s_ind == round(expected_ind, 4)
+    assert different.s_dep == round(expected_dep, 4)
+    assert different.combined_score == round(0.60 * expected_ind + 0.40 * expected_dep, 4)
+
+
+def test_caller_owned_large_grid_changes_are_observed() -> None:
+    frame = pd.concat([_make_earth_df().iloc[[0]]] * 60, ignore_index=True)
+    frame["earth_cell_h3"] = [f"fixture_{i}" for i in range(len(frame))]
+    kwargs = dict(site=_make_dummy_site(), causal_weights={"slope_deg": 1.0}, df_earth=frame, limit=1)
+    assert match_terrestrial_analogs(**kwargs).matches[0].s_ind == 1.0
+    frame.loc[:, "slope_deg"] = 25.0
+    assert match_terrestrial_analogs(**kwargs).matches[0].s_ind == round(math.exp(-2.45), 4)
+
+
+def test_rank_limited_pareto_still_checks_hidden_candidates() -> None:
+    from app.engine.analog_matcher import _compute_pareto_mask
+
+    objectives = np.array([[0.7, 0.7, 0.2], [0.7, 0.7, 0.8], [0.9, 0.5, 0.9]])
+    # Candidate 0 can be the first score-tied result, but hidden candidate 1
+    # dominates it on physical breakage. Restrict output, never the comparison.
+    assert _compute_pareto_mask(objectives, np.array([0])).tolist() == [False]
+    assert _compute_pareto_mask(objectives).tolist() == [False, True, True]
+
+
+def test_search_compact_request_validation_and_compressed_json_response() -> None:
+    from app.models.schemas import AnalogSearchRequest
+
+    defaults = AnalogSearchRequest(site_id="mars_jezero_crater")
+    assert defaults.limit == defaults.detail_limit == 250
+    assert defaults.compact_tail is False
+
+    async def verify_response() -> None:
+        async with app.router.lifespan_context(app):
+            async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://testserver") as client:
+                response = await client.post("/api/v1/analogs/search", json={
+                    "site_id": "mars_jezero_crater", "limit": 20,
+                    "compact_tail": True, "detail_limit": 1,
+                }, headers={"Accept-Encoding": "gzip"})
+                assert response.status_code == 200
+                assert response.headers["content-encoding"] == "gzip"
+                assert response.json()["returned_count"] == 20
+                invalid = await client.post("/api/v1/analogs/search", json={
+                    "site_id": "mars_jezero_crater", "detail_limit": -1,
+                })
+                assert invalid.status_code == 422
+
+    asyncio.run(verify_response())

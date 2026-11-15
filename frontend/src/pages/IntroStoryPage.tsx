@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
 
+import { CopernicusNotice } from "../components/ui/CopernicusNotice";
 import { PaperCutBackground, type PaperCutScene } from "../components/ui/PaperCutBackground";
 
 const STEPS: { key: string; scene: PaperCutScene }[] = [
@@ -131,9 +132,12 @@ export function IntroStoryPage({ onEnter }: IntroStoryPageProps) {
                 </h1>
                 <p className="mt-4 text-lg leading-relaxed sm:text-xl">{t(`story.${step.key}.body`)}</p>
                 {step.key === "finding" && (
-                  <p className="mt-4 rounded-lg border border-ckepi-salt/25 px-3 py-2 text-sm text-ckepi-salt/90">
-                    {t("story.finding.source")}
-                  </p>
+                  <>
+                    <p className="mt-4 rounded-lg border border-ckepi-salt/25 px-3 py-2 text-sm text-ckepi-salt/90">
+                      {t("story.finding.source")}
+                    </p>
+                    <CopernicusNotice tone="onDark" className="mt-2" />
+                  </>
                 )}
 
                 <div className="mt-8 flex flex-wrap items-center gap-3">

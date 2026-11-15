@@ -20,4 +20,7 @@ def isolated_data_store(tmp_path: Path, monkeypatch):
             shutil.copy2(source / name, target / name)
     monkeypatch.setattr(settings, "data_dir", target)
     monkeypatch.setattr(main, "state", main.AppState())
+    # API contracts do not need startup prewarming. Real DEM tests exercise the
+    # statistical engine directly; avoid recomputing six bootstraps per API test.
+    monkeypatch.setattr(main, "warm_real_comparisons", lambda *_: None)
     yield

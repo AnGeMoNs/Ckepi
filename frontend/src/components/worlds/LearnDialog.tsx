@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { getJezeroComparison } from "../../api/localData";
 import { formatNumber } from "../../i18n";
 import type { PlanetarySite, SiteComparisonResponse } from "../../types/analog";
+import { CopernicusNotice } from "../ui/CopernicusNotice";
 import { PaperPlanet, type WorldKey } from "./PaperPlanet";
 import { Pictogram, type PictogramName } from "./Pictograms";
 
@@ -242,6 +243,7 @@ function SimilarityMeter({ crossing }: { crossing: SiteComparisonResponse | null
       <p className="text-center font-mono text-[11px] text-content-muted">
         {t("learn.mars.similar.source", { value: formatNumber(value, i18n.language, 2) })}
       </p>
+      <CopernicusNotice className="text-center" />
     </div>
   );
 }

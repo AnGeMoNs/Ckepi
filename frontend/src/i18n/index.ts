@@ -64,6 +64,10 @@ i18n.on("languageChanged", (lng) => {
   }
 });
 
+export function normalizeSupportedLocale(raw: string | null | undefined): SupportedLocale {
+  return resolveSupportedLocale(raw) ?? "es";
+}
+
 export function getActiveIntlLocale(lang: string): string {
   const key = lang.slice(0, 2) as SupportedLocale;
   return LOCALE_MAP[key] ?? "en-US";

@@ -6,12 +6,13 @@ import { JSDOM } from "jsdom";
 const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', {
   url: "http://localhost/", pretendToBeVisual: true,
 });
-for (const key of ["window", "document", "navigator", "HTMLElement", "HTMLInputElement", "HTMLTextAreaElement", "Event", "KeyboardEvent"]) {
+for (const key of ["window", "document", "navigator", "HTMLElement", "HTMLInputElement", "HTMLTextAreaElement", "Event", "KeyboardEvent", "getComputedStyle"]) {
   Object.defineProperty(globalThis, key, { configurable: true, value: dom.window[key] });
 }
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} } as any);
 window.HTMLElement.prototype.scrollIntoView = () => {};
+window.scrollTo = () => {};
 // jsdom has no IntersectionObserver; framer-motion's in-view animations need one. Report everything as visible.
 class VisibleIntersectionObserver {
   constructor(private callback: (entries: { isIntersecting: boolean; target: Element }[]) => void) {}
@@ -22,10 +23,14 @@ class VisibleIntersectionObserver {
 }
 Object.defineProperty(globalThis, "IntersectionObserver", { configurable: true, value: VisibleIntersectionObserver });
 (window as any).IntersectionObserver = VisibleIntersectionObserver;
-const { act } = await import("react");
+const { act, useState } = await import("react");
 const { createRoot } = await import("react-dom/client");
 const { default: i18n } = await import("../src/i18n");
+const { clearApiCache } = await import("../src/api/client");
 const { ExplorerPage } = await import("../src/pages/ExplorerPage");
+const { FieldTrialPlanner } = await import("../src/components/planning/FieldTrialPlanner");
+const { createFieldTrialDraft } = await import("../src/utils/fieldTrialDraft");
+const { Header } = await import("../src/components/layout/Header");
 const sites = JSON.parse(readFileSync("../backend/app/data/planetary_sites.json", "utf8"));
 let root: ReturnType<typeof createRoot>;
 let fetchCalls: { path: string; body: any }[];
@@ -65,9 +70,14 @@ async function waitFor(check: () => boolean, message: string) {
   }
   assert.fail(message);
 }
-async function render(search: string) {
+function ExplorerHarness({ initialMode }: { initialMode: "explorer" | "mission" }) {
+  const [mode, setMode] = useState<"explorer" | "mission">(initialMode);
+  return <><Header theme="dark" onToggleTheme={() => {}} readingMode={mode} onChangeReadingMode={setMode} /><ExplorerPage theme="dark" readingMode={mode} onChangeReadingMode={setMode} /></>;
+}
+
+async function render(search: string, mode: "explorer" | "mission" = "explorer") {
   window.history.replaceState({}, "", `/${search}`);
-  await act(async () => { root.render(<ExplorerPage theme="dark" readingMode="mission" />); });
+  await act(async () => { root.render(<ExplorerHarness initialMode={mode} />); });
 }
 async function click(selector: string) {
   const element = document.querySelector<HTMLElement>(selector);
@@ -82,13 +92,14 @@ async function input(element: HTMLInputElement | HTMLTextAreaElement, value: str
   });
 }
 function button(text: string) {
-  const element = [...document.querySelectorAll("button")].find((node) => node.textContent?.trim() === text);
+  const element = [...document.querySelectorAll("button")].find((node) => (node.getAttribute("aria-label") ?? node.textContent?.trim()) === text);
   assert.ok(element, `Missing button ${text}`);
   return element;
 }
 
 beforeEach(async () => {
   fetchCalls = [];
+  clearApiCache();
   globalThis.fetch = mockApi as typeof fetch;
   await i18n.changeLanguage("es");
   root = createRoot(document.getElementById("root")!);
@@ -100,24 +111,30 @@ afterEach(async () => {
 
 test("DOM: lunar link and invalid profile use the correct body and API profile", async () => {
   await render("?tab=learn&site=moon_shackleton_pole&profile=invalid");
-  await waitFor(() => document.body.textContent!.includes("Tu perfil físico en Luna"), "Moon lab not shown");
+  await waitFor(() => !!document.querySelector("#lab-title"), "Moon lab not shown");
   await waitFor(() => fetchCalls.some((r) => r.path.endsWith("analogs/search")), "Analysis did not run");
   assert.ok(fetchCalls.filter((r) => r.path.endsWith("analogs/search")).every((r) => r.body.test_profile === "causal_auto"));
   assert.ok(window.location.search.includes("profile=causal_auto"));
+  assert.ok(fetchCalls.filter((r) => r.path.endsWith("analogs/search")).every((r) => r.body.site_id === "moon_shackleton_pole"));
 });
 
-test("DOM: draft text and equipment survive round trip to Evidence", async () => {
-  await render("?tab=plan");
-  await waitFor(() => !!document.querySelector("#panel-plan input[type=text]"), "Planner not loaded");
+function PlannerHarness() {
+  const [draft, setDraft] = useState(createFieldTrialDraft);
+  const [evidence, setEvidence] = useState(false);
+  return evidence ? <button onClick={() => setEvidence(false)}>Volver al borrador</button> : <div id="panel-plan"><FieldTrialPlanner draft={draft} onDraftChange={setDraft} onGoToCompare={() => {}} onGoToEvidence={() => setEvidence(true)} /></div>;
+}
+async function renderPlanner() {
+  await act(async () => { root.render(<PlannerHarness />); });
+}
+test("DOM: isolated planner preserves edits and equipment across its evidence callback", async () => {
+  await renderPlanner();
   await input(document.querySelector<HTMLInputElement>("#panel-plan input[type=text]")!, "Ensayo de Angelo");
   const notes = document.querySelectorAll<HTMLTextAreaElement>("#panel-plan textarea")[1];
   await input(notes, "Reutilizar sensores");
   await click("#panel-plan input[type=checkbox]:not(:checked)");
   const checked = document.querySelectorAll("#panel-plan input[type=checkbox]:checked").length;
-  await click("#tab-evidence");
-  await waitFor(() => !!document.querySelector("#panel-evidence"), "Evidence not loaded");
-  await click("#tab-plan");
-  await waitFor(() => !!document.querySelector("#panel-plan"), "Planner not restored");
+  await act(async () => button("Ver Evidencia Científica").click());
+  await act(async () => button("Volver al borrador").click());
   assert.equal(document.querySelector<HTMLInputElement>("#panel-plan input[type=text]")!.value, "Ensayo de Angelo");
   assert.equal(document.querySelectorAll<HTMLTextAreaElement>("#panel-plan textarea")[1].value, "Reutilizar sensores");
   assert.equal(document.querySelectorAll("#panel-plan input[type=checkbox]:checked").length, checked);
@@ -125,8 +142,7 @@ test("DOM: draft text and equipment survive round trip to Evidence", async () =>
 
 test("DOM: copying reports failure, waits for resolution and exports the edited text", async () => {
   Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText: () => Promise.reject(new Error("Denied")) } });
-  await render("?tab=plan");
-  await waitFor(() => !!document.querySelector("#panel-plan input"), "Planner not loaded");
+  await renderPlanner();
   await input(document.querySelector<HTMLInputElement>("#panel-plan input[type=text]")!, "Ensayo propio");
   await act(async () => button("Copiar ficha").click());
   assert.ok(document.querySelector("[role=alert]")?.textContent?.includes("No se pudo copiar"));
@@ -143,19 +159,53 @@ test("DOM: copying reports failure, waits for resolution and exports the edited 
   assert.equal(button("Copiado").disabled, false);
 });
 
-test("DOM: keyboard tabs move focus and selection together", async () => {
-  await render("?tab=plan");
-  document.getElementById("tab-plan")!.focus();
-  for (const [key, expected] of [["ArrowRight", "evidence"], ["ArrowLeft", "plan"], ["End", "evidence"], ["Home", "compare"], ["ArrowLeft", "evidence"]]) {
+test("DOM: keyboard tabs move focus and selection together in both modes", async () => {
+  await render("?tab=plan", "explorer");
+  document.getElementById("tab-mission")!.focus();
+  for (const [key, expected] of [["ArrowRight", "learn"], ["ArrowLeft", "mission"], ["Home", "mission"], ["ArrowRight", "learn"], ["End", "compare"]]) {
+    await act(async () => document.activeElement!.dispatchEvent(new window.KeyboardEvent("keydown", { key, bubbles: true })));
+    assert.equal(document.activeElement?.id, `tab-${expected}`);
+    assert.equal(document.activeElement?.getAttribute("aria-selected"), "true");
+  }
+
+  await act(async () => root.unmount());
+  root = createRoot(document.getElementById("root")!);
+  await render("?tab=compare&mode=mission", "mission");
+  document.getElementById("tab-compare")!.focus();
+  for (const [key, expected] of [["ArrowRight", "results"], ["ArrowLeft", "compare"], ["End", "evidence"], ["Home", "start"], ["ArrowLeft", "evidence"]]) {
     await act(async () => document.activeElement!.dispatchEvent(new window.KeyboardEvent("keydown", { key, bubbles: true })));
     assert.equal(document.activeElement?.id, `tab-${expected}`);
     assert.equal(document.activeElement?.getAttribute("aria-selected"), "true");
   }
 });
 
+test("DOM: scientific pages separate the workspace without SDGs in Sources", async () => {
+  await render("?tab=evidence&mode=mission", "mission");
+  await waitFor(() => !!document.querySelector("#panel-evidence"), "Evidence not loaded");
+  assert.equal(document.querySelectorAll("nav[role='tablist'] [role='tab']").length, 5);
+  assert.ok(document.getElementById("tab-compare"));
+  assert.ok(document.getElementById("tab-evidence"));
+  assert.equal(document.getElementById("tab-learn"), null);
+  assert.equal(document.getElementById("tab-plan"), null);
+  const evidenceText = document.querySelector("#panel-evidence")!.textContent ?? "";
+  assert.ok(evidenceText.includes("NASA"));
+  assert.ok(evidenceText.includes("AI_DISCLOSURE.md"));
+  assert.equal(/\bODS\b|\bSDGs?\b|La Araucana/i.test(evidenceText), false);
+});
+
+test("DOM: scientific mode normalizes ?tab=learn or ?tab=plan back to compare", async () => {
+  await render("?tab=learn", "mission");
+  assert.equal(document.getElementById("tab-compare")?.getAttribute("aria-selected"), "true");
+  assert.equal(document.getElementById("panel-learn"), null);
+  await act(async () => root.unmount());
+  root = createRoot(document.getElementById("root")!);
+  await render("?tab=plan", "mission");
+  assert.equal(document.getElementById("tab-compare")?.getAttribute("aria-selected"), "true");
+  assert.equal(document.getElementById("panel-plan"), null);
+});
+
 test("DOM: language changes update untouched defaults but preserve the user's edits", async () => {
-  await render("?tab=plan");
-  await waitFor(() => !!document.querySelector("#panel-plan input"), "Planner not loaded");
+  await renderPlanner();
   const title = document.querySelector<HTMLInputElement>("#panel-plan input[type=text]")!;
   const spanish = title.value;
   await act(async () => { await i18n.changeLanguage("en"); });
@@ -167,9 +217,9 @@ test("DOM: language changes update untouched defaults but preserve the user's ed
 
 test("DOM: the local laboratory remains usable during a catalog failure", async () => {
   globalThis.fetch = (() => Promise.reject(new Error("Offline"))) as typeof fetch;
-  await render("?tab=learn&site=moon_shackleton_pole");
+  await render("?tab=learn&site=moon_shackleton_pole", "explorer");
   await waitFor(() => !!document.querySelector("[role=alert]"), "Missing outage notice");
-  await waitFor(() => document.body.textContent!.includes("Tu perfil físico en Luna"), "Local lab unavailable");
+  await waitFor(() => !!document.querySelector("#lab-title"), "Local lab unavailable");
 });
 
 test("DOM: changing sites hides previous measurements and ignores late responses", async () => {
@@ -182,27 +232,19 @@ test("DOM: changing sites hides previous measurements and ignores late responses
     }
     return mockApi(url, init);
   }) as typeof fetch;
-  await render("?tab=plan");
-  await waitFor(() => document.querySelector("#panel-plan")?.textContent?.includes("82b227fffffffff") ?? false, "Initial match missing");
-  await click("#tab-compare");
+  await render("?tab=analysis&mode=mission", "mission");
+  await waitFor(() => document.querySelector("#section-diagnostics")?.textContent?.includes("82b227fffffffff") ?? false, "Initial match missing");
   await act(async () => {
-    const select = document.getElementById("target-site-select") as HTMLSelectElement;
-    select.value = "moon_shackleton_pole";
-    select.dispatchEvent(new window.Event("change", { bubbles: true }));
+    button("Luna").click();
   });
-  await click("#tab-plan");
-  assert.ok(!document.querySelector("#panel-plan")?.textContent?.includes("82b227fffffffff"));
+  assert.ok(!document.querySelector("#panel-analysis")?.textContent?.includes("82b227fffffffff"));
   await waitFor(() => pending.length === 2, "Moon requests not started");
-  await click("#tab-compare");
   await act(async () => {
-    const select = document.getElementById("target-site-select") as HTMLSelectElement;
-    select.value = "mars_jezero_crater";
-    select.dispatchEvent(new window.Event("change", { bubbles: true }));
+    button("Marte").click();
   });
-  await click("#tab-plan");
-  await waitFor(() => document.querySelector("#panel-plan")?.textContent?.includes("82b227fffffffff") ?? false, "Mars match not restored");
+  await waitFor(() => document.querySelector("#section-diagnostics")?.textContent?.includes("82b227fffffffff") ?? false, "Mars match not restored");
   await act(async () => { pending.forEach((release) => release()); });
-  assert.ok(document.querySelector("#panel-plan")?.textContent?.includes("82b227fffffffff"));
-  assert.ok(!document.querySelector("#panel-plan")?.textContent?.includes("837b59fffffffff"));
+  assert.ok(document.querySelector("#section-diagnostics")?.textContent?.includes("82b227fffffffff"));
+  assert.ok(!document.querySelector("#panel-analysis")?.textContent?.includes("837b59fffffffff"));
   assert.ok(window.location.search.includes("site=mars_jezero_crater"));
 });

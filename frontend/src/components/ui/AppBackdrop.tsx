@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { SHOW_AI_WATERMARKS } from "../../config/aiDisclosure";
 
 /**
  * Software backdrop: the paper-cut "open worlds" illustration (AI-generated, see
@@ -24,9 +25,11 @@ export function AppBackdrop() {
         {/* Veil: strong at the top (dense UI), lighter toward the desert at the bottom. */}
         <div className="absolute inset-0 bg-gradient-to-b from-surface/90 via-surface/75 to-surface/45" />
       </div>
-      <span className="pointer-events-none fixed bottom-3 left-3 z-40 rounded bg-ckepi-space/90 px-2 py-1 text-[11px] font-semibold text-ckepi-salt">
-        {t("home.aiImageBadge")}
-      </span>
+      {SHOW_AI_WATERMARKS && (
+        <span className="pointer-events-none fixed bottom-3 left-3 z-40 rounded bg-ckepi-space/90 px-2 py-1 text-[11px] font-semibold text-ckepi-salt">
+          {t("home.aiImageBadge")}
+        </span>
+      )}
     </>
   );
 }

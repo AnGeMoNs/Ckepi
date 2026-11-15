@@ -1,207 +1,92 @@
-import { useEffect, useId, useLayoutEffect, useRef } from "react";
-import { Moon, SlidersHorizontal, Sun } from "lucide-react";
+import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
+import { Languages } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-
 import type { ReadingMode, SupportedLocale, ThemeMode } from "../../types/analog";
-import { Badge } from "../ui/Badge";
-import { Button } from "../ui/Button";
-import { SegmentedControl } from "../ui/SegmentedControl";
 
 interface HeaderProps {
   theme: ThemeMode;
   onToggleTheme: () => void;
   readingMode: ReadingMode;
   onChangeReadingMode: (mode: ReadingMode) => void;
+  onOpenSteamModal?: () => void;
 }
-
 const LOCALES: SupportedLocale[] = ["es", "pt", "en"];
-const READING_MODES: ReadingMode[] = ["mission", "explorer"];
 
-export function Header({
-  theme,
-  onToggleTheme,
-  readingMode,
-  onChangeReadingMode,
-}: HeaderProps) {
+export function Header({ theme, onToggleTheme, readingMode, onChangeReadingMode }: HeaderProps) {
   const { t, i18n } = useTranslation();
+  const reducedMotion = useReducedMotion();
   const headerRef = useRef<HTMLElement | null>(null);
-  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const languageRoot = useRef<HTMLDivElement | null>(null);
+  const languageTrigger = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const menuId = useId();
-
-  const activeLocale = (LOCALES.find((loc) => i18n.language.startsWith(loc)) ??
-    "es") as SupportedLocale;
+  const [languageOpen, setLanguageOpen] = useState(false);
+  const locale = LOCALES.find((lang) => i18n.language.startsWith(lang)) ?? "es";
+  const home = new URL(window.location.href);
+  home.searchParams.set("view", "app");
+  home.searchParams.set("tab", readingMode === "mission" ? "start" : "compare");
+  home.hash = "";
 
   useEffect(() => {
-    const el = headerRef.current;
-    if (!el || typeof document === "undefined") return;
-    const updateHeight = () => {
-      document.documentElement.style.setProperty("--header-h", `${el.offsetHeight}px`);
-    };
-    updateHeight();
+    const header = headerRef.current;
+    if (!header) return;
+    const sync = () => document.documentElement.style.setProperty("--header-h", `${header.offsetHeight}px`);
+    sync();
     if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(updateHeight);
-    observer.observe(el);
+    const observer = new ResizeObserver(sync);
+    observer.observe(header);
     return () => observer.disconnect();
   }, []);
 
-  useLayoutEffect(() => {
-    const menu = menuRef.current;
-    if (menu && !menu.hasAttribute("popover")) {
-      menu.setAttribute("popover", "auto");
-    }
-  }, []);
-
-  const positionAndToggleMenu = () => {
-    const btn = triggerRef.current;
-    const menu = menuRef.current as (HTMLDivElement & {
-      togglePopover?: () => boolean;
-      matches?: (selector: string) => boolean;
-    }) | null;
-    if (!btn || !menu) return;
-
-    const rect = btn.getBoundingClientRect();
-    const rightOffset = Math.max(8, window.innerWidth - rect.right);
-    menu.style.top = `${rect.bottom + 8}px`;
-    menu.style.right = `${rightOffset}px`;
-    menu.style.left = "auto";
-    menu.style.position = "fixed";
-
-    if (typeof menu.togglePopover === "function") {
-      menu.togglePopover();
-    }
-  };
-
-  const closeMobileMenu = () => {
-    const menu = menuRef.current as (HTMLDivElement & { hidePopover?: () => void }) | null;
-    if (menu && typeof menu.hidePopover === "function") {
-      try {
-        menu.hidePopover();
-      } catch {
-        // Ignore if already closed
-      }
-    }
-  };
-
-  const readingOptions = READING_MODES.map((mode) => ({
-    value: mode,
-    label: t(`app.modes.${mode}`),
-  }));
-
-  const localeOptions = LOCALES.map((loc) => ({
-    value: loc,
-    label: loc.toUpperCase(),
-  }));
+  useEffect(() => {
+    if (!languageOpen) return;
+    menuRef.current?.querySelector<HTMLButtonElement>('[aria-checked="true"]')?.focus();
+    const dismiss = (event: PointerEvent) => {
+      if (event.target instanceof Node && !languageRoot.current?.contains(event.target)) setLanguageOpen(false);
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { setLanguageOpen(false); languageTrigger.current?.focus(); }
+    };
+    document.addEventListener("pointerdown", dismiss);
+    document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("pointerdown", dismiss); document.removeEventListener("keydown", escape); };
+  }, [languageOpen]);
 
   return (
-    <header
-      ref={headerRef}
-      className="ckepi-glass sticky top-0 z-30 border-b border-border-subtle"
-    >
-      <div className="mx-auto flex max-w-screen-2xl items-center justify-between gap-3 px-3 py-2.5 sm:px-6">
-        <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-ckepi-space">
-            <img src="/img/ckepi/svg/ckepi-symbol-vector-dark.svg" alt="" width={36} height={36} aria-hidden="true" />
+    <header ref={headerRef} className="ckepi-header relative z-30">
+      <div className="mx-auto flex max-w-screen-2xl flex-wrap items-center justify-between gap-x-3 gap-y-2 px-3 py-2 sm:px-6">
+        <a href={home.pathname + home.search} aria-label={t("scientificHeader.home")} className="shrink-0 rounded-xl p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+          <img src={theme === "dark" ? "/img/ckepi/svg/ckepi-horizontal-color-dark.svg" : "/img/ckepi/svg/ckepi-horizontal-color-light.svg"} alt="Ckepi" width={900} height={280} className="h-11 w-auto sm:h-14" />
+        </a>
+        <LayoutGroup id="header-roles">
+          <div role="group" aria-label={t("app.readingModeLabel")} className="order-3 flex w-full justify-center gap-1 p-1 sm:order-none sm:w-auto">
+            {(["explorer", "mission"] as const).map((mode) => <motion.button key={mode} type="button" onClick={() => onChangeReadingMode(mode)} aria-label={t(mode === "mission" ? "modeBanner.switchToScience" : "modeBanner.switchToStudent")} aria-pressed={readingMode === mode} whileTap={reducedMotion ? undefined : { scale: 0.97 }} className="relative flex min-h-11 min-w-0 flex-1 items-center justify-center gap-2 rounded-xl px-3 text-sm font-semibold text-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:flex-none">
+              {readingMode === mode && <motion.span layoutId="role-glass-lens" className="absolute inset-0 rounded-xl border border-accent/60 bg-accent/15 shadow-sm" aria-hidden="true" transition={reducedMotion ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 28 }} />}
+              <motion.img src={`/img/planets/ckepi-planet-${mode === "mission" ? "science" : "steam"}.webp`} alt="" width={40} height={40} className="relative h-10 w-10 object-contain" animate={reducedMotion ? undefined : { scale: readingMode === mode ? 1.05 : 0.9 }} />
+              <span className="relative">{t(mode === "mission" ? "app.modes.mission" : "scientificHeader.steam")}</span>
+            </motion.button>)}
           </div>
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="truncate text-base font-bold tracking-tight text-content sm:text-xl">
-                {t("app.title")}
-              </h1>
-              <Badge variant="accent" className="hidden sm:inline-flex">
-                {t("app.challengeBadge")}
-              </Badge>
-            </div>
-            <p className="truncate text-xs text-content-muted sm:text-sm">{t("app.subtitle")}</p>
+        </LayoutGroup>
+        <div className="flex items-center gap-2">
+          <div ref={languageRoot} className="relative">
+            <motion.button ref={languageTrigger} type="button" aria-label={t("app.languageLabel")} aria-haspopup="menu" aria-expanded={languageOpen} aria-controls={languageOpen ? menuId : undefined} onClick={() => setLanguageOpen((open) => !open)} onKeyDown={(event) => { if (event.key === "ArrowDown") { event.preventDefault(); setLanguageOpen(true); } }} whileTap={reducedMotion ? undefined : { scale: 0.94 }} className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-border-subtle bg-surface-elevated px-3 text-xs font-bold text-content shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+              <Languages className="h-4 w-4" aria-hidden="true" /><span>{locale.toUpperCase()}</span>
+            </motion.button>
+            <AnimatePresence>{languageOpen && <motion.div id={menuId} ref={menuRef} role="menu" aria-label={t("app.languageLabel")} initial={reducedMotion ? false : { opacity: 0, y: -6, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={reducedMotion ? undefined : { opacity: 0, y: -4 }} onKeyDown={(event) => {
+              const items = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]'));
+              const index = items.findIndex((item) => item === document.activeElement);
+              const next = event.key === "ArrowDown" ? (index + 1) % items.length : event.key === "ArrowUp" ? (index - 1 + items.length) % items.length : event.key === "Home" ? 0 : event.key === "End" ? items.length - 1 : null;
+              if (next !== null) { event.preventDefault(); items[next]?.focus(); }
+            }} className="absolute right-0 top-full z-50 mt-2 w-44 origin-top-right rounded-2xl border border-border-subtle bg-surface-elevated p-2 shadow-elevated">
+              {LOCALES.map((lang) => <button key={lang} type="button" role="menuitemradio" aria-checked={locale === lang} onClick={() => { void i18n.changeLanguage(lang); setLanguageOpen(false); languageTrigger.current?.focus(); }} className={`flex min-h-11 w-full items-center rounded-xl px-3 text-left text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${locale === lang ? "bg-accent/15 text-accent" : "text-content hover:bg-surface-muted"}`}>{t(`scientificHeader.languages.${lang}`)}</button>)}
+            </motion.div>}</AnimatePresence>
           </div>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-2">
-          <div className="hidden items-center gap-2 md:flex">
-            <SegmentedControl
-              ariaLabel={t("app.readingModeLabel")}
-              options={readingOptions}
-              value={readingMode}
-              onChange={onChangeReadingMode}
-            />
-            <SegmentedControl
-              ariaLabel={t("app.languageLabel")}
-              options={localeOptions}
-              value={activeLocale}
-              size="sm"
-              onChange={(loc) => {
-                void i18n.changeLanguage(loc);
-              }}
-            />
-          </div>
-
-          <div className="md:hidden">
-            <button
-              ref={triggerRef}
-              type="button"
-              aria-label={t("app.mobileMenuLabel")}
-              aria-controls={menuId}
-              aria-haspopup="dialog"
-              onClick={positionAndToggleMenu}
-              className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-lg border border-border-subtle bg-surface px-2.5 text-xs font-semibold text-content hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-            >
-              <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
-              <span className="uppercase">{activeLocale}</span>
-            </button>
-
-            <div
-              ref={menuRef}
-              id={menuId}
-              className="m-0 w-64 max-w-[calc(100vw-1rem)] space-y-3 rounded-xl border border-border-subtle bg-surface-elevated p-3 text-content shadow-elevated"
-            >
-              <div className="space-y-1">
-                <p className="text-xs font-medium text-content-muted">
-                  {t("app.readingModeLabel")}
-                </p>
-                <SegmentedControl
-                  ariaLabel={t("app.readingModeLabel")}
-                  options={readingOptions}
-                  value={readingMode}
-                  onChange={(mode) => {
-                    onChangeReadingMode(mode);
-                    closeMobileMenu();
-                  }}
-                  fullWidth
-                />
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs font-medium text-content-muted">
-                  {t("app.languageLabel")}
-                </p>
-                <SegmentedControl
-                  ariaLabel={t("app.languageLabel")}
-                  options={localeOptions}
-                  value={activeLocale}
-                  onChange={(loc) => {
-                    void i18n.changeLanguage(loc);
-                    closeMobileMenu();
-                  }}
-                  fullWidth
-                />
-              </div>
-            </div>
-          </div>
-
-          <Button
-            variant="secondary"
-            onClick={onToggleTheme}
-            aria-label={theme === "dark" ? t("app.themeLight") : t("app.themeDark")}
-            title={theme === "dark" ? t("app.themeLight") : t("app.themeDark")}
-          >
-            {theme === "dark" ? (
-              <Sun className="h-4 w-4" aria-hidden="true" />
-            ) : (
-              <Moon className="h-4 w-4" aria-hidden="true" />
-            )}
-            <span className="hidden lg:inline">
-              {theme === "dark" ? t("app.themeLight") : t("app.themeDark")}
-            </span>
-          </Button>
+          <button type="button" role="switch" aria-checked={theme === "dark"} onClick={onToggleTheme} aria-label={t(theme === "dark" ? "app.themeLight" : "app.themeDark")} className="relative flex h-12 w-24 shrink-0 items-center justify-between rounded-full border border-border-subtle bg-surface-muted/70 px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+            <span className={`pointer-events-none absolute inset-1 flex ${theme === "dark" ? "justify-end" : "justify-start"}`}><motion.span layout className="h-full w-10 rounded-full border border-accent/50 bg-accent/20 shadow-sm" transition={reducedMotion ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 25 }} /></span>
+            <img src="/img/science-accessories/ckepi-icon-solar.webp" alt="" width={36} height={36} className="relative h-8 w-8 object-contain" />
+            <img src="/img/planets/ckepi-planet-moon.webp" alt="" width={36} height={36} className="relative h-8 w-8 object-contain" />
+          </button>
         </div>
       </div>
     </header>

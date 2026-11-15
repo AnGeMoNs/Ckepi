@@ -1,39 +1,40 @@
 import { lazy, Suspense, useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   AlertCircle,
-  BookOpen,
-  ClipboardCheck,
-  FlaskConical,
   GitCompareArrows,
-  Globe,
-  MapPin,
   RefreshCw,
   SearchX,
 } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
-import { GuidedStepsBanner } from "../components/layout/GuidedStepsBanner";
+import { fetchAiStatus } from "../api/client";
 import { ContextualCuriosityStrip } from "../components/learning/ContextualCuriosityStrip";
-import { ThreeWorldsBoard } from "../components/worlds/ThreeWorldsBoard";
-import { WorldsHero } from "../components/worlds/WorldsHero";
-import { SectionNav } from "../components/layout/SectionNav";
 import { ActionBar } from "../components/mission/ActionBar";
 import { ControlPanel } from "../components/mission/ControlPanel";
+import { ScientificHome } from "../components/mission/ScientificHome";
+import { VerifiedTerrainDemo } from "../components/mission/VerifiedTerrainDemo";
 import { DataConfidenceBanner } from "../components/mission/DataConfidenceBanner";
+import { UnexpectedDiscoverySpotlight } from "../components/mission/UnexpectedDiscoverySpotlight";
+import { StudentComparisonPanel } from "../components/student/StudentComparisonPanel";
+import { StudentControlPanel } from "../components/student/StudentControlPanel";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
+import { ActionPin } from "../components/explore/ActionPin";
+import { DestinationPicker } from "../components/explore/DestinationPicker";
+import { MapCarousel } from "../components/explore/MapCarousel";
+import { SteamMission } from "../components/steam/SteamMission";
+import { WorldLab } from "../components/lab/WorldLab";
+import { Pictogram } from "../components/worlds/Pictograms";
 import { Drawer } from "../components/ui/Drawer";
 import { EmptyState } from "../components/ui/EmptyState";
-import { SegmentedControl } from "../components/ui/SegmentedControl";
 import { MapSkeleton, PanelSkeleton } from "../components/ui/Skeleton";
 import { Toast, type ToastVariant } from "../components/ui/Toast";
 import { useAnalogAnalysis } from "../hooks/useAnalogAnalysis";
 import { useExplorerParams } from "../hooks/useExplorerParams";
 import { useMediaQuery } from "../hooks/useMediaQuery";
-import type { ReadingMode, ThemeMode } from "../types/analog";
+import type { MissionAiAnalysisResponse, ReadingMode, ThemeMode } from "../types/analog";
 import { readExplorerParams, type ExplorerTab } from "../utils/explorerParams";
-import { createFieldTrialDraft } from "../utils/fieldTrialDraft";
 
 const PlanetaryMap = lazy(() =>
   import("../components/map/PlanetaryMap").then((m) => ({ default: m.PlanetaryMap }))
@@ -59,36 +60,24 @@ const AnalogComparisonMatrix = lazy(() =>
 const EvidencePanel = lazy(() =>
   import("../components/evidence/EvidencePanel").then((m) => ({ default: m.EvidencePanel }))
 );
-const PlanetaryPhysicsLab = lazy(() =>
-  import("../components/learning/PlanetaryPhysicsLab").then((m) => ({
-    default: m.PlanetaryPhysicsLab,
-  }))
-);
-const FieldTrialPlanner = lazy(() =>
-  import("../components/planning/FieldTrialPlanner").then((m) => ({
-    default: m.FieldTrialPlanner,
-  }))
-);
 
 interface ExplorerPageProps {
   theme: ThemeMode;
   readingMode: ReadingMode;
+  onChangeReadingMode?: (mode: ReadingMode) => void;
 }
 
 type MobileMapTab = "planet" | "earth";
 
-export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
+export function ExplorerPage({
+  theme,
+  readingMode,
+  onChangeReadingMode,
+}: ExplorerPageProps) {
   const { t } = useTranslation();
-  const reduceMotion = Boolean(useReducedMotion());
+  const isStudent = readingMode === "explorer";
+  const reducedMotion = useReducedMotion();
   const params = useExplorerParams();
-  // Tab panels rise in like the home's paper layers; nothing moves with reduced motion.
-  const panelMotion = reduceMotion
-    ? {}
-    : {
-        initial: { opacity: 0, y: 12 },
-        animate: { opacity: 1, y: 0 },
-        transition: { type: "spring" as const, stiffness: 180, damping: 26 },
-      };
 
   const analysis = useAnalogAnalysis({
     selectedSiteId: params.selectedSiteId,
@@ -112,33 +101,91 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [mobileMapTab, setMobileMapTab] = useState<MobileMapTab>("earth");
   const [copiedLink, setCopiedLink] = useState(false);
-  const [hasConfigured, setHasConfigured] = useState<boolean>(() => {
+  const [, setHasConfigured] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     const sp = new URLSearchParams(window.location.search);
     return sp.has("site") || sp.has("profile");
   });
-  const [hasExploredMap, setHasExploredMap] = useState(false);
-  const [hasExportedOrShared, setHasExportedOrShared] = useState(false);
+  const [, setHasExploredMap] = useState(false);
+  const [, setHasExportedOrShared] = useState(false);
   const [toastState, setToastState] = useState<{ message: string; variant: ToastVariant } | null>(
     null
   );
+  const [aiEnabled, setAiEnabled] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<MissionAiAnalysisResponse | null>(null);
   const toastTimerRef = useRef<number | null>(null);
-  const [activeTab, setActiveTab] = useState<ExplorerTab>(
-    () => readExplorerParams(typeof window !== "undefined" ? window.location.search : "").tab
-  );
-  const [planDraft, setPlanDraft] = useState(createFieldTrialDraft);
+  const [activeTab, setActiveTab] = useState<ExplorerTab>(() => {
+    const initialTab = readExplorerParams(
+      typeof window !== "undefined" ? window.location.search : ""
+    ).tab;
+    if (isStudent && initialTab === "evidence") return "compare";
+    if (isStudent && initialTab === "plan") return "mission";
+    // STEAM opens on the cadet mission unless a link asks for another tab.
+    if (isStudent && !new URLSearchParams(window.location.search).has("tab")) return "mission";
+    if (!isStudent && initialTab === "mission") return "start";
+    if (!isStudent && (initialTab === "learn" || initialTab === "plan")) return "compare";
+    if (!isStudent && !new URLSearchParams(window.location.search).has("tab") && !window.location.hash) return "start";
+    return initialTab;
+  });
+
+  useEffect(() => {
+    if (isStudent && activeTab === "plan") {
+      setActiveTab("mission");
+    } else if (isStudent && ["start", "results", "analysis", "evidence"].includes(activeTab)) {
+      setActiveTab("compare");
+    } else if (!isStudent && (activeTab === "learn" || activeTab === "plan")) {
+      setActiveTab("compare");
+    } else if (!isStudent && activeTab === "mission") {
+      setActiveTab("start");
+    }
+  }, [isStudent, activeTab]);
   const copiedTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchAiStatus()
+      .then((status) => {
+        if (!cancelled) setAiEnabled(status.enabled);
+      })
+      .catch(() => {
+        if (!cancelled) setAiEnabled(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const url = new URL(window.location.href);
-    if (activeTab === "compare") {
+    if (activeTab === "compare" && isStudent) {
       url.searchParams.delete("tab");
     } else {
       url.searchParams.set("tab", activeTab);
     }
     window.history.replaceState({}, "", url.toString());
-  }, [activeTab]);
+  }, [activeTab, isStudent]);
+
+  useEffect(() => {
+    const onBack = () => setActiveTab(readExplorerParams(window.location.search).tab);
+    window.addEventListener("popstate", onBack);
+    return () => window.removeEventListener("popstate", onBack);
+  }, []);
+
+  const navigatePage = (next: ExplorerTab) => {
+    if (next === activeTab) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("tab", next);
+    url.hash = "";
+    window.history.pushState({}, "", url.toString());
+    setActiveTab(next);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+
+  const showMapPage = isStudent || activeTab === "compare";
+  const showResultsPage = !isStudent && activeTab === "results";
+  const showAnalysisPage = !isStudent && activeTab === "analysis";
+  const workspacePage = isStudent ? "compare" : activeTab;
 
   useEffect(() => {
     if (isDesktop) {
@@ -158,20 +205,24 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
       ? params.customProbedSite
       : analysis.sites.find((s) => s.site_id === params.selectedSiteId);
 
-  const selectedCell =
-    analysis.searchResult?.matches.find((m) => m.earth_cell_h3 === analysis.selectedH3) ??
-    analysis.comparison?.match ??
-    null;
 
-  const navTabs: { id: ExplorerTab; label: string; icon: typeof GitCompareArrows }[] = [
-    { id: "compare", label: t("nav.compare"), icon: GitCompareArrows },
-    { id: "learn", label: t("nav.learn"), icon: FlaskConical },
-    { id: "plan", label: t("nav.plan"), icon: ClipboardCheck },
-    { id: "evidence", label: t("nav.evidence"), icon: BookOpen },
-  ];
+  const navTabs: { id: ExplorerTab; label: string; icon?: typeof GitCompareArrows; art?: string }[] = isStudent
+    ? [
+        { id: "mission", label: t("steam.tab"), art: "/img/planets/ckepi-planet-steam.webp" },
+        { id: "learn", label: t("steam.worldsTab"), art: "/img/planets/ckepi-planet-earth.webp" },
+        { id: "compare", label: t("nav.studentCompare"), art: "/img/terrain-art/ckepi-map-atacama.webp" },
+      ]
+    : [
+        { id: "start", label: t("sciencePages.start"), art: "/img/planets/ckepi-planet-earth.webp" },
+        { id: "compare", label: t("sciencePages.compare"), art: "/img/terrain-art/ckepi-map-atacama.webp" },
+        { id: "results", label: t("sciencePages.results"), art: "/img/planets/ckepi-planet-science.webp" },
+        { id: "analysis", label: t("sciencePages.analysis"), art: "/img/science-accessories/ckepi-icon-slope.webp" },
+        { id: "evidence", label: t("sciencePages.evidence"), art: "/img/science-accessories/ckepi-icon-soil.webp" },
+      ];
 
   const handleTabKeyDown = (e: KeyboardEvent<HTMLElement>) => {
-    const idx = navTabs.findIndex((tab) => tab.id === activeTab);
+    const focusedId = e.target instanceof HTMLElement ? e.target.closest('[role="tab"]')?.id.replace(/^tab-/, "") : undefined;
+    const idx = navTabs.findIndex((tab) => tab.id === (focusedId ?? activeTab));
     if (idx === -1) return;
     const nextIndex =
       e.key === "ArrowRight"
@@ -193,13 +244,6 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   const hasResults = Boolean(analysis.searchResult || analysis.decomposition);
   const isInitialLoading = analysis.isLoading && !hasResults;
   const isUpdating = analysis.isLoading && hasResults;
-  const activeStep: 1 | 2 | 3 | 4 = hasExportedOrShared
-    ? 4
-    : hasExploredMap
-      ? 3
-      : hasConfigured
-        ? 2
-        : 1;
 
   const showToast = (message: string, variant: ToastVariant = "success") => {
     setToastState({ message, variant });
@@ -242,11 +286,32 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
     }
   };
 
-  const controlPanelNode = (
-    <ControlPanel
+  const controlPanelNode = isStudent ? (
+    <StudentControlPanel
       sites={analysis.sites}
+      selectedBody={params.selectedBody}
       selectedSiteId={params.selectedSiteId}
       customProbedSite={params.customProbedSite}
+      activeSite={activeSite}
+      testProfile={params.testProfile}
+      onSelectBody={(body) => {
+        setHasConfigured(true);
+        analysis.handleSelectBody(body);
+      }}
+      onSelectSite={(nextId, body) => {
+        setHasConfigured(true);
+        params.setCustomProbedSite(null);
+        params.setSelectedSiteId(nextId);
+        if (body) params.setSelectedBody(body);
+      }}
+      onChangeTestProfile={(profile) => {
+        setHasConfigured(true);
+        params.setTestProfile(profile);
+      }}
+    />
+  ) : (
+    <ControlPanel
+      layout={isDesktop ? "horizontal" : "vertical"}
       activeSite={activeSite}
       testProfile={params.testProfile}
       modelType={params.modelType}
@@ -260,12 +325,6 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
       customIvWeights={params.customIvWeights}
       customDvWeights={params.customDvWeights}
       customMinSimilarity={params.customMinSimilarity}
-      onSelectSite={(nextId, body) => {
-        setHasConfigured(true);
-        params.setCustomProbedSite(null);
-        params.setSelectedSiteId(nextId);
-        if (body) params.setSelectedBody(body);
-      }}
       onChangeTestProfile={(profile) => {
         setHasConfigured(true);
         params.setTestProfile(profile);
@@ -290,19 +349,18 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
   );
 
   return (
-    <main id="main-content" className="mx-auto max-w-screen-2xl space-y-5 px-3 py-5 sm:px-6">
+    <main id="main-content" className="mx-auto max-w-screen-2xl space-y-5 px-3 py-4 sm:px-6">
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         {analysis.isLoading ? t("controls.loading") : ""}
       </div>
 
-      {/* Main screen: the three worlds and their crossing with Antofagasta. */}
-      <WorldsHero sites={analysis.sites} />
+      {!isStudent && activeTab === "start" && <ScientificHome body={params.selectedBody} evaluated={analysis.searchResult?.total_evaluated} onEarth={() => { setMobileMapTab("earth"); navigatePage("compare"); }} onChoose={(body) => { params.setCustomProbedSite(null); params.setSelectedBody(body); params.setSelectedSiteId(body === "moon" ? "moon_shackleton_pole" : "mars_jezero_crater"); navigatePage("compare"); }} />}
 
-      {/* Primary journey: Compare · Learn · Plan · Evidence */}
-      <nav
+      {/* Primary journey tabs (mode-aware) */}
+      {<nav
         aria-label={t("nav.tabsLabel")}
         role="tablist"
-        className="ckepi-glass flex flex-wrap gap-2 rounded-xl border border-border-subtle p-2"
+        className={`ckepi-liquid grid gap-1 rounded-3xl p-1.5 ${isStudent ? "grid-cols-3" : "grid-cols-5"}`}
         onKeyDown={handleTabKeyDown}
       >
         {navTabs.map((tab) => {
@@ -317,99 +375,139 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
               aria-selected={active}
               aria-controls={`panel-${tab.id}`}
               tabIndex={active ? 0 : -1}
-              onClick={() => setActiveTab(tab.id)}
-              className={`relative flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-sm ${
-                active ? "text-accent-foreground" : "text-content-muted hover:bg-surface-muted hover:text-content"
+              onClick={() => navigatePage(tab.id)}
+              className={tab.art
+                ? `relative flex min-h-[4.5rem] min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-[11px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:min-h-[5rem] sm:text-sm ${active ? "text-content" : "text-content-muted hover:text-content"}`
+                : `flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-sm ${
+                active
+                  ? "bg-accent text-accent-foreground shadow-sm"
+                  : "text-content-muted hover:bg-surface-muted hover:text-content"
               }`}
             >
-              {active && (
-                // The copper pill slides between tabs (shared layout animation).
-                <motion.span
-                  layoutId="ckepi-active-tab"
-                  aria-hidden="true"
-                  className="absolute inset-0 rounded-lg bg-accent shadow-ckepi-glow"
-                  transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }}
-                />
+              {tab.art ? (
+                <>
+                  {active && <motion.span layoutId="science-tab-lens" aria-hidden="true" className="ckepi-liquid ckepi-liquid-glow absolute inset-0 rounded-2xl" transition={reducedMotion ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }} />}
+                  <motion.img src={tab.art} alt="" width={64} height={48} draggable={false} className="relative h-7 w-10 object-contain sm:h-9 sm:w-12" animate={reducedMotion ? undefined : { y: active ? -2 : 0, scale: active ? 1.08 : 0.94 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} />
+                  <span className="relative max-w-full truncate">{tab.label}</span>
+                </>
+              ) : (
+                <>
+                  {Icon ? <Icon className="h-4 w-4 shrink-0" aria-hidden="true" /> : null}
+                  <span>{tab.label}</span>
+                </>
               )}
-              <Icon className="relative h-4 w-4 shrink-0" aria-hidden="true" />
-              <span className="relative">{tab.label}</span>
             </button>
           );
         })}
-      </nav>
+      </nav>}
+
+      {isStudent && activeTab === "mission" && (
+        <div id="panel-mission" role="tabpanel" aria-labelledby="tab-mission">
+          <SteamMission sites={analysis.sites} onOpenScience={() => onChangeReadingMode?.("mission")} onOpenWorlds={() => setActiveTab("learn")} />
+        </div>
+      )}
+
+      {!isStudent && activeTab === "start" && (
+        <section id="panel-start" aria-labelledby="scientific-home-title" className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+          {([
+            { page: "compare", art: "/img/terrain-art/ckepi-map-atacama.webp" },
+            { page: "results", art: "/img/planets/ckepi-planet-science.webp" },
+            { page: "analysis", art: "/img/science-accessories/ckepi-icon-slope.webp" },
+            { page: "evidence", art: "/img/science-accessories/ckepi-icon-soil.webp" },
+          ] as const).map(({ page, art }) => (
+            <motion.button key={page} id={`portal-${page}`} type="button" onClick={() => navigatePage(page)} whileHover={reducedMotion ? undefined : { y: -4 }} whileTap={reducedMotion ? undefined : { scale: 0.98 }} className="scientific-portal relative flex min-h-36 min-w-0 flex-col items-center justify-center gap-3 rounded-2xl p-4 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+              <img src={art} alt="" width={240} height={150} className="h-28 w-full object-contain" />
+              <span className="text-base font-bold sm:text-lg">{t(`sciencePages.${page}`)}</span>
+            </motion.button>
+          ))}
+        </section>
+      )}
+
+      {!isStudent && activeTab === "compare" && (
+        <DestinationPicker
+          sites={analysis.sites}
+          selectedSiteId={params.selectedSiteId}
+          customProbedSite={params.customProbedSite}
+          activeSite={activeSite}
+          onSelect={(siteId, body) => {
+            setHasConfigured(true);
+            params.setCustomProbedSite(null);
+            params.setSelectedSiteId(siteId);
+            params.setSelectedBody(body);
+          }}
+        />
+      )}
+
+      {!isStudent && activeTab !== "start" && activeTab !== "compare" && (
+        <DestinationPicker
+          compact
+          title={t(`sciencePages.${activeTab}`)}
+          subtitle={t(`sciencePages.description.${activeTab}`)}
+          sites={analysis.sites}
+          selectedSiteId={params.selectedSiteId}
+          customProbedSite={params.customProbedSite}
+          activeSite={activeSite}
+          onSelect={(siteId, body) => {
+            setHasConfigured(true);
+            params.setCustomProbedSite(null);
+            params.setSelectedSiteId(siteId);
+            params.setSelectedBody(body);
+          }}
+        />
+      )}
+
+      {analysis.errorState && (analysis.catalogErrorState || !isStudent || activeTab === "compare") && (
+        <div
+          role="alert"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-status-break/40 bg-status-break/10 p-4 text-sm text-status-break"
+        >
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 shrink-0" aria-hidden="true" />
+            <span>{t(analysis.errorState.key, analysis.errorState.params)}</span>
+          </div>
+          <Button variant="secondary" onClick={() => void analysis.runAnalysis()}>
+            <RefreshCw className="h-4 w-4" aria-hidden="true" />
+            {t("controls.retry")}
+          </Button>
+        </div>
+      )}
 
       <Suspense fallback={<PanelSkeleton heightClass="h-64" />}>
-        {activeTab === "learn" && (
-          <motion.div id="panel-learn" role="tabpanel" aria-labelledby="tab-learn" {...panelMotion}>
-            <PlanetaryPhysicsLab
-              body={params.selectedBody}
-              activeSite={activeSite}
-              selectedCell={selectedCell}
-              comparison={analysis.comparison}
-              onGoToCompare={() => setActiveTab("compare")}
-              onGoToPlan={() => setActiveTab("plan")}
-            />
-          </motion.div>
-        )}
-
-        {activeTab === "plan" && (
-          <motion.div id="panel-plan" role="tabpanel" aria-labelledby="tab-plan" {...panelMotion}>
-            <FieldTrialPlanner
-              draft={planDraft}
-              onDraftChange={setPlanDraft}
-              activeSite={activeSite}
-              selectedCell={selectedCell}
-              comparison={analysis.comparison}
-              onGoToCompare={() => setActiveTab("compare")}
-              onGoToEvidence={() => setActiveTab("evidence")}
-            />
-          </motion.div>
+        {isStudent && activeTab === "learn" && (
+          <div id="panel-learn" role="tabpanel" aria-labelledby="tab-learn">
+            <WorldLab sites={analysis.sites} onStartMission={() => setActiveTab("mission")} />
+          </div>
         )}
 
         {activeTab === "evidence" && (
-          <motion.div id="panel-evidence" role="tabpanel" aria-labelledby="tab-evidence" {...panelMotion}>
+          <div id="panel-evidence" role="tabpanel" aria-labelledby="tab-evidence" className="space-y-6">
             <EvidencePanel activeSite={activeSite} comparison={analysis.comparison} />
-          </motion.div>
+          </div>
         )}
       </Suspense>
 
-      <motion.div
-        id="panel-compare"
+      <div
+        id={["compare", "results", "analysis"].includes(workspacePage) ? `panel-${workspacePage}` : "workspace-retained"}
         role="tabpanel"
-        aria-labelledby="tab-compare"
-        hidden={activeTab !== "compare"}
+        aria-labelledby={`tab-${workspacePage}`}
+        hidden={isStudent ? activeTab !== "compare" : !["compare", "results", "analysis"].includes(activeTab)}
         className="space-y-5"
-        // Kept mounted (maps are expensive); it fades back in when the tab returns.
-        initial={false}
-        animate={{ opacity: activeTab === "compare" ? 1 : 0, y: activeTab === "compare" || reduceMotion ? 0 : 12 }}
-        transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 180, damping: 26 }}
       >
-      <ThreeWorldsBoard
-        sites={analysis.sites}
-        activeSite={activeSite}
-        comparison={analysis.comparison}
-        onPickEarthCell={(h3Index) => {
-          setHasExploredMap(true);
-          analysis.setSelectedH3(h3Index);
-        }}
-        onOpenFullAnalysis={() =>
-          document.getElementById("section-diagnostics")?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" })
-        }
-      />
+      {showAnalysisPage && params.selectedSiteId === "mars_jezero_crater" && <VerifiedTerrainDemo />}
+      {showResultsPage && (!analysis.searchResult || analysis.searchResult.matches.length === 0) && <EmptyState icon={<SearchX className="h-6 w-6" aria-hidden="true" />} title={t(analysis.isLoading ? "controls.loading" : "controls.emptyTitle")} description={t(analysis.isLoading ? "controls.mapLoadingDescription" : "controls.emptyDescription")} actionLabel={t("sciencePages.compare")} onAction={() => navigatePage("compare")} />}
 
-      <GuidedStepsBanner activeStep={activeStep} />
-
-      <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[22.5rem_minmax(0,1fr)]">
+      <div className="space-y-6">
         {/* Render a single ControlPanel instance to avoid duplicate IDs and draft divergence */}
-        {isDesktop ? (
-          <aside className="xl:sticky xl:top-20 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto">
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("controls.drawerTitle")}</CardTitle>
+        {showMapPage && (isDesktop ? (
+          <section aria-label={t("controls.drawerTitle")}>
+            <Card variant="liquid" className="!rounded-[2rem]">
+              <CardHeader className="rounded-t-[2rem] border-b-0 bg-transparent px-5 pt-6 text-center sm:px-8 sm:pt-8">
+                <CardTitle className="!text-3xl sm:!text-4xl">{t("explore.mission.title")}</CardTitle>
+                <p className="mx-auto mt-2 max-w-2xl text-base text-content-muted sm:text-lg">{t("explore.mission.subtitle")}</p>
               </CardHeader>
-              <CardContent>{controlPanelNode}</CardContent>
+              <CardContent className="sm:px-8 sm:pb-8">{controlPanelNode}</CardContent>
             </Card>
-          </aside>
+          </section>
         ) : (
           <Drawer
             open={mobileDrawerOpen}
@@ -419,13 +517,11 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           >
             {controlPanelNode}
           </Drawer>
-        )}
+        ))}
 
         {/* Main Workspace */}
         <div className="min-w-0 space-y-6">
-          <ActionBar
-            activeSite={activeSite}
-            lastUpdated={analysis.lastUpdated}
+          {showMapPage && <><ActionBar
             isRefreshing={analysis.isRefreshing}
             isUpdating={isUpdating}
             copiedLink={copiedLink}
@@ -433,33 +529,6 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             onShareLink={() => void handleShareLink()}
             onOpenMobileSettings={() => setMobileDrawerOpen(true)}
           />
-
-          <SectionNav
-            visibleSections={{
-              "section-maps": true,
-              "section-decomposition": Boolean(analysis.decomposition),
-              "section-diagnostics": Boolean(analysis.comparison),
-              "section-ranking": Boolean(
-                analysis.searchResult && analysis.searchResult.matches.length > 0
-              ),
-            }}
-          />
-
-          {analysis.errorState && (
-            <div
-              role="alert"
-              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-status-break/40 bg-status-break/10 p-4 text-sm text-status-break"
-            >
-              <div className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 shrink-0" aria-hidden="true" />
-                <span>{t(analysis.errorState.key, analysis.errorState.params)}</span>
-              </div>
-              <Button variant="secondary" onClick={() => void analysis.runAnalysis()}>
-                <RefreshCw className="h-4 w-4" aria-hidden="true" />
-                {t("controls.retry")}
-              </Button>
-            </div>
-          )}
 
           {/* Maps Section */}
           <section id="section-maps" className="scroll-mt-32 space-y-3">
@@ -472,35 +541,24 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
               </div>
             )}
 
-            <div className="lg:hidden">
-              <SegmentedControl
-                ariaLabel={t("controls.mapSwitcherLabel")}
-                value={mobileMapTab}
-                onChange={setMobileMapTab}
-                fullWidth
-                options={[
-                  {
-                    value: "earth",
-                    label: t("controls.mapViewEarth"),
-                    icon: <MapPin className="h-3.5 w-3.5" aria-hidden="true" />,
-                  },
-                  {
-                    value: "planet",
-                    label: t("controls.mapViewPlanet"),
-                    icon: <Globe className="h-3.5 w-3.5" aria-hidden="true" />,
-                  },
-                ]}
-              />
-            </div>
-
             {isInitialLoading ? (
-              <div className="grid grid-cols-1 gap-6 2xl:grid-cols-2">
+              <div className="grid grid-cols-1 items-stretch gap-6 xl:grid-cols-2">
                 <MapSkeleton />
                 <MapSkeleton />
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-6 2xl:grid-cols-2">
-                <div className={mobileMapTab === "planet" ? "block" : "hidden lg:block"}>
+              <MapCarousel
+                wide={isDesktop}
+                ariaLabel={t("controls.mapSwitcherLabel")}
+                active={mobileMapTab}
+                onChange={setMobileMapTab}
+                slides={[
+                  {
+                    id: "planet",
+                    label: t("controls.mapViewPlanet"),
+                    art: `/img/planets/ckepi-planet-${params.selectedBody}.webp`,
+                    node: (
+                <div className="h-full min-w-0">
                   <Suspense fallback={<MapSkeleton />}>
                     <PlanetaryMap
                       body={params.selectedBody}
@@ -529,17 +587,28 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                     />
                   </Suspense>
                 </div>
-
-                {analysis.searchResult ? (
-                  <div className={mobileMapTab === "earth" ? "block" : "hidden lg:block"}>
+                    ),
+                  },
+                  {
+                    id: "earth",
+                    label: t("controls.mapViewEarth"),
+                    art: "/img/planets/ckepi-planet-earth.webp",
+                    node: (analysis.searchResult ? (
+                  <div className="h-full min-w-0">
                     <Suspense fallback={<MapSkeleton />}>
                       <AnalogMap
+                        compact
+                        onOpenAnalysis={() => navigatePage("analysis")}
                         matches={analysis.searchResult.matches}
                         totalEvaluated={analysis.searchResult.total_evaluated}
                         selectedH3={analysis.selectedH3}
+                        selectedMatchOverride={analysis.comparison?.match ?? null}
                         theme={theme}
+                        readingMode={readingMode}
                         probingCoords={analysis.probingCoords}
                         isRefining={analysis.isRefining}
+                        earthDensity={analysis.earthDensity}
+                        onChangeEarthDensity={analysis.setEarthDensity}
                         drilldownState={analysis.drilldownState}
                         onSelectCell={(h3Index) => {
                           setHasExploredMap(true);
@@ -558,7 +627,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                     </Suspense>
                   </div>
                 ) : (
-                  <div className={mobileMapTab === "earth" ? "block" : "hidden lg:block"}>
+                  <div className="h-full min-w-0">
                     {analysis.isLoading ? (
                       <MapSkeleton />
                     ) : (
@@ -569,27 +638,27 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                             ? t(analysis.errorState.key, analysis.errorState.params)
                             : t("controls.loading")
                         }
-                        description={t("controls.emptyDescription")}
+                        description={t(analysis.errorState ? "controls.analysisErrorDescription" : "controls.mapLoadingDescription")}
                         actionLabel={t("controls.retry")}
                         onAction={() => void analysis.runAnalysis()}
                       />
                     )}
                   </div>
-                )}
-              </div>
+                )),
+                  },
+                ]}
+              />
             )}
           </section>
 
-          {activeSite && <DataConfidenceBanner site={activeSite} />}
+          {!isStudent && (
+            <div className="flex flex-wrap items-center justify-center gap-5 pt-2 sm:gap-8">
+              <ActionPin label={t("sciencePages.results")} onClick={() => navigatePage("results")} />
+              <ActionPin primary label={t("sciencePages.analysis")} onClick={() => navigatePage("analysis")} />
+            </div>
+          )}
 
-          <ContextualCuriosityStrip
-            body={params.selectedBody}
-            activeSite={activeSite}
-            comparison={analysis.comparison}
-            onOpenLearn={() => setActiveTab("learn")}
-          />
-
-          {analysis.searchResult && analysis.searchResult.matches.length === 0 && (
+          {!analysis.errorState && !analysis.isLoading && analysis.searchResult && analysis.searchResult.matches.length === 0 && (
             <EmptyState
               icon={<SearchX className="h-6 w-6" aria-hidden="true" />}
               title={t("controls.emptyTitle")}
@@ -606,20 +675,82 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
             </div>
           )}
 
-          {analysis.decomposition && (
+          </>}
+
+          {isStudent && analysis.comparison && (
+            <section
+              id="section-student-comparison"
+              className={`scroll-mt-32 transition-opacity ${
+                isUpdating ? "opacity-60" : "opacity-100"
+              }`}
+            >
+              <StudentComparisonPanel
+                comparison={analysis.comparison}
+                matches={analysis.searchResult?.matches ?? []}
+                activeSite={activeSite}
+                aiEnabled={aiEnabled}
+                aiAnalysis={aiAnalysis}
+                onAiAnalysisChange={setAiAnalysis}
+                onSelectCell={(h3Index) => {
+                  setHasExploredMap(true);
+                  analysis.setSelectedH3(h3Index);
+                }}
+                onOpenLearn={() => setActiveTab("learn")}
+                onSwitchToScientific={() => onChangeReadingMode?.("mission")}
+              />
+            </section>
+          )}
+
+          {isStudent && (
+            <ContextualCuriosityStrip
+              body={params.selectedBody}
+              activeSite={activeSite}
+              comparison={analysis.comparison}
+              onOpenLearn={() => setActiveTab("learn")}
+            />
+          )}
+
+          {showResultsPage && analysis.searchResult && analysis.searchResult.matches.length > 0 && (
+            <section
+              id="section-discovery"
+              className={`scroll-mt-32 transition-opacity ${
+                isUpdating ? "opacity-60" : "opacity-100"
+              }`}
+            >
+              <UnexpectedDiscoverySpotlight
+                matches={analysis.searchResult.matches}
+                totalEvaluated={analysis.searchResult.total_evaluated}
+                selectedH3={analysis.selectedH3}
+                excludeBenchmarks={params.excludeBenchmarks}
+                site={activeSite}
+                onSelectCell={(h3Index) => {
+                  setHasExploredMap(true);
+                  analysis.setSelectedH3(h3Index);
+                }}
+                onToggleExcludeBenchmarks={(next) => {
+                  setHasConfigured(true);
+                  params.setExcludeBenchmarks(next);
+                }}
+              />
+            </section>
+          )}
+
+          {showAnalysisPage && activeSite && <DataConfidenceBanner site={activeSite} />}
+
+          {showAnalysisPage && analysis.decomposition && (
             <section
               id="section-decomposition"
               className={`scroll-mt-32 transition-opacity ${
                 isUpdating ? "opacity-60" : "opacity-100"
               }`}
             >
-              <Suspense fallback={<PanelSkeleton heightClass="h-48" />}>
+              <details className="ckepi-liquid group rounded-[2rem] p-5 sm:p-6"><summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 text-lg font-bold sm:text-xl [&::-webkit-details-marker]:hidden"><img src="/img/planets/ckepi-planet-science.webp" alt="" width={56} height={56} className="h-12 w-12 object-contain drop-shadow-ckepi-logo" /><span className="flex-1">{t("sciencePages.groups.model")}</span><Pictogram name="chevronDown" className="h-6 w-6 text-content-muted transition-transform group-open:rotate-180" /></summary><Suspense fallback={<PanelSkeleton heightClass="h-48" />}>
                 <DecompositionPanel decomposition={analysis.decomposition} />
-              </Suspense>
+              </Suspense></details>
             </section>
           )}
 
-          {analysis.comparison && (
+          {showAnalysisPage && analysis.comparison && (
             <section
               id="section-diagnostics"
               className={`scroll-mt-32 transition-opacity ${
@@ -630,14 +761,23 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                 <MissionDiagnostics
                   comparison={analysis.comparison}
                   readingMode={readingMode}
+                  modelType={params.modelType}
+                  distanceMetric={params.distanceMetric}
+                  testProfile={params.testProfile}
+                  penalizeEstimated={params.penalizeEstimated}
+                  customIvWeights={params.customIvWeights}
+                  customDvWeights={params.customDvWeights}
+                  customMinSimilarity={params.customMinSimilarity}
+                  aiEnabled={aiEnabled}
+                  aiAnalysis={aiAnalysis}
+                  onAiAnalysisChange={setAiAnalysis}
                   onExported={handleExported}
                 />
               </Suspense>
             </section>
           )}
 
-
-          {analysis.searchResult && analysis.searchResult.matches.length > 0 && (
+          {showResultsPage && analysis.searchResult && analysis.searchResult.matches.length > 0 && (
             <section
               id="section-ranking"
               className={`scroll-mt-32 transition-opacity ${
@@ -648,7 +788,9 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
                 <AnalogComparisonMatrix
                   matches={analysis.searchResult.matches}
                   selectedH3={analysis.selectedH3}
+                  selectedMatchOverride={analysis.comparison?.match ?? null}
                   activeSite={activeSite}
+                  aiAnalysis={aiAnalysis}
                   onSelectCell={(h3Index) => {
                     setHasExploredMap(true);
                     analysis.setSelectedH3(h3Index);
@@ -660,7 +802,7 @@ export function ExplorerPage({ theme, readingMode }: ExplorerPageProps) {
           )}
         </div>
       </div>
-      </motion.div>
+      </div>
 
       {toastState && (
         <Toast

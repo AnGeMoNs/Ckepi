@@ -52,8 +52,12 @@ test("planner draft survives evidence navigation and exports its text", async ({
   await notes.fill("Reutilizar sensores del laboratorio");
   const equipment = page.getByRole("checkbox").nth(1);
   await equipment.check();
-  await page.locator("#tab-evidence").click();
+  await page.getByRole("button", { name: "Ver Evidencia Científica", exact: true }).click();
   await expect(page.locator("#panel-evidence")).toBeVisible();
+  await expect(page.locator("#tab-learn")).toHaveCount(0);
+  await expect(page.locator("#tab-plan")).toHaveCount(0);
+  await expect(page.locator("#panel-evidence")).not.toContainText(/\bODS\b|\bSDGs?\b|La Araucana/i);
+  await page.getByRole("button", { name: "Cambiar a Modo Estudiante", exact: true }).click();
   await page.locator("#tab-plan").click();
   await expect(title).toHaveValue("Ensayo de Angelo");
   await expect(notes).toHaveValue("Reutilizar sensores del laboratorio");
@@ -94,11 +98,19 @@ test("arrow keys, Home and End move both selection and keyboard focus", async ({
   await expect(page.locator("#tab-plan")).toBeFocused();
   await expect(page.locator("#tab-plan")).toHaveAttribute("aria-selected", "true");
   await page.keyboard.press("End");
-  await expect(page.locator("#tab-evidence")).toBeFocused();
+  await expect(page.locator("#tab-plan")).toBeFocused();
   await page.keyboard.press("Home");
   await expect(page.locator("#tab-compare")).toBeFocused();
   await page.keyboard.press("ArrowLeft");
-  await expect(page.locator("#tab-evidence")).toBeFocused();
+  await expect(page.locator("#tab-plan")).toBeFocused();
+
+  await page.goto("/?tab=compare&mode=mission");
+  await expect(page.locator("nav[role='tablist'] [role='tab']")).toHaveCount(5);
+  await page.locator("#tab-compare").focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.locator("#tab-results")).toBeFocused();
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.locator("#tab-compare")).toBeFocused();
 });
 
 test("local laboratory works and explains a catalog outage", async ({ page }) => {
@@ -111,20 +123,48 @@ test("local laboratory works and explains a catalog outage", async ({ page }) =>
   await expect(page.getByRole("textbox").nth(0)).toHaveValue("Borrador sin conexión");
 });
 
+test("an unavailable analysis service shows retry guidance without suggesting different thresholds", async ({ page }) => {
+  await page.route("**/api/v1/analogs/search", (route) => route.fulfill({ status: 500, body: "" }));
+  await page.goto("/?view=app&mode=science&tab=compare");
+  await expect(page.getByRole("alert")).toContainText("El servicio de análisis no pudo completar la solicitud");
+  await expect(page.locator("#panel-compare")).toContainText("No se recibió un resultado válido del servicio");
+  await expect(page.locator("#panel-compare")).not.toContainText("Prueba reducir los umbrales mínimos");
+  await page.unroute("**/api/v1/analogs/search");
+  await page.getByRole("alert").getByRole("button", { name: "Reintentar", exact: true }).click();
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  await expect(page.locator("#panel-compare")).toContainText("Prueba reducir los umbrales mínimos");
+});
+
+test("refreshing the analysis reuses the catalogue without calling administrative dataset refresh", async ({ page }) => {
+  const administrativeCalls: string[] = [];
+  page.on("request", (request) => { if (request.url().endsWith("/datasets/refresh")) administrativeCalls.push(request.url()); });
+  await page.goto("/?view=app&mode=science&tab=compare");
+  const refreshed = page.waitForResponse((response) => response.url().endsWith("/analogs/search") && response.ok());
+  await page.getByRole("button", { name: "Actualizar análisis", exact: true }).click();
+  await refreshed;
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  expect(administrativeCalls).toEqual([]);
+});
+
 test("mobile panels fit the viewport and untouched defaults follow the language", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/?tab=plan");
   const spanishTitle = await page.getByRole("textbox").nth(0).inputValue();
-  await page.getByRole("button", { name: "en", exact: true }).click();
+  await page.locator("header button[aria-haspopup='menu']").click();
+  await page.getByRole("menuitemradio", { name: "English", exact: true }).click();
   await expect(page.getByRole("textbox").nth(0)).not.toHaveValue(spanishTitle);
-  for (const tab of ["plan", "learn", "evidence"]) {
+  for (const tab of ["plan", "learn"]) {
     await page.locator(`#tab-${tab}`).click();
     await expect(page.locator(`#panel-${tab}`)).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
+  await page.goto("/?tab=evidence&mode=mission");
+  await expect(page.locator("#panel-evidence")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
 test("changing planetary sites removes previous cell data while the next query is pending", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
   const cellFor = (site: typeof sites[number]) => ({
     earth_cell_h3: site.body === "moon" ? "837b59fffffffff" : "82b227fffffffff",
     h3_resolution: 2, coordinates: { lat: -24.1, lon: -69.9 },
@@ -148,14 +188,12 @@ test("changing planetary sites removes previous cell data while the next query i
     const site = sites.find((s: { site_id: string }) => s.site_id === new URL(route.request().url()).pathname.split("/").pop())!;
     return route.fulfill({ json: { site, match: cellFor(site), variable_deltas: [] } });
   });
-  await page.goto("/?tab=plan");
-  await expect(page.locator("#panel-plan")).toContainText("82b227fffffffff");
-  await page.locator("#tab-compare").click();
-  await page.locator("#target-site-select").selectOption("moon_shackleton_pole");
-  await page.locator("#tab-plan").click();
+  await page.goto("/?tab=analysis&mode=mission");
+  await expect(page.locator("#section-diagnostics")).toContainText("82b227fffffffff");
+  await page.locator("#workspace-site-select").selectOption("moon_shackleton_pole");
   await expect.poll(() => moonRequested).toBe(true);
-  await expect(page.locator("#panel-plan")).not.toContainText("82b227fffffffff");
+  await expect(page.locator("#panel-analysis")).not.toContainText("82b227fffffffff");
   releaseMoon();
-  await expect(page.locator("#panel-plan")).toContainText("837b59fffffffff");
-  await expect(page.locator("#panel-plan")).not.toContainText("82b227fffffffff");
+  await expect(page.locator("#section-diagnostics")).toContainText("837b59fffffffff");
+  await expect(page.locator("#panel-analysis")).not.toContainText("82b227fffffffff");
 });

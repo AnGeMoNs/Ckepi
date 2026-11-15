@@ -1,7 +1,7 @@
 """Application configuration and physical variable definitions."""
 
 from pathlib import Path
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 INDEPENDENT_VARIABLES: tuple[str, ...] = (
@@ -56,6 +56,12 @@ FEATURE_SCALES: dict[str, float] = {
 class Settings(BaseSettings):
     """Runtime settings for Ckepi API and data store."""
 
+    model_config = SettingsConfigDict(
+        env_file=(".env", "../.env"),
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
     app_name: str = "Ckepi API"
     app_version: str = "0.1.0"
     data_dir: Path = Path(__file__).resolve().parent / "data"
@@ -70,6 +76,15 @@ class Settings(BaseSettings):
     admin_token: str | None = None
     probe_rate_limit_per_min: int = 30
     max_probed_sites: int = 50
+    openrouter_api_key: str | None = None
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    openrouter_model: str = "openrouter/free"
+    openrouter_fallback_models: list[str] = []
+    openrouter_timeout_seconds: float = 35.0
+    openrouter_site_url: str = "https://github.com/ckepi"
+    openrouter_app_name: str = "Ckepi Planetary Analogs"
+    ai_rate_limit_per_min: int = 12
+    ai_cache_ttl_hours: int = 168
 
 
 settings = Settings()

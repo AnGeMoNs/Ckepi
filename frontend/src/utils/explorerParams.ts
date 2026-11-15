@@ -1,6 +1,6 @@
 import type { PlanetaryBody, TestProfileType } from "../types/analog";
 
-export type ExplorerTab = "compare" | "learn" | "plan" | "evidence";
+export type ExplorerTab = "start" | "mission" | "compare" | "results" | "analysis" | "learn" | "plan" | "evidence";
 
 const PROFILES: readonly TestProfileType[] = [
   "causal_auto", "navigation_landing", "rover_mobility", "isru_ice_drilling",
@@ -14,7 +14,7 @@ export function readExplorerParams(search: string) {
   const profile = params.get("profile") as TestProfileType;
   const siteId = params.get("site")?.trim().slice(0, 160) || "mars_jezero_crater";
   return {
-    tab: (tab === "learn" || tab === "plan" || tab === "evidence" ? tab : "compare") as ExplorerTab,
+    tab: (["start", "mission", "results", "analysis", "learn", "plan", "evidence"].includes(tab ?? "") ? tab : "compare") as ExplorerTab,
     siteId,
     body: (/^(moon_|probe_moon_)/.test(siteId) ? "moon" : "mars") as PlanetaryBody,
     profile: PROFILES.includes(profile) ? profile : "causal_auto",

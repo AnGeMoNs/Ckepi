@@ -1,6 +1,7 @@
-import { formatNumber, formatPercent } from "../i18n";
+import { formatNumber, formatPercent, formatTimestamp } from "../i18n";
 import type {
   AnalogMatchItem,
+  MissionAiAnalysisResponse,
   PlanetarySite,
   TerrainDistributionComparison,
 } from "../types/analog";
@@ -103,6 +104,7 @@ export function exportReportMarkdown(
   translate: TranslateFn,
   selectedMatch?: AnalogMatchItem,
   lang = "es",
+  aiAnalysis?: MissionAiAnalysisResponse | null,
   statisticalDistribution?: TerrainDistributionComparison | null
 ): void {
   const focus = selectedMatch ?? matches[0];
@@ -145,6 +147,24 @@ export function exportReportMarkdown(
         ([k, v]) => `- ${translate(`variables.${k}.label`)}: ${formatPercent(v, lang)}`
       ),
       ``,
+      `### ${translate("export.dimensionsTitle")}`,
+      `- **${translate("mission.dimensions.items.geology.title")}:** ${translate("mission.dimensions.geologyProcess")}`,
+      `- **${translate("mission.dimensions.items.terrain.title")}:** ${translate("mission.dimensions.terrainProcess")} (Slope ${formatNumber(focus.earth_variables.independent.slope_deg ?? 0, lang, 1)}°, Roughness ${formatNumber(focus.earth_variables.independent.topographic_roughness ?? 0, lang, 2)})`,
+      `- **${translate("mission.dimensions.items.thermal.title")}:** ${translate("mission.dimensions.thermalProcess")} (Mean ${formatNumber((focus.earth_variables.dependent.mean_surface_temp_k ?? 273.15) - 273.15, lang, 1)}°C, Δ ${formatNumber(focus.earth_variables.dependent.diurnal_temp_amplitude_k ?? 0, lang, 1)} K)`,
+      `- **${translate("mission.dimensions.items.water.title")}:** ${translate("mission.dimensions.waterProcess")} (Subsurface Ice ${formatPercent(focus.earth_variables.independent.subsurface_ice_frac ?? 0, lang)}, Aridity ${formatNumber(focus.earth_variables.independent.aridity_index ?? 0, lang, 2)})`,
+      `- **${translate("mission.dimensions.items.aeolian.title")}:** ${translate("mission.dimensions.aeolianProcess")} (Wind ${formatNumber(focus.earth_variables.dependent.surface_wind_ms ?? 0, lang, 1)} m/s, Dust ${formatNumber(focus.earth_variables.dependent.aeolian_dust_flux ?? 0, lang, 2)})`,
+      `- **${translate("mission.dimensions.items.biology.title")}:** ${translate("mission.dimensions.biologyProcess")}`,
+      `- **${translate("mission.dimensions.items.subsurface.title")}:** ${translate("mission.dimensions.subsurfaceProcess")}`,
+      `- **${translate("mission.dimensions.items.operations.title")}:** ${translate("mission.dimensions.operationsProcess")} (R_break ${formatPercent(focus.r_break_overall, lang)})`,
+      ``,
+      `### ${translate("export.openDataLinksTitle")}`,
+      `- NASA Worldview: https://worldview.earthdata.nasa.gov/?v=${Math.max(-180, focus.coordinates.lon - 2.5).toFixed(2)},${Math.max(-90, focus.coordinates.lat - 2.5).toFixed(2)},${Math.min(180, focus.coordinates.lon + 2.5).toFixed(2)},${Math.min(90, focus.coordinates.lat + 2.5).toFixed(2)}`,
+      `- NASA Earthdata Search: https://search.earthdata.nasa.gov/search?sb=${Math.max(-180, focus.coordinates.lon - 0.5).toFixed(2)},${Math.max(-90, focus.coordinates.lat - 0.5).toFixed(2)},${Math.min(180, focus.coordinates.lon + 0.5).toFixed(2)},${Math.min(90, focus.coordinates.lat + 0.5).toFixed(2)}`,
+      `- NASA PDS / LRO Diviner: https://pds-geosciences.wustl.edu/missions/lro/diviner.htm`,
+      `- ESA Copernicus Data Space: https://dataspace.copernicus.eu/ · ESA Open Science: https://opensciencedata.esa.int/`,
+      `- CSA RADARSAT (RCM / RADARSAT-1): https://donnees-data.asc-csa.gc.ca/en/dataset/rcm`,
+      `- JAXA G-Portal: https://gportal.jaxa.jp/gpr/search`,
+      ``,
       `### ${translate("export.whereBreaks")}`,
       ...broken.map(
         (b) =>
@@ -181,11 +201,47 @@ export function exportReportMarkdown(
         ``
       );
     }
+  }
 
+  if (
+    aiAnalysis &&
+    aiAnalysis.site_id === site.site_id &&
+    (!focus || aiAnalysis.earth_cell_h3 === focus.earth_cell_h3)
+  ) {
     lines.push(
-      `### Territorial Impact (Antofagasta & Caja La Araucana — UN SDGs)`,
-      `- **La Araucana Strategic Alignment:** (1) Democratizing frontier science, (2) STEAM employability & open data science, (3) Local application in Antofagasta Region, (4) Interregional innovation lattice.`,
-      `- **Verified UN SDG Targets:** ODS 4.3, 4.4 (STEAM & technical education), ODS 8 & 9.5 (scientific research & innovation), ODS 10 (territorial equity), ODS 17.3, 17.16, 17.17 (multi-stakeholder partnerships).`,
+      `## ${translate("export.aiSectionTitle")}`,
+      ``,
+      `- **${translate("export.aiModelMeta")}:** ${aiAnalysis.model_used} (${aiAnalysis.provider})`,
+      `- **${translate("export.aiGeneratedMeta")}:** ${formatTimestamp(new Date(aiAnalysis.generated_at), lang)}`,
+      ``,
+      `### ${translate("export.aiExecutiveTitle")}`,
+      aiAnalysis.executive_synthesis,
+      ``,
+      `### ${translate("export.aiViabilityTitle")}`,
+      aiAnalysis.viability_assessment,
+      ``,
+      `### ${translate("export.aiScaleConfidenceTitle")}`,
+      aiAnalysis.confidence_and_scale_note,
+      ``,
+      `### ${translate("export.aiStrengthsTitle")}`,
+      ...aiAnalysis.key_strengths.map((s) => `- **${s.title}:** ${s.detail}`),
+      ``,
+      `### ${translate("export.aiLimitationsTitle")}`,
+      ...aiAnalysis.physical_limitations_and_gaps.map((g) => `- **${g.title}:** ${g.detail}`),
+      ``,
+      `### ${translate("export.aiMitigationsTitle")}`,
+      ...aiAnalysis.breakage_mitigation_plan.map(
+        (m) =>
+          `- **${m.variable}:** ${m.earth_gap_impact} → *${m.recommended_facility_or_protocol}*`
+      ),
+      ``,
+      `### ${translate("export.aiConsiderationsTitle")}`,
+      ...aiAnalysis.field_campaign_considerations.map((c) => `- ${c}`),
+      ``,
+      `### ${translate("export.aiNextStepsTitle")}`,
+      ...aiAnalysis.recommended_next_steps.map((n) => `- ${n}`),
+      ``,
+      `> ${translate("mission.ai.disclaimer")}`,
       ``
     );
   }

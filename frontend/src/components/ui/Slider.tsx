@@ -26,13 +26,15 @@ export function Slider({
   tooltip,
 }: SliderProps) {
   return (
-    <div className="flex flex-col justify-between gap-1.5">
-      <div className="flex items-center justify-between gap-2 text-xs font-medium text-content-muted">
-        <div className="flex items-center gap-0.5">
-          <label htmlFor={id}>{label}</label>
+    <div className="flex flex-col gap-2">
+      <div className="flex min-h-[2.75rem] items-start justify-between gap-2 text-sm font-semibold leading-snug text-content">
+        <div className="flex min-w-0 items-start gap-1">
+          <label htmlFor={id} className="font-semibold text-content">
+            {label}
+          </label>
           {tooltip}
         </div>
-        <span className="rounded bg-surface-muted px-1.5 py-0.5 tabular-nums font-semibold text-content">
+        <span className="shrink-0 rounded-full border border-border-subtle/60 bg-surface/40 px-2.5 py-0.5 font-mono text-xs font-bold tabular-nums text-content">
           {formattedValue}
         </span>
       </div>
@@ -45,9 +47,9 @@ export function Slider({
         value={value}
         aria-valuetext={formattedValue}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="min-h-11 w-full cursor-pointer accent-accent"
+        className="ckepi-range min-h-11 w-full cursor-pointer"
       />
-      {helpText && <p className="text-xs text-content-muted">{helpText}</p>}
+      {helpText && <p className="text-xs leading-relaxed text-content-muted">{helpText}</p>}
     </div>
   );
 }

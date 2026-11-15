@@ -1,5 +1,5 @@
-import { BookOpen, Database, Globe2, MapPin, ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Pictogram } from "../worlds/Pictograms";
 
 import type { PlanetarySite, SiteComparisonResponse } from "../../types/analog";
 import { Badge } from "../ui/Badge";
@@ -51,30 +51,30 @@ export function EvidencePanel({ activeSite, comparison }: EvidencePanelProps) {
       {/* Global vs Location Distinction */}
       <Card>
         <CardHeader>
-          <div className="flex flex-wrap items-center gap-2">
-            <BookOpen className="h-5 w-5 text-accent" aria-hidden="true" />
+          <div className="flex flex-wrap items-center gap-3">
+            <img src="/img/science-accessories/ckepi-pin-location.webp" alt="" width={56} height={56} className="h-12 w-12 shrink-0 object-contain drop-shadow-ckepi-logo" />
             <CardTitle>{t("evidence.title")}</CardTitle>
-            <Badge variant="accent">NASA Space Apps 2026</Badge>
+            <Badge variant="accent">{t("app.challengeBadge")}</Badge>
           </div>
-          <p className="mt-1 text-xs text-content-muted sm:text-sm">{t("evidence.subtitle")}</p>
+          <p className="mt-2 text-sm text-content-muted sm:text-base">{t("evidence.subtitle")}</p>
         </CardHeader>
 
         <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="rounded-xl border border-border-subtle bg-surface p-4 text-xs">
+          <div className="ckepi-liquid rounded-3xl p-5 text-sm">
             <div className="flex items-center gap-2 font-semibold text-content">
-              <Globe2 className="h-4 w-4 text-accent" aria-hidden="true" />
+              <Pictogram name="globe" className="h-6 w-6 text-accent" />
               <span>
-                <span aria-label={t("nav.globalLabel")}>🌎</span> {t("evidence.globalTitle")}
+                {t("evidence.globalTitle")}
               </span>
             </div>
             <p className="mt-1.5 text-content-muted">{t("evidence.globalDesc")}</p>
           </div>
 
-          <div className="rounded-xl border border-border-subtle bg-surface p-4 text-xs">
+          <div className="ckepi-liquid rounded-3xl p-5 text-sm">
             <div className="flex items-center gap-2 font-semibold text-content">
-              <MapPin className="h-4 w-4 text-status-break" aria-hidden="true" />
+              <Pictogram name="hexCell" className="h-6 w-6 text-accent" />
               <span>
-                <span aria-label={t("nav.locationLabel")}>📍</span> {t("evidence.locationTitle")}
+                {t("evidence.locationTitle")}
               </span>
             </div>
             <p className="mt-1.5 text-content-muted">{t("evidence.locationDesc")}</p>
@@ -86,34 +86,37 @@ export function EvidencePanel({ activeSite, comparison }: EvidencePanelProps) {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-accent" aria-hidden="true" />
+            <img src="/img/planets/ckepi-planet-science.webp" alt="" width={56} height={56} className="h-12 w-12 shrink-0 object-contain drop-shadow-ckepi-logo" />
             <CardTitle>{t("evidence.methodTitle")}</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="space-y-3 text-xs text-content-muted sm:text-sm">
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-            <div className="rounded-xl border border-border-subtle bg-surface p-3">
-              <p className="font-semibold text-content">{t("evidence.xTitle")}</p>
-              <p className="mt-1 text-xs">{t("evidence.xDesc")}</p>
+            <div className="ckepi-liquid flex flex-col items-center rounded-3xl p-5 text-center">
+              <img src="/img/science-accessories/ckepi-icon-relief.webp" alt="" width={56} height={56} className="h-12 w-12 object-contain drop-shadow-ckepi-logo" />
+              <p className="mt-2 text-base font-bold text-content">{t("evidence.xTitle")}</p>
+              <p className="mt-1 text-sm leading-relaxed">{t("evidence.xDesc")}</p>
             </div>
-            <div className="rounded-xl border border-border-subtle bg-surface p-3">
-              <p className="font-semibold text-content">{t("evidence.yTitle")}</p>
-              <p className="mt-1 text-xs">{t("evidence.yDesc")}</p>
+            <div className="ckepi-liquid flex flex-col items-center rounded-3xl p-5 text-center">
+              <img src="/img/science-accessories/ckepi-icon-temperature.webp" alt="" width={56} height={56} className="h-12 w-12 object-contain drop-shadow-ckepi-logo" />
+              <p className="mt-2 text-base font-bold text-content">{t("evidence.yTitle")}</p>
+              <p className="mt-1 text-sm leading-relaxed">{t("evidence.yDesc")}</p>
             </div>
-            <div className="rounded-xl border border-status-break/30 bg-status-break/5 p-3">
-              <p className="font-semibold text-content">{t("evidence.bTitle")}</p>
-              <p className="mt-1 text-xs">{t("evidence.bDesc")}</p>
+            <div className="ckepi-liquid flex flex-col items-center rounded-3xl p-5 text-center">
+              <img src="/img/science-accessories/ckepi-icon-gravity.webp" alt="" width={56} height={56} className="h-12 w-12 object-contain drop-shadow-ckepi-logo" />
+              <p className="mt-2 text-base font-bold text-content">{t("evidence.bTitle")}</p>
+              <p className="mt-1 text-sm leading-relaxed">{t("evidence.bDesc")}</p>
             </div>
           </div>
 
           {activeSite && (
-            <p className="text-xs">
+            <p className="text-sm">
               <strong className="text-content">{t("evidence.activeProvenance")}:</strong>{" "}
               {activeSite.provenance.source_apis.join(" · ")} ({activeSite.provenance.observation_window})
             </p>
           )}
           {comparison && (
-            <p className="text-xs">
+            <p className="text-sm">
               <strong className="text-content">{t("evidence.earthProvenance")}:</strong>{" "}
               {comparison.match.provenance.source_apis.join(" · ")}
             </p>
@@ -125,7 +128,7 @@ export function EvidencePanel({ activeSite, comparison }: EvidencePanelProps) {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Database className="h-5 w-5 text-accent" aria-hidden="true" />
+            <img src="/img/science-accessories/ckepi-icon-soil.webp" alt="" width={56} height={56} className="h-12 w-12 shrink-0 object-contain drop-shadow-ckepi-logo" />
             <CardTitle>{t("evidence.sourcesTitle")}</CardTitle>
           </div>
         </CardHeader>
@@ -156,7 +159,7 @@ export function EvidencePanel({ activeSite, comparison }: EvidencePanelProps) {
                             : "warn"
                         }
                       >
-                        {t(`confidence.origin_${src.origin}`)}
+                        {t(`confidence.origins.${src.origin}`)}
                       </Badge>
                     </td>
                   </tr>
@@ -167,33 +170,16 @@ export function EvidencePanel({ activeSite, comparison }: EvidencePanelProps) {
         </CardContent>
       </Card>
 
-      {/* SDGs (ODS) & AI Disclosure */}
+      {/* AI Usage Disclosure */}
       <Card>
         <CardHeader>
-          <CardTitle>{t("evidence.sdgTitle")}</CardTitle>
-          <p className="mt-1 text-xs text-content-muted">{t("evidence.sdgHonestyNote")}</p>
+          <div className="flex items-center gap-2">
+            <img src="/img/science-accessories/ckepi-icon-atmosphere.webp" alt="" width={56} height={56} className="h-12 w-12 shrink-0 object-contain drop-shadow-ckepi-logo" />
+            <CardTitle>{t("evidence.aiDisclosureTitle")}</CardTitle>
+          </div>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          <div className="rounded-xl border border-accent/30 bg-accent/5 p-3 text-xs">
-            <p className="font-semibold text-content">{t("evidence.sdg4Title")}</p>
-            <p className="mt-1 text-content-muted">{t("evidence.sdg4Desc")}</p>
-          </div>
-          <div className="rounded-xl border border-accent/30 bg-accent/5 p-3 text-xs">
-            <p className="font-semibold text-content">{t("evidence.sdg9Title")}</p>
-            <p className="mt-1 text-content-muted">{t("evidence.sdg9Desc")}</p>
-          </div>
-          <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
-            <p className="font-semibold text-content">{t("evidence.sdg12Title")}</p>
-            <p className="mt-1 text-content-muted">{t("evidence.sdg12Desc")}</p>
-          </div>
-          <div className="rounded-xl border border-border-subtle bg-surface p-3 text-xs">
-            <p className="font-semibold text-content">{t("evidence.sdg17Title")}</p>
-            <p className="mt-1 text-content-muted">{t("evidence.sdg17Desc")}</p>
-          </div>
-          <div className="rounded-xl border border-border-subtle bg-surface-elevated p-3 text-xs md:col-span-2">
-            <p className="font-semibold text-content">{t("evidence.aiDisclosureTitle")}</p>
-            <p className="mt-1 text-content-muted">{t("evidence.aiDisclosureDesc")}</p>
-          </div>
+        <CardContent>
+          <p className="text-xs text-content-muted sm:text-sm">{t("evidence.aiDisclosureDesc")}</p>
         </CardContent>
       </Card>
     </div>

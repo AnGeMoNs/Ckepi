@@ -1,6 +1,6 @@
 import { memo, useMemo, useState } from "react";
-import { ArrowRight, RefreshCw, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Pictogram } from "../worlds/Pictograms";
 
 import { formatNumber } from "../../i18n";
 import type { PlanetaryBody, PlanetarySite, SiteComparisonResponse } from "../../types/analog";
@@ -102,7 +102,7 @@ export const ContextualCuriosityStrip = memo(function ContextualCuriosityStrip({
       <CardContent className="space-y-3 py-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 flex-1 items-start gap-2.5" aria-live="polite">
-          <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+          <Pictogram name="research" className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
           <div className="space-y-0.5 text-xs sm:text-sm">
             <p className="font-semibold text-content">{currentFact.title}</p>
             <p className="text-content-muted">{currentFact.body}</p>
@@ -114,7 +114,7 @@ export const ContextualCuriosityStrip = memo(function ContextualCuriosityStrip({
               variant="secondary"
               onClick={() => setFactIdx((prev) => (prev + 1) % facts.length)}
             >
-              <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
+              <Pictogram name="replay" className="h-3.5 w-3.5" />
               <span>{t("curiosity.nextFact")}</span>
             </Button>
           )}
@@ -124,12 +124,12 @@ export const ContextualCuriosityStrip = memo(function ContextualCuriosityStrip({
             aria-controls="quick-quiz"
             onClick={() => setQuizOpen((prev) => !prev)}
           >
-            <span aria-hidden="true">🎯</span>
+            <Pictogram name="decide" className="h-5 w-5" />
             <span>{t("quickQuiz.cta")}</span>
           </Button>
           <Button variant="primary" onClick={onOpenLearn}>
             <span>{t("curiosity.cta")}</span>
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            <Pictogram name="chevronDown" className="h-4 w-4 -rotate-90" />
           </Button>
         </div>
       </div>

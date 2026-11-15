@@ -6,6 +6,7 @@ import { compareCellWithSite } from "../../api/client";
 import { formatNumber } from "../../i18n";
 import type { PlanetarySite, SiteComparisonResponse } from "../../types/analog";
 import { NumberTicker } from "../motion/NumberTicker";
+import { CopernicusNotice } from "../ui/CopernicusNotice";
 import { PaperPlanet, type WorldKey } from "./PaperPlanet";
 import { Pictogram } from "./Pictograms";
 
@@ -285,6 +286,7 @@ function TerrainMatch({ crossing, children }: { crossing: SiteComparisonResponse
           </div>
           <p className="text-xs text-content-muted">{t("crossing.mars.match.legend")}</p>
           <p className="rounded-xl border border-border-subtle px-3 py-2 text-xs text-content-muted">{t("crossing.mars.match.source")}</p>
+          <CopernicusNotice />
         </>
       ) : (
         <p className="text-sm text-content-muted">{t("crossing.loading")}</p>
@@ -474,6 +476,7 @@ function LabStep({ children }: { children: ReactNode }) {
               {t("crossing.earth.lab.control", { value: formatNumber(control, i18n.language, 2) })}
             </p>
           )}
+          <CopernicusNotice />
         </div>
       )}
     </div>

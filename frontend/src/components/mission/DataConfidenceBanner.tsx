@@ -1,5 +1,5 @@
-import { AlertTriangle, CheckCircle2, Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Pictogram, type PictogramName } from "../worlds/Pictograms";
 
 import { formatNumber, formatPercent } from "../../i18n";
 import type { PlanetarySite } from "../../types/analog";
@@ -27,8 +27,8 @@ export function DataConfidenceBanner({ site }: DataConfidenceBannerProps) {
       ? "border-status-warn/60 bg-status-warn/15"
       : "border-status-break/60 bg-status-break/15";
 
-  const Icon =
-    conf.level === "high" ? CheckCircle2 : conf.level === "medium" ? Info : AlertTriangle;
+  const pictogram: PictogramName =
+    conf.level === "high" ? "check" : conf.level === "medium" ? "info" : "notSimilar";
 
   const iconColor =
     conf.level === "high"
@@ -46,7 +46,7 @@ export function DataConfidenceBanner({ site }: DataConfidenceBannerProps) {
       <CardContent className="space-y-3 py-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <Icon className={`h-5 w-5 shrink-0 ${iconColor}`} aria-hidden="true" />
+            <Pictogram name={pictogram} className={`h-5 w-5 shrink-0 ${iconColor}`} />
             <h2 className="text-sm font-semibold text-content">{t("confidence.title")}</h2>
           </div>
 

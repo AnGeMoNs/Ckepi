@@ -74,15 +74,73 @@
   }
 }
 
-.cv-auto {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 600px;
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html,
 body {
   min-height: 100%;
   overflow-x: hidden;
+}
+
+body {
+  background-color: rgb(var(--color-surface));
+  background-image:
+    radial-gradient(at 15% 0%, rgb(var(--color-accent) / 0.08) 0px, transparent 50%),
+    radial-gradient(at 85% 10%, rgb(var(--color-planet-moon) / 0.07) 0px, transparent 45%);
+  background-attachment: fixed;
+}
+
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
+/* Hide scrollbars on horizontal pill navs while keeping scroll functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Refined range input appearance across desktop and mobile */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 0.45rem;
+  border-radius: 9999px;
+  background: rgb(var(--color-surface-muted));
+  border: 1px solid rgb(var(--color-border-subtle));
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -0.35rem;
+  height: 1.1rem;
+  width: 1.1rem;
+  border-radius: 9999px;
+  background: rgb(var(--color-accent));
+  border: 2px solid rgb(var(--color-surface-elevated));
+  box-shadow: 0 2px 6px rgb(15 23 42 / 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+  transform: scale(1.1);
+}
+
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 4px rgb(var(--color-accent) / 0.25);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -108,6 +166,345 @@ body {
   box-shadow: 0 1px 0 rgb(0 0 0 / 0.35);
 }
 .ckepi-cardboard-active {
-  background-color: rgb(var(--color-accent));
-  color: rgb(var(--color-accent-foreground));
+  background-color: rgb(214 122 72);
+  background-image: linear-gradient(180deg, rgb(240 164 104), rgb(208 112 62));
+  color: rgb(24 30 30);
+  box-shadow: 0 3px 0 rgb(122 58 30), inset 0 1px 0 rgb(255 255 255 / 0.35);
+}
+
+/*
+ * Paper surfaces for the Learn expedition: a sheet glued on a second, offset sheet, the way
+ * a cardboard model is built. Theme-aware through the semantic tokens. When the GPT paper
+ * textures (docs/design/paper-cut/PROMPTS_PLANETAS_GPT.md, T1–T3) exist, they are added
+ * here as background-image / border-image; until then this flat paper is the fallback.
+ */
+.ckepi-paper-card {
+  position: relative;
+  background-color: rgb(var(--color-surface-elevated));
+  border: 1px solid rgb(var(--color-glass-edge) / 0.12);
+  box-shadow:
+    5px 6px 0 -1px rgb(var(--color-surface-muted)),
+    5px 6px 0 0 rgb(0 0 0 / 0.25),
+    0 18px 32px -22px rgb(0 0 0 / 0.6);
+}
+
+/* Smaller cream sheet for answers and facts: the light card stock of the kit. */
+.ckepi-paper-card-salt {
+  background-color: rgb(255 242 215);
+  color: rgb(24 58 58);
+  box-shadow:
+    3px 4px 0 -1px rgb(232 160 128),
+    3px 4px 0 0 rgb(0 0 0 / 0.25);
+}
+
+/* GPT paper textures (docs/design/paper-cut/PROMPTS_PLANETAS_GPT.md T1–T5), AI-labelled on the page. */
+.dark .ckepi-paper-card {
+  background-image: url("/img/paper/paper-card-ink.webp");
+  background-size: 512px 512px;
+}
+.ckepi-paper-card-salt {
+  background-image: url("/img/paper/paper-card-salt.webp");
+  background-size: 512px 512px;
+}
+
+/* The workbench under the three worlds: dark cardboard with a torn edge. */
+.ckepi-paper-table {
+  background-color: rgb(24 58 58);
+  background-image: url("/img/paper/paper-card-ink.webp");
+  background-size: 512px 512px;
+  color: rgb(255 242 215);
+  border: 18px solid transparent;
+  border-image: url("/img/paper/paper-frame-torn.webp") 24 round;
+  box-shadow: 0 24px 40px -28px rgb(0 0 0 / 0.7);
+}
+
+/* Torn-paper frame around the experiment panel (9-slice). */
+.ckepi-paper-frame {
+  border: 16px solid transparent;
+  border-image: url("/img/paper/paper-frame-torn.webp") 24 round;
+}
+
+/* Corrugated cardboard strip as a separator above the explanation. */
+.ckepi-paper-strip {
+  background-image: url("/img/paper/paper-strip-corrugated.webp");
+  background-repeat: repeat-x;
+  background-position: top left;
+  background-size: auto 14px;
+}
+
+/* Map tags: each measured cell shows its W₁ on the map as a small cardboard tag (≥44 px target). */
+.ckepi-map-tag {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background-color: rgb(255 242 215);
+  color: rgb(24 58 58);
+  font: 700 0.95rem/1 "IBM Plex Mono", ui-monospace, monospace;
+  box-shadow: 0 3px 0 rgb(0 0 0 / 0.4);
+  cursor: pointer;
+}
+.ckepi-map-tag[aria-pressed="true"] {
+  background-color: rgb(232 160 128);
+  outline: 3px solid rgb(228 237 131);
+}
+.ckepi-map-tag:focus-visible {
+  outline: 3px solid rgb(228 237 131);
+  outline-offset: 2px;
+}
+.ckepi-map-tag-control {
+  cursor: default;
+  background-color: rgb(16 31 36);
+  color: rgb(255 242 215);
+  font-size: 0.8rem;
+  min-height: auto;
+  padding: 0.35rem 0.6rem;
+}
+
+/* Product identity: static paper, a glass face and a decorative nine-slice rim. */
+.ckepi-product { --product-paper: url('/img/paper/paper-card-salt.webp'); }
+.dark .ckepi-product { --product-paper: url('/img/paper/paper-card-ink.webp'); }
+.ckepi-product .ckepi-product-card,
+.product-guide {
+  position: relative;
+  background-image: linear-gradient(rgb(var(--color-surface-elevated) / .94), rgb(var(--color-surface-elevated) / .94)), var(--product-paper);
+  box-shadow: 0 .2rem 0 rgb(var(--color-glass-shadow) / .25), 0 1rem 2rem rgb(var(--color-glass-shadow) / .12);
+}
+.ckepi-product .ckepi-product-card::after,
+.product-guide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: .85rem solid transparent;
+  border-image: url('/img/card-frames/ckepi-card-glass-ink.webp') 120 stretch;
+  border-image-width: .85rem;
+  border-radius: inherit;
+}
+.product-world { background-color: rgb(var(--color-surface-muted) / .6); }
+/* Many scientific panels share the viewport; opaque paper avoids stacked GPU blur layers. */
+.ckepi-product .ckepi-product-card { backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+.physics-jump-track { --jump-ground: .625rem; }
+
+/* Paper instruments and a shared glass lens: selection exposes the measurement's context. */
+.measurement-card { background: rgb(var(--color-surface-elevated) / .9); border-color: rgb(var(--color-border-subtle) / .65); box-shadow: inset 0 1px 0 rgb(var(--color-glass-edge) / .18), 0 .25rem 0 rgb(var(--color-glass-shadow) / .2); }
+.measurement-card-candidate { border-color: rgb(var(--color-status-valid) / .65); }
+.measurement-card-limit { border-color: rgb(var(--color-status-break) / .5); }
+.measurement-card-active { border-color: rgb(var(--color-accent)); }
+.measurement-lens { background: linear-gradient(130deg, rgb(var(--color-accent) / .14), transparent 70%); box-shadow: inset 0 0 0 1px rgb(var(--color-glass-edge) / .3); }
+.measurement-instrument { background: rgb(var(--color-surface-muted) / .7); box-shadow: inset 0 -.2rem 0 rgb(var(--color-glass-shadow) / .15); }
+.measurement-unit { box-shadow: 0 .15rem 0 rgb(var(--color-glass-shadow) / .2); }
+.measurement-expand { background: rgb(var(--color-accent) / .08); }
+.measurement-card { position: relative; background-image: linear-gradient(rgb(var(--color-surface-elevated) / .9), rgb(var(--color-surface-elevated) / .9)), var(--product-paper); box-shadow: inset 0 .1rem 0 rgb(var(--color-glass-edge) / .25), 0 .35rem 0 rgb(var(--color-glass-shadow) / .35), 0 1.5rem 2rem -.8rem rgb(var(--color-glass-shadow) / .2); }
+.measurement-card::after { content: ''; pointer-events: none; position: absolute; inset: 0; border: .6rem solid transparent; border-image: url('/img/card-frames/ckepi-card-glass-ink.webp') 120 stretch; border-image-width: .6rem; border-radius: inherit; }
+.measurement-card-active::after { border-image-source: url('/img/card-frames/ckepi-card-glass-copper.webp'); }
+.measurement-landscape { background: rgb(var(--color-surface-muted) / .45); }
+
+.map-panel { display: flex; height: 100%; flex-direction: column; }
+.map-panel > :first-child { min-height: 8rem; }
+.map-panel > :nth-child(2) { flex: 1; }
+.scientific-home { background: transparent; box-shadow: none; }
+.scientific-destination { background: rgb(var(--color-surface-elevated) / .85); box-shadow: 0 .3rem 0 rgb(var(--color-glass-shadow) / .3); }
+.scientific-destination::after { content: ''; pointer-events: none; position: absolute; inset: 0; border: .6rem solid transparent; border-image: url('/img/card-frames/ckepi-card-glass-copper.webp') 120 stretch; border-image-width: .6rem; }
+.scientific-portal:hover { background: rgb(var(--color-accent) / .06); }
+.ckepi-button-primary, .map-options-trigger { background-color: transparent; background-image: url('/img/controls/ckepi-button-copper-v1.webp'); background-size: 100% 100%; background-repeat: no-repeat; border-color: transparent; padding: .85rem 1.35rem 1.05rem; @apply text-ckepi-ink; box-shadow: none; }
+.ckepi-button-primary:hover, .map-options-trigger:hover { opacity: 1; filter: drop-shadow(0 0 .35rem rgb(var(--color-accent) / .45)); }
+.ckepi-button-secondary { box-shadow: inset 0 1px 0 rgb(var(--color-glass-edge) / .25), 0 .18rem 0 rgb(var(--color-glass-shadow) / .25); }
+.ckepi-pin-control { background-image: url('/img/controls/ckepi-pin-hex-v1.webp'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: transparent; border: 0; border-radius: 0; width: 4rem; height: 4rem; padding-bottom: .6rem; @apply text-ckepi-ink; box-shadow: none; transition: transform .15s ease, filter .15s ease; }
+.ckepi-pin-control:hover { transform: translateY(-.15rem); filter: drop-shadow(0 0 .3rem rgb(var(--color-accent) / .55)); }
+.ckepi-pin-control:active { transform: translateY(.12rem); }
+@media (prefers-reduced-motion: reduce) { .ckepi-pin-control { transition: none; } .ckepi-pin-control:hover, .ckepi-pin-control:active { transform: none; } }
+
+/* ── Liquid glass (Explorar) ─────────────────────────────────────────────
+   Layered glass with an inner rim, a sheen that sweeps on hover and, when
+   selected, a slow copper glow drifting behind the content. Only transform and
+   opacity animate; reduced motion keeps the look and drops the movement. */
+/* Positioned lenses (.absolute) keep their own position; everything else becomes the sheen's anchor. */
+.ckepi-liquid:not(.absolute):not(.fixed):not(.sticky) { position: relative; }
+.ckepi-liquid {
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 60% at 0% 0%, rgb(var(--color-glass-edge) / 0.2), transparent 45%),
+    radial-gradient(80% 50% at 100% 100%, rgb(var(--color-glass-edge) / 0.08), transparent 60%),
+    linear-gradient(135deg, rgb(var(--color-glass-fill) / 0.66), rgb(var(--color-glass-fill) / 0.4) 50%, rgb(var(--color-glass-fill) / 0.56));
+  border: 1px solid rgb(var(--color-glass-edge) / 0.16);
+  box-shadow:
+    inset 0 1px 0 rgb(var(--color-glass-edge) / 0.32),
+    inset 0 -1px 0 rgb(0 0 0 / 0.22),
+    0 22px 48px -28px rgb(var(--color-glass-shadow) / 0.75);
+  -webkit-backdrop-filter: blur(16px) saturate(165%);
+  backdrop-filter: blur(16px) saturate(165%);
+}
+/* Selected state = a measuring instrument, not a glow: viewfinder registration marks at the
+   corners and a fine scan line sweeping top to bottom, like a detector reading the sample. */
+.ckepi-liquid.ckepi-liquid-glow {
+  border-color: rgb(var(--color-accent) / 0.55);
+  box-shadow:
+    inset 0 1px 0 rgb(var(--color-glass-edge) / 0.4),
+    0 0 0 1px rgb(var(--color-accent) / 0.2),
+    0 18px 40px -26px rgb(var(--color-glass-shadow) / 0.8);
+}
+/* Selected = a rim of light running around the border (conic gradient masked to the rim),
+   in salt, sulfur and copper. Only the custom angle animates. */
+@property --ckepi-sweep {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.ckepi-liquid-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 2px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--ckepi-sweep),
+    rgb(255 242 215 / 0) 0deg,
+    rgb(255 242 215 / 0) 150deg,
+    rgb(228 237 131 / 0.35) 210deg,
+    rgb(255 242 215 / 0.95) 265deg,
+    rgb(232 160 128 / 0.6) 310deg,
+    rgb(232 160 128 / 0.15) 340deg,
+    rgb(255 242 215 / 0) 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: ckepi-sweep 4s linear infinite;
+}
+@keyframes ckepi-sweep {
+  to { --ckepi-sweep: 360deg; }
+}
+/* Centred glass dialog entrance. */
+.ckepi-dialog-center[open] { animation: ckepi-dialog-in 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes ckepi-dialog-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ckepi-liquid-glow::before { animation: none; --ckepi-sweep: 300deg; }
+  .ckepi-dialog-center[open] { animation: none; }
+}
+
+/* Liquid range: a glass groove and a copper bead with a soft halo. */
+.ckepi-range { -webkit-appearance: none; appearance: none; background: transparent; }
+.ckepi-range::-webkit-slider-runnable-track { height: 0.5rem; border-radius: 9999px; background: linear-gradient(90deg, rgb(var(--color-accent) / 0.55), rgb(var(--color-glass-edge) / 0.14)); box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.35); }
+.ckepi-range::-moz-range-track { height: 0.5rem; border-radius: 9999px; background: rgb(var(--color-glass-edge) / 0.14); box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.35); }
+.ckepi-range::-moz-range-progress { height: 0.5rem; border-radius: 9999px; background: rgb(var(--color-accent) / 0.7); }
+.ckepi-range::-webkit-slider-thumb { -webkit-appearance: none; margin-top: -0.4rem; height: 1.3rem; width: 1.3rem; border-radius: 9999px; background: rgb(var(--color-accent)); border: 2px solid rgb(var(--color-glass-edge) / 0.85); box-shadow: 0 0 0 4px rgb(var(--color-accent) / 0.18), 0 2px 6px rgb(0 0 0 / 0.4); transition: transform 0.15s ease; }
+.ckepi-range::-moz-range-thumb { height: 1.3rem; width: 1.3rem; border-radius: 9999px; background: rgb(var(--color-accent)); border: 2px solid rgb(var(--color-glass-edge) / 0.85); box-shadow: 0 0 0 4px rgb(var(--color-accent) / 0.18), 0 2px 6px rgb(0 0 0 / 0.4); }
+.ckepi-range:hover::-webkit-slider-thumb, .ckepi-range:focus-visible::-webkit-slider-thumb { transform: scale(1.12); }
+.ckepi-range:focus-visible { outline: none; }
+.ckepi-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 6px rgb(var(--color-accent) / 0.35); }
+@media (prefers-reduced-motion: reduce) { .ckepi-range::-webkit-slider-thumb { transition: none; } }
+
+/* Hexagonal cardboard pin used as a large action button (word on the paper face). */
+.ckepi-hex-pin {
+  background-image: url('/img/controls/ckepi-pin-hex-v1.webp');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: drop-shadow(0 0.35rem 0.4rem rgb(0 0 0 / 0.35));
+}
+
+/* Cardboard push button: a paper face standing on a thick corrugated edge. Pressing sinks the
+   face onto the edge (translate + shadow), like a real pin being pushed. */
+.ckepi-push {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3.5rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 1.1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  border: 2px solid rgb(0 0 0 / 0.25);
+  box-shadow: 0 0.42rem 0 var(--push-edge), 0 0.42rem 0 2px rgb(0 0 0 / 0.25), 0 0.9rem 1.2rem -0.4rem rgb(0 0 0 / 0.5), inset 0 1px 0 rgb(255 255 255 / 0.35);
+  transform: translateY(0);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.15s ease;
+}
+.ckepi-push:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.ckepi-push:active { transform: translateY(0.36rem); box-shadow: 0 0.06rem 0 var(--push-edge), 0 0.06rem 0 2px rgb(0 0 0 / 0.25), inset 0 1px 0 rgb(255 255 255 / 0.25); }
+.ckepi-push:focus-visible { outline: 3px solid rgb(var(--color-accent)); outline-offset: 3px; }
+.ckepi-push:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+.ckepi-push-copper { --push-edge: rgb(122 58 30); background-color: rgb(214 122 72); background-image: linear-gradient(180deg, rgb(240 164 104), rgb(208 112 62)); color: rgb(24 30 30); border-color: rgb(122 58 30 / 0.55); }
+.ckepi-push-salt { --push-edge: rgb(168 140 100); background-color: rgb(255 242 215); background-image: url('/img/paper/paper-card-salt.webp'); background-size: 256px 256px; color: rgb(24 58 58); }
+.ckepi-push-ink { --push-edge: rgb(8 20 22); background-color: rgb(24 58 58); background-image: url('/img/paper/paper-card-ink.webp'); background-size: 256px 256px; color: rgb(255 242 215); border-color: rgb(232 160 128 / 0.45); }
+@media (prefers-reduced-motion: reduce) { .ckepi-push { transition: none; } .ckepi-push:hover, .ckepi-push:active { transform: none; } }
+.\[backface-visibility\:hidden\] { -webkit-backface-visibility: hidden; }
+
+/* ── STEAM Liquid Science Cards & Certificate Backdrop (Takya-inspired motion) ── */
+.ckepi-steam-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 65% at 0% 0%, rgb(var(--color-glass-edge) / 0.22), transparent 48%),
+    radial-gradient(85% 55% at 100% 100%, rgb(232 160 128 / 0.12), transparent 62%),
+    linear-gradient(140deg, rgb(var(--color-surface-elevated) / 0.92), rgb(var(--color-surface-muted) / 0.78) 55%, rgb(var(--color-surface-elevated) / 0.9));
+  border: 1px solid rgb(var(--color-border-subtle) / 0.85);
+  box-shadow:
+    inset 0 1px 0 rgb(var(--color-glass-edge) / 0.35),
+    0 0.25rem 0 rgb(var(--color-glass-shadow) / 0.3),
+    0 18px 38px -22px rgb(var(--color-glass-shadow) / 0.55);
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease, box-shadow 0.22s ease;
+}
+.ckepi-steam-card:hover {
+  transform: translateY(-2px);
+  border-color: rgb(var(--color-accent) / 0.55);
+  box-shadow:
+    inset 0 1px 0 rgb(var(--color-glass-edge) / 0.45),
+    0 0.32rem 0 rgb(var(--color-glass-shadow) / 0.35),
+    0 22px 44px -20px rgb(var(--color-glass-shadow) / 0.7);
+}
+.ckepi-steam-card-active {
+  border-color: rgb(var(--color-accent) / 0.8);
+}
+
+.ckepi-pictogram-badge {
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease, background-color 0.2s ease;
+}
+button:hover .ckepi-pictogram-badge,
+button:focus-visible .ckepi-pictogram-badge,
+.ckepi-steam-card:hover .ckepi-pictogram-badge {
+  transform: translate3d(2px, -2px, 0) rotate(4deg);
+}
+
+.ckepi-certificate-bg {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: #101F24;
+  background-image:
+    radial-gradient(90% 60% at 15% 15%, rgb(232 160 128 / 0.16), transparent 55%),
+    radial-gradient(85% 55% at 85% 85%, rgb(228 237 131 / 0.14), transparent 55%),
+    url('/img/ckepi/svg/certificate-bg.svg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow:
+    inset 0 1px 0 rgb(255 242 215 / 0.35),
+    0 0.4rem 0 rgb(5 9 11 / 0.55),
+    0 28px 60px -24px rgb(5 9 11 / 0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ckepi-steam-card,
+  .ckepi-pictogram-badge {
+    transition: none;
+  }
+  .ckepi-steam-card:hover,
+  button:hover .ckepi-pictogram-badge,
+  button:focus-visible .ckepi-pictogram-badge,
+  .ckepi-steam-card:hover .ckepi-pictogram-badge {
+    transform: none;
+  }
 }

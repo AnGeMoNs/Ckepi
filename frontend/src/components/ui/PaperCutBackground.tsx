@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { SHOW_AI_WATERMARKS } from "../../config/aiDisclosure";
 import "./PaperCutBackground.css";
 
 export type PaperCutScene =
@@ -55,7 +56,7 @@ export function PaperCutBackground({
             <source media="(max-width: 767px)" srcSet={`${base}-mobile.webp`} type="image/webp" />
             <img src={`${base}-desktop.webp`} alt="" width={2560} height={1440} decoding="async" />
           </picture>
-          <span className="ckepi-paper-watermark">AI-generated · Ckepi</span>
+          {SHOW_AI_WATERMARKS && <span className="ckepi-paper-watermark">AI-generated · Ckepi</span>}
         </>
       )}
       <div className="ckepi-paper-content">{children}</div>

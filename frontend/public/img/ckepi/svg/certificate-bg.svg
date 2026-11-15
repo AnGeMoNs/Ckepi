@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1120" viewBox="0 0 1600 1120" fill="none" role="img" aria-label="Ckepi Mission Certificate Background">
+  <defs>
+    <linearGradient id="bg-ink" x1="0" y1="0" x2="1600" y2="1120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0C171B"/>
+      <stop offset="48%" stop-color="#101F24"/>
+      <stop offset="100%" stop-color="#162A30"/>
+    </linearGradient>
+    <radialGradient id="glow-copper" cx="0.16" cy="0.18" r="0.55">
+      <stop offset="0%" stop-color="#E8A080" stop-opacity="0.22"/>
+      <stop offset="55%" stop-color="#E8A080" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#E8A080" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-sulfur" cx="0.86" cy="0.82" r="0.52">
+      <stop offset="0%" stop-color="#E4ED83" stop-opacity="0.18"/>
+      <stop offset="55%" stop-color="#E4ED83" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#E4ED83" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-mars" cx="0.82" cy="0.16" r="0.38">
+      <stop offset="0%" stop-color="#D14334" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#D14334" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="frame-stroke" x1="40" y1="40" x2="1560" y2="1080" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E8A080" stop-opacity="0.65"/>
+      <stop offset="50%" stop-color="#FFF2D7" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#E4ED83" stop-opacity="0.65"/>
+    </linearGradient>
+    <pattern id="h3-lattice" width="104" height="90" patternUnits="userSpaceOnUse">
+      <path d="M52 4 L96 29 L96 79 L52 104 L8 79 L8 29 Z" stroke="#FFF2D7" stroke-opacity="0.045" stroke-width="1.2" fill="none"/>
+    </pattern>
+  </defs>
+
+  <!-- Deep Space Ink Base -->
+  <rect width="1600" height="1120" fill="url(#bg-ink)"/>
+  <rect width="1600" height="1120" fill="url(#glow-copper)"/>
+  <rect width="1600" height="1120" fill="url(#glow-sulfur)"/>
+  <rect width="1600" height="1120" fill="url(#glow-mars)"/>
+
+  <!-- Subtle H3 Hexagonal Mesh -->
+  <rect x="44" y="44" width="1512" height="1032" rx="28" fill="url(#h3-lattice)"/>
+
+  <!-- Topographic DEM Contour Lines (6x6 km Atacama Pampa 83b224 & Jezero Crater) -->
+  <g stroke="#E8A080" stroke-opacity="0.11" stroke-width="1.5" fill="none">
+    <path d="M -40 860 C 220 790, 460 910, 760 840 C 1060 770, 1310 880, 1640 810"/>
+    <path d="M -40 900 C 240 830, 490 950, 790 880 C 1090 810, 1330 920, 1640 850"/>
+    <path d="M -40 940 C 260 870, 520 990, 820 920 C 1120 850, 1350 960, 1640 890"/>
+    <path d="M -40 980 C 280 910, 550 1030, 850 960 C 1150 890, 1370 1000, 1640 930"/>
+  </g>
+  <g stroke="#E4ED83" stroke-opacity="0.09" stroke-width="1.3" stroke-dasharray="6 6" fill="none">
+    <path d="M -40 210 C 280 150, 540 260, 860 190 C 1180 120, 1380 230, 1640 170"/>
+    <path d="M -40 250 C 300 190, 560 300, 880 230 C 1200 160, 1400 270, 1640 210"/>
+  </g>
+
+  <!-- Left & Right Concentric H3 Watermarks -->
+  <g transform="translate(80 420)" opacity="0.16">
+    <path d="M176 48 L128 20 L36 73 L36 179 L128 232 L176 204" stroke="#FFF2D7" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M176 85 L128 57 L68 92 L68 160 L128 195 L176 167" stroke="#E4ED83" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M176 122 L128 94 L100 110 L100 142 L128 158 L150 145" stroke="#E8A080" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="209" cy="126" r="9" fill="#E4ED83"/>
+  </g>
+  <g transform="translate(1520 680) scale(-1 1)" opacity="0.14">
+    <path d="M176 48 L128 20 L36 73 L36 179 L128 232 L176 204" stroke="#FFF2D7" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M176 85 L128 57 L68 92 L68 160 L128 195 L176 167" stroke="#E4ED83" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M176 122 L128 94 L100 110 L100 142 L128 158 L150 145" stroke="#E8A080" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="209" cy="126" r="9" fill="#E8A080"/>
+  </g>
+
+  <!-- Outer & Inner Precision Frames -->
+  <rect x="36" y="36" width="1528" height="1048" rx="32" stroke="url(#frame-stroke)" stroke-width="2.5"/>
+  <rect x="54" y="54" width="1492" height="1012" rx="22" stroke="#FFF2D7" stroke-opacity="0.16" stroke-width="1.2" stroke-dasharray="10 6"/>
+
+  <!-- Viewfinder Corner Brackets -->
+  <g stroke="#E4ED83" stroke-width="3.5" stroke-linecap="round">
+    <path d="M 74 114 L 74 74 L 114 74"/>
+    <path d="M 1526 114 L 1526 74 L 1486 74"/>
+    <path d="M 74 1006 L 74 1046 L 114 1046"/>
+    <path d="M 1526 1006 L 1526 1046 L 1486 1046"/>
+  </g>
+
+  <!-- Top Orbital Arc: Earth (Atacama) -> Moon (South Pole) -> Mars (Jezero) -->
+  <g transform="translate(0 12)">
+    <path d="M 470 112 Q 800 54 1130 112" stroke="#FFF2D7" stroke-opacity="0.28" stroke-width="2" stroke-dasharray="5 6" fill="none"/>
+    <!-- Earth Node -->
+    <circle cx="470" cy="112" r="14" fill="#192D31" stroke="#E8A080" stroke-width="2.5"/>
+    <circle cx="470" cy="112" r="5" fill="#E8A080"/>
+    <!-- Moon Node -->
+    <circle cx="800" cy="83" r="14" fill="#192D31" stroke="#E4ED83" stroke-width="2.5"/>
+    <circle cx="800" cy="83" r="5" fill="#E4ED83"/>
+    <!-- Mars Node -->
+    <circle cx="1130" cy="112" r="14" fill="#192D31" stroke="#D14334" stroke-width="2.5"/>
+    <circle cx="1130" cy="112" r="5" fill="#D14334"/>
+  </g>
+</svg>

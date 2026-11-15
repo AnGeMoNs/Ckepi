@@ -6,6 +6,7 @@ import { compareCellWithSite } from "../../api/client";
 import { formatNumber } from "../../i18n";
 import type { PlanetarySite, SiteComparisonResponse } from "../../types/analog";
 import { NumberTicker } from "../motion/NumberTicker";
+import { CopernicusNotice } from "../ui/CopernicusNotice";
 import { CrossingDialog } from "./CrossingDialog";
 import { PaperPlanet, type WorldKey } from "./PaperPlanet";
 
@@ -141,6 +142,8 @@ export function WorldsHero({ sites }: WorldsHeroProps) {
           );
         })}
       </div>
+
+      <CopernicusNotice className="max-w-3xl" />
 
       <CrossingDialog
         world={open}

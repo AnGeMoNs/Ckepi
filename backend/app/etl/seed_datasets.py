@@ -13,8 +13,8 @@ from app.engine.planetary_physics import (
 )
 from app.etl.earth_etl import build_real_earth_h3_grid
 from app.etl.global_earth_etl import build_global_earth_land_grid
-from app.etl.planetary_etl import build_real_planetary_sites_and_timeseries
-from app.models.schemas import DataConfidence, PlanetarySite, VariableOrigin
+from app.etl.planetary_etl import build_real_planetary_sites_and_timeseries, normalize_curated_site_provenance
+from app.models.schemas import PlanetarySite
 
 
 def ensure_datasets_built(data_dir: Path | None = None, force: bool = False) -> Path:
@@ -134,43 +134,7 @@ def load_cached_planetary_sites(data_dir: Path | None = None) -> list[PlanetaryS
                 site.coordinates.lat,
                 site.coordinates.lon,
             )
-        if site.confidence is None:
-            is_mars = site.body == "mars"
-            var_prov: dict[str, VariableOrigin] = {
-                "topographic_roughness": "constant",
-                "slope_deg": "constant",
-                "thermal_inertia": "constant",
-                "surface_albedo": "constant",
-                "subsurface_ice_frac": "constant",
-                "solar_flux_wm2": "derived" if is_mars else "model",
-                "mean_surface_temp_k": "measured" if is_mars else "model",
-                "diurnal_temp_amplitude_k": "measured" if is_mars else "model",
-                "nocturnal_cooling_k_hr": "derived" if is_mars else "model",
-                "aeolian_dust_flux": "measured" if is_mars else "constant",
-            }
-            site.confidence = DataConfidence(
-                level="high" if is_mars else "medium",
-                score=0.78 if is_mars else 0.68,
-                is_tracked_zone=True,
-                nearest_tracked_site_id=site.site_id,
-                distance_to_tracked_km=0.0,
-                pds_products_found=12 if site.body == "moon" else None,
-                real_variables=(
-                    ["mean_surface_temp_k", "diurnal_temp_amplitude_k", "aeolian_dust_flux", "solar_flux_wm2"]
-                    if is_mars
-                    else ["solar_flux_wm2", "mean_surface_temp_k", "diurnal_temp_amplitude_k"]
-                ),
-                estimated_variables=[
-                    "topographic_roughness",
-                    "slope_deg",
-                    "thermal_inertia",
-                    "surface_albedo",
-                    "subsurface_ice_frac",
-                ],
-                variable_provenance=var_prov,
-                notice_key="confidence.tracked_mars_curated" if is_mars else "confidence.tracked_moon_curated",
-            )
-        sites.append(site)
+        sites.append(normalize_curated_site_provenance(site))
     return sites
 
 

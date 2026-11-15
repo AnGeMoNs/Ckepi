@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 export interface SegmentedOption<T extends string> {
   value: T;
   label: string;
+  ariaLabel?: string;
   icon?: ReactNode;
 }
 
@@ -41,6 +42,7 @@ export function SegmentedControl<T extends string>({
             type="button"
             onClick={() => onChange(opt.value)}
             aria-pressed={active}
+            aria-label={opt.ariaLabel}
             className={`inline-flex min-h-11 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
               fullWidth ? "flex-1" : ""
             } ${size === "sm" ? "min-w-11" : ""} ${

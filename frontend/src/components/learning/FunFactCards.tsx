@@ -1,6 +1,6 @@
 import { memo, useMemo, useState } from "react";
-import { Eye, EyeOff, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Pictogram } from "../worlds/Pictograms";
 
 import type { PlanetaryBody } from "../../types/analog";
 import { Badge } from "../ui/Badge";
@@ -44,7 +44,7 @@ export const FunFactCards = memo(function FunFactCards({ body }: FunFactCardsPro
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-0.5">
           <h3 id="fun-facts-title" className="flex items-center gap-2 text-base font-semibold text-content">
-            <Sparkles className="h-4 w-4 text-accent" aria-hidden="true" />
+            <Pictogram name="observe" className="h-5 w-5 text-accent" />
             {t("funFacts.title")}
           </h3>
           <p className="text-xs text-content-muted">{t("funFacts.subtitle")}</p>
@@ -93,15 +93,15 @@ export const FunFactCards = memo(function FunFactCards({ body }: FunFactCardsPro
                 aria-expanded={isOpen}
                 aria-controls={answerId}
                 onClick={() => toggle(fact.id)}
-                className={`group flex h-full min-h-[8.5rem] w-full flex-col gap-2 rounded-xl border p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                className={`ckepi-steam-card group flex h-full min-h-[8.5rem] w-full flex-col gap-2 rounded-xl border p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
                   isOpen
-                    ? "border-accent/50 bg-accent/5"
+                    ? "ckepi-steam-card-active border-accent/50 bg-accent/5"
                     : "border-border-subtle bg-surface hover:border-accent/40 hover:bg-surface-muted"
                 }`}
               >
                 <span className="flex items-center justify-between gap-2">
-                  <span className="text-2xl leading-none" aria-hidden="true">
-                    {fact.emoji}
+                  <span className="ckepi-pictogram-badge inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border-subtle bg-surface-muted">
+                    <Pictogram name={fact.pictogram} className="h-6 w-6 text-accent" />
                   </span>
                   <Badge variant={TAG_VARIANT[fact.tag]}>{t(`funFacts.tags.${fact.tag}`)}</Badge>
                 </span>
@@ -121,11 +121,10 @@ export const FunFactCards = memo(function FunFactCards({ body }: FunFactCardsPro
                   )}
                 </span>
                 <span className="mt-auto flex items-center gap-1.5 text-xs font-medium text-accent">
-                  {isOpen ? (
-                    <EyeOff className="h-3.5 w-3.5" aria-hidden="true" />
-                  ) : (
-                    <Eye className="h-3.5 w-3.5" aria-hidden="true" />
-                  )}
+                  <Pictogram
+                    name={isOpen ? "check" : "observe"}
+                    className="h-4 w-4"
+                  />
                   {isOpen ? t("funFacts.hide") : t("funFacts.tapToReveal")}
                 </span>
               </button>

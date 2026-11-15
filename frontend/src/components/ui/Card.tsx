@@ -6,12 +6,17 @@ interface CardProps {
   className?: string;
 }
 
+interface SectionCardProps extends CardProps {
+  /** "frame": cardboard-framed glass (default). "liquid": layered liquid glass used in Explorar. */
+  variant?: "frame" | "liquid";
+}
+
 /** Glass card that rises in like a paper layer the first time it scrolls into view. */
-export function Card({ children, className = "" }: CardProps) {
+export function Card({ children, className = "", variant = "liquid" }: SectionCardProps) {
   const reduceMotion = useReducedMotion();
   return (
     <motion.section
-      className={`ckepi-glass rounded-xl border border-border-subtle ${className}`}
+      className={`${variant === "liquid" ? "ckepi-liquid rounded-[2rem]" : "ckepi-glass ckepi-product-card rounded-xl border border-border-subtle"} ${className}`}
       initial={reduceMotion ? false : { opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
@@ -24,16 +29,22 @@ export function Card({ children, className = "" }: CardProps) {
 
 export function CardHeader({ children, className = "" }: CardProps) {
   return (
-    <div className={`border-b border-border-subtle px-4 py-3 sm:px-5 ${className}`}>
+    <div
+      className={`px-5 pb-2 pt-5 sm:px-6 sm:pt-6 ${className}`}
+    >
       {children}
     </div>
   );
 }
 
 export function CardTitle({ children, className = "" }: CardProps) {
-  return <h2 className={`text-base font-semibold text-content ${className}`}>{children}</h2>;
+  return (
+    <h2 className={`text-lg font-bold tracking-tight text-content sm:text-xl ${className}`}>
+      {children}
+    </h2>
+  );
 }
 
 export function CardContent({ children, className = "" }: CardProps) {
-  return <div className={`p-4 sm:p-5 ${className}`}>{children}</div>;
+  return <div className={`p-4 sm:p-6 ${className}`}>{children}</div>;
 }

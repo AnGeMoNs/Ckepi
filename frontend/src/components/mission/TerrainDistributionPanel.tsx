@@ -1,6 +1,6 @@
-import { Activity, BarChart3, Layers, Scale, ShieldAlert } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Pictogram } from "../worlds/Pictograms";
 
 import { formatNumber } from "../../i18n";
 import type {
@@ -9,6 +9,7 @@ import type {
   TerrainDistributionComparison,
 } from "../../types/analog";
 import { Badge } from "../ui/Badge";
+import { CopernicusNotice } from "../ui/CopernicusNotice";
 
 interface TerrainDistributionPanelProps {
   distribution: TerrainDistributionComparison;
@@ -102,7 +103,7 @@ function OverlappingHistogramSvg({
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
         role="img"
         aria-label={`${targetLabel} vs ${earthLabel}`}
-        className="h-44 w-full rounded border border-border-subtle bg-surface-elevated p-1"
+        className="h-44 w-full ckepi-liquid rounded-2xl p-1"
       >
         {/* Horizontal reference lines */}
         {[0.25, 0.5, 0.75, 1].map((frac) => {
@@ -165,7 +166,7 @@ function OverlappingHistogramSvg({
                   x={xBase + groupW / 2}
                   y={svgHeight - 8}
                   textAnchor="middle"
-                  className="fill-content-muted text-[10px]"
+                  className="fill-content-muted text-xs"
                 >
                   {formatNumber(edgeVal, lang, 1)}
                   {unit}
@@ -233,7 +234,7 @@ function TransectProfileSvg({
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
       role="img"
       aria-label={`${targetLabel} vs ${earthLabel}`}
-      className="h-28 w-full rounded border border-border-subtle bg-surface-elevated p-1"
+      className="h-28 w-full ckepi-liquid rounded-2xl p-1"
     >
       <line
         x1={padX}
@@ -280,12 +281,12 @@ export function TerrainDistributionPanel({
   );
 
   return (
-    <div className="rounded border border-border-subtle bg-surface p-4 space-y-4">
+    <div className="rounded-2xl border border-border-subtle/50 bg-surface/30 p-4 space-y-4">
       {/* Header & Common Scale Badges */}
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="space-y-1">
           <h3 className="flex items-center gap-2 text-sm font-semibold text-content sm:text-base">
-            <BarChart3 className="h-4 w-4 text-accent" aria-hidden="true" />
+            <Pictogram name="compare" className="h-4 w-4 text-accent" />
             {t("distribution.title")}
           </h3>
           <p className="text-xs text-content-muted">
@@ -311,7 +312,7 @@ export function TerrainDistributionPanel({
       </div>
 
       {/* Provenance Strip for DEMs */}
-      <div className="grid grid-cols-1 gap-2 rounded border border-border-subtle bg-surface-elevated p-3 text-xs sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-2 ckepi-liquid rounded-2xl p-3 text-xs sm:grid-cols-3">
         <div>
           <span className="font-semibold text-content">{t("distribution.targetDemLabel")}: </span>
           <span className="text-content-muted">{distribution.planetary_dem_source}</span>
@@ -328,7 +329,7 @@ export function TerrainDistributionPanel({
 
       {/* Formal Quantitative Statements with 95% Block-Bootstrap CIs */}
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        <div className="rounded border border-accent/30 bg-accent/5 p-3.5 space-y-2">
+        <div className="rounded-2xl border border-accent/30 bg-accent/5 p-3.5 space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-1.5">
             <span className="text-xs font-semibold uppercase tracking-wide text-accent">
               {t("distribution.slopeCardTitle")}
@@ -348,7 +349,7 @@ export function TerrainDistributionPanel({
               controlW1: formatNumber(slopeDist.control_yungay_w1, lang, 2),
             })}
           </p>
-          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border-subtle pt-2 text-[11px] text-content-muted tabular-nums">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border-subtle pt-2 text-xs text-content-muted tabular-nums">
             <span>
               IC 95% (Bootstrap 2D): [{formatNumber(slopeDist.w1_ci_95[0], lang, 2)}° –{" "}
               {formatNumber(slopeDist.w1_ci_95[1], lang, 2)}°]
@@ -361,7 +362,7 @@ export function TerrainDistributionPanel({
           </div>
         </div>
 
-        <div className="rounded border border-border-subtle bg-surface-elevated p-3.5 space-y-2">
+        <div className="ckepi-liquid rounded-2xl p-3.5 space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-1.5">
             <span className="text-xs font-semibold uppercase tracking-wide text-content">
               {t("distribution.reliefCardTitle")}
@@ -381,7 +382,7 @@ export function TerrainDistributionPanel({
               controlW1: formatNumber(reliefDist.control_yungay_w1, lang, 2),
             })}
           </p>
-          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border-subtle pt-2 text-[11px] text-content-muted tabular-nums">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border-subtle pt-2 text-xs text-content-muted tabular-nums">
             <span>
               IC 95% (Bootstrap 2D): [{formatNumber(reliefDist.w1_ci_95[0], lang, 2)} m –{" "}
               {formatNumber(reliefDist.w1_ci_95[1], lang, 2)} m]
@@ -405,7 +406,7 @@ export function TerrainDistributionPanel({
             <button
               type="button"
               onClick={() => setActiveMetric("slope")}
-              className={`min-h-11 rounded border px-3 py-1 text-xs font-medium transition ${
+              className={`min-h-11 rounded-2xl border px-3 py-1 text-xs font-medium transition ${
                 activeMetric === "slope"
                   ? "border-accent bg-accent text-white"
                   : "border-border-subtle bg-surface-elevated text-content-muted hover:text-content"
@@ -416,7 +417,7 @@ export function TerrainDistributionPanel({
             <button
               type="button"
               onClick={() => setActiveMetric("relief")}
-              className={`min-h-11 rounded border px-3 py-1 text-xs font-medium transition ${
+              className={`min-h-11 rounded-2xl border px-3 py-1 text-xs font-medium transition ${
                 activeMetric === "relief"
                   ? "border-accent bg-accent text-white"
                   : "border-border-subtle bg-surface-elevated text-content-muted hover:text-content"
@@ -446,7 +447,7 @@ export function TerrainDistributionPanel({
       <div className="space-y-1.5">
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
           <span className="flex items-center gap-1.5 font-semibold text-content">
-            <Activity className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+            <Pictogram name="measure" className="h-4 w-4 text-accent" />
             {t("distribution.transectTitle")}
           </span>
           <span className="text-content-muted">{t("distribution.transectSubtitle")}</span>
@@ -464,13 +465,13 @@ export function TerrainDistributionPanel({
       <div className="space-y-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-content">
-            <Scale className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+            <Pictogram name="compare" className="h-4 w-4 text-accent" />
             {t("distribution.scaleTableTitle")}
           </h4>
           <span className="text-xs text-content-muted">{t("distribution.scaleTableHint")}</span>
         </div>
 
-        <div className="overflow-x-auto rounded border border-border-subtle">
+        <div className="overflow-x-auto rounded-2xl border border-border-subtle">
           <table className="w-full border-collapse text-left text-xs">
             <thead className="bg-surface-muted uppercase text-content-muted">
               <tr>
@@ -514,36 +515,37 @@ export function TerrainDistributionPanel({
 
       {/* Scientific Rigor & Irreducible Gap Notes (UCN / UA Jury) */}
       <div className="grid grid-cols-1 gap-3 pt-1 md:grid-cols-3">
-        <div className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1">
+        <div className="ckepi-liquid rounded-2xl p-3 space-y-1">
           <p className="flex items-center gap-1.5 text-xs font-semibold text-content">
-            <Layers className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+            <Pictogram name="hexCell" className="h-4 w-4 text-accent" />
             {t("distribution.noteStatTitle")}
           </p>
-          <p className="text-[11px] leading-relaxed text-content-muted">
+          <p className="text-xs leading-relaxed text-content-muted">
             {t("distribution.noteStatBody")}
           </p>
         </div>
 
-        <div className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1">
+        <div className="ckepi-liquid rounded-2xl p-3 space-y-1">
           <p className="flex items-center gap-1.5 text-xs font-semibold text-content">
-            <ShieldAlert className="h-3.5 w-3.5 text-status-break" aria-hidden="true" />
+            <Pictogram name="notSimilar" className="h-4 w-4 text-status-break" />
             {t("distribution.noteRadTitle")}
           </p>
-          <p className="text-[11px] leading-relaxed text-content-muted">
+          <p className="text-xs leading-relaxed text-content-muted">
             {t("distribution.noteRadBody")}
           </p>
         </div>
 
-        <div className="rounded border border-border-subtle bg-surface-elevated p-3 space-y-1">
+        <div className="ckepi-liquid rounded-2xl p-3 space-y-1">
           <p className="flex items-center gap-1.5 text-xs font-semibold text-content">
-            <Activity className="h-3.5 w-3.5 text-status-valid" aria-hidden="true" />
+            <Pictogram name="measure" className="h-4 w-4 text-status-valid" />
             {t("distribution.noteBioTitle")}
           </p>
-          <p className="text-[11px] leading-relaxed text-content-muted">
+          <p className="text-xs leading-relaxed text-content-muted">
             {t("distribution.noteBioBody")}
           </p>
         </div>
       </div>
+      <CopernicusNotice />
     </div>
   );
 }

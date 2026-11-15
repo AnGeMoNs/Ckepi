@@ -9,6 +9,7 @@ import type {
   VariableOrigin,
 } from "../../types/analog";
 import { NumberTicker } from "../motion/NumberTicker";
+import { CopernicusNotice } from "../ui/CopernicusNotice";
 import { SpotlightCard } from "../motion/SpotlightCard";
 import { Pictogram, WorldMark, type PictogramName } from "./Pictograms";
 
@@ -259,6 +260,7 @@ export function ThreeWorldsBoard({
                 <p className={`text-[11px] ${isSynthetic ? "font-semibold text-status-warn" : "text-content-muted"}`}>
                   {isSynthetic ? t("worlds.syntheticWarning") : t("worlds.terrainSources")}
                 </p>
+                {!isSynthetic && <CopernicusNotice />}
                 <button
                   type="button"
                   onClick={onOpenFullAnalysis}
@@ -281,6 +283,7 @@ export function ThreeWorldsBoard({
                 <p className="text-[11px] text-content-muted">
                   {t("worlds.terrainSources")}
                 </p>
+                <CopernicusNotice />
               </div>
             )}
           </div>

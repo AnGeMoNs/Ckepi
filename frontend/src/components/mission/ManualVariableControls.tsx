@@ -1,12 +1,14 @@
-import { Check, RotateCcw, Sliders } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { formatNumber, formatPercent } from "../../i18n";
+import { formatPercent } from "../../i18n";
 import type { VariableOrigin } from "../../types/analog";
 import { Badge } from "../ui/Badge";
+import { Carousel3D } from "../explore/Carousel3D";
+import { VariableCard } from "../explore/VariableCard";
+import { PushButton } from "../ui/PushButton";
+import { Pictogram } from "../worlds/Pictograms";
 import { Button } from "../ui/Button";
-import { InfoTooltip } from "../ui/InfoTooltip";
 
 export const MANUAL_IV_KEYS = [
   "topographic_roughness",
@@ -31,6 +33,7 @@ export const MANUAL_DV_KEYS = [
 ] as const;
 
 interface ManualVariableControlsProps {
+  layout?: "horizontal" | "vertical";
   targetIndependent: Record<string, number>;
   targetDependent: Record<string, number>;
   variableProvenance?: Record<string, VariableOrigin>;
@@ -48,6 +51,7 @@ interface ManualVariableControlsProps {
 }
 
 export function ManualVariableControls({
+  layout = "vertical",
   targetIndependent,
   targetDependent,
   variableProvenance,
@@ -62,9 +66,18 @@ export function ManualVariableControls({
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
 
+  const [expanded, setExpanded] = useState(true);
+  const [group, setGroup] = useState<"x" | "y">("x");
   const [draftIvWeights, setDraftIvWeights] = useState<Record<string, number>>(appliedIvWeights);
   const [draftDvWeights, setDraftDvWeights] = useState<Record<string, number>>(appliedDvWeights);
   const [draftMinSim, setDraftMinSim] = useState<Record<string, number>>(appliedMinSim);
+
+  const activeWeightCount =
+    MANUAL_IV_KEYS.filter((k) => (draftIvWeights[k] ?? 0) > 0).length +
+    MANUAL_DV_KEYS.filter((k) => (draftDvWeights[k] ?? 0) > 0).length;
+  const activeFilterCount = [...MANUAL_IV_KEYS, ...MANUAL_DV_KEYS].filter(
+    (k) => (draftMinSim[k] ?? 0) > 0
+  ).length;
 
   useEffect(() => {
     setDraftIvWeights(appliedIvWeights);
@@ -103,173 +116,116 @@ export function ManualVariableControls({
     targetVal: number | undefined,
     weight: number,
     onWeightChange: (val: number) => void
-  ) => {
-    const minSim = draftMinSim[varKey] ?? 0;
-    return (
-      <div
-        key={varKey}
-        className="space-y-2.5 rounded border border-border-subtle bg-surface-elevated p-3"
-      >
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1">
-            <span className="text-xs font-semibold text-content">
-              {t(`variables.${varKey}.label`)}
-            </span>
-            <InfoTooltip
-              label={t(`variables.${varKey}.label`)}
-              text={t(`variables.${varKey}.hint`)}
-            />
-            {variableProvenance?.[varKey] && (
-              <Badge
-                variant={
-                  variableProvenance[varKey] === "measured"
-                    ? "valid"
-                    : variableProvenance[varKey] === "model"
-                    ? "warn"
-                    : "default"
-                }
-              >
-                {t(`confidence.origins.${variableProvenance[varKey]}`)}
-              </Badge>
-            )}
-          </div>
-          {typeof targetVal === "number" && (
-            <span className="tabular-nums text-xs text-content-muted">
-              {t("manualMode.targetValue")}:{" "}
-              <strong className="text-content">
-                {formatNumber(targetVal, lang, 2)} {t(`variables.${varKey}.unit`)}
-              </strong>
-            </span>
-          )}
-        </div>
+  ) => (
+    <VariableCard
+      key={varKey}
+      varKey={varKey}
+      target={targetVal}
+      origin={variableProvenance?.[varKey]}
+      weight={weight}
+      onWeightChange={onWeightChange}
+      minSim={draftMinSim[varKey] ?? 0}
+      onMinSimChange={(v) => setDraftMinSim((prev) => ({ ...prev, [varKey]: v }))}
+    />
+  );
 
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <div className="space-y-1">
-            <div className="flex items-center justify-between text-xs text-content-muted">
-              <label htmlFor={`weight-${varKey}`}>{t("manualMode.weightLabel")}</label>
-              <span className="tabular-nums font-semibold text-content">
-                {formatPercent(weight, lang)}
-              </span>
-            </div>
-            <input
-              id={`weight-${varKey}`}
-              type="range"
-              min={0}
-              max={1}
-              step={0.05}
-              value={weight}
-              onChange={(e) => onWeightChange(Number(e.target.value))}
-              className="min-h-11 w-full cursor-pointer accent-accent"
-            />
-          </div>
-
-          <div className="space-y-1">
-            <div className="flex items-center justify-between text-xs text-content-muted">
-              <label htmlFor={`minsim-${varKey}`}>{t("manualMode.minSimLabel")}</label>
-              <span className="tabular-nums font-semibold text-content">
-                {formatPercent(minSim, lang)}
-              </span>
-            </div>
-            <input
-              id={`minsim-${varKey}`}
-              type="range"
-              min={0}
-              max={0.95}
-              step={0.05}
-              value={minSim}
-              onChange={(e) =>
-                setDraftMinSim((prev) => ({
-                  ...prev,
-                  [varKey]: Number(e.target.value),
-                }))
-              }
-              className="min-h-11 w-full cursor-pointer accent-accent"
-            />
-          </div>
-        </div>
-      </div>
-    );
-  };
+  // Column counts divide each group evenly on wide screens (10 X → 5 per row, 6 Y → 3 or 6), so no card is left alone.
+  const groupGrid = (wideCols: string) => (layout === "horizontal" ? `grid grid-cols-1 gap-3 sm:grid-cols-2 ${wideCols}` : "grid grid-cols-1 gap-3");
 
   return (
-    <div className="space-y-5 rounded border border-accent/30 bg-surface p-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="space-y-0.5">
-          <div className="flex items-center gap-2">
-            <Sliders className="h-4 w-4 text-accent" aria-hidden="true" />
-            <h3 className="text-sm font-semibold text-content">{t("manualMode.title")}</h3>
+    <div className="space-y-6 rounded-3xl border border-accent/30 bg-surface/20 p-4 sm:p-6">
+      <div className="flex flex-col items-center gap-4 text-center">
+        <div className="space-y-1">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <h3 className="text-xl font-bold text-content sm:text-2xl">{t("manualMode.title")}</h3>
             <Badge variant="accent">{t("manualMode.badge")}</Badge>
           </div>
-          <p className="text-xs text-content-muted">{t("manualMode.subtitle")}</p>
+          <p className="max-w-2xl text-sm text-content-muted sm:text-base">
+            {expanded
+              ? t("manualMode.subtitle")
+              : t("manualMode.activeSummary", {
+                  weights: activeWeightCount,
+                  filters: activeFilterCount,
+                })}
+          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <Button variant="secondary" onClick={handleEqualize}>
-            <RotateCcw className="h-4 w-4" aria-hidden="true" />
-            <span>{t("manualMode.resetEqual")}</span>
-          </Button>
-          <Button variant="secondary" onClick={handleResetAll}>
-            <span>{t("manualMode.zeroAll")}</span>
-          </Button>
-          <Button
-            variant="primary"
-            onClick={() => onApply(draftIvWeights, draftDvWeights, draftMinSim)}
-          >
-            <Check className="h-4 w-4" aria-hidden="true" />
-            <span>{t("manualMode.apply")}</span>
-          </Button>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          {expanded && (
+            <>
+              <PushButton tone="salt" onClick={handleEqualize}>
+                <Pictogram name="replay" className="h-5 w-5" />
+                {t("manualMode.resetEqual")}
+              </PushButton>
+              <PushButton tone="salt" onClick={handleResetAll}>
+                <Pictogram name="close" className="h-5 w-5" />
+                {t("manualMode.zeroAll")}
+              </PushButton>
+              <PushButton tone="copper" onClick={() => onApply(draftIvWeights, draftDvWeights, draftMinSim)}>
+                <Pictogram name="check" className="h-5 w-5" />
+                {t("manualMode.apply")}
+              </PushButton>
+            </>
+          )}
+          <PushButton tone="ink" onClick={() => setExpanded((prev) => !prev)} aria-expanded={expanded}>
+            {expanded ? t("manualMode.collapse") : t("manualMode.expand")}
+            <Pictogram name="chevronDown" className={`h-5 w-5 transition-transform ${expanded ? "rotate-180" : ""}`} />
+          </PushButton>
         </div>
       </div>
 
-      {(minSInd > 0 || minSDep > 0) && (
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded border border-border-subtle bg-surface-elevated px-3 py-2 text-xs text-content-muted">
-          <span>
-            {t("manualMode.globalFilterActive", {
-              sInd: formatPercent(minSInd, lang),
-              sDep: formatPercent(minSDep, lang),
-            })}
-          </span>
-          {onClearGlobalThresholds && (
-            <Button variant="secondary" onClick={onClearGlobalThresholds}>
-              {t("manualMode.clearGlobalFilters")}
-            </Button>
+      {expanded && (
+        <>
+          {(minSInd > 0 || minSDep > 0) && (
+            <div className="flex flex-wrap items-center justify-between gap-2 ckepi-liquid rounded-2xl px-4 py-3 text-sm text-content-muted">
+              <span>
+                {t("manualMode.globalFilterActive", {
+                  sInd: formatPercent(minSInd, lang),
+                  sDep: formatPercent(minSDep, lang),
+                })}
+              </span>
+              {onClearGlobalThresholds && (
+                <Button variant="secondary" onClick={onClearGlobalThresholds}>
+                  {t("manualMode.clearGlobalFilters")}
+                </Button>
+              )}
+            </div>
           )}
-        </div>
+
+          {/* X and Y groups on a 3D turntable: one group faces the reader, the other waits beside it. */}
+          <Carousel3D
+            ariaLabel={t("explore.carousel.groups")}
+            active={group}
+            onChange={setGroup}
+            panels={[
+              {
+                id: "x",
+                title: t("manualMode.independentGroup"),
+                meta: t("explore.carousel.active", { active: MANUAL_IV_KEYS.filter((k) => (draftIvWeights[k] ?? 0) > 0).length, total: MANUAL_IV_KEYS.length }),
+                content: (
+                  <div className={groupGrid("lg:grid-cols-5")}>
+                    {MANUAL_IV_KEYS.map((varKey) =>
+                      renderVariableCard(varKey, targetIndependent[varKey], draftIvWeights[varKey] ?? 0, (val) => setDraftIvWeights((prev) => ({ ...prev, [varKey]: val })))
+                    )}
+                  </div>
+                ),
+              },
+              {
+                id: "y",
+                title: t("manualMode.dependentGroup"),
+                meta: t("explore.carousel.active", { active: MANUAL_DV_KEYS.filter((k) => (draftDvWeights[k] ?? 0) > 0).length, total: MANUAL_DV_KEYS.length }),
+                content: (
+                  <div className={groupGrid("lg:grid-cols-3")}>
+                    {MANUAL_DV_KEYS.map((varKey) =>
+                      renderVariableCard(varKey, targetDependent[varKey], draftDvWeights[varKey] ?? 0, (val) => setDraftDvWeights((prev) => ({ ...prev, [varKey]: val })))
+                    )}
+                  </div>
+                ),
+              },
+            ]}
+          />
+        </>
       )}
-
-      {/* Independent Variables (X) */}
-      <div className="space-y-2.5">
-        <h4 className="text-xs font-semibold uppercase tracking-wide text-accent">
-          {t("manualMode.independentGroup")}
-        </h4>
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {MANUAL_IV_KEYS.map((varKey) =>
-            renderVariableCard(
-              varKey,
-              targetIndependent[varKey],
-              draftIvWeights[varKey] ?? 0,
-              (val) => setDraftIvWeights((prev) => ({ ...prev, [varKey]: val }))
-            )
-          )}
-        </div>
-      </div>
-
-      {/* Dependent Variables (Y) */}
-      <div className="space-y-2.5 border-t border-border-subtle pt-4">
-        <h4 className="text-xs font-semibold uppercase tracking-wide text-accent">
-          {t("manualMode.dependentGroup")}
-        </h4>
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {MANUAL_DV_KEYS.map((varKey) =>
-            renderVariableCard(
-              varKey,
-              targetDependent[varKey],
-              draftDvWeights[varKey] ?? 0,
-              (val) => setDraftDvWeights((prev) => ({ ...prev, [varKey]: val }))
-            )
-          )}
-        </div>
-      </div>
     </div>
   );
 }
